@@ -1,0 +1,12 @@
+/.idea
+/bin
+/tmp
+/.settings
+
+*.iml
+*.class
+.metadata
+
+# Eclipse
+.project
+.classpath
