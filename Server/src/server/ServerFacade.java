@@ -19,7 +19,7 @@ public class ServerFacade {
 		
 	}
 	
-	public synchronized void canAddPlayerToGame(int playerID, int gameID)
+	public void canAddPlayerToGame(int playerID, int gameID)
 	{
 		
 	}
@@ -29,22 +29,22 @@ public class ServerFacade {
 		
 	}
 	
-	public synchronized void canStartGame()
+	public void canStartGame(int playerID, int gameID)
 	{
 		
 	}
 	
-	public synchronized void startGame()
+	public synchronized void startGame(int playerID, int gameID)
 	{
 		
 	}
 	
-	public synchronized void canLeaveGame()
+	public void canLeaveGame(int playerID, int gameID)
 	{
 		
 	}
 	
-	public synchronized void leaveGame()
+	public synchronized void leaveGame(int playerID, int gameID)
 	{
 		
 	}
@@ -54,7 +54,7 @@ public class ServerFacade {
 		
 	}
 	
-	public void logout()
+	public void logout(int playerID)
 	{
 		
 	}
@@ -64,7 +64,7 @@ public class ServerFacade {
 		
 	}
 	
-	public synchronized void canBuyRoute(int playerID, int gameID, CityToCityRoute route)
+	public void canBuyRoute(int playerID, int gameID, CityToCityRoute route)
 	{
 		
 	}
@@ -74,32 +74,32 @@ public class ServerFacade {
 		
 	}
 	
-	public synchronized void canDrawTrainCard()
+	public void canDrawTrainCard(int playerID, int gameID, int cardLocation)
 	{
 		
 	}
 	
-	public synchronized  void drawTrainCard()
+	public synchronized  void drawTrainCard(int playerID, int gameID, int cardLocation)
 	{
 		
 	}
 	
-	public synchronized void canGetDestinations()
+	public void canGetDestinations(int playerID, int gameID)
 	{
 		
 	}
 	
-	public synchronized void getDestinations()
+	public synchronized void getDestinations(int playerID, int gameID)
 	{
 		
 	}
 	
-	public synchronized void canSelectDestinations()
+	public void canSelectDestinations(int playerID, int gameID, int[] destinationsSelected)
 	{
 		
 	}
 	
-	public synchronized void selectDestinations()
+	public synchronized void selectDestinations(int playerID, int gameID, int[] destinationsSelected)
 	{
 		
 	}
@@ -119,7 +119,7 @@ public class ServerFacade {
 		
 	}
 	
-	public synchronized void getCityMapping()
+	public void getCityMapping()
 	{
 		
 	}
