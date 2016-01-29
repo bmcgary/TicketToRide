@@ -3,6 +3,7 @@ package server;
 import java.util.List;
 
 import model.CityToCityRoute;
+import model.Game;
 
 public class ServerFacade {
 	
