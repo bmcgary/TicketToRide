@@ -15,7 +15,25 @@ public class CityToCityRoute extends Route {
 	public TrackColor getTrackColor() {
 		return trackColor;
 	}
-	
+	@Override
+	public boolean equals(Object o){
+		if(o.getClass() != this.getClass()){
+			return false;
+		}
+		CityToCityRoute obj = (CityToCityRoute) o;
+		if(!this.getStart().equals(obj.getStart())){
+			return false;
+		}
+		else if(!this.getEnd().equals(obj.getEnd())){
+			return false;
+		}
+		else if(this.getNumTrains() != obj.getNumTrains()){
+			return false;
+		}
+		else{
+			return true;
+		}
+	}
 	
 
 }

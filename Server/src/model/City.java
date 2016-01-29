@@ -26,5 +26,22 @@ public class City {
 		return name;
 	}
 	
+	@Override
+	public boolean equals(Object o){
+		if(this.getClass() != o.getClass()){
+			return false;
+		}
+		City obj = (City) o;
+		if(!this.getName().equals(obj.getName())){
+			return false;
+		}
+		else if(!this.getLocation().equals(obj.getLocation())){
+			return false;
+		}
+		else{
+			return true;
+		}
+	}
+	
 	
 }
