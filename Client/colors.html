@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="colors.css">
+</head>
+<body>
+
+	<div>
+		<h1>Ticket To Ride</h1>
+		<h2>Ticket To Ride</h2>
+		<h3>Ticket To Ride</h3>
+		<p class="text"></p>
+		<p class="div"></p>
+		<p class="background"></p>
+		<p class="border"></p>
+
+		<div class="button" onClick="changeColor('text')">Click me to change text colors</div>
+		<div class="button" onClick="changeColor('div')">Click me to change the div background colors</div>
+		<div class="button" onClick="changeColor('background')">Click me to change background colors</div>
+		<div class="button" onClick="changeColor('border')">Click me to change border colors</div>
+
+	</div>
+
+	<script>
+		textColorIndex = 1;
+		divBackgroundColorIndex = 1;
+		backgroundColorIndex = 0;
+		borderColorIndex = 2;
+
+		changeColor = function(type)
+		{
+			if(type == "text")
+			{
+				$(document).children().removeClass("textColor" + textColorIndex);
+				textColorIndex = next(textColorIndex);
+				$(document).children().addClass("textColor" + textColorIndex);
+				$(".text").text("Text color: " + getName(type, textColorIndex));
+			}
+			else if(type == "div")
+			{
+				$("body").children().removeClass("backgroundColor" + divBackgroundColorIndex);
+				divBackgroundColorIndex = next(divBackgroundColorIndex);
+				$("body").children().addClass("backgroundColor" + divBackgroundColorIndex);
+				$(".div").text("Div color: " + getName("background", divBackgroundColorIndex));
+			}
+			else if(type == "background")
+			{
+				$("body").removeClass("backgroundColor" + backgroundColorIndex);
+				backgroundColorIndex = next(backgroundColorIndex);
+				$("body").addClass("backgroundColor" + backgroundColorIndex);
+				$(".background").text("Background color: " + getName(type, backgroundColorIndex));
+			}
+			else if(type == "border")
+			{
+				$("div").removeClass("borderColor" + borderColorIndex);
+				borderColorIndex = next(borderColorIndex);
+				$("div").addClass("borderColor" + borderColorIndex);
+				$(".border").text("Border color: " + getName(type, borderColorIndex));
+			}
+		}
+
+		next = function(index)
+		{
+			index += 1;
+			if(index > 2)
+			{
+				index = 0;
+			}
+			return index;
+		}
+
+		getName = function(type, index)
+		{
+			if(type == "text")
+			{
+				if(index == 0)
+					return "Rust";
+				else if(index == 1)
+					return "Sepia";
+				else if(index == 2)
+					return "Black";
+			}
+			else if(type == "background")
+			{
+				if(index == 0)
+					return "Beige";
+				else if(index == 1)
+					return "Wheat";
+				else if(index == 2)
+					return "Platinum";
+			}
+			else if(type == "border")
+			{
+				if(index == 0)
+					return "Copper";
+				else if(index == 1)
+					return "Fire Brick";
+				else if(index == 2)
+					return "Rust";
+			}
+		}
+
+		$(document).ready(function(){
+			$(document).children().addClass("textColor" + textColorIndex);
+			$(".text").text("Text color: " + getName("text", textColorIndex));
+
+			$("body").addClass("backgroundColor" + divBackgroundColorIndex);
+			$(".div").text("Div color: " + getName("background", divBackgroundColorIndex));
+
+			$("body").children().addClass("backgroundColor" + backgroundColorIndex);
+			$(".background").text("Background color: " + getName("background", backgroundColorIndex));
+
+			$("div").addClass("borderColor" + borderColorIndex);
+			$(".border").text("Border color: " + getName("border", borderColorIndex));
+		});
+	</script>
+</body>
+
+</html>

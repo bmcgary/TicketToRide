@@ -1,0 +1,55 @@
+.textColor0 {
+	color: #B7410E; /*Rust*/
+}
+
+.textColor1 {
+	color:#704214; /*Sepia*/
+}
+
+.textColor2 {
+	color: #000000; /*Black*/
+}
+
+
+
+.backgroundColor0 {
+	background-color:#F5F5DC; /*Beige*/
+}
+
+.backgroundColor1 {
+	background-color:#F5DEB3; /*Wheat*/
+}
+
+.backgroundColor2 {
+	background-color:#E5E4E2; /*Platinum*/
+}
+
+
+
+.borderColor0 {
+	border-color: #B87333; /*Copper*/
+}
+
+.borderColor1 {
+	border-color: #B22222; /*Fire Brick*/
+}
+
+.borderColor2 {
+	border-color: #B7410E; /*Rust*/
+}
+
+
+
+.button {
+	width: 100px;
+	display: inline-block;
+}
+
+div {
+	/*box-shadow: 4px 4px;*/
+	text-align: center;
+    margin: 10px;
+	border-style: solid;
+	border-width: 5px;
+	border-radius: 10px;
+}
