@@ -19,8 +19,8 @@ h1#title {
 	padding-top: 180px;
 	max-width: 300px;
 	text-align: center;
-	position: relative;
-	top: 0px;
+	position: fixed;
+	top: auto;
 }
 
 h1#title span span {
