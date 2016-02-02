@@ -1,4 +1,4 @@
-package server.commands;
+package server.Commands;
 
 /**
  * Command Factory
