@@ -1,5 +1,6 @@
 package server;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,22 @@ public class User {
 	private List<Integer> joinedGames;
 	private boolean loggedIn;
 	
+//---Ray added stuff below------------
+//------------------------------------
+	
+	private PrintWriter printwriter;
+	
+	public PrintWriter getPrintwriter() {
+		return printwriter;
+	}
+
+	public void setPrintwriter(PrintWriter printwriter) {
+		this.printwriter = printwriter;
+	}
+
+//------------------------------------
+//---end of what Ray added------------
+
 	public User(String username, String password){
 		playerID = nextID++;
 		this.username = username;
