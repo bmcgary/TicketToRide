@@ -1,0 +1,195 @@
+
+
+
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" 
+             href="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular-csp.css">
+    
+
+<title>Angular JS Web-Socket</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">        
+</head>
+<body ng-app="ATP_PLAYERS" 
+
+class="ng-cloak">                
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.min.js"></script>
+    <!--<script 
+
+src="resources/js/angular-websocket.js"></script>-->
+    <script src="https://rawgit.com/gdi2290/angular-websocket/v1.0.9/angular-websocket.js"></script>
+    
+
+<div ng-controller="atpController">
+        <div id="helloId"></div>
+        <form ng-submit="submit()">                
+            <button id="btnAtpId" 
+
+type="submit" disabled>Send Message</button>
+        </form>
+        <div ng-repeat="mess in messages track by $index">
+            Message: {{ mess }}
+    
+
+</div>
+        <input type="text" ng-model="inputMess"/>
+        <button ng-click="sendMessage(inputMess)">SEND</button>
+        <table>
+            
+
+<thead>
+                <tr>
+                    <th>Rank</th>   
+                    <th>Name</th>   
+                    <th>E-mail</th>   
+           
+
+ </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in ATP.atp">
+                    <td>{{item.rank}}</td>             
+
+
+                    <td>{{item.name}}</td>
+                    <td>{{item.email}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+
+</div>
+    <script language="javascript" type="text/javascript">
+        angular.module('ATP_PLAYERS', ['ngWebSocket'])
+
+                .factory('model', 
+
+[function()
+                {
+                    messages = [];
+
+                    return {
+                        addMessage:function(mess)
+         
+
+           {
+                            messages.push(mess);
+                        },
+                        getMessages:function()
+                
+
+    {
+                            return messages;
+                        }
+                    }
+                }])
+                .factory
+
+('ATP', function ($websocket, model, $location) {
+                    // Open a WebSocket connection
+                    var ws = $websocket("ws://"+$location.host()+":8080");
+  
+
+              var atp = [];
+                    ws.onMessage(function (event) {
+                        console.log('message: ', event.data);
+             
+
+       var response;
+                        try {
+                            response = angular.fromJson(event.data);
+
+                        } catch 
+
+(e) {
+                            document.getElementById("helloId").innerHTML = 
+                                                                               
+
+"Sorry, connection failed ...";
+                            document.getElementById("btnAtpId").disabled = false;
+                            console.log('error:', e);
+                            response = {'error': e};
+                        }
+                        if (response.hello) {
+                        
+
+//document.getElementById("helloId").innerHTML = response.hello;
+                            //document.getElementById("btnAtpId").disabled = false;
+         
+
+               model.addMessage(response.hello);
+                        } else {
+                            for (var i = 0; i < response.length; i++) {
+ 
+
+                           atp.push({
+                                    rank: response[i].rank,
+                                    name: response
+
+[i].name,
+                                    email: response[i].email
+                                });
+                            }
+                   
+
+ }
+                    });
+                    ws.onError(function (event) {
+                        console.log('connection Error', event);
+           
+
+     });
+                    ws.onClose(function (event) {
+                        console.log('connection closed', event);
+                    });
+    
+
+            ws.onOpen(function () {
+                        console.log('connection open');
+                        ws.send('HELLO SERVER');
+              
+
+  });
+                    return {
+                        atp: atp,
+                        status: function () {
+                            return 
+
+ws.readyState;
+                        },
+                        send: function (message) {
+                            if (angular.isString(message)) {
+  
+
+                          ws.send(message);
+                            }
+                            else if (angular.isObject(message)) {
+               
+
+             ws.send(JSON.stringify(message));
+                            }
+                        }
+                    };
+                })
+    
+
+        .controller('atpController', function ($scope, ATP, model) {
+                    $scope.ATP = ATP;
+                    $scope.submit = function () {
+
+
+                      ATP.send("ATP SERVER");
+                    };
+                    $scope.messages = model.getMessages();
+                    
+
+$scope.sendMessage = function(mess)
+                    {
+                         ATP.send(mess);
+                    }
+                });
+    
+
+</script>
+</body>
+</html>
