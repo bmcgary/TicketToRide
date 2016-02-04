@@ -1,17 +1,14 @@
-package server.Commands;
+package server.commands;
+
+import server.responses.ResponseWrapper;
 
 /**
  *
  *
  * Created by rodriggl on 1/29/2016.
  */
-public class NotifyDestinationRouteCompletedCommand implements Command {
-    public NotifyDestinationRouteCompletedCommand(String command) {
-
-    }
-
-    @Override
-    public boolean execute() {
-        return false;
-    }
+public class NotifyDestinationRouteCompletedCommand implements Command {@Override
+public ResponseWrapper execute(int userID) {
+    return null;
+}
 }

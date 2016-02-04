@@ -1,4 +1,6 @@
-package server.Commands;
+package server.commands;
+
+import server.responses.ResponseWrapper;
 
 /**
  * Abstract Command
@@ -7,8 +9,10 @@ package server.Commands;
  */
 public interface Command {
     /**
-     * Executes this command
-     * @return true if successful, false otherwise
+     * Execute this command
+     *
+     * @param userID    the userID of the user who invoked this command
+     * @return  a list of userIDs to message and the response message
      */
-    boolean execute();
+    ResponseWrapper execute(int userID);
 }

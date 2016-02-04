@@ -1,17 +1,13 @@
-package server.Commands;
+package server.commands;
+import server.responses.ResponseWrapper;
 
 /**
  *
  *
  * Created by rodriggl on 1/29/2016.
  */
-public class JoinNewGameCommand implements Command {
-    public JoinNewGameCommand(String command) {
-
-    }
-
-    @Override
-    public boolean execute() {
-        return false;
-    }
+public class JoinNewGameCommand implements Command {@Override
+public ResponseWrapper execute(int userID) {
+    return null;
+}
 }

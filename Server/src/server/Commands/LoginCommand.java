@@ -1,4 +1,6 @@
-package server.Commands;
+package server.commands;
+
+import server.responses.ResponseWrapper;
 
 /**
  *
@@ -6,12 +8,11 @@ package server.Commands;
  * Created by rodriggl on 1/29/2016.
  */
 public class LoginCommand implements Command {
-    public LoginCommand(String command) {
-
-    }
+    private String username;
+    private String password;
 
     @Override
-    public boolean execute() {
-        return false;
+    public ResponseWrapper execute(int userID) {
+        return null;
     }
 }
