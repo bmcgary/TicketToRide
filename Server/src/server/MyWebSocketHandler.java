@@ -2,14 +2,18 @@ package server;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Set;
 
 import com.google.gson.JsonObject;
+
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 @WebSocket
 public class MyWebSocketHandler {
@@ -40,7 +44,23 @@ public class MyWebSocketHandler {
     @OnWebSocketMessage
     public void onMessage(String message) {
         System.out.println("Message: " + message);
-        System.out.println("Ppl connected " + sessions.toString());
+        
+        //PUT JSON PARSING BELOW IF NEEDED
+		/*	JSONObject test=new JSONObject(message);
+			String name=test.getString("name");
+			String password=test.getString("password");
+			System.out.println(name + " " + password);*/
+        
+        //C=commandFactory(json)
+        //json_response=c.execute(user_id)
+        /*
+         * Response object is an array of users ids and a string(message to send back)
+         * 
+         * for(all x in a)
+         * x.send(response)
+         */
+
+
         try {
             sendMessage(message);
         } catch (IOException e) {
@@ -54,8 +74,17 @@ public class MyWebSocketHandler {
         json.addProperty("hello", message);
         for( Session s : sessions.values()) {
             s.getRemote().sendString(json.toString());
-            
-            System.out.println(personal_id);
+
         }
+        
+        /*Set<Integer> ids=sessions.keySet();
+        for(Integer i: ids)
+        {
+        	if(i==1)
+        	{
+        		Session s=sessions.get(i);
+        		s.getRemote().sendString(json.toString());
+        	}
+        }*/
     }
 }
