@@ -12,8 +12,10 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-import org.json.JSONException;
-import org.json.JSONObject;
+
+import server.commands.Command;
+import server.responses.ResponseWrapper;
+
 
 @WebSocket
 public class MyWebSocketHandler {
@@ -45,12 +47,6 @@ public class MyWebSocketHandler {
     public void onMessage(String message) {
         System.out.println("Message: " + message);
         
-        //PUT JSON PARSING BELOW IF NEEDED
-		/*	JSONObject test=new JSONObject(message);
-			String name=test.getString("name");
-			String password=test.getString("password");
-			System.out.println(name + " " + password);*/
-        
         //C=commandFactory(json)
         //json_response=c.execute(user_id)
         /*
@@ -58,6 +54,21 @@ public class MyWebSocketHandler {
          * 
          * for(all x in a)
          * x.send(response)
+         */
+        CommandFactory commandfactory=new CommandFactory();
+        Command c=commandfactory.makeCommand(message);
+        
+        ResponseWrapper responsewrapper=c.execute(personal_id);
+        
+        //String final_message=responsewrapper.getresponse();
+        //List<Integer> ids=responsewrapper.gettargetIDS();
+        
+        /*
+         * for(Integer id: ids)
+         * {
+         * 		Session session=sessions.get(id);
+         * 		session.getRemote().sendString(final_message);
+         * }
          */
 
 
