@@ -2,6 +2,7 @@ package server;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Set;
 
 import com.google.gson.JsonObject;
@@ -46,56 +47,37 @@ public class MyWebSocketHandler {
     @OnWebSocketMessage
     public void onMessage(String message) {
         System.out.println("Message: " + message);
-        
-        //C=commandFactory(json)
-        //json_response=c.execute(user_id)
+
         /*
-         * Response object is an array of users ids and a string(message to send back)
+         * ResponseWrapper is a list of users ids and a string (message to send back)
          * 
          * for(all x in a)
          * x.send(response)
          */
-        CommandFactory commandfactory=new CommandFactory();
-        Command c=commandfactory.makeCommand(message);
+        Command c = CommandFactory.makeCommand(message);
         
-        ResponseWrapper responsewrapper=c.execute(personal_id);
+        ResponseWrapper responseWrapper = c.execute(personal_id);
         
-        //String final_message=responsewrapper.getresponse();
-        //List<Integer> ids=responsewrapper.gettargetIDS();
-        
-        /*
-         * for(Integer id: ids)
-         * {
-         * 		Session session=sessions.get(id);
-         * 		session.getRemote().sendString(final_message);
-         * }
-         */
-
-
-        try {
-            sendMessage(message);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        sendMessage(responseWrapper.getTargetIds(), responseWrapper.getResponse());
     }
 
-    public void sendMessage(String message) throws IOException {
+    public void sendPublicMessage(String message) {
+        sessions.forEach((id, session) -> {
+            try {
+                session.getRemote().sendString(message);
+            } catch (IOException e) {
+                System.err.println("Failed to send to user " + id);
+            }
+        });
+    }
 
-        JsonObject json = new JsonObject();
-        json.addProperty("hello", message);
-        for( Session s : sessions.values()) {
-            s.getRemote().sendString(json.toString());
-
-        }
-        
-        /*Set<Integer> ids=sessions.keySet();
-        for(Integer i: ids)
-        {
-        	if(i==1)
-        	{
-        		Session s=sessions.get(i);
-        		s.getRemote().sendString(json.toString());
-        	}
-        }*/
+    public void sendMessage(Iterator<Integer> targetIds, String message) {
+        targetIds.forEachRemaining(targetId -> {
+            try {
+                sessions.get(targetId).getRemote().sendString(message);
+            } catch (IOException e) {
+                System.err.println("Failed to send to user " + id);
+            }
+        });
     }
 }

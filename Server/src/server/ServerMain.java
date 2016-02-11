@@ -2,14 +2,12 @@ package server;
 
 
 import com.sun.net.httpserver.Headers;
-import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.websocket.server.WebSocketHandler;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -25,20 +23,6 @@ public class ServerMain {
         ServerMain main = new ServerMain();
         main.new MyThread().start();
         main.new StaticServer().run();
-        System.out.println("TEST");
-        String input = "1";
-
-        Scanner in = new Scanner(System.in);
-        while(!input.equals("0"))
-        {
-            System.out.println("here ");
-            //if(in.hasNext())
-            {
-                System.out.print("Enter: ");
-                String lineIn = in.nextLine();
-                //MyWebSocketHandler.sendMessage(lineIn);
-            }
-        }
     }
 
     private class StaticServer extends Thread
@@ -63,56 +47,47 @@ public class ServerMain {
         }
     }
 
-    private HttpHandler indexHandler = new HttpHandler()
-    {
-        @Override
-        public void handle(HttpExchange exchange) throws IOException
-        {
-            System.out.println("Looking for index");
-            Headers head=exchange.getResponseHeaders();
-            //head.set("Content-Type", "text/html");
+    private HttpHandler indexHandler = exchange -> {
+        System.out.println("Looking for index");
+        Headers head = exchange.getResponseHeaders();
+        //head.set("Content-Type", "text/html");
 
 
-            URI command=exchange.getRequestURI();
-            String theCommand=command.toString();
+        URI command=exchange.getRequestURI();
+        String theCommand=command.toString();
 
-            System.out.println("    Command received: " + theCommand);
-            String[] params=theCommand.split("/",2);
+        System.out.println("    Command received: " + theCommand);
+        String[] params = theCommand.split("/",2);
 
-            String path = null;
-            path = "index.html";
-            head.set("Content-Type", "text/html");
-           
-            exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+        String file = "index.html";
+        head.set("Content-Type", "text/html");
 
-            OutputStreamWriter sendBack= new OutputStreamWriter(exchange.getResponseBody());
+        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 
-            String file = path;
-            Scanner scanner = null;
-            try{
+        OutputStreamWriter sendBack= new OutputStreamWriter(exchange.getResponseBody());
+        Scanner scanner;
+        try{
 
-                scanner = new Scanner(new FileReader(file));
+            scanner = new Scanner(new FileReader(file));
 
-            }
-            catch(IOException e)
-            {
-                String notFound = "404.html";
-                scanner = new Scanner(new FileReader(notFound));
-            }
-
-            StringBuilder stringBuilder = new StringBuilder();
-            while(scanner.hasNextLine())
-            {
-                stringBuilder.append(scanner.nextLine() + "\n");
-
-            }
-
-            scanner.close();
-            sendBack.write(stringBuilder.toString());
-
-            //sendBack.write("index.html");
-            sendBack.close();
         }
+        catch(IOException e)
+        {
+            String notFound = "404.html";
+            scanner = new Scanner(new FileReader(notFound));
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+        while(scanner.hasNextLine())
+        {
+            stringBuilder.append(scanner.nextLine()).append("\n");
+        }
+
+        scanner.close();
+        sendBack.write(stringBuilder.toString());
+
+        //sendBack.write("index.html");
+        sendBack.close();
     };
 
     private class MyThread extends Thread
