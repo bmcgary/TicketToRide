@@ -6,8 +6,12 @@ import java.util.Map;
 
 import server.User;
 
+/**
+ * Represents a player in a given game. Links to universal users by means of ID
+ * @author Chao
+ *
+ */
 public class Player {
-	private User user;
 	private int ID;
 	private int numTrainsLeft;
 	private List<DestinationRoute> destinationRoutes;
@@ -16,117 +20,41 @@ public class Player {
 	private int pointsScored;
 	private boolean longestRoute;
 	
-	
-	
-	/**
-	 * Constructor
-	 */
-	Player(int ID,PlayerColor color)
+	Player(int ID, PlayerColor color)
 	{
 		this.ID=ID;
 		this.color = color;
+		this.pointsScored = 0;
 	}
 	
-	//do we add destionation routes here?
-	/**
-	 * return player's destination routes
-	 * 
-	 * 
-	 */
 	public List<DestinationRoute> getDestinationRoute()
 	{
 		return destinationRoutes;
 	}
-	/**
-	 * return player ID;
-	 */
 	
 	public int getPlayerID()
 	{
 		return ID;
 	}
 	
-	/*
-	 * 
-	 * public List<Card> getCardsOnHands(){
-	 *  return cards;
-	 * }
-	 */
-	
-	
-	
-	
-	/*
-	 * 
-	 * public PlayerColor getColor()
-	 * {
-	 * 		return 
-	 * }
-	 * 
-	 */
-	
-	
-	/*
-	 * add cards for players?
-	 * public void addToHand(Card card){}
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 */
-	/*get cards
-	 * 
-	 * public List<Card> getCards()
-	 * {
-	 * 		return new List<Card>();
-	 * }
-	 * 
-	 * 
-	 * 
-	 */
-	
-	/*
-	 * remove cards
-	 * 
-	 * 
-	 * public void RemoveCard(Card card){}
-	 * 
-	 * 
-	 * 
-	 */
-	
-	/*
-	 * remove card list
-	 * 
-	 * public void RemoveCards(List<Card> cards)
-	 * 	 
-	 * 
-	 */
-	/**
-	 * return how many trains left for the user
-	 * @return
-	 */
 	public int getTrainsLeft()
 	{
 		return	numTrainsLeft;
 	}
+	
 	/**
-	 * user num trains
+	 * use num trains
 	 * @param num
+	 * @throws OutOfBoundsException 
 	 */
-	public void useTrains(int num)
+	public void useTrains(int num) throws OutOfBoundsException
 	{
-		
+		if(this.numTrainsLeft < num){
+			throw new OutOfBoundsException();
+		}
+		this.numTrainsLeft -= num;
 	}
-	/**
-	 * return player's train car cards
-	 * @return
-	 */
+
 	public Map<TrackColor,Integer> getTrainCarCards()
 	{
 		return trainCarCards;
@@ -138,7 +66,7 @@ public class Player {
 	 */
 	public void addPoints(int num)
 	{
-		
+		this.pointsScored += 1;
 	}
 	/**
 	 * check if the player has the longest route
@@ -149,6 +77,20 @@ public class Player {
 	{
 		return longestRoute;
 	}
+	
+	/**
+	 * Adds a train car of the given color to the player
+	 * @param trackColor the track color to be added
+	 */
+	public void addTrainCarCard(TrackColor trackColor) {
+		int count = trainCarCards.containsKey(trackColor) ? trainCarCards.get(trackColor) : 1;
+		trainCarCards.put(trackColor, count);
+	}
+	
+	public PlayerColor getPlayerColor(){
+		return this.color;
+	}
+	
 	/**
 	 * generate hash code
 	 */
@@ -166,9 +108,9 @@ public class Player {
 		result = prime * result + pointsScored;
 		result = prime * result
 				+ ((trainCarCards == null) ? 0 : trainCarCards.hashCode());
-		result = prime * result + ((user == null) ? 0 : user.hashCode());
 		return result;
 	}
+	
 	/**
 	 * generate equal function
 	 */
@@ -198,11 +140,6 @@ public class Player {
 			if (other.trainCarCards != null)
 				return false;
 		} else if (!trainCarCards.equals(other.trainCarCards))
-			return false;
-		if (user == null) {
-			if (other.user != null)
-				return false;
-		} else if (!user.equals(other.user))
 			return false;
 		return true;
 	}
