@@ -1,5 +1,6 @@
 package server;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import model.CityToCityRoute;
@@ -9,11 +10,11 @@ import model.PlayerColor;
 
 public class ServerFacade {
 	
-	private List<Game> games;
-	private List<User> users;
+	private static List<Game> games;
+	private static List<User> users;
 	private final int MAX_PLAYERS_PER_GAME = 5;
 	
-	public synchronized void createGame(Game newGame)
+	public static synchronized void createGame(Game newGame)
 	{
 		//check to make sure game was instantiated properly
 		if(newGame == null || newGame.getGameBoard() == null){
@@ -33,7 +34,7 @@ public class ServerFacade {
 		assert(games.contains(newGame));
 	}
 	
-	public synchronized void addNewUser(User newUser) throws AddUserException
+	public static synchronized void addNewUser(User newUser) throws AddUserException
 	{
 		//check to make sure user was added properly
 		if(newUser == null || newUser.getPlayerID() <= 0 || newUser.getPlayerID() == Integer.MAX_VALUE){
@@ -41,14 +42,14 @@ public class ServerFacade {
 		}
 		
 		//ensure no user exists with the given username
-		for(User user : users){
-			if(user.getUsername() == newUser.getUsername()){
+		for(User user : getUsers()){
+			if(user.getUsername().equals(newUser.getUsername())) {
 				throw new AddUserException("User with the same username already exists!");
 			}
 		}
 		
 		//add player
-		users.add(newUser);
+		getUsers().add(newUser);
 		assert(users.contains(newUser));
 	}
 	
@@ -64,7 +65,7 @@ public class ServerFacade {
 		User user = null;
 		
 		//game must exist
-		for(Game g : games){
+		for(Game g : getGames()){
 			if(g.getGameID() == gameID){
 				game = g;
 				break;
@@ -75,7 +76,7 @@ public class ServerFacade {
 		}
 		
 		//user must exist
-		for(User u : users){
+		for(User u : getUsers()){
 			if(u.getPlayerID() == playerID){
 				user = u;
 				break;
@@ -109,14 +110,14 @@ public class ServerFacade {
 		}
 		
 		//update game's playerManager
-		for(Game game : games){
+		for(Game game : getGames()){
 			if(game.getGameID() == gameID){
 				game.getPlayerManager().addPlayer(playerID, playerColor);
 			}
 		}
 		
 		//update User's current games
-		for(User user : users){
+		for(User user : getUsers()){
 			if(user.getPlayerID() == playerID){
 				user.joinGame(gameID);
 			}
@@ -149,12 +150,12 @@ public class ServerFacade {
 	 * @param password the user's password
 	 * @throws BadCredentialsException thrown if the password is incorrect or if the user isn't registered
 	 */
-	public synchronized void login(String username, String password) throws BadCredentialsException
+	public static synchronized void login(String username, String password) throws BadCredentialsException
 	{
 		//logs in the user if found
-		for(User user : users){
-			if(user.getUsername() == username){
-				if(user.getPassword() == password){
+		for(User user : getUsers()){
+			if(user.getUsername().equals(username)) {
+				if(user.getPassword().equals(password)) {
 					user.setLoggedIn(true);
 					return;
 				}
@@ -173,9 +174,9 @@ public class ServerFacade {
 	 * @param playerID the ID of the user to log out
 	 * @throws BadCredentialsException thrown if the player isn't found
 	 */
-	public void logout(int playerID) throws BadCredentialsException
+	public static void logout(int playerID) throws BadCredentialsException
 	{
-		for(User user : users){
+		for(User user : getUsers()){
 			if(user.getPlayerID() == playerID){
 				user.setLoggedIn(false);
 				return;
@@ -185,15 +186,16 @@ public class ServerFacade {
 		throw new BadCredentialsException("User not found");
 	}
 	
-	public synchronized void register(String username,String password) throws AddUserException
+	public static synchronized void register(String username,String password) throws AddUserException, InternalServerException
 	{
 		User newUser = new User(username, password);
-		this.addNewUser(newUser);
+		addNewUser(newUser);
 		try {
-			this.login(username, password);
+			login(username, password);
 		} catch (BadCredentialsException e) {
 			System.out.println("FATAL ERROR: User wasn't properly registered. See ServerFacade::register()");
 			e.printStackTrace();
+			throw new InternalServerException("Failed to properly register user");
 		}
 	}
 	
@@ -255,5 +257,21 @@ public class ServerFacade {
 	public void getCityMapping()
 	{
 		
+	}
+
+	private static List<Game> getGames() {
+		if (games == null) {
+			games = new ArrayList<>();
+		}
+
+		return games;
+	}
+
+	private static List<User> getUsers() {
+		if (users == null) {
+			users = new ArrayList<>();
+		}
+
+		return users;
 	}
 }
