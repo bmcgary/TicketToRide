@@ -2,6 +2,7 @@ package server;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 import com.google.gson.JsonObject;
 
@@ -13,6 +14,8 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
 import server.command.Command;
+import server.command.LoginCommand;
+import server.command.RegisterCommand;
 import server.responses.ResponseWrapper;
 
 
@@ -22,6 +25,7 @@ public class MyWebSocketHandler {
     static HashMap<Integer, Session> sessions = new HashMap<>();
     static Integer id=0;
     Integer personal_id;
+    Session personal_session;
 
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
@@ -36,9 +40,10 @@ public class MyWebSocketHandler {
     @OnWebSocketConnect
     public void onConnect(Session session) {
         System.out.println("Connect: " + session.getRemoteAddress().getAddress());
-        sessions.put(id, session);
-		personal_id=id;
-		id++;
+        personal_session=session;
+        //sessions.put(id, session);
+		//personal_id=id;
+		//id++;
 		//sendMessage("You are connected");
     }
 
@@ -46,55 +51,47 @@ public class MyWebSocketHandler {
     public void onMessage(String message) {
         System.out.println("Message: " + message);
         
-        //C=commandFactory(json)
-        //json_response=c.execute(user_id)
-        /*
-         * Response object is an array of users ids and a string(message to send back)
-         * 
-         * for(all x in a)
-         * x.send(response)
-         */
-        /*CommandFactory commandfactory=new CommandFactory();
-        Command c=commandfactory.makeCommand(message);
+        /*Command c=CommandFactory.makeCommand(message);	//create the command
         
-        ResponseWrapper responsewrapper=c.execute(personal_id);*/
+        LoginCommand islogin=new LoginCommand(); //just to compare to the actual command
+        RegisterCommand isregister=new RegisterCommand(); //just to compare to the actual command
+        ResponseWrapper responsewrapper = null;
+        List<Integer> idlist = null;
         
-        //String final_message=responsewrapper.getresponse();
-        //List<Integer> ids=responsewrapper.gettargetIDS();
-        
-        /*
-         * for(Integer id: ids)
-         * {
-         * 		Session session=sessions.get(id);
-         * 		session.getRemote().sendString(final_message);
-         * }
-         */
-
-
-        try {
-            sendMessage(message);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(c.getClass()== islogin.getClass() || c.getClass()==isregister.getClass())
+        {
+        	responsewrapper=c.execute(-1);	//pass in a -1 because user id is not used in login/register
+        	if(responsewrapper.getResponse().equals("success"))	//make sure they successfully logged in/registered
+        	{
+        		idlist=responsewrapper.getTargetIDs();
+        		personal_id=idlist.get(0);	//there should only be one id in the idlist
+        		sessions.put(personal_id, personal_session);
+        	}
         }
+        else
+        {
+        	responsewrapper=c.execute(personal_id);
+        }*/
+        
+		try {
+			//sendMessage(responsewrapper.getResponse(), idlist);		//send back to server
+			sendMessage(null, null);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
     }
 
-    public void sendMessage(String message) throws IOException {
+    public void sendMessage(String message, List<Integer> ids) throws IOException {
 
         JsonObject json = new JsonObject();
-        json.addProperty("hello", message);
-        for( Session s : sessions.values()) {
-            s.getRemote().sendString(json.toString());
+        json.addProperty("hello", "what up");
+       /* for( Integer id : ids) {
+        	Session session=sessions.get(id);
+            session.getRemote().sendString(json.toString());
 
-        }
-        
-        /*Set<Integer> ids=sessions.keySet();
-        for(Integer i: ids)
-        {
-        	if(i==1)
-        	{
-        		Session s=sessions.get(i);
-        		s.getRemote().sendString(json.toString());
-        	}
         }*/
+        personal_session.getRemote().sendString(json.toString());
     }
 }

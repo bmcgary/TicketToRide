@@ -12,8 +12,29 @@ import java.util.List;
 public class ResponseWrapper {
     List<Integer> targetIDs;
     String response;
+    
+    
+//added by Ray with permission from Levi---------
+    
+    public List<Integer> getTargetIDs() {
+		return targetIDs;
+	}
 
-    public ResponseWrapper(List<Integer> targetIDs, Response response) {
+	public void setTargetIDs(List<Integer> targetIDs) {
+		this.targetIDs = targetIDs;
+	}
+
+	public String getResponse() {
+		return response;
+	}
+
+	public void setResponse(String response) {
+		this.response = response;
+	}
+	
+//end of what Ray added--------------------------
+
+	public ResponseWrapper(List<Integer> targetIDs, Response response) {
         this.targetIDs = targetIDs;
         this.response = JsonTranslator.getGson().toJson(response);
     }
