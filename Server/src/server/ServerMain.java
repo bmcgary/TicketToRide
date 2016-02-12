@@ -9,7 +9,6 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.websocket.server.WebSocketHandler;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -23,8 +22,8 @@ public class ServerMain {
     public static void main(String[] args) throws Exception
     {
         ServerMain main = new ServerMain();
-        main.new MyThread().start();
-        main.new StaticServer().run();
+        main.new WebSocketServer().start();
+        main.new HTTPServer().run();
         System.out.println("TEST");
         String input = "1";
 
@@ -41,7 +40,7 @@ public class ServerMain {
         }
     }
 
-    private class StaticServer extends Thread
+    private class HTTPServer extends Thread
     {
         @Override
         public void run()
@@ -115,7 +114,7 @@ public class ServerMain {
         }
     };
 
-    private class MyThread extends Thread
+    private class WebSocketServer extends Thread
     {
         @Override
         public void run()
