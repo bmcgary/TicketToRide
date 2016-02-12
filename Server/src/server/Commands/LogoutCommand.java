@@ -1,4 +1,5 @@
 package server.commands;
+
 import server.BadCredentialsException;
 import server.ServerFacade;
 import server.responses.Response;
@@ -15,8 +16,9 @@ public class LogoutCommand implements Command {
 
     @Override
     public ResponseWrapper execute(int userID) {
+        ServerFacade serverFacade = ServerFacade.getServerFacade();
         try {
-            ServerFacade.logout(userID);
+            serverFacade.logout(userID);
         } catch (BadCredentialsException e) {
             return new ResponseWrapper(Collections.singletonList(userID), Response.newInvalidInputResponse());
         }

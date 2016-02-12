@@ -24,8 +24,9 @@ public class RegisterCommand implements Command {
 
     @Override
     public ResponseWrapper execute(int userID) {
+        ServerFacade serverFacade = ServerFacade.getServerFacade();
         try {
-            ServerFacade.register(username, password);
+            serverFacade.register(username, password);
         } catch (AddUserException e) {
             return new ResponseWrapper(Collections.singletonList(userID), Response.newInvalidInputResponse());
         } catch (InternalServerException e) {

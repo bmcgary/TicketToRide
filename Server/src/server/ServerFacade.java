@@ -9,12 +9,24 @@ import model.Player;
 import model.PlayerColor;
 
 public class ServerFacade {
-	
-	private static List<Game> games;
-	private static List<User> users;
+	private static ServerFacade serverFacade;
+	private List<Game> games;
+	private List<User> users;
 	private final int MAX_PLAYERS_PER_GAME = 5;
-	
-	public static synchronized void createGame(Game newGame)
+
+	public static ServerFacade getServerFacade() {
+		if (serverFacade == null) {
+			serverFacade = new ServerFacade();
+		}
+		return serverFacade;
+	}
+
+	private ServerFacade() {
+		games = new ArrayList<>();
+		users = new ArrayList<>();
+	}
+
+	public synchronized void createGame(Game newGame)
 	{
 		//check to make sure game was instantiated properly
 		if(newGame == null || newGame.getGameBoard() == null){
@@ -34,7 +46,7 @@ public class ServerFacade {
 		assert(games.contains(newGame));
 	}
 	
-	public static synchronized void addNewUser(User newUser) throws AddUserException
+	public synchronized void addNewUser(User newUser) throws AddUserException
 	{
 		//check to make sure user was added properly
 		if(newUser == null || newUser.getPlayerID() <= 0 || newUser.getPlayerID() == Integer.MAX_VALUE){
@@ -42,30 +54,24 @@ public class ServerFacade {
 		}
 		
 		//ensure no user exists with the given username
-		for(User user : getUsers()){
+		for(User user : users){
 			if(user.getUsername().equals(newUser.getUsername())) {
 				throw new AddUserException("User with the same username already exists!");
 			}
 		}
 		
 		//add player
-		getUsers().add(newUser);
+		users.add(newUser);
 		assert(users.contains(newUser));
 	}
 	
-	/**
-	 * 
-	 * @param playerID
-	 * @param gameID
-	 * @return
-	 */
 	public boolean canAddPlayerToGame(int playerID, int gameID, PlayerColor playerColor)
 	{
 		Game game = null;
 		User user = null;
 		
 		//game must exist
-		for(Game g : getGames()){
+		for(Game g : games){
 			if(g.getGameID() == gameID){
 				game = g;
 				break;
@@ -76,7 +82,7 @@ public class ServerFacade {
 		}
 		
 		//user must exist
-		for(User u : getUsers()){
+		for(User u : users){
 			if(u.getPlayerID() == playerID){
 				user = u;
 				break;
@@ -94,11 +100,8 @@ public class ServerFacade {
 		}
 		
 		//game can't be full
-		if(game.getPlayerManager().getNumPlayers() > this.MAX_PLAYERS_PER_GAME){
-			return false;
-		}
-		
-		return true;
+		return game.getPlayerManager().getNumPlayers() <= this.MAX_PLAYERS_PER_GAME;
+
 	}
 	
 	public synchronized void addPlayerToGame(int playerID, int gameID, PlayerColor playerColor)
@@ -110,14 +113,14 @@ public class ServerFacade {
 		}
 		
 		//update game's playerManager
-		for(Game game : getGames()){
+		for(Game game : games){
 			if(game.getGameID() == gameID){
 				game.getPlayerManager().addPlayer(playerID, playerColor);
 			}
 		}
 		
 		//update User's current games
-		for(User user : getUsers()){
+		for(User user : users){
 			if(user.getPlayerID() == playerID){
 				user.joinGame(gameID);
 			}
@@ -150,10 +153,10 @@ public class ServerFacade {
 	 * @param password the user's password
 	 * @throws BadCredentialsException thrown if the password is incorrect or if the user isn't registered
 	 */
-	public static synchronized void login(String username, String password) throws BadCredentialsException
+	public synchronized void login(String username, String password) throws BadCredentialsException
 	{
 		//logs in the user if found
-		for(User user : getUsers()){
+		for(User user : users){
 			if(user.getUsername().equals(username)) {
 				if(user.getPassword().equals(password)) {
 					user.setLoggedIn(true);
@@ -174,9 +177,9 @@ public class ServerFacade {
 	 * @param playerID the ID of the user to log out
 	 * @throws BadCredentialsException thrown if the player isn't found
 	 */
-	public static void logout(int playerID) throws BadCredentialsException
+	public void logout(int playerID) throws BadCredentialsException
 	{
-		for(User user : getUsers()){
+		for(User user : users){
 			if(user.getPlayerID() == playerID){
 				user.setLoggedIn(false);
 				return;
@@ -186,7 +189,7 @@ public class ServerFacade {
 		throw new BadCredentialsException("User not found");
 	}
 	
-	public static synchronized void register(String username,String password) throws AddUserException, InternalServerException
+	public synchronized void register(String username,String password) throws AddUserException, InternalServerException
 	{
 		User newUser = new User(username, password);
 		addNewUser(newUser);
@@ -257,21 +260,5 @@ public class ServerFacade {
 	public void getCityMapping()
 	{
 		
-	}
-
-	private static List<Game> getGames() {
-		if (games == null) {
-			games = new ArrayList<>();
-		}
-
-		return games;
-	}
-
-	private static List<User> getUsers() {
-		if (users == null) {
-			users = new ArrayList<>();
-		}
-
-		return users;
 	}
 }

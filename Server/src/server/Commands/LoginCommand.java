@@ -21,8 +21,9 @@ public class LoginCommand implements Command {
 
     @Override
     public ResponseWrapper execute(int userID) {
+        ServerFacade serverFacade = ServerFacade.getServerFacade();
         try {
-            ServerFacade.login(username, password);
+            serverFacade.login(username, password);
         } catch (BadCredentialsException e) {
             return new ResponseWrapper(Collections.singletonList(userID), Response.newInvalidInputResponse());
         }
