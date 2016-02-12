@@ -2,7 +2,6 @@ package server;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Set;
 
 import com.google.gson.JsonObject;
 
@@ -13,7 +12,7 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
-import server.commands.Command;
+import server.command.Command;
 import server.responses.ResponseWrapper;
 
 
