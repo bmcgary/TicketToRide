@@ -23,10 +23,10 @@ public class LoginCommand implements Command {
     public ResponseWrapper execute(int userID) {
         ServerFacade serverFacade = ServerFacade.getServerFacade();
         try {
-            serverFacade.login(username, password);
+            userID = serverFacade.login(username, password);
         } catch (BadCredentialsException e) {
-            return new ResponseWrapper(Collections.singletonList(userID), Response.newInvalidInputResponse());
+            return new ResponseWrapper(-1, Response.newInvalidInputResponse());
         }
-        return new ResponseWrapper(Collections.singletonList(userID), Response.newSuccessResponse());
+        return new ResponseWrapper(userID, Response.newSuccessResponse());
     }
 }

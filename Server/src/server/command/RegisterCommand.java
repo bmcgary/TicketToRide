@@ -26,12 +26,12 @@ public class RegisterCommand implements Command {
     public ResponseWrapper execute(int userID) {
         ServerFacade serverFacade = ServerFacade.getServerFacade();
         try {
-            serverFacade.register(username, password);
+            userID = serverFacade.register(username, password);
         } catch (AddUserException e) {
-            return new ResponseWrapper(Collections.singletonList(userID), Response.newInvalidInputResponse());
+            return new ResponseWrapper(-1, Response.newInvalidInputResponse());
         } catch (InternalServerException e) {
-            return new ResponseWrapper(Collections.singletonList(userID), Response.newServerErrorResponse());
+            return new ResponseWrapper(-1, Response.newServerErrorResponse());
         }
-        return null;
+        return new ResponseWrapper(userID, Response.newSuccessResponse());
     }
 }

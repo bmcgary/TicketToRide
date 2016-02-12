@@ -20,8 +20,8 @@ public class LogoutCommand implements Command {
         try {
             serverFacade.logout(userID);
         } catch (BadCredentialsException e) {
-            return new ResponseWrapper(Collections.singletonList(userID), Response.newInvalidInputResponse());
+            return new ResponseWrapper(userID, Response.newInvalidInputResponse());
         }
-        return new ResponseWrapper(Collections.singletonList(userID), Response.newSuccessResponse());
+        return new ResponseWrapper(userID, Response.newSuccessResponse());
     }
 }
