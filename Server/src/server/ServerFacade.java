@@ -7,6 +7,9 @@ import model.CityToCityRoute;
 import model.Game;
 import model.Player;
 import model.PlayerColor;
+import server.exception.AddUserException;
+import server.exception.BadCredentialsException;
+import server.exception.InternalServerException;
 
 public class ServerFacade {
 	private static ServerFacade serverFacade;

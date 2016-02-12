@@ -1,4 +1,4 @@
-package server;
+package server.exception;
 
 public class BadCredentialsException extends Exception {
 

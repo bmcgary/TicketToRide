@@ -1,6 +1,6 @@
 package server.command;
 
-import server.BadCredentialsException;
+import server.exception.BadCredentialsException;
 import server.ServerFacade;
 import server.responses.Response;
 import server.responses.ResponseWrapper;

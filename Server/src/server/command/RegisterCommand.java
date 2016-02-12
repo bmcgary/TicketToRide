@@ -1,8 +1,8 @@
 package server.command;
 
 import com.google.gson.annotations.SerializedName;
-import server.AddUserException;
-import server.InternalServerException;
+import server.exception.AddUserException;
+import server.exception.InternalServerException;
 import server.ServerFacade;
 import server.responses.Response;
 import server.responses.ResponseWrapper;
