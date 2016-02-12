@@ -1,6 +1,7 @@
 package server;
 
 import server.command.Command;
+import server.exception.CommandNotFoundException;
 
 /**
  * Generate command
@@ -8,7 +9,7 @@ import server.command.Command;
  * Created by rodriggl on 2/4/2016.
  */
 public class CommandFactory {
-    public static Command makeCommand(String json) {
+    public static Command makeCommand(String json) throws CommandNotFoundException {
         CommandParser commandParser = JsonTranslator.getGson().fromJson(json, CommandParser.class);
         return commandParser.parseCommand();
     }

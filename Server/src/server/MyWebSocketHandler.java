@@ -12,6 +12,8 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
 import server.command.Command;
+import server.exception.CommandNotFoundException;
+import server.responses.Response;
 import server.responses.ResponseWrapper;
 
 
@@ -51,8 +53,13 @@ public class MyWebSocketHandler {
          * for(all x in a)
          * x.send(response)
          */
-        Command c = CommandFactory.makeCommand(message);
-        ResponseWrapper responseWrapper = c.execute(personal_id);
+        ResponseWrapper responseWrapper;
+        try {
+            Command c = CommandFactory.makeCommand(message);
+            responseWrapper = c.execute(personal_id);
+        } catch (CommandNotFoundException e) {
+            responseWrapper = new ResponseWrapper(personal_id, Response.newServerErrorResponse());
+        }
         
         sendMessage(responseWrapper.getTargetIds(), responseWrapper.getResponse());
     }
