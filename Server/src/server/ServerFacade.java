@@ -105,7 +105,7 @@ public class ServerFacade {
 		}
 		
 		//game can't be full
-		return game.getPlayerManager().getNumPlayers() <= this.MAX_PLAYERS_PER_GAME;
+		return game.getPlayerManager().getNumPlayers() < this.MAX_PLAYERS_PER_GAME;
 
 	}
 	

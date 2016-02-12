@@ -37,7 +37,7 @@ public class PlayerManager {
 	}
 	
 	/**
-	 * check if a player can buy track with card
+	 * check if a player can buy track with the given cards
 	 * @param PlayerID
 	 * @param trackLength
 	 * @param color

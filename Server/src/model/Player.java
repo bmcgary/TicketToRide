@@ -66,7 +66,7 @@ public class Player {
 	 */
 	public void addPoints(int num)
 	{
-		this.pointsScored += 1;
+		this.pointsScored += num;
 	}
 	/**
 	 * check if the player has the longest route
@@ -83,7 +83,7 @@ public class Player {
 	 * @param trackColor the track color to be added
 	 */
 	public void addTrainCarCard(TrackColor trackColor) {
-		int count = trainCarCards.containsKey(trackColor) ? trainCarCards.get(trackColor) : 1;
+		int count = trainCarCards.containsKey(trackColor) ? trainCarCards.get(trackColor) + 1 : 1;
 		trainCarCards.put(trackColor, count);
 	}
 	
