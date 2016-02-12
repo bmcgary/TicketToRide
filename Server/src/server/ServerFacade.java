@@ -159,16 +159,17 @@ public class ServerFacade {
 	 * Logs the user in
 	 * @param username the user to be logged in
 	 * @param password the user's password
+	 * @return the PlayerID of the logged in user
 	 * @throws BadCredentialsException thrown if the password is incorrect or if the user isn't registered
 	 */
-	public synchronized void login(String username, String password) throws BadCredentialsException
+	public synchronized int login(String username, String password) throws BadCredentialsException
 	{
 		//logs in the user if found
 		for(User user : users){
 			if(user.getUsername().equals(username)) {
 				if(user.getPassword().equals(password)) {
 					user.setLoggedIn(true);
-					return;
+					return user.getPlayerID();
 				}
 				else{
 					throw new BadCredentialsException("Bad password");
@@ -201,14 +202,15 @@ public class ServerFacade {
 	 * Registers the given user
 	 * @param username the username to be added
 	 * @param password the password to be added
+	 * @return the playerID of the newly created user
 	 * @throws AddUserException thrown if the user cannot be added, usually for a user name already taken
 	 */
-	public synchronized void register(String username,String password) throws AddUserException, InternalServerException
+	public synchronized int register(String username,String password) throws AddUserException, InternalServerException
 	{
 		User newUser = new User(username, password);
 		this.addNewUser(newUser);	//if this line throws an AddUserException for improper instantiation, there's a problem and I messed up. 
 		try {
-			login(username, password);
+			return login(username, password);
 		} catch (BadCredentialsException e) {
 			//This is very bad if it happens
 			System.out.println("FATAL ERROR: User wasn't properly registered. See ServerFacade::register()");
