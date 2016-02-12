@@ -33,6 +33,11 @@ public class ServerFacade {
 		assert(games.contains(newGame));
 	}
 	
+	/**
+	 * Adds a new user to the list (part of registration, for example)
+	 * @param newUser the user to be added
+	 * @throws AddUserException thrown if the new user wasn't instantiated properly or a user with the same name already exists
+	 */
 	public synchronized void addNewUser(User newUser) throws AddUserException
 	{
 		//check to make sure user was added properly
@@ -185,13 +190,20 @@ public class ServerFacade {
 		throw new BadCredentialsException("User not found");
 	}
 	
+	/**
+	 * Registers the given user
+	 * @param username the username to be added
+	 * @param password the password to be added
+	 * @throws AddUserException thrown if the user cannot be added, usually for a user name already taken
+	 */
 	public synchronized void register(String username,String password) throws AddUserException
 	{
 		User newUser = new User(username, password);
-		this.addNewUser(newUser);
+		this.addNewUser(newUser);	//if this line throws an AddUserException for improper instantiation, there's a problem and I messed up. 
 		try {
 			this.login(username, password);
 		} catch (BadCredentialsException e) {
+			//This is very bad if it happens
 			System.out.println("FATAL ERROR: User wasn't properly registered. See ServerFacade::register()");
 			e.printStackTrace();
 		}
