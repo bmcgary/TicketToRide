@@ -1,8 +1,7 @@
 var app = angular.module('ticketToRide');
 
-app.controller('loginController', function($scope) {
+app.controller('loginController', function($scope, ATP) {
     $scope.submit = function() {
-        console.log("Logging in");
-        alert("Logging in");
+        ATP.send("ATP SERVER");
     };
 });
