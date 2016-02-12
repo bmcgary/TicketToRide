@@ -2,6 +2,7 @@ package server;
 
 
 import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import org.eclipse.jetty.server.Server;
@@ -21,11 +22,11 @@ public class ServerMain {
     public static void main(String[] args) throws Exception
     {
         ServerMain main = new ServerMain();
-        main.new MyThread().start();
-        main.new StaticServer().run();
+        main.new WebSocketServer().start();
+        main.new HTTPServer().run();
     }
 
-    private class StaticServer extends Thread
+    private class HTTPServer extends Thread
     {
         @Override
         public void run()
@@ -47,50 +48,59 @@ public class ServerMain {
         }
     }
 
-    private HttpHandler indexHandler = exchange -> {
-        System.out.println("Looking for index");
-        Headers head = exchange.getResponseHeaders();
-        //head.set("Content-Type", "text/html");
-
-
-        URI command=exchange.getRequestURI();
-        String theCommand=command.toString();
-
-        System.out.println("    Command received: " + theCommand);
-        String[] params = theCommand.split("/",2);
-
-        String file = "index.html";
-        head.set("Content-Type", "text/html");
-
-        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-
-        OutputStreamWriter sendBack= new OutputStreamWriter(exchange.getResponseBody());
-        Scanner scanner;
-        try{
-
-            scanner = new Scanner(new FileReader(file));
-
-        }
-        catch(IOException e)
+    private HttpHandler indexHandler = new HttpHandler()
+    {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException
         {
-            String notFound = "404.html";
-            scanner = new Scanner(new FileReader(notFound));
+            System.out.println("Looking for index");
+            Headers head=exchange.getResponseHeaders();
+            //head.set("Content-Type", "text/html");
+
+
+            URI command=exchange.getRequestURI();
+            String theCommand=command.toString();
+
+            System.out.println("    Command received: " + theCommand);
+            String[] params=theCommand.split("/",2);
+
+            String path = null;
+            path = "index.html";
+            head.set("Content-Type", "text/html");
+           
+            exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+
+            OutputStreamWriter sendBack= new OutputStreamWriter(exchange.getResponseBody());
+
+            String file = path;
+            Scanner scanner = null;
+            try{
+
+                scanner = new Scanner(new FileReader(file));
+
+            }
+            catch(IOException e)
+            {
+                String notFound = "404.html";
+                scanner = new Scanner(new FileReader(notFound));
+            }
+
+            StringBuilder stringBuilder = new StringBuilder();
+            while(scanner.hasNextLine())
+            {
+                stringBuilder.append(scanner.nextLine() + "\n");
+
+            }
+
+            scanner.close();
+            sendBack.write(stringBuilder.toString());
+
+            //sendBack.write("index.html");
+            sendBack.close();
         }
-
-        StringBuilder stringBuilder = new StringBuilder();
-        while(scanner.hasNextLine())
-        {
-            stringBuilder.append(scanner.nextLine()).append("\n");
-        }
-
-        scanner.close();
-        sendBack.write(stringBuilder.toString());
-
-        //sendBack.write("index.html");
-        sendBack.close();
     };
 
-    private class MyThread extends Thread
+    private class WebSocketServer extends Thread
     {
         @Override
         public void run()

@@ -1,6 +1,6 @@
 package server;
 
-import server.commands.Command;
+import server.command.Command;
 
 /**
  * Generate command

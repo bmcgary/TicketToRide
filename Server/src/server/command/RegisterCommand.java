@@ -1,4 +1,4 @@
-package server.commands;
+package server.command;
 
 import com.google.gson.annotations.SerializedName;
 import server.AddUserException;

@@ -1,4 +1,4 @@
-package server.commands;
+package server.command;
 
 import server.BadCredentialsException;
 import server.ServerFacade;

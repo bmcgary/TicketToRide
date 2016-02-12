@@ -1,6 +1,6 @@
 package server;
 import com.google.gson.JsonObject;
-import server.commands.Command;
+import server.command.Command;
 
 /**
  * Generates a Command object of the command type
