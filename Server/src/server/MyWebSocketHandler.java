@@ -55,7 +55,6 @@ public class MyWebSocketHandler {
          * x.send(response)
          */
         Command c = CommandFactory.makeCommand(message);
-        
         ResponseWrapper responseWrapper = c.execute(personal_id);
         
         sendMessage(responseWrapper.getTargetIds(), responseWrapper.getResponse());
