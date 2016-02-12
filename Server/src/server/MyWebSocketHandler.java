@@ -54,10 +54,10 @@ public class MyWebSocketHandler {
          * for(all x in a)
          * x.send(response)
          */
-        CommandFactory commandfactory=new CommandFactory();
+        /*CommandFactory commandfactory=new CommandFactory();
         Command c=commandfactory.makeCommand(message);
         
-        ResponseWrapper responsewrapper=c.execute(personal_id);
+        ResponseWrapper responsewrapper=c.execute(personal_id);*/
         
         //String final_message=responsewrapper.getresponse();
         //List<Integer> ids=responsewrapper.gettargetIDS();
