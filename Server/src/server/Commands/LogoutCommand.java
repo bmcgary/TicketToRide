@@ -1,5 +1,11 @@
 package server.commands;
+
+import server.BadCredentialsException;
+import server.ServerFacade;
+import server.responses.Response;
 import server.responses.ResponseWrapper;
+
+import java.util.Collections;
 
 /**
  *
@@ -10,6 +16,12 @@ public class LogoutCommand implements Command {
 
     @Override
     public ResponseWrapper execute(int userID) {
-        return null;
+        ServerFacade serverFacade = ServerFacade.getServerFacade();
+        try {
+            serverFacade.logout(userID);
+        } catch (BadCredentialsException e) {
+            return new ResponseWrapper(Collections.singletonList(userID), Response.newInvalidInputResponse());
+        }
+        return new ResponseWrapper(Collections.singletonList(userID), Response.newSuccessResponse());
     }
 }

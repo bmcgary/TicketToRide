@@ -1,5 +1,6 @@
 package server;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import model.CityToCityRoute;
@@ -8,11 +9,23 @@ import model.Player;
 import model.PlayerColor;
 
 public class ServerFacade {
-	
+	private static ServerFacade serverFacade;
 	private List<Game> games;
 	private List<User> users;
 	private final int MAX_PLAYERS_PER_GAME = 5;
-	
+
+	public static ServerFacade getServerFacade() {
+		if (serverFacade == null) {
+			serverFacade = new ServerFacade();
+		}
+		return serverFacade;
+	}
+
+	private ServerFacade() {
+		games = new ArrayList<>();
+		users = new ArrayList<>();
+	}
+
 	public synchronized void createGame(Game newGame)
 	{
 		//check to make sure game was instantiated properly
@@ -47,7 +60,7 @@ public class ServerFacade {
 		
 		//ensure no user exists with the given username
 		for(User user : users){
-			if(user.getUsername() == newUser.getUsername()){
+			if(user.getUsername().equals(newUser.getUsername())) {
 				throw new AddUserException("User with the same username already exists!");
 			}
 		}
@@ -57,12 +70,6 @@ public class ServerFacade {
 		assert(users.contains(newUser));
 	}
 	
-	/**
-	 * 
-	 * @param playerID
-	 * @param gameID
-	 * @return
-	 */
 	public boolean canAddPlayerToGame(int playerID, int gameID, PlayerColor playerColor)
 	{
 		Game game = null;
@@ -98,11 +105,8 @@ public class ServerFacade {
 		}
 		
 		//game can't be full
-		if(game.getPlayerManager().getNumPlayers() > this.MAX_PLAYERS_PER_GAME){
-			return false;
-		}
-		
-		return true;
+		return game.getPlayerManager().getNumPlayers() <= this.MAX_PLAYERS_PER_GAME;
+
 	}
 	
 	public synchronized void addPlayerToGame(int playerID, int gameID, PlayerColor playerColor)
@@ -158,8 +162,8 @@ public class ServerFacade {
 	{
 		//logs in the user if found
 		for(User user : users){
-			if(user.getUsername() == username){
-				if(user.getPassword() == password){
+			if(user.getUsername().equals(username)) {
+				if(user.getPassword().equals(password)) {
 					user.setLoggedIn(true);
 					return;
 				}
@@ -196,16 +200,17 @@ public class ServerFacade {
 	 * @param password the password to be added
 	 * @throws AddUserException thrown if the user cannot be added, usually for a user name already taken
 	 */
-	public synchronized void register(String username,String password) throws AddUserException
+	public synchronized void register(String username,String password) throws AddUserException, InternalServerException
 	{
 		User newUser = new User(username, password);
 		this.addNewUser(newUser);	//if this line throws an AddUserException for improper instantiation, there's a problem and I messed up. 
 		try {
-			this.login(username, password);
+			login(username, password);
 		} catch (BadCredentialsException e) {
 			//This is very bad if it happens
 			System.out.println("FATAL ERROR: User wasn't properly registered. See ServerFacade::register()");
 			e.printStackTrace();
+			throw new InternalServerException("Failed to properly register user");
 		}
 	}
 	
