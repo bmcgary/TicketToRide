@@ -1,6 +1,6 @@
 var app = angular.module('ticketToRide');
 
-app.factory('ServerAPI', function() {
+app.factory('ServerAPI', function () {
     return {
     	//The API Methods sent from the Server to the Client
         login: function () {

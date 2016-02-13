@@ -1,6 +1,6 @@
 var app = angular.module('ticketToRide');
 
-app.factory('ClientAPI', function(WebSocket) {
+app.factory('ClientAPI', function (WebSocket) {
     return {
     	//The API Methods sent from the Client to the Server
         login: function (username, password) {
