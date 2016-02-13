@@ -1,6 +1,6 @@
 var app = angular.module('ticketToRide');
 
-app.factory('WebSocket', function($websocket, $location, ServerAPI) {
+app.factory('WebSocket', function ($websocket, $location, ServerAPI) {
 	//WebSocket Connection
 
 	var ws = $websocket("ws://" + $location.host + ":8080/");
