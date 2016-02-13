@@ -20,6 +20,11 @@
 	                url: '/register',
 	                templateUrl: 'templates/register.html',
 	                controller: "registerController"
+	            })
+	            .state('forgot', {
+	            	url: '/forgot',
+	            	templateUrl: 'templates/forgot.html',
+	            	controller: "forgotController"
 	            });
     	});
 })();

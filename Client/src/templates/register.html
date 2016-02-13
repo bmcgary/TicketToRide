@@ -6,15 +6,15 @@
 		<form ng-submit="submit()"> 
 			<label for="username">Username</label>
 			<br/>
-			<input type="text" class="form-control" id="username" required=""/>
+			<input type="text" class="form-control" ng-model="username" required=""/>
 			<br/>
 			<label for="password">Password</label>
 			<br/>
-			<input type="password" class="form-control" id="password" required=""/>
+			<input type="password" class="form-control" ng-model="password" required=""/>
 			<br/>
 			<label for="email">Email</label>
 			<br/>
-			<input type="email" class="form-control" id="email" required=""/>
+			<input type="email" class="form-control" ng-model="email" required=""/>
 			<br/>
         	<button type="submit">Register</button>
         	<br/>
