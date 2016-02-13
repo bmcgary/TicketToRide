@@ -3,6 +3,8 @@ package server;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import com.google.gson.JsonObject;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
@@ -14,6 +16,8 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import server.command.Command;
 import server.exception.CommandNotFoundException;
 import server.responses.Response;
+import server.command.LoginCommand;
+import server.command.RegisterCommand;
 import server.responses.ResponseWrapper;
 
 
@@ -23,6 +27,7 @@ public class MyWebSocketHandler {
     static HashMap<Integer, Session> sessions = new HashMap<>();
     static Integer id=0;
     Integer personal_id;
+    Session personal_session;
 
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
@@ -37,9 +42,10 @@ public class MyWebSocketHandler {
     @OnWebSocketConnect
     public void onConnect(Session session) {
         System.out.println("Connect: " + session.getRemoteAddress().getAddress());
-        sessions.put(id, session);
-		personal_id=id;
-		id++;
+        personal_session=session;
+        //sessions.put(id, session);
+		//personal_id=id;
+		//id++;
 		//sendMessage("You are connected");
     }
 
