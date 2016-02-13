@@ -1,9 +1,8 @@
 var app = angular.module('ticketToRide');
 
-app.controller('registerController', function($scope) {
+app.controller('registerController', function($scope, ClientAPI) {
     $scope.submit = function() {
-        console.log("Registering");
-        alert("Registering");
-	} 
+        ClientAPI.register("username", "password", "em@il.com");
+    };
 });
                        
