@@ -41,16 +41,8 @@ public class Game {
 		history.add(message);
 	}
 	
-	/**
-	 * Returns the history as an unmodifiable list of strings
-	 * @return the game history
-	 */
 	public List<String> getHistory(){
 		return Collections.unmodifiableList(history);
-	}
-	
-	public void startGame(){
-		
 	}
 	
 	
