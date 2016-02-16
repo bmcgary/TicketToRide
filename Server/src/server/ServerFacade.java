@@ -10,6 +10,7 @@ import model.PlayerColor;
 import server.exception.AddUserException;
 import server.exception.BadCredentialsException;
 import server.exception.InternalServerException;
+import server.exception.PreConditionException;
 
 public class ServerFacade {
 	private static ServerFacade serverFacade;
@@ -73,6 +74,13 @@ public class ServerFacade {
 		assert(users.contains(newUser));
 	}
 	
+	/**
+	 * Determines whether a given player can be added to a given game with a certain color
+	 * @param playerID The player that wants to be added
+	 * @param gameID The game to be added to
+	 * @param playerColor The color of the player wishing to be added
+	 * @return true if the player can be added, otherwise false
+	 */
 	public boolean canAddPlayerToGame(int playerID, int gameID, PlayerColor playerColor)
 	{
 		Game game = null;
@@ -135,24 +143,92 @@ public class ServerFacade {
 		}
 	}
 	
-	public void canStartGame(int playerID, int gameID)
+	/**
+	 * Determines whether or not the player can start the game
+	 * @param playerID The player attempting to start the game
+	 * @param gameID The game to be started
+	 * @return True if possible, false otherwise
+	 */
+	public boolean canStartGame(int playerID, int gameID)
 	{
+		User user = null;
+		Game game = null;
+		//player must exist and be logged in
+		for(User u : this.users){
+			if(u.getPlayerID() == playerID){
+				user = u;
+				if(!user.isLoggedIn()){
+					return false;
+				}
+				break;
+			}
+		}
+		if(user == null){	//guarantees user was found
+			return false;
+		}
+		
+		//game must exist
+		for (Game g : this.games){
+			if(g.getGameID() == gameID){
+				game = g;
+				break;
+			}
+		}
+		if(game == null){	//guarantees game was found
+			return false;
+		}
+		
+		//game can't already be started
+		if(game.getHistory().size() > 1){	//after initialization, only one message should exist
+			return false;
+		}
+		
+		//game must have at least 2 players
+		if(game.getPlayerManager().getNumPlayers() < 2){
+			return false;
+		}
+			
+		//player must be the 0th slot in the game's list
+		if(game.getPlayerManager().getPlayers().get(0).getPlayerID() != playerID){	//huge demeter's law violation...
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public synchronized void startGame(int playerID, int gameID) throws PreConditionException, InternalServerException
+	{
+		//helper check
+		if(!this.canStartGame(playerID, gameID)){
+			throw new PreConditionException("Game " + gameID + " cannot be started by player " + playerID);
+		}
+		
+		Game game = null;
+		for(Game g : this.games){
+			if(g.getGameID() == gameID){
+				game = g;
+				break;
+			}
+		}
+		if(game == null){
+			throw new InternalServerException("Something went dreadfully wrong in ServerFacade::startGame()");
+		}
+		else{
+			game.startGame();
+		}
+		
+		assert(game.getHistory().size() > 1);	//lets us know it was all started properly
 		
 	}
 	
-	public synchronized void startGame(int playerID, int gameID)
+	public boolean canLeaveGame(int playerID, int gameID)
 	{
-		
-	}
-	
-	public void canLeaveGame(int playerID, int gameID)
-	{
-		
+		return false; 	//future implementation
 	}
 	
 	public synchronized void leaveGame(int playerID, int gameID)
 	{
-		
+		return; 	//future implementation
 	}
 	
 	/**
