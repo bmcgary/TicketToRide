@@ -100,6 +100,11 @@ public class ServerFacade {
 			return false;
 		}
 		
+		//user must be logged in
+		if(!user.isLoggedIn()){
+			return false;
+		}
+		
 		//color can't already be in game, user can't already be in game
 		for(Player p : game.getPlayerManager().getPlayers()){
 			if(p.getPlayerColor() == playerColor || p.getPlayerID() == playerID){
@@ -160,7 +165,8 @@ public class ServerFacade {
 	 * @param username the user to be logged in
 	 * @param password the user's password
 	 * @return the PlayerID of the logged in user
-	 * @throws BadCredentialsException thrown if the password is incorrect or if the user isn't registered
+	 * @throws BadCredentialsException thrown if the password is incorrect, 
+	 * the user is logged in already, or if the user isn't registered
 	 */
 	public synchronized int login(String username, String password) throws BadCredentialsException
 	{
@@ -168,8 +174,13 @@ public class ServerFacade {
 		for(User user : users){
 			if(user.getUsername().equals(username)) {
 				if(user.getPassword().equals(password)) {
-					user.setLoggedIn(true);
-					return user.getPlayerID();
+					if(!user.isLoggedIn()){
+						user.setLoggedIn(true);
+						return user.getPlayerID();
+					}
+					else{
+						throw new BadCredentialsException("User already logged in!");
+					}
 				}
 				else{
 					throw new BadCredentialsException("Bad password");
