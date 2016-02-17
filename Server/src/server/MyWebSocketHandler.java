@@ -2,8 +2,8 @@ package server;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-
 import com.google.gson.JsonObject;
 
 import org.eclipse.jetty.websocket.api.Session;
@@ -14,6 +14,8 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
 import server.command.Command;
+import server.exception.CommandNotFoundException;
+import server.responses.Response;
 import server.command.LoginCommand;
 import server.command.RegisterCommand;
 import server.responses.ResponseWrapper;
@@ -50,48 +52,41 @@ public class MyWebSocketHandler {
     @OnWebSocketMessage
     public void onMessage(String message) {
         System.out.println("Message: " + message);
-        
-        /*Command c=CommandFactory.makeCommand(message);	//create the command
-        
-        LoginCommand islogin=new LoginCommand(); //just to compare to the actual command
-        RegisterCommand isregister=new RegisterCommand(); //just to compare to the actual command
-        ResponseWrapper responsewrapper = null;
-        List<Integer> idlist = null;
-        
-        if(c.getClass()== islogin.getClass() || c.getClass()==isregister.getClass())
-        {
-        	responsewrapper=c.execute(-1);	//pass in a -1 because user id is not used in login/register
-        	if(responsewrapper.getResponse().equals("success"))	//make sure they successfully logged in/registered
-        	{
-        		idlist=responsewrapper.getTargetIDs();
-        		personal_id=idlist.get(0);	//there should only be one id in the idlist
-        		sessions.put(personal_id, personal_session);
-        	}
-        }
-        else
-        {
-        	responsewrapper=c.execute(personal_id);
-        }*/
-        
-		try {
-			//sendMessage(responsewrapper.getResponse(), idlist);		//send back to server
-			sendMessage(null, null);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
+        /*
+         * ResponseWrapper is a list of users ids and a string (message to send back)
+         * 
+         * for(all x in a)
+         * x.send(response)
+         */
+        ResponseWrapper responseWrapper;
+        try {
+            Command c = CommandFactory.makeCommand(message);
+            responseWrapper = c.execute(personal_id);
+        } catch (CommandNotFoundException e) {
+            responseWrapper = new ResponseWrapper(personal_id, Response.newServerErrorResponse());
+        }
+        
+        sendMessage(responseWrapper.getTargetIds(), responseWrapper.getResponse());
     }
 
-    public void sendMessage(String message, List<Integer> ids) throws IOException {
+    public void sendPublicMessage(String message) {
+        sessions.forEach((id, session) -> {
+            try {
+                session.getRemote().sendString(message);
+            } catch (IOException e) {
+                System.err.println("Failed to send to user " + id);
+            }
+        });
+    }
 
-        JsonObject json = new JsonObject();
-        json.addProperty("hello", "what up");
-       /* for( Integer id : ids) {
-        	Session session=sessions.get(id);
-            session.getRemote().sendString(json.toString());
-
-        }*/
-        personal_session.getRemote().sendString(json.toString());
+    public void sendMessage(Iterator<Integer> targetIds, String message) {
+        targetIds.forEachRemaining(targetId -> {
+            try {
+                sessions.get(targetId).getRemote().sendString(message);
+            } catch (IOException e) {
+                System.err.println("Failed to send to user " + id);
+            }
+        });
     }
 }

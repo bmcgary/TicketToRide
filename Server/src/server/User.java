@@ -1,11 +1,10 @@
 package server;
 
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class User {
-	private static int nextID = 0;
+	private static int nextID = 1;
 	private int playerID;
 	private String username;
 	private String password;
@@ -41,9 +40,14 @@ public class User {
 		return password;
 	}
 
-	public boolean joinGame(int gameID){
+	public void joinGame(int gameID){
 		joinedGames.add(gameID);
-		return true;
+	}
+	
+	public void leaveGame(int gameID){
+		if(joinedGames.contains(gameID)){
+			joinedGames.remove(gameID);
+		}
 	}
 
 }

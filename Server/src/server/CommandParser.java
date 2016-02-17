@@ -1,6 +1,7 @@
 package server;
 import com.google.gson.JsonObject;
 import server.command.Command;
+import server.exception.CommandNotFoundException;
 
 /**
  * Generates a Command object of the command type
@@ -16,13 +17,12 @@ public class CommandParser {
         this.parameters = parameters;
     }
 
-    public Command parseCommand() {
-        Command newCommand = null;
+    public Command parseCommand() throws CommandNotFoundException{
         try {
-            newCommand = (Command) JsonTranslator.getGson().fromJson(parameters, Class.forName(command + "Command"));
+            return (Command) JsonTranslator.getGson().fromJson(parameters, Class.forName(command + "Command"));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+            throw new CommandNotFoundException("Unable to find command " + command);
         }
-        return newCommand;
     }
 }

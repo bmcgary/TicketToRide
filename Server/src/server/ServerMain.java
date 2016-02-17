@@ -24,20 +24,6 @@ public class ServerMain {
         ServerMain main = new ServerMain();
         main.new WebSocketServer().start();
         main.new HTTPServer().run();
-        System.out.println("TEST");
-        String input = "1";
-
-        Scanner in = new Scanner(System.in);
-        while(!input.equals("0"))
-        {
-            System.out.println("here ");
-            //if(in.hasNext())
-            {
-                System.out.print("Enter: ");
-                String lineIn = in.nextLine();
-                //MyWebSocketHandler.sendMessage(lineIn);
-            }
-        }
     }
 
     private class HTTPServer extends Thread

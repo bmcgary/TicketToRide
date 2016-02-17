@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -15,74 +16,61 @@ public class PlayerManager {
 	 * @param color
 	 * @return
 	 */
-	public boolean canBuyTrack(int PlayerID, int trackLength, TrackColor color)
+	public boolean canBuyTrack(int playerID, int trackLength, TrackColor color)
 	{
-		/*
-		 * if(PlayerID != currentPlayerID||PlayerID<0||playerID>0)
-		 * {
-		 * retur false;
-		 * 
-		 * }
-		 * 
-		 * if(trackLength>max_possibleValue||trachLength<min_posssibleValue)
-		 * {
-		 * 
-		 * return false;
-		 * }
-		 * 
-		 * if(color is in use)
-		 * {
-		 * return false;
-		 * }
-		 * 
-		 */
+		//must be current player
+		if(players.get(currentTurnIndex).getPlayerID() != playerID){
+			return false;
+		}
+		
+		//some boundary checking on trackLength
+		if(trackLength > 7 || trackLength < 1){
+			return false;
+		}
+		
+		//must have enough trains left to buy track
+		if(players.get(currentTurnIndex).getTrainsLeft() < trackLength){
+			return false;
+		}
 		
 		return true;
 	}
 	
 	/**
-	 * check if a player can buy track with card
+	 * check if a player can buy track with the given cards
 	 * @param PlayerID
 	 * @param trackLength
 	 * @param color
 	 * @param trainCards
 	 * @return
 	 */
-	public boolean canBuyTrackWithCard(int PlayerID, int trackLength, TrackColor color, Map<TrackColor,Integer> trainCards)
+	public boolean canBuyTrackWithCard(int playerID, int trackLength, TrackColor color, Map<TrackColor,Integer> trainCards)
 	{
-		/*
-		 * if(PlayerID != currentPlayerID||PlayerID<0||playerID>0)
-		 * {
-		 * retur false;
-		 * 
-		 * }
-		 * 
-		 * if(trackLength>max_possibleValue||trachLength<min_posssibleValue)
-		 * {
-		 * 
-		 * return false;
-		 * }
-		 * 
-		 * if(color is in use)
-		 * {
-		 * return false;
-		 * }
-		 * 
-		 * if(map.get(color) < returnNumbertoBuy)
-		 * {
-		 *   return false;
-		 * }
-		 *  
-		 */
+		//helper function
+		if(!this.canBuyTrack(playerID, trackLength, color)){
+			return false;
+		}
+		
+		//player needs to have all the cards in the map
+		Player player = players.get(this.currentTurnIndex);
+		assert(player.getPlayerID() == playerID);
+		for (TrackColor key : trainCards.keySet()){
+			Map<TrackColor, Integer> playerCards = player.getTrainCarCards();
+			if(!playerCards.containsKey(key) || playerCards.get(key) < trainCards.get(key)){
+				return false;
+			}
+		}
 		
 		return true;
 	}
+
 	/**
-	 * go to next turn
+	 * Advances to the next turn by incrementing the current turn index
 	 */
 	public void advanceTurn()
 	{
-		//quit current turn? go to next turn??
+		currentTurnIndex += 1;
+		currentTurnIndex %= players.size();
 	}
 	
 	/**
@@ -106,6 +94,7 @@ public class PlayerManager {
 			}
 			
 			player.getDestinationRoute().addAll(routes);
+			assert(player.getDestinationRoute().containsAll(routes));
 		}
 	}
 	/**
@@ -113,20 +102,12 @@ public class PlayerManager {
 	 * @param playerID
 	 * @param TrackColor
 	 */
-	public void addTrainCarCard(int playerID, int TrackColor)
+	public void addTrainCarCard(int playerID, TrackColor trackColor)
 	{
-		Player player = null;
-		for(int i =0; i < players.size();i++)	
-		{
-			
-			if(players.get(i).getPlayerID()==playerID)
-			{ 
-				
-				player = players.get(i);
-				
+		for(Player player : players){
+			if(player.getPlayerID() == playerID){
+				player.addTrainCarCard(trackColor);
 			}
-			
-			//player.addCarCard;
 		}
 	}
 	/**
@@ -136,18 +117,14 @@ public class PlayerManager {
 	 */
 	public void addTrainCarCards(int playerID, Map<TrackColor,Integer> cards)
 	{
-		Player player = null;
-		for(int i =0; i < players.size();i++)	
-		{
-			
-			if(players.get(i).getPlayerID()==playerID)
-			{ 
-				
-				player = players.get(i);
-				
+		for(Player player : players){
+			if(player.getPlayerID() == playerID){
+				for(TrackColor color : cards.keySet()){
+					for(int i = 0; i < cards.get(color); ++i){
+						player.addTrainCarCard(color);
+					}
+				}
 			}
-			
-			//player.addCarCard; add mutiple cards
 		}
 	}
 	
@@ -212,6 +189,15 @@ public class PlayerManager {
 		players.remove(index);
 		
 	}
+	
+	/**
+	 * Reports the number of players currently in this game
+	 * @return the number of players
+	 */
+	public int getNumPlayers(){
+		return players.size();
+	}
+	
 	/**
 	 * generate hashcode function
 	 */
@@ -247,5 +233,9 @@ public class PlayerManager {
 			return false;
 		return true;
 	}
+
+public List<Player> getPlayers() {
+	return Collections.unmodifiableList(players);
+}
 }
 
