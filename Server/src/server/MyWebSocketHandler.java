@@ -43,23 +43,45 @@ public class MyWebSocketHandler {
     public void onConnect(Session session) {
         System.out.println("Connect: " + session.getRemoteAddress().getAddress());
         personal_session=session;
-        //sessions.put(id, session);
-		//personal_id=id;
-		//id++;
-		//sendMessage("You are connected");
+
     }
 
     @OnWebSocketMessage
     public void onMessage(String message) {
         System.out.println("Message: " + message);
 
-        /*
-         * ResponseWrapper is a list of users ids and a string (message to send back)
-         * 
-         * for(all x in a)
-         * x.send(response)
-         */
-        ResponseWrapper responseWrapper;
+        Command c = null;
+		try {
+			c = CommandFactory.makeCommand(message);
+		} catch (CommandNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}	//create the command
+        
+        LoginCommand islogin=new LoginCommand(); //just to compare to the actual command
+        RegisterCommand isregister=new RegisterCommand(); //just to compare to the actual command
+        ResponseWrapper responsewrapper = null;
+        List<Integer> idlist = null;
+        
+        if(c.getClass()== islogin.getClass() || c.getClass()==isregister.getClass())
+        {
+        	responsewrapper=c.execute(-1);	//pass in a -1 because user id is not used in login/register
+        	if(responsewrapper.getResponse().equals("success"))	//make sure they successfully logged in/registered
+        	{
+        		idlist=responsewrapper.getTargetIDs();
+        		personal_id=idlist.get(0);	//there should only be one id in the idlist
+        		sessions.put(personal_id, personal_session);
+        	}
+        }
+        else
+        {
+        	responsewrapper=c.execute(personal_id);
+        }
+        
+		sendMessage(responsewrapper.getTargetIds(), responsewrapper.getResponse());		//send back to server
+
+        
+       /* ResponseWrapper responseWrapper;
         try {
             Command c = CommandFactory.makeCommand(message);
             responseWrapper = c.execute(personal_id);
@@ -67,7 +89,7 @@ public class MyWebSocketHandler {
             responseWrapper = new ResponseWrapper(personal_id, Response.newServerErrorResponse());
         }
         
-        sendMessage(responseWrapper.getTargetIds(), responseWrapper.getResponse());
+        sendMessage(responseWrapper.getTargetIds(), responseWrapper.getResponse());*/
     }
 
     public void sendPublicMessage(String message) {
