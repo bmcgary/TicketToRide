@@ -65,11 +65,12 @@ public class MyWebSocketHandler {
         RegisterCommand isregister=new RegisterCommand(); //just to compare to the actual command
         ResponseWrapper responsewrapper = null;
         List<Integer> idlist = null;
+        JSONObject json;
         
         if(c.getClass()== islogin.getClass() || c.getClass()==isregister.getClass())
         {
         	responsewrapper=c.execute(-1);	//pass in a -1 because user id is not used in login/register
-        	JSONObject json=new JSONObject(responsewrapper.getResponse());
+        	json=new JSONObject(responsewrapper.getResponse());
         	
         	if(json.getString("description").equals("success"))	//make sure they successfully logged in/registered
         	{
@@ -79,7 +80,7 @@ public class MyWebSocketHandler {
         	}
         	else
         	{
-        		sendInvalidMessage(json.getString("description"));
+        		sendInvalidMessage(responsewrapper.getResponse());
         		return;
         	}
         }
