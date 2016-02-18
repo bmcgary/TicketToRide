@@ -1,0 +1,22 @@
+<div class="container">
+	<div class="login-box animated fadeInUp">
+		<div class="box-header">
+			<h2>Log In</h2>
+		</div>
+		<form ng-submit="submit()">
+			<label for="username">Username</label>
+			<br/>
+			<input type="text" class="form-control" ng-model="username" required=""/>
+			<br/>
+			<label for="password">Password</label>
+			<br/>
+			<input type="password" class="form-control" ng-model="password" required=""/>
+			<br/>
+    		<button type="submit">Sign In</button>
+    		<br/>
+		</form>
+	
+		<a ui-sref="forgot"><p class="small">Forgot your password?</p></a>
+		<p class="small"> Not a Member? <a ui-sref="register">Click Here</a></p>
+	</div>
+</div>
