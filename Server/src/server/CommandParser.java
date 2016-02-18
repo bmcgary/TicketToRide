@@ -19,7 +19,7 @@ public class CommandParser {
 
     public Command parseCommand() throws CommandNotFoundException{
         try {
-            return (Command) JsonTranslator.getGson().fromJson(parameters, Class.forName(command + "Command"));
+            return (Command) JsonTranslator.getGson().fromJson(parameters, Class.forName("server.command." + command + "Command"));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             throw new CommandNotFoundException("Unable to find command " + command);

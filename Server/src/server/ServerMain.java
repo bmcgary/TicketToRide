@@ -5,12 +5,17 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.websocket.server.WebSocketHandler;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
@@ -55,8 +60,6 @@ public class ServerMain {
         {
             System.out.println("Looking for index");
             Headers head=exchange.getResponseHeaders();
-            //head.set("Content-Type", "text/html");
-
 
             URI command=exchange.getRequestURI();
             String theCommand=command.toString();
@@ -65,38 +68,40 @@ public class ServerMain {
             String[] params=theCommand.split("/",2);
 
             String path = null;
-            path = "index.html";
-            head.set("Content-Type", "text/html");
-           
+            
+            if(params.length <= 1 || params[1].equals(""))
+            {
+                path = "index.html";
+                head.set("Content-Type", "text/html");
+            }
+            else
+            {
+            	//Split based of the period, get the last item in the array,
+            	//that will tell us what type of file this is, and therefore 
+            	//what to set the content-type to
+                path = params[1];
+                String[] extArr = theCommand.split("\\.");
+                String ext = extArr[extArr.length - 1];
+                if(ext.equals("img"))
+                {
+                    head.set("Content-Type", "image/png");
+                }
+                else
+                    head.set("Content-Type", "text/" + ext);
+            }
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
 
-            OutputStreamWriter sendBack= new OutputStreamWriter(exchange.getResponseBody());
+            File file = new File ("Client/src/" + path);
+            byte [] bytearray  = new byte [(int)file.length()];
+            FileInputStream fis = new FileInputStream(file);
+            BufferedInputStream bis = new BufferedInputStream(fis);
+            bis.read(bytearray, 0, bytearray.length);
 
-            String file = path;
-            Scanner scanner = null;
-            try{
-
-                scanner = new Scanner(new FileReader(file));
-
-            }
-            catch(IOException e)
-            {
-                String notFound = "404.html";
-                scanner = new Scanner(new FileReader(notFound));
-            }
-
-            StringBuilder stringBuilder = new StringBuilder();
-            while(scanner.hasNextLine())
-            {
-                stringBuilder.append(scanner.nextLine() + "\n");
-
-            }
-
-            scanner.close();
-            sendBack.write(stringBuilder.toString());
-
-            //sendBack.write("index.html");
-            sendBack.close();
+            // ok, we are ready to send the response.
+            OutputStream os = exchange.getResponseBody();
+            os.write(bytearray,0,bytearray.length);
+            os.close();
+            bis.close();
         }
     };
 

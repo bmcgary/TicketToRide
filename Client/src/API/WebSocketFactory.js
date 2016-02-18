@@ -25,7 +25,7 @@ app.factory('WebSocket', function ($websocket, $location, ServerAPI) {
     });
     ws.onOpen(function () {
         console.log('connection open');
-        ws.send('HELLO SERVER');
+        //ws.send('HELLO SERVER');
     });
 
     return {
