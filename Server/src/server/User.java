@@ -17,7 +17,7 @@ public class User {
 		this.username = username;
 		this.password = password;
 		joinedGames = new ArrayList<Integer>();
-		loggedIn = true;
+		loggedIn = false;
 	}
 	
 	public boolean isLoggedIn() {
