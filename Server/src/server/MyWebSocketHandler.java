@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
 import com.google.gson.JsonObject;
 
 import org.eclipse.jetty.websocket.api.Session;
@@ -12,6 +13,8 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import server.command.Command;
 import server.exception.CommandNotFoundException;
@@ -47,7 +50,7 @@ public class MyWebSocketHandler {
     }
 
     @OnWebSocketMessage
-    public void onMessage(String message) {
+    public void onMessage(String message) throws JSONException {
         System.out.println("Message: " + message);
 
         Command c = null;
@@ -66,11 +69,18 @@ public class MyWebSocketHandler {
         if(c.getClass()== islogin.getClass() || c.getClass()==isregister.getClass())
         {
         	responsewrapper=c.execute(-1);	//pass in a -1 because user id is not used in login/register
-        	if(responsewrapper.getResponse().equals("success"))	//make sure they successfully logged in/registered
+        	JSONObject json=new JSONObject(responsewrapper.getResponse());
+        	
+        	if(json.getString("description").equals("success"))	//make sure they successfully logged in/registered
         	{
         		idlist=responsewrapper.getTargetIDs();
         		personal_id=idlist.get(0);	//there should only be one id in the idlist
         		sessions.put(personal_id, personal_session);
+        	}
+        	else
+        	{
+        		sendInvalidMessage(json.getString("description"));
+        		return;
         	}
         }
         else
@@ -80,16 +90,6 @@ public class MyWebSocketHandler {
         
 		sendMessage(responsewrapper.getTargetIds(), responsewrapper.getResponse());		//send back to server
 
-        
-       /* ResponseWrapper responseWrapper;
-        try {
-            Command c = CommandFactory.makeCommand(message);
-            responseWrapper = c.execute(personal_id);
-        } catch (CommandNotFoundException e) {
-            responseWrapper = new ResponseWrapper(personal_id, Response.newServerErrorResponse());
-        }
-        
-        sendMessage(responseWrapper.getTargetIds(), responseWrapper.getResponse());*/
     }
 
     public void sendPublicMessage(String message) {
@@ -110,5 +110,15 @@ public class MyWebSocketHandler {
                 System.err.println("Failed to send to user " + id);
             }
         });
+    }
+    
+    public void sendInvalidMessage(String message) 
+    {
+    	try {
+			personal_session.getRemote().sendString(message);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 }
