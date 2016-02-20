@@ -89,6 +89,12 @@ public class GameBoard {
 	 * @return True if the route is unoccupied, false otherwise
 	 */
 	public boolean isRouteAvailable(CityToCityRoute route){
+		//route must exist
+		if(!routes.contains(route)){
+			return false;
+		}
+		
+		//nobody can have the route already
 		for(Integer key : currentRoutes.keySet()){
 			List<CityToCityRoute> list = currentRoutes.get(key);
 			if(list.contains(route)){

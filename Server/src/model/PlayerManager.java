@@ -18,6 +18,10 @@ public class PlayerManager {
 	 */
 	public boolean canBuyTrack(int playerID, int trackLength, TrackColor color)
 	{
+		//player must exist
+		if(this.getPlayer(playerID) == null){
+			return false;
+		}
 		//must be current player
 		if(players.get(currentTurnIndex).getPlayerID() != playerID){
 			return false;
@@ -149,10 +153,6 @@ public class PlayerManager {
 				player = players.get(i);
 				
 			}
-			
-			//we need card class here
-			//Card tempCard = new Card(trackLength,color);
-			//update trackCards
 		}
 	}
 	/**
@@ -234,6 +234,27 @@ public class PlayerManager {
 		return true;
 	}
 
+	private Player getPlayer(int playerID){
+		Player output = null;
+		for(Player p : this.players){
+			if(p.getPlayerID() == playerID){
+				output = p;
+				break;
+			}
+		}
+		return output;
+	}
+	
+	/**
+	 * Determines whether the player with the given ID is currently the active player
+	 * @param playerID the player being checked
+	 * @return true if the player is the active player, false otherwise
+	 */
+	public boolean isPlayersTurn(int playerID){
+		Player p = this.players.get(this.currentTurnIndex);
+		return p.getPlayerID() == playerID;
+	}
+	
 	public List<Player> getPlayers() {
 		return Collections.unmodifiableList(players);
 	}

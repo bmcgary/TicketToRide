@@ -341,6 +341,14 @@ public class ServerFacade {
 		}
 	}
 	
+	/**
+	 * Assumes the player will buy the route with the fewest wild cards possible used
+	 * @param playerID the player buying the route
+	 * @param gameID the game for the purchase
+	 * @param route the route being bought
+	 * @throws PreConditionException thrown if the player can't buy the route
+	 * @throws InternalServerException thrown if something horrible happens and Trent messed up
+	 */
 	public synchronized void buyRoute(int playerID, int gameID, CityToCityRoute route) throws PreConditionException, InternalServerException
 	{
 		//helper method
@@ -358,8 +366,20 @@ public class ServerFacade {
 		}
 	}
 	
+	/**
+	 * Determines whether a player can draw a given train card
+	 * @param playerID the player drawing the card
+	 * @param gameID the game this is happening in
+	 * @param cardLocation 0-4 refers to the visible cards, 5 refers to the top of the deck
+	 * @return true if possible, false otherwise
+	 */
 	public boolean canDrawTrainCard(int playerID, int gameID, int cardLocation)
 	{
+		for(Game g : games){
+			if(g.getGameID() == gameID){
+				return g.canPlayerDrawTrainCard(playerID, cardLocation);
+			}
+		}
 		return false;
 	}
 	

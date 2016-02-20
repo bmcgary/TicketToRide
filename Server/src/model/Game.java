@@ -2,7 +2,11 @@ package model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import server.exception.PreConditionException;
 
 /**
  * Represents a given game. Most operations are delegated to the PlayerManager and GameBoard
@@ -79,12 +83,51 @@ public class Game {
 	}
 
 	public boolean canPlayerBuyRoute(int playerID, CityToCityRoute route) {
-		// TODO Auto-generated method stub
+		//route must be available
+		if(!gameBoard.isRouteAvailable(route)){
+			return false;
+		}
+		
+		//player must be able to buy tracks in general
+		if(!playerManager.canBuyTrack(playerID, route.getNumTrains(), route.getTrackColor())){
+			return false;
+		}
+		
+		//player must have the appropriate resources
+		for(int i = 0; i < route.getNumTrains(); ++i){	//this allows us to check every combination of wild cards/route color
+			Map<TrackColor, Integer> trainCards = new HashMap<TrackColor, Integer>();
+			trainCards.put(route.getTrackColor(), route.getNumTrains()-i);
+			trainCards.put(TrackColor.None, i);
+			if(playerManager.canBuyTrackWithCard(playerID, route.getNumTrains(), route.getTrackColor(), trainCards)){
+				return true;
+			}
+		}
 		return false;
 	}
 
-	public void buyRoute(int playerID, CityToCityRoute route) {
-		// TODO Auto-generated method stub
+	public void buyRoute(int playerID, CityToCityRoute route) throws PreConditionException {
+		//helper method
+		if(!canPlayerBuyRoute(playerID, route)){
+			throw new PreConditionException("Preconditions not met for player " + playerID + " buying the route");
+		}
+		
+		//remove resources from player
+		for(int i = 0; i < route.getNumTrains(); ++i){	//this allows us to check every combination of wild cards/route color
+			Map<TrackColor, Integer> trainCards = new HashMap<TrackColor, Integer>();
+			trainCards.put(route.getTrackColor(), route.getNumTrains()-i);
+			trainCards.put(TrackColor.None, i);
+			if(playerManager.canBuyTrackWithCard(playerID, route.getNumTrains(), route.getTrackColor(), trainCards)){
+				//this assumes the player will want to use regular cards before wild cards
+				playerManager.buyTrack(playerID, route.getNumTrains(), route.getTrackColor(), trainCards);
+				return;
+			}
+		}
+	}
+
+	public boolean canPlayerDrawTrainCard(int playerID, int cardLocation) {
+		//must be current player
+		
+		return false;
 	}
 	
 	
