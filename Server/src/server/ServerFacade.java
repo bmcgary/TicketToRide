@@ -2,6 +2,7 @@ package server;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import model.CityToCityRoute;
 import model.Game;
@@ -316,19 +317,50 @@ public class ServerFacade {
 		}
 	}
 	
-	public void canBuyRoute(int playerID, int gameID, CityToCityRoute route)
+	/**
+	 * Reports whether a player in a given game may buy the desired route
+	 * @param playerID The player wanting to buy the route
+	 * @param gameID The game in which this takes place
+	 * @param route the desired route
+	 * @return true if the route can be bought, false otherwise
+	 * @throws InternalServerException 
+	 */
+	public boolean canBuyRoute(int playerID, int gameID, CityToCityRoute route) throws InternalServerException
 	{
-		
+		//Helper methods
+		if(!this.isPlayerLoggedIn(playerID) || !this.isPlayableGame(gameID)){
+			return false;
+		}
+		else{
+			for(Game g : games){
+				if(g.getGameID() == gameID){
+					return g.canPlayerBuyRoute(playerID, route);
+				}
+			}
+			throw new InternalServerException("See ServerFacade::canBuyRoute");
+		}
 	}
 	
-	public synchronized void buyRoute(int playerID, int gameID, CityToCityRoute route)
+	public synchronized void buyRoute(int playerID, int gameID, CityToCityRoute route) throws PreConditionException, InternalServerException
 	{
+		//helper method
+		if(!this.canBuyRoute(playerID, gameID, route)){
+			throw new PreConditionException("Player: " + playerID + " cannot requested route in game " + gameID);
+		}
 		
+		else{
+			for(Game g : games){
+				if(g.getGameID() == gameID){
+					g.buyRoute(playerID, route);
+					return;
+				}
+			}
+		}
 	}
 	
-	public void canDrawTrainCard(int playerID, int gameID, int cardLocation)
+	public boolean canDrawTrainCard(int playerID, int gameID, int cardLocation)
 	{
-		
+		return false;
 	}
 	
 	public synchronized  void drawTrainCard(int playerID, int gameID, int cardLocation)
@@ -336,9 +368,9 @@ public class ServerFacade {
 		
 	}
 	
-	public void canGetDestinations(int playerID, int gameID)
+	public boolean canGetDestinations(int playerID, int gameID)
 	{
-		
+		return false;
 	}
 	
 	public synchronized void getDestinations(int playerID, int gameID)
@@ -346,9 +378,9 @@ public class ServerFacade {
 		
 	}
 	
-	public void canSelectDestinations(int playerID, int gameID, int[] destinationsSelected)
+	public boolean canSelectDestinations(int playerID, int gameID, int[] destinationsSelected)
 	{
-		
+		return false;
 	}
 	
 	public synchronized void selectDestinations(int playerID, int gameID, int[] destinationsSelected)
@@ -371,8 +403,40 @@ public class ServerFacade {
 		
 	}
 	
-	public void getCityMapping()
+	public Map<Integer, CityToCityRoute> getCityMapping()
 	{
-		
+		return null;
+	}
+	
+	/**
+	 * Determines whether a player is currently logged in
+	 * @param playerID the player to check
+	 * @return false if the player is not logged in or doesn't exist, true otherwise
+	 */
+	private boolean isPlayerLoggedIn(int playerID){
+		//player must exist be logged in
+		for(User u : users){
+			if(u.getPlayerID() == playerID){
+				if(u.isLoggedIn()){	//must be logged in
+					return true;
+				}
+				break;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Helper method that determines whether or not a game can have playing actions performed in it
+	 * @param gameID the game to be checked
+	 * @return false if the game doesn't exist or hasn't started yet, true otherwise
+	 */
+	private boolean isPlayableGame(int gameID){
+		for(Game g : games){
+			if(g.getGameID()==gameID){
+				return g.isStarted();
+			}
+		}
+		return false;
 	}
 }

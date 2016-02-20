@@ -131,13 +131,12 @@ public class PlayerManager {
 
 	/**
 	 * 
-	 * buy track a player indentified by playerid
+	 * buy track a player identified by playerID
 	 * @param PlayerID
 	 * @param trackLength
 	 * @param color
 	 * @param trackCards
 	 */
-	
 	public void buyTrack(int PlayerID, int trackLength, TrackColor color, Map<TrackColor,Integer> trackCards)
 	{
 		Player player = null;
@@ -210,9 +209,10 @@ public class PlayerManager {
 		result = prime * result + ((players == null) ? 0 : players.hashCode());
 		return result;
 	}
-/**
- * generate equal function
- */
+	
+	/**
+	 * generate equal function
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

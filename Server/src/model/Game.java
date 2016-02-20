@@ -77,6 +77,15 @@ public class Game {
 	public boolean isStarted(){
 		return started;
 	}
+
+	public boolean canPlayerBuyRoute(int playerID, CityToCityRoute route) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public void buyRoute(int playerID, CityToCityRoute route) {
+		// TODO Auto-generated method stub
+	}
 	
 	
 
