@@ -7,7 +7,7 @@ import java.util.Map;
 public class PlayerManager {
 	private List<Player> players;
 	private int currentTurnIndex;
-	private boolean drewAlreadyCurrentTurn;
+	public boolean drewAlreadyCurrentTurn;
 	
 	/**
 	 * Check if a player can buy track
@@ -75,6 +75,7 @@ public class PlayerManager {
 	{
 		currentTurnIndex += 1;
 		currentTurnIndex %= players.size();
+		drewAlreadyCurrentTurn = false;
 	}
 	
 	/**

@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import server.exception.OutOfBoundsException;
+
 /**
  * Represents and controls all aspects of the game model that comprise the board.
  * @author Trent

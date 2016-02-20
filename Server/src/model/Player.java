@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import server.User;
+import server.exception.OutOfBoundsException;
 
 /**
  * Represents a player in a given game. Links to universal users by means of ID
@@ -50,7 +51,7 @@ public class Player {
 	public void useTrains(int num) throws OutOfBoundsException
 	{
 		if(this.numTrainsLeft < num){
-			throw new OutOfBoundsException();
+			throw new OutOfBoundsException("Not enough trains remaining");
 		}
 		this.numTrainsLeft -= num;
 	}

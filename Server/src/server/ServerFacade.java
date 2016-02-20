@@ -11,6 +11,7 @@ import model.PlayerColor;
 import server.exception.AddUserException;
 import server.exception.BadCredentialsException;
 import server.exception.InternalServerException;
+import server.exception.OutOfBoundsException;
 import server.exception.PreConditionException;
 
 public class ServerFacade {
@@ -372,8 +373,10 @@ public class ServerFacade {
 	 * @param gameID the game this is happening in
 	 * @param cardLocation 0-4 refers to the visible cards, 5 refers to the top of the deck
 	 * @return true if possible, false otherwise
+	 * @throws OutOfBoundsException if the cardLocation is out of bounds
+	 * @throws InternalServerException if Trent messed up
 	 */
-	public boolean canDrawTrainCard(int playerID, int gameID, int cardLocation)
+	public boolean canDrawTrainCard(int playerID, int gameID, int cardLocation) throws OutOfBoundsException, InternalServerException
 	{
 		for(Game g : games){
 			if(g.getGameID() == gameID){
@@ -383,9 +386,18 @@ public class ServerFacade {
 		return false;
 	}
 	
-	public synchronized  void drawTrainCard(int playerID, int gameID, int cardLocation)
+	public synchronized  void drawTrainCard(int playerID, int gameID, int cardLocation) throws PreConditionException, OutOfBoundsException, InternalServerException
 	{
+		//helper method
+		if(!this.canDrawTrainCard(playerID, gameID, cardLocation)){
+			throw new PreConditionException("player " + playerID + " cannot draw the card");
+		}
 		
+		for(Game g : games){
+			if(g.getGameID() == gameID){
+				g.drawTrainCard(playerID, cardLocation);
+			}
+		}
 	}
 	
 	public boolean canGetDestinations(int playerID, int gameID)

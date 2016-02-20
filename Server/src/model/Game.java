@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import server.exception.InternalServerException;
+import server.exception.OutOfBoundsException;
 import server.exception.PreConditionException;
 
 /**
@@ -124,10 +126,56 @@ public class Game {
 		}
 	}
 
-	public boolean canPlayerDrawTrainCard(int playerID, int cardLocation) {
-		//must be current player
+	public boolean canPlayerDrawTrainCard(int playerID, int cardLocation) throws OutOfBoundsException, InternalServerException {
+		//checks cardLocation validity
+		if(cardLocation > 5 || cardLocation < 0){
+			throw new OutOfBoundsException("Card Location was: " + cardLocation + ", which is out of bounds");
+		}
 		
-		return false;
+		//must be current player
+		if(!playerManager.isPlayersTurn(playerID)){
+			return false;
+		}
+		
+		//5 means top of the deck
+		if(cardLocation == 5 && gameBoard.canDrawDeckTrainCar()){
+			return true;
+		}
+		
+		//0-4 means visible cards
+		if(cardLocation >= 0 && cardLocation < 5){
+			//if the player already drew this turn, they can't get one of the visible cards
+			if(playerManager.drewAlreadyCurrentTurn){
+				return false;
+			}
+			else{
+				return gameBoard.canDrawVisibleTrainCar(cardLocation);
+			}
+		}
+		throw new InternalServerException("Trent messed up in Game::canPlayerDrawTrainCard");
+	}
+
+	public void drawTrainCard(int playerID, int cardLocation) throws PreConditionException, OutOfBoundsException, InternalServerException {
+		//helper method
+		if(!this.canPlayerDrawTrainCard(playerID, cardLocation)){
+			throw new PreConditionException("Preconditions not met to draw train card");
+		}
+		
+		TrackColor card = null;
+		//5 means top of deck
+		if(cardLocation == 5){
+			card = gameBoard.drawDeckTrainCar();
+		}
+		else if(cardLocation < 5 || cardLocation >= 0){
+			card = gameBoard.drawVisibleTrainCar(cardLocation);
+		}
+		
+		if(card == null){
+			throw new InternalServerException("Trent messed up in Game::drawTrainCard");
+		}
+		
+		playerManager.addTrainCarCard(playerID, card);
+		
 	}
 	
 	
