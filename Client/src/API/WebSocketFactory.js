@@ -30,6 +30,7 @@ app.factory('WebSocket', function ($websocket, $location, ServerAPI) {
 
     return {
     	//WebSocket Methods
+        
         status: function () {
             return ws.readyState;
         },
