@@ -191,6 +191,6 @@ app.factory('ClientAPI', function (WebSocket) {
                 }
             };
             WebSocket.send(jsonCommand);
-        }
+        } 
     };
 });

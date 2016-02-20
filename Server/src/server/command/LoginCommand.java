@@ -25,7 +25,7 @@ public class LoginCommand implements Command {
         try {
             userID = serverFacade.login(username, password);
         } catch (BadCredentialsException e) {
-            return new ResponseWrapper(-1, Response.newInvalidInputResponse());
+            return new ResponseWrapper(null, Response.newInvalidInputResponse());
         }
         return new ResponseWrapper(userID, Response.newSuccessResponse());
     }
