@@ -142,3 +142,63 @@ Santa Fe
 Oklahoma City
 Blue
 3
+El Paso
+Oklahoma City
+Yellow
+5
+El Paso
+Dallas
+Red
+4
+El Paso
+Houston
+Green
+6
+Winnipeg
+Sault Ste. Marie
+None
+6
+Winnipeg
+Duluth
+Black
+4
+Duluth
+Omaha
+None
+2
+Duluth
+Omaha
+None
+2
+Omaha
+Kansas City
+None
+1
+Omaha
+Kansas City
+None
+1
+Kansas City
+Oklahoma City
+None
+2
+Kansas City
+Oklahoma City
+None
+2
+Oklahoma City
+Dallas
+None
+2
+Oklahoma City
+Dallas
+None
+2
+Dallas
+Houston
+None
+1
+Dallas
+Houston
+None
+1
