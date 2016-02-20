@@ -16,9 +16,11 @@ public class Game {
 	private static int nextID = 1;
 	private int gameID;
 	private List<String> history;
+	private boolean started;
 	
 	public Game(){
 		gameBoard = new GameBoard();
+		started = false;
 		playerManager = new PlayerManager();
 		gameID = nextID++;
 		history = new ArrayList<String>();
@@ -41,8 +43,20 @@ public class Game {
 		history.add(message);
 	}
 	
+	/**
+	 * Returns the history as an unmodifiable list of strings
+	 * @return the game history
+	 */
 	public List<String> getHistory(){
 		return Collections.unmodifiableList(history);
+	}
+	
+	public void startGame(){
+		this.addHistoryMessage("Game initialized");
+	}
+	
+	public boolean isStarted(){
+		return started;
 	}
 	
 	

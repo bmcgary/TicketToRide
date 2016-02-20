@@ -10,6 +10,7 @@ import model.PlayerColor;
 import server.exception.AddUserException;
 import server.exception.BadCredentialsException;
 import server.exception.InternalServerException;
+import server.exception.PreConditionException;
 
 public class ServerFacade {
 	private static ServerFacade serverFacade;
@@ -112,11 +113,22 @@ public class ServerFacade {
 			}
 		}
 		
+		//game cannot already be in play
+		if(game.isStarted()){
+			return false;
+		}
+		
 		//game can't be full
 		return game.getPlayerManager().getNumPlayers() < this.MAX_PLAYERS_PER_GAME;
 
 	}
 	
+	/**
+	 * Adds a player with the given ID to the game with the given ID
+	 * @param playerID the ID of the player
+	 * @param gameID the ID of the game
+	 * @param playerColor the color wished to join with
+	 */
 	public synchronized void addPlayerToGame(int playerID, int gameID, PlayerColor playerColor)
 	{
 		//helper check
@@ -140,24 +152,99 @@ public class ServerFacade {
 		}
 	}
 	
-	public void canStartGame(int playerID, int gameID)
+	/**
+	 * Determines whether or not the player can start the game
+ 	 * @param playerID The player attempting to start the game
+ 	 * @param gameID The game to be started
+ 	 * @return True if possible, false otherwise
+	 */
+	public boolean canStartGame(int playerID, int gameID)
 	{
-		
+		User user = null;
+		Game game = null;
+		 //player must exist and be logged in
+		for(User u : this.users){
+			if(u.getPlayerID() == playerID){
+			 	user = u;
+			 	if(!user.isLoggedIn()){
+			 		return false;
+			 	}
+			 	break;
+			 }
+		 }
+		 if(user == null){	//guarantees user was found
+		 	return false;
+		 }
+		 
+		 //game must exist
+		 for (Game g : this.games){
+		 	if(g.getGameID() == gameID){
+		 		game = g;
+		 		break;
+		 	}
+		 }
+		 if(game == null){	//guarantees game was found
+		 	return false;
+		 }
+		 
+		 //game can't already be started
+		 if(game.isStarted()){
+			 return false;
+		 }
+		 
+		 //game must have at least 2 players
+		 if(game.getPlayerManager().getNumPlayers() < 2){
+			 return false;
+		 }
+		 
+		 //player starting game must be 0th slot in game's list
+		 if(game.getPlayerManager().getPlayers().get(0).getPlayerID() != playerID){	//can anyone say Demeter's law?
+			 return false;
+		 }
+		 
+		 return true;
 	}
 	
-	public synchronized void startGame(int playerID, int gameID)
+	/**
+	 * Either called by the player who created the game, or when the game has 5 players. Initializes everything,
+	 * locks out new players, and starts the turn phases appropriately
+	 * @param playerID the ID of the player attempting to start
+	 * @param gameID the gameID desired to begin
+	 * @throws PreConditionException Thrown if the player can't start the given game
+	 * @throws InternalServerException thrown if somehow the canDo returns true, but we couldn't create the new game
+	 */
+	public synchronized void startGame(int playerID, int gameID) throws PreConditionException, InternalServerException
 	{
+		//helper check
+		if(!this.canStartGame(playerID,  gameID)){
+			throw new PreConditionException("Game " + gameID + " cannot be started by player " + playerID);
+		}
 		
+		Game game = null;
+		for(Game g : games){
+			if(g.getGameID() == gameID){
+				game = g;
+				break;
+			}
+		}
+		if(game == null){
+			throw new InternalServerException("Something went dreadfully wrong in ServerFacade::startGame()");
+		}
+		else{
+			game.startGame();
+		}
+		
+		assert(game.getHistory().size() > 1);
 	}
 	
-	public void canLeaveGame(int playerID, int gameID)
+	public boolean canLeaveGame(int playerID, int gameID)
 	{
-		
+		return false; //for future implementation
 	}
 	
 	public synchronized void leaveGame(int playerID, int gameID)
 	{
-		
+		return; 	//for future implementation
 	}
 	
 	/**
