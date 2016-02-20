@@ -15,10 +15,6 @@ public class City {
 		this.name = name;
 	}
 	
-	/**
-	 * 
-	 * @return Location of the city represented as a point (x, y)
-	 */
 	public Point getLocation() {
 		return location;
 	}
