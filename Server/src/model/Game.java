@@ -71,7 +71,7 @@ public class Game {
 		//give each player 3 destination cards
 		for(Player p : this.getPlayerManager().getPlayers()){
 			for(int i = 0; i < 3; ++i){
-				playerManager.addDestinationRoutes(p.getPlayerID(), gameBoard.drawDestinationRoutes());
+				playerManager.addDestinationRoutesToConsider(p.getPlayerID(), gameBoard.drawDestinationRoutes());
 			}
 		}
 		
@@ -108,11 +108,6 @@ public class Game {
 	}
 
 	public void buyRoute(int playerID, CityToCityRoute route) throws PreConditionException {
-		//helper method
-		if(!canPlayerBuyRoute(playerID, route)){
-			throw new PreConditionException("Preconditions not met for player " + playerID + " buying the route");
-		}
-		
 		//remove resources from player
 		for(int i = 0; i < route.getNumTrains(); ++i){	//this allows us to check every combination of wild cards/route color
 			Map<TrackColor, Integer> trainCards = new HashMap<TrackColor, Integer>();
@@ -156,11 +151,6 @@ public class Game {
 	}
 
 	public void drawTrainCard(int playerID, int cardLocation) throws PreConditionException, OutOfBoundsException, InternalServerException {
-		//helper method
-		if(!this.canPlayerDrawTrainCard(playerID, cardLocation)){
-			throw new PreConditionException("Preconditions not met to draw train card");
-		}
-		
 		TrackColor card = null;
 		//5 means top of deck
 		if(cardLocation == 5){
@@ -175,6 +165,35 @@ public class Game {
 		}
 		
 		playerManager.addTrainCarCard(playerID, card);
+		
+	}
+
+	public boolean canPlayerGetDestinations(int playerID) {
+		//must be player's turn
+		if(!playerManager.isPlayersTurn(playerID)){
+			return false;
+		}
+		//game board must have sufficient cards left
+		return gameBoard.canDrawDestinationRoute();
+	}
+
+	
+	public void getDestinations(int playerID) {
+		List<DestinationRoute> cards = gameBoard.drawDestinationRoutes();
+		playerManager.addDestinationRoutesToConsider(playerID, cards);
+	}
+
+
+	public boolean canPlayerSelectDestinations(int playerID, int[] destinationsSelected) {
+		//must be players turn
+		if(!playerManager.isPlayersTurn(playerID)){
+			return false;
+		}
+		return playerManager.canSelectDestinations(playerID, destinationsSelected);
+	}
+
+	public void selectDestinations(int playerID, int[] destinationsSelected) {
+		List<DestinationRoute> routes = playerManager.selectDestinations(playerID, destinationsSelected);
 		
 	}
 	

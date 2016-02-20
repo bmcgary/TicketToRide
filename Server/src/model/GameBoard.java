@@ -38,11 +38,11 @@ public class GameBoard {
 		discardedTrainCarCards = new ArrayList<TrackColor>();
 	}
 	/**
-	 * Reports whether a destination route can be drawn from the deck
+	 * Reports whether at least 3 destination routes can be drawn from the deck
 	 * @return true if cards are remaining, false otherwise
 	 */
 	public boolean canDrawDestinationRoute(){
-		if(destinationRoutes.size() > 0){
+		if(destinationRoutes.size() > 2){
 			return true;
 		}
 		else{

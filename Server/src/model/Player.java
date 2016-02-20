@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ public class Player {
 	private int ID;
 	private int numTrainsLeft;
 	private List<DestinationRoute> destinationRoutes;
+	private DestinationRoute[] destinationRoutesToConsider;
 	private Map<TrackColor,Integer> trainCarCards;
 	private PlayerColor color;
 	private int pointsScored;
@@ -26,11 +28,21 @@ public class Player {
 		this.ID=ID;
 		this.color = color;
 		this.pointsScored = 0;
+		this.destinationRoutes = new ArrayList<DestinationRoute>();
+		this.destinationRoutesToConsider = new DestinationRoute[3];
 	}
 	
 	public List<DestinationRoute> getDestinationRoute()
 	{
 		return destinationRoutes;
+	}
+	
+	public DestinationRoute[] getDestinationRoutesToConsider(){
+		return destinationRoutesToConsider;
+	}
+	
+	public void setDestinationRoutesToConsider(DestinationRoute[] routes){
+		this.destinationRoutesToConsider = routes;
 	}
 	
 	public int getPlayerID()

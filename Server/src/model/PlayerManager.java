@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -84,24 +86,41 @@ public class PlayerManager {
 	 * @param PlayerID
 	 * @param routs
 	 */
-	public void addDestinationRoutes(int PlayerID,List<DestinationRoute> routes)
+	private void addDestinationRoute(int playerID, DestinationRoute route)
 	{
 		
 		Player player = null;
 		for(int i =0; i < players.size();i++)	
 		{
 			
-			if(players.get(i).getPlayerID()==PlayerID)
+			if(players.get(i).getPlayerID()==playerID)
 			{ 
 				
 				player = players.get(i);
 				
 			}
 			
-			player.getDestinationRoute().addAll(routes);
-			assert(player.getDestinationRoute().containsAll(routes));
+			player.getDestinationRoute().add(route);
+			assert(player.getDestinationRoute().contains(route));
 		}
 	}
+	
+	public void addDestinationRoutesToConsider(int playerID, List<DestinationRoute> routes){
+		Player player = null;
+		for(int i =0; i < players.size();i++)	
+		{
+			
+			if(players.get(i).getPlayerID()==playerID)
+			{ 
+				
+				player = players.get(i);
+				
+			}
+			
+			player.setDestinationRoutesToConsider((DestinationRoute[]) routes.toArray());
+		}
+	}
+	
 	/**
 	 * add trainCarCard for a player
 	 * @param playerID
@@ -258,6 +277,49 @@ public class PlayerManager {
 	
 	public List<Player> getPlayers() {
 		return Collections.unmodifiableList(players);
+	}
+
+	public boolean canSelectDestinations(int playerID, int[] destinationsSelected) {
+		//player must have all the given destination indices
+		for(Player p : players){
+			if(p.getPlayerID() == playerID){
+				for(int i : destinationsSelected){
+					if(p.getDestinationRoutesToConsider()[i] == null){
+						return false;
+					}
+				}
+				break;
+			}
+		}
+		
+		//there must be at least 1 destination selected
+		if(destinationsSelected.length < 1){
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Gives the selected indices to the player's permanent list of Destination cards, returns the rest
+	 * @param playerID the Player doing the selection
+	 * @param destinationsSelected indices of the selected destination cards
+	 * @return all cards not selected
+	 */
+	public List<DestinationRoute> selectDestinations(int playerID, int[] destinationsSelected) {
+		List<DestinationRoute> output = null;
+		for(Player p : players){
+			if(p.getPlayerID() == playerID){
+				output = Arrays.asList(p.getDestinationRoutesToConsider());
+				for(int i : destinationsSelected){
+					DestinationRoute dr = p.getDestinationRoutesToConsider()[i];
+					this.addDestinationRoute(playerID, dr);
+					output.remove(dr);
+				}
+				p.setDestinationRoutesToConsider(new DestinationRoute[3]);
+			}
+			break;
+		}
+		return output;
 	}
 }
 

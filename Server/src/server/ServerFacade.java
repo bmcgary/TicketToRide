@@ -354,7 +354,7 @@ public class ServerFacade {
 	{
 		//helper method
 		if(!this.canBuyRoute(playerID, gameID, route)){
-			throw new PreConditionException("Player: " + playerID + " cannot requested route in game " + gameID);
+			throw new PreConditionException("Player: " + playerID + " cannot buy requested route in game " + gameID);
 		}
 		
 		else{
@@ -402,32 +402,83 @@ public class ServerFacade {
 	
 	public boolean canGetDestinations(int playerID, int gameID)
 	{
+		if(!this.isPlayableGame(gameID) || !this.isPlayerLoggedIn(playerID)){
+			return false;
+		}
+		for(Game g : games){
+			if(g.getGameID() == gameID){
+				return g.canPlayerGetDestinations(playerID);
+			}
+		}
 		return false;
 	}
 	
-	public synchronized void getDestinations(int playerID, int gameID)
+	/**
+	 * Draws 3 destination cards from the deck, adds them to the considered Destination cards of the player
+	 * @param playerID The player doing the drawing of the destination cards
+	 * @param gameID the game this is happening in
+	 * @throws PreConditionException thrown if the player cannot draw cards now
+	 */
+	public synchronized void getDestinations(int playerID, int gameID) throws PreConditionException
 	{
+		//helper method
+		if(!this.canGetDestinations(playerID, gameID)){
+			throw new PreConditionException("Preconditions not met to get Destinations");
+		}
 		
+		for(Game g : games){
+			if(g.getGameID() == gameID){
+				g.getDestinations(playerID);
+				break;
+			}
+		}
 	}
 	
-	public boolean canSelectDestinations(int playerID, int gameID, int[] destinationsSelected)
+	public boolean canSelectDestinations(int playerID, int gameID, int[] destinationsSelected) throws OutOfBoundsException
 	{
+		//helper method
+		if(!this.isPlayableGame(gameID) || !this.isPlayerLoggedIn(playerID)){
+			return false;
+		}
+		
+		//checks boundaries for indices
+		for(int i : destinationsSelected){
+			if(i > 2 || i < 0){
+				throw new OutOfBoundsException();
+			}
+		}
+		
+		//asks the appropriate game
+		for(Game g : games){
+			if(g.getGameID() == gameID){
+				return g.canPlayerSelectDestinations(playerID, destinationsSelected);
+			}
+		}
 		return false;
 	}
 	
-	public synchronized void selectDestinations(int playerID, int gameID, int[] destinationsSelected)
+	public synchronized void selectDestinations(int playerID, int gameID, int[] destinationsSelected) throws PreConditionException, OutOfBoundsException
 	{
+		//helper method
+		if(!this.canSelectDestinations(playerID, gameID, destinationsSelected)){
+			throw new PreConditionException("Preconditions not met for selectDestinations");
+		}
 		
+		for(Game g : games){
+			if(g.getGameID() == gameID){
+				g.selectDestinations(playerID, destinationsSelected);
+			}
+		}
 	}
 	
 	public synchronized void loadGameState()
 	{
-		
+		//TODO: loading stuff
 	}
 	
 	public synchronized void saveGameState()
 	{
-		
+		//TODO: saving stuff
 	}
 	
 	public synchronized void sendClientModelInformation()
