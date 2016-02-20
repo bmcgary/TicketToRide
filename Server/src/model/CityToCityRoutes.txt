@@ -204,7 +204,7 @@ None
 1
 Duluth
 Sault Ste. Marie
-NOne
+None
 3
 Duluth
 Toronto
