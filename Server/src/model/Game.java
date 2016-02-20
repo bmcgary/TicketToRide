@@ -124,6 +124,7 @@ public class Game {
 					}
 				}
 				gameBoard.discardTrainCards(toDiscard);
+				playerManager.advanceTurn();
 				return;
 			}
 		}
@@ -176,6 +177,12 @@ public class Game {
 		}
 		
 		playerManager.addTrainCarCard(playerID, card);
+		if(playerManager.drewAlreadyCurrentTurn){
+			playerManager.advanceTurn();
+		}
+		else{
+			playerManager.drewAlreadyCurrentTurn = true;
+		}
 		
 	}
 
@@ -192,6 +199,7 @@ public class Game {
 	public void getDestinations(int playerID) {
 		List<DestinationRoute> cards = gameBoard.drawDestinationRoutes();
 		playerManager.addDestinationRoutesToConsider(playerID, cards);
+		playerManager.advanceTurn();
 	}
 
 
@@ -205,6 +213,7 @@ public class Game {
 
 	public void selectDestinations(int playerID, int[] destinationsSelected) {
 		List<DestinationRoute> routes = playerManager.selectDestinations(playerID, destinationsSelected);
+		gameBoard.returnDestinationRoutes(routes);
 		
 	}
 	
