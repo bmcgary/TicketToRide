@@ -206,8 +206,7 @@ public class ServerFacade {
 	}
 	
 	/**
-	 * Either called by the player who created the game, or when the game has 5 players. Initializes everything,
-	 * locks out new players, and starts the turn phases appropriately
+	 * Either called by the player who created the game, or when the game has 5 players. Initializes everything
 	 * @param playerID the ID of the player attempting to start
 	 * @param gameID the gameID desired to begin
 	 * @throws PreConditionException Thrown if the player can't start the given game

@@ -234,8 +234,8 @@ public class PlayerManager {
 		return true;
 	}
 
-public List<Player> getPlayers() {
-	return Collections.unmodifiableList(players);
-}
+	public List<Player> getPlayers() {
+		return Collections.unmodifiableList(players);
+	}
 }
 

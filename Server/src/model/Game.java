@@ -52,6 +52,25 @@ public class Game {
 	}
 	
 	public void startGame(){
+		//get all the cards set up on the board
+		gameBoard.initialize();
+		
+		//give each player 4 train cards
+		for(Player p : this.getPlayerManager().getPlayers()){
+			for(int i = 0; i < 4; ++i){
+				playerManager.addTrainCarCard(p.getPlayerID(), gameBoard.drawDeckTrainCar());
+			}
+		}
+		
+		//give each player 3 destination cards
+		for(Player p : this.getPlayerManager().getPlayers()){
+			for(int i = 0; i < 3; ++i){
+				playerManager.addDestinationRoutes(p.getPlayerID(), gameBoard.drawDestinationRoutes());
+			}
+		}
+		
+		//locks new players out now, declares the game has been started
+		started = true;
 		this.addHistoryMessage("Game initialized");
 	}
 	

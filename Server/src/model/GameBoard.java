@@ -221,5 +221,10 @@ public class GameBoard {
 	public List<TrackColor> getDiscardedTrainCarCards() {
 		return discardedTrainCarCards;
 	}
+
+	public void initialize() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }
