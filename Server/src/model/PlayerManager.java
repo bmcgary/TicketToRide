@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import server.exception.OutOfBoundsException;
+
 public class PlayerManager {
 	private List<Player> players;
 	private int currentTurnIndex;
@@ -50,7 +52,7 @@ public class PlayerManager {
 	 * @param trainCards
 	 * @return
 	 */
-	public boolean canBuyTrackWithCard(int playerID, int trackLength, TrackColor color, Map<TrackColor,Integer> trainCards)
+	public boolean canBuyTrackWithCards(int playerID, int trackLength, TrackColor color, Map<TrackColor,Integer> trainCards)
 	{
 		//helper function
 		if(!this.canBuyTrack(playerID, trackLength, color)){
@@ -155,24 +157,52 @@ public class PlayerManager {
 
 	/**
 	 * 
-	 * buy track a player identified by playerID
-	 * @param PlayerID
-	 * @param trackLength
-	 * @param color
-	 * @param trackCards
+	 * Removes the relevant resources from the player buying a track of the given characteristics and awards the relevant points
+	 * @param PlayerID the player buying the track
+	 * @param trackLength the length of track being bought
+	 * @param color the color of the track
+	 * @param trackCards the cards used to pay for it
+	 * @throws OutOfBoundsException 
 	 */
-	public void buyTrack(int PlayerID, int trackLength, TrackColor color, Map<TrackColor,Integer> trackCards)
+	public void buyTrack(int playerID, int trackLength, TrackColor color, Map<TrackColor,Integer> trackCards) throws OutOfBoundsException
 	{
-		Player player = null;
-		for(int i =0; i < players.size();i++)	
-		{
-			
-			if(players.get(i).getPlayerID()==PlayerID)
-			{ 
+		if(trackLength < 1 || trackLength > 6){
+			throw new OutOfBoundsException();
+		}
+		for(Player p : players){
+			if(p.getPlayerID() == playerID){
+				//award the relevant points
+				int pointsToAdd = 0;
+				switch(trackLength){
+				case 6:
+					pointsToAdd = 15;
+					break;
+				case 5:
+					pointsToAdd = 10;
+					break;
+				case 4:
+					pointsToAdd = 7;
+					break;
+				case 3:
+					pointsToAdd = 4;
+					break;
+				default:
+					pointsToAdd = trackLength;
+					break;
+				}
+				p.addPoints(pointsToAdd);
 				
-				player = players.get(i);
+				//remove the relevant resources
+				Map<TrackColor, Integer> playerCards = p.getTrainCarCards();
+				for(TrackColor tc : trackCards.keySet()){
+					playerCards.put(tc, playerCards.get(tc) - trackCards.get(tc));
+				}
 				
+				p.useTrains(trackLength);
+				break;
 			}
+			
+			
 		}
 	}
 	/**

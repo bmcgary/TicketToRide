@@ -10,3 +10,135 @@ Portland
 San Francisco
 Green
 5
+San Francisco
+Los Angeles
+Yellow
+3
+Vancouver
+Seattle
+None
+1
+Seattle
+Portland
+None
+1
+Porland
+San Francisco
+Purple
+8
+Vancouver
+Calgary
+None
+3
+Seattle
+Calgary
+None
+4
+Seattle
+Helena
+Yellow
+6
+Portland
+Salt Lake City
+Blue
+6
+San Francisco
+Salt Lake City
+Brown
+5
+San Francisco
+Salt Lake City
+White
+5
+Salt Lake City
+Las Vegas
+Brown
+3
+Las Vegas
+Los Angeles
+None
+2
+Los Angeles
+Phoenix
+None
+3
+Los Angeles
+El Paso
+Black
+6
+Calgary
+Winnipeg
+White
+6
+Calgary
+Helena
+None
+4
+Helena
+Salt Lake City
+Purple
+3
+Salt lake City
+Denver
+Red
+22
+Salt Lake City
+Denver
+Yellow
+3
+Phoenix
+Denver
+White
+5
+Phoenix
+Santa Fe
+None
+3
+Phoenix
+El Paso
+None
+3
+Helena
+Winnipeg
+Blue
+4
+Helena
+Denver
+Green
+4
+Denver
+Santa Fe
+None
+2
+Santa Fe
+El Paso
+None
+2
+Helena
+Duluth
+Orange
+6
+Helena
+Omaha
+Red
+5
+Denver
+Omaha
+Purple
+4
+Denver
+Kansas City
+Black
+4
+Denver
+Kansas City
+Orange
+4
+Denver
+Oklahoma City
+Red
+4
+Santa Fe
+Oklahoma City
+Blue
+3
