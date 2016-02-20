@@ -61,13 +61,11 @@ public class MyWebSocketHandler {
 			e1.printStackTrace();
 		}	//create the command
         
-        LoginCommand islogin=new LoginCommand(); //just to compare to the actual command
-        RegisterCommand isregister=new RegisterCommand(); //just to compare to the actual command
         ResponseWrapper responsewrapper = null;
         List<Integer> idlist = null;
         JSONObject json;
         
-        if(c.getClass()== islogin.getClass() || c.getClass()==isregister.getClass())
+        if(c instanceof LoginCommand || c instanceof RegisterCommand)
         {
         	responsewrapper=c.execute(-1);	//pass in a -1 because user id is not used in login/register
         	json=new JSONObject(responsewrapper.getResponse());
@@ -89,7 +87,10 @@ public class MyWebSocketHandler {
         	responsewrapper=c.execute(personal_id);
         }
         
+        
 		sendMessage(responsewrapper.getTargetIds(), responsewrapper.getResponse());		//send back to server
+
+        
 
     }
 
