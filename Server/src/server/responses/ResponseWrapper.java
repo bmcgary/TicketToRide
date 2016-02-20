@@ -45,6 +45,6 @@ public class ResponseWrapper {
     }
 
     public Iterator<Integer> getTargetIds() {
-        return targetIDs.iterator();
+        return targetIDs == null ? null : targetIDs.iterator();
     }
 }
