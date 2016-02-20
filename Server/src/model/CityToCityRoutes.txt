@@ -1,0 +1,12 @@
+Vancouver
+Seattle
+None
+1
+Seattle
+Portland
+None
+1
+Portland
+San Francisco
+Green
+5
