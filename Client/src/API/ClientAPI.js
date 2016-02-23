@@ -173,21 +173,10 @@ app.factory('ClientAPI', function (WebSocket) {
 
         selectDestinations: function (gameId, destinationsSelected) {
             var jsonCommand = {
-                "command": "GetDestinations",
+                "command": "SelectDestinations",
                 "parameters": {
                     "gameId": gameId,
                     "destinationsSelected": destinationsSelected
-                }
-            };
-            WebSocket.send(jsonCommand);
-        },
-
-        gameEnded: function (gameId, players) {
-            var jsonCommand = {
-                "command": "GetDestinations",
-                "parameters": {
-                    "gameId": gameId,
-                    "players": players
                 }
             };
             WebSocket.send(jsonCommand);
