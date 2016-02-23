@@ -25,7 +25,27 @@
 	            	url: '/forgot',
 	            	templateUrl: 'templates/forgot.html',
 	            	controller: "forgotController"
-	            });
+	            })
+				.state('mainGame', {
+					url:'/game',
+					views:{
+						'':{templateUrl:'templates/gameScaffolding.html',
+							controller:'gameScaffoldingCtrl'
+						},
+						'menu@mainGame':{
+							templateUrl:'templates/mainGameMenu.html',
+							controller:'mainGameMenuCtrl'
+						},
+						'canvas@mainGame':{
+							templateUrl:'templates/mainGameCanvas.html',
+							controller:'mainGameCanvasCtrl'
+						},
+						'tabs@mainGame':{
+							templateUrl:'templates/mainGameTabs.html',
+							controller:'mainGameTabsCtrl'
+						}
+					}
+				});
     	});
 })();
 
