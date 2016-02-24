@@ -79,5 +79,8 @@ app.controller('myCtrl', function($scope) {
   $scope.reJoinGame = function (id){
     console.log("you are rejoing: "+id);
   }
+  $scope.joinGame = function (id){
+    console.log("you are joing a new game: "+id);
+  }
 
 });
