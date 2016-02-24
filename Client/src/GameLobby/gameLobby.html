@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Case</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+  <script src="GameLobbyController.js"></script>
+</head>
+<body>
+  <div ng-app="myApp" ng-controller="myCtrl">
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Game Lobby</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="jumbotron">
+    <h1>Game Lobby</h1>
+  </div>
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="container .col-md-6">
+        <h3>Joinable Games</h3>
+        <ul ng-repeat="game in availableGames">
+          <div>
+            Game Number: {{game.id}}
+          </div>
+          <ul ng-repeat ="name in game.players">
+            {{name}}
+          </ul>
+          <ul ng-repeat ="color in game.colorAvailable">
+            {{name}}
+          </ul>
+          <button type="button" name="Join Game" ng-click="joinGame(game.id)">Join Game</button>
+        </ul>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="container .col-md-6">
+        <h3>Your Games</h3>
+        <ul ng-repeat="game in myGames">
+          <div>
+            Game Number: {{game.id}}
+          </div>
+          <ul ng-repeat ="name in game.players">
+            {{name}}
+          </ul>
+          {{yourColor}}
+          <button type="button" name="ReJoin Game" ng-click="reJoinGame(game.id)">Re-Join Game</button>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
