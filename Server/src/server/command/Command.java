@@ -1,5 +1,6 @@
 package server.command;
 
+import server.ServerFacade;
 import server.responses.ResponseWrapper;
 
 /**
@@ -8,7 +9,12 @@ import server.responses.ResponseWrapper;
  * Created by rodriggl on 1/29/2016.
  */
 public abstract class Command {
-    private transient String commandName;
+    protected transient ServerFacade serverFacade;
+    protected transient String commandName;
+
+    protected Command() {
+        serverFacade = ServerFacade.getServerFacade();
+    }
 
     /**
      * Execute this command
@@ -17,13 +23,6 @@ public abstract class Command {
      * @return  a list of userIDs to message and the response message
      */
     public abstract ResponseWrapper execute(int userID);
-
-    /**
-     * Get command name
-     *
-     * @return command name string
-     */
-    public String getCommandName() { return commandName; }
 
     public Command setCommandName(String commandName) {
         this.commandName = commandName;

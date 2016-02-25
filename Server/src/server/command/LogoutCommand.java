@@ -16,12 +16,13 @@ public class LogoutCommand extends Command {
 
     @Override
     public ResponseWrapper execute(int userID) {
-        ServerFacade serverFacade = ServerFacade.getServerFacade();
+        ResponseWrapper responseWrapper = new ResponseWrapper(userID, null, commandName);
         try {
             serverFacade.logout(userID);
+            responseWrapper.setResponse(Response.newSuccessResponse());
         } catch (BadCredentialsException e) {
-            return new ResponseWrapper(userID, Response.newInvalidInputResponse(), super.getCommandName());
+            responseWrapper.setResponse(Response.newInvalidInputResponse());
         }
-        return new ResponseWrapper(userID, Response.newSuccessResponse(), super.getCommandName());
+        return responseWrapper;
     }
 }

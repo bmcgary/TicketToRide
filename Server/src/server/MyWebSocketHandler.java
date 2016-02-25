@@ -69,7 +69,7 @@ public class MyWebSocketHandler {
 		}
 
 		catch (CommandNotFoundException e1) {
-			sendInvalidMessage(new ResponseWrapper(Response.newServerErrorResponse(), "").getResponse());
+			sendInvalidMessage(new ResponseWrapper(Response.newServerErrorResponse()).getResponse());
 		}
 
     }

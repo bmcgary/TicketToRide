@@ -21,12 +21,13 @@ public class LoginCommand extends Command {
 
     @Override
     public ResponseWrapper execute(int userID) {
-        ServerFacade serverFacade = ServerFacade.getServerFacade();
+        ResponseWrapper responseWrapper = new ResponseWrapper(commandName);
         try {
             userID = serverFacade.login(username, password);
+            responseWrapper.addTargetId(userID).setResponse(Response.newSuccessResponse());
         } catch (BadCredentialsException e) {
-            return new ResponseWrapper(null, Response.newInvalidInputResponse(), super.getCommandName());
+            responseWrapper.setResponse(Response.newInvalidInputResponse());
         }
-        return new ResponseWrapper(userID, Response.newSuccessResponse(), super.getCommandName());
+        return responseWrapper;
     }
 }

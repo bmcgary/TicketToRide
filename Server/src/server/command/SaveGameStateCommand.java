@@ -11,6 +11,8 @@ import server.responses.ResponseWrapper;
 public class SaveGameStateCommand extends Command {
     @Override
     public ResponseWrapper execute(int userID) {
-        return new ResponseWrapper(userID, Response.newServerErrorResponse(), super.getCommandName());
+        ResponseWrapper responseWrapper = new ResponseWrapper(userID, commandName);
+        serverFacade.saveGameState();
+        return responseWrapper.setResponse(Response.newSuccessResponse());
     }
 }

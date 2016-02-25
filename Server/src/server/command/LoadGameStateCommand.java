@@ -1,5 +1,6 @@
 package server.command;
 
+import com.google.gson.annotations.SerializedName;
 import server.responses.Response;
 import server.responses.ResponseWrapper;
 
@@ -9,8 +10,14 @@ import server.responses.ResponseWrapper;
  * Created by rodriggl on 1/29/2016.
  */
 public class LoadGameStateCommand extends Command {
+    @SerializedName("path")
+    private String path;
+
     @Override
     public ResponseWrapper execute(int userID) {
-        return new ResponseWrapper(userID, Response.newServerErrorResponse(), super.getCommandName());
+        ResponseWrapper responseWrapper = new ResponseWrapper(userID, commandName);
+        // TODO change this once server facade is correct
+        serverFacade.loadGameState();
+        return responseWrapper.setResponse(Response.newSuccessResponse());
     }
 }

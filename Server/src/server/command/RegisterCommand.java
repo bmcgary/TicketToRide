@@ -24,14 +24,15 @@ public class RegisterCommand extends Command {
 
     @Override
     public ResponseWrapper execute(int userID) {
-        ServerFacade serverFacade = ServerFacade.getServerFacade();
+        ResponseWrapper responseWrapper = new ResponseWrapper(commandName);
         try {
             userID = serverFacade.register(username, password);
+            responseWrapper.addTargetId(userID).setResponse(Response.newSuccessResponse());
         } catch (AddUserException e) {
-            return new ResponseWrapper(null, Response.newInvalidInputResponse(), super.getCommandName());
+            responseWrapper.setResponse(Response.newInvalidInputResponse());
         } catch (InternalServerException e) {
-            return new ResponseWrapper(null, Response.newServerErrorResponse(), super.getCommandName());
+            responseWrapper.setResponse(Response.newServerErrorResponse());
         }
-        return new ResponseWrapper(userID, Response.newSuccessResponse(), super.getCommandName());
+        return responseWrapper;
     }
 }
