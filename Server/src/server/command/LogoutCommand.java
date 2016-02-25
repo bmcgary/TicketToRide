@@ -12,7 +12,7 @@ import java.util.Collections;
  *
  * Created by rodriggl on 1/29/2016.
  */
-public class LogoutCommand implements Command {
+public class LogoutCommand extends Command {
 
     @Override
     public ResponseWrapper execute(int userID) {
@@ -20,8 +20,8 @@ public class LogoutCommand implements Command {
         try {
             serverFacade.logout(userID);
         } catch (BadCredentialsException e) {
-            return new ResponseWrapper(userID, Response.newInvalidInputResponse());
+            return new ResponseWrapper(userID, Response.newInvalidInputResponse(), super.getCommandName());
         }
-        return new ResponseWrapper(userID, Response.newSuccessResponse());
+        return new ResponseWrapper(userID, Response.newSuccessResponse(), super.getCommandName());
     }
 }
