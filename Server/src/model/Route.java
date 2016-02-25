@@ -9,6 +9,11 @@ public abstract class Route {
 	private City start;
 	private City end;
 	
+	public Route(City start, City end){
+		this.start = start;
+		this.end = end;
+	}
+	
 	public City getStart() {
 		return start;
 	}

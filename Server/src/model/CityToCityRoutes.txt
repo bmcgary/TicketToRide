@@ -1,0 +1,396 @@
+Vancouver
+Seattle
+None
+1
+Seattle
+Portland
+None
+1
+Portland
+San Francisco
+Green
+5
+San Francisco
+Los Angeles
+Yellow
+3
+Vancouver
+Seattle
+None
+1
+Seattle
+Portland
+None
+1
+Porland
+San Francisco
+Purple
+8
+Vancouver
+Calgary
+None
+3
+Seattle
+Calgary
+None
+4
+Seattle
+Helena
+Yellow
+6
+Portland
+Salt Lake City
+Blue
+6
+San Francisco
+Salt Lake City
+Brown
+5
+San Francisco
+Salt Lake City
+White
+5
+Salt Lake City
+Las Vegas
+Brown
+3
+Las Vegas
+Los Angeles
+None
+2
+Los Angeles
+Phoenix
+None
+3
+Los Angeles
+El Paso
+Black
+6
+Calgary
+Winnipeg
+White
+6
+Calgary
+Helena
+None
+4
+Helena
+Salt Lake City
+Purple
+3
+Salt lake City
+Denver
+Red
+22
+Salt Lake City
+Denver
+Yellow
+3
+Phoenix
+Denver
+White
+5
+Phoenix
+Santa Fe
+None
+3
+Phoenix
+El Paso
+None
+3
+Helena
+Winnipeg
+Blue
+4
+Helena
+Denver
+Green
+4
+Denver
+Santa Fe
+None
+2
+Santa Fe
+El Paso
+None
+2
+Helena
+Duluth
+Orange
+6
+Helena
+Omaha
+Red
+5
+Denver
+Omaha
+Purple
+4
+Denver
+Kansas City
+Black
+4
+Denver
+Kansas City
+Orange
+4
+Denver
+Oklahoma City
+Red
+4
+Santa Fe
+Oklahoma City
+Blue
+3
+El Paso
+Oklahoma City
+Yellow
+5
+El Paso
+Dallas
+Red
+4
+El Paso
+Houston
+Green
+6
+Winnipeg
+Sault Ste. Marie
+None
+6
+Winnipeg
+Duluth
+Black
+4
+Duluth
+Omaha
+None
+2
+Duluth
+Omaha
+None
+2
+Omaha
+Kansas City
+None
+1
+Omaha
+Kansas City
+None
+1
+Kansas City
+Oklahoma City
+None
+2
+Kansas City
+Oklahoma City
+None
+2
+Oklahoma City
+Dallas
+None
+2
+Oklahoma City
+Dallas
+None
+2
+Dallas
+Houston
+None
+1
+Dallas
+Houston
+None
+1
+Duluth
+Sault Ste. Marie
+None
+3
+Duluth
+Toronto
+Purple
+6
+Duluth
+Chicago
+Red
+3
+Omaha
+Chicago
+Blue
+4
+Kansas City
+Saint Louis
+Blue
+2
+Kansas City
+Saint Louis
+Purple
+2
+Oklahoma City
+Little Rock
+None
+2
+Dallas
+Little Rock
+None
+2
+Houston
+New Orleans
+None
+2
+Chicago
+Toronto
+White
+4
+Chicago
+Saint Louis
+Green
+2
+Chicago
+Saint Louis
+White
+2
+Saint Louis
+Little Rock
+None
+2
+Little Rock
+New Orleans
+Green
+3
+Saint Louis
+Nashville
+None
+2
+Little Rock
+Nashville
+White
+3
+Sault Ste. Marie
+Montreal
+Black
+5
+Sault Ste. Marie
+Toronto
+None
+2
+Chicago
+Pittsburgh
+Orange
+3
+Chicago
+Pittsburgh
+Black
+3
+Saint Louis
+Pittsburgh
+Green
+5
+New Orleans
+Atlanta
+Yellow
+4
+New Orleans
+Atlanta
+Orange
+4
+New Orleans
+Miami
+Red
+6
+Toronto
+Montreal
+None
+3
+Toronto
+Pittsburgh
+None
+2
+Nashville
+Pittsburgh
+Yellow
+4
+Nashville
+Raleigh
+Black
+3
+Nashville
+Atlanta
+None
+1
+New York
+Pittsburgh
+White
+2
+New York
+Pittsburgh
+Green
+2
+Pittsburgh
+Washington
+None
+2
+Pittsburgh
+Raleigh
+None
+2
+Atlanta
+Raleigh
+None
+2
+Atlanta
+Raleigh
+None
+2
+Atlanta
+Charleston
+None
+2
+Atlanta
+Miami
+Blue
+5
+Montreal
+New York
+Blue
+3S
+New York
+Washington
+Orange
+2
+New York
+Washington
+Black
+2
+Washington
+Raleigh
+None
+2
+Washington
+Raleigh
+None
+2
+Raleigh
+Charleston
+None
+2
+Charleston
+Miami
+Purple
+4
+Montreal
+Boston
+None
+2
+Montreal
+Boston
+None
+2
+Boston
+New York
+Yellow
+2
+Boston
+New York
+Red
+2
