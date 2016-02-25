@@ -68,11 +68,11 @@ public class MyWebSocketHandler {
         if(c instanceof LoginCommand || c instanceof RegisterCommand)
         {
         	responsewrapper=c.execute(-1);	//pass in a -1 because user id is not used in login/register
-        	json=new JSONObject(responsewrapper.getResponse());
+        	//json=new JSONObject(responsewrapper.getResponse());
         	
-        	if(json.getString("description").equals("success"))	//make sure they successfully logged in/registered
+        	if(responsewrapper.getTargetIds()!=null)	//make sure they successfully logged in/registered
         	{
-        		idlist=responsewrapper.getTargetIDs();
+        		idlist=responsewrapper.getTargetIds();
         		personal_id=idlist.get(0);	//there should only be one id in the idlist
         		sessions.put(personal_id, personal_session);
         	}
@@ -88,7 +88,7 @@ public class MyWebSocketHandler {
         }
         
         
-		sendMessage(responsewrapper.getTargetIds(), responsewrapper.getResponse());		//send back to server
+		sendMessage(responsewrapper.getTargetIds().iterator(), responsewrapper.getResponse());		//send back to server
 
         
 
