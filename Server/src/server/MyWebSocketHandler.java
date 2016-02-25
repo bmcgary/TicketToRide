@@ -24,7 +24,7 @@ public class MyWebSocketHandler {
 
     static HashMap<Integer, Session> sessions = new HashMap<>();
     static Integer id=0;
-    Integer personal_id;
+    Integer personal_id=-1;
     Session personal_session;
 
     @OnWebSocketClose
