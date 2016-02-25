@@ -7,12 +7,26 @@ import server.responses.ResponseWrapper;
  *
  * Created by rodriggl on 1/29/2016.
  */
-public interface Command {
+public abstract class Command {
+    private transient String commandName;
+
     /**
      * Execute this command
      *
      * @param userID    the userID of the user who invoked this command
      * @return  a list of userIDs to message and the response message
      */
-    ResponseWrapper execute(int userID);
+    public abstract ResponseWrapper execute(int userID);
+
+    /**
+     * Get command name
+     *
+     * @return command name string
+     */
+    public String getCommandName() { return commandName; }
+
+    public Command setCommandName(String commandName) {
+        this.commandName = commandName;
+        return this;
+    }
 }
