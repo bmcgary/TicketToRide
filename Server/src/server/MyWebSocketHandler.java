@@ -3,9 +3,6 @@ package server;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-
-import com.google.gson.JsonObject;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
@@ -13,8 +10,6 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import server.command.Command;
 import server.exception.CommandNotFoundException;
@@ -52,42 +47,29 @@ public class MyWebSocketHandler {
     @OnWebSocketMessage
     public void onMessage(String message) {
         System.out.println("Message: " + message);
-
-        Command c = null;
-        ResponseWrapper responsewrapper = null;
 		try {
-			c = CommandFactory.makeCommand(message);
-			 	
+            Command command = CommandFactory.makeCommand(message);
+            ResponseWrapper responseWrapper = command.execute(personal_id);
 	        
-	        List<Integer> idlist = null;
-	        
-	        if(c instanceof LoginCommand || c instanceof RegisterCommand)
+	        if(command instanceof LoginCommand || command instanceof RegisterCommand)
 	        {
-	        	responsewrapper=c.execute(-1);	//pass in a -1 because user id is not used in login/register
-	        	
-	        	if(responsewrapper.getTargetIds()!=null)	//make sure they successfully logged in/registered
+	        	if(responseWrapper.getTargetIds()!= null)	//make sure they successfully logged in/registered
 	        	{
-	        		idlist=responsewrapper.getTargetIds();
-	        		personal_id=idlist.get(0);	//there should only be one id in the idlist
+                    personal_id = responseWrapper.getTargetIds().get(0); //there should only be one id in the idlist
 	        		sessions.put(personal_id, personal_session);
 	        	}
 	        	else
 	        	{
-	        		sendInvalidMessage(responsewrapper.getResponse());
+	        		sendInvalidMessage(responseWrapper.getResponse());
 	        		return;
 	        	}
 	        }
-	        else
-	        {
-	        	responsewrapper=c.execute(personal_id);
-	        }
 	        
-			sendMessage(responsewrapper.getTargetIds().iterator(), responsewrapper.getResponse());		//send back to server
+			sendMessage(responseWrapper.getTargetIds().iterator(), responseWrapper.getResponse());		//send back to server
 		}
 
 		catch (CommandNotFoundException e1) {
-			// TODO Auto-generated catch block
-			
+			sendInvalidMessage(new ResponseWrapper(Response.newServerErrorResponse(), "").getResponse());
 		}
 
     }
