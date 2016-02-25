@@ -34,9 +34,9 @@ app.controller('myCtrl', function($scope) {
     {
       id:"10",
       players:[
-        "John",
-        "Ben",
-        "Kyle"
+        "ted",
+        "blake",
+        "Ben"
       ],
       colorAvailable:[
         "blue",
@@ -47,9 +47,9 @@ app.controller('myCtrl', function($scope) {
     {
       id:"11",
       players:[
-        "Josh",
-        "Tyler",
-        "Jared"
+        "Fred",
+        "Ted",
+        "Mike"
       ],
       colorAvailable:[
         "blue",
@@ -61,12 +61,12 @@ app.controller('myCtrl', function($scope) {
       id:"12",
       players:
       [
-        "green",
-        "blue",
-        "red"
+        "Kyle",
+        "Matt",
+        "Jared"
       ],
       colorAvailable:[
-        "yello",
+        "yellow",
         "red",
         "purple"
       ]

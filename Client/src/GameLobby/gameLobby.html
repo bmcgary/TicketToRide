@@ -33,11 +33,13 @@
           <div>
             Game Number: {{game.id}}
           </div>
+          Player alreadyInGame:
           <ul ng-repeat ="name in game.players">
             {{name}}
           </ul>
+          available colors:
           <ul ng-repeat ="color in game.colorAvailable">
-            {{name}}
+             {{color}}
           </ul>
           <button type="button" name="Join Game" ng-click="joinGame(game.id)">Join Game</button>
         </ul>
