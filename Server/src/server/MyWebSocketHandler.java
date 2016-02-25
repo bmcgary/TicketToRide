@@ -50,47 +50,45 @@ public class MyWebSocketHandler {
     }
 
     @OnWebSocketMessage
-    public void onMessage(String message) throws JSONException {
+    public void onMessage(String message) {
         System.out.println("Message: " + message);
 
         Command c = null;
+        ResponseWrapper responsewrapper = null;
 		try {
 			c = CommandFactory.makeCommand(message);
-		} catch (CommandNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}	//create the command
-        
-        ResponseWrapper responsewrapper = null;
-        List<Integer> idlist = null;
-        JSONObject json;
-        
-        if(c instanceof LoginCommand || c instanceof RegisterCommand)
-        {
-        	responsewrapper=c.execute(-1);	//pass in a -1 because user id is not used in login/register
-        	//json=new JSONObject(responsewrapper.getResponse());
-        	
-        	if(responsewrapper.getTargetIds()!=null)	//make sure they successfully logged in/registered
-        	{
-        		idlist=responsewrapper.getTargetIds();
-        		personal_id=idlist.get(0);	//there should only be one id in the idlist
-        		sessions.put(personal_id, personal_session);
-        	}
-        	else
-        	{
-        		sendInvalidMessage(responsewrapper.getResponse());
-        		return;
-        	}
-        }
-        else
-        {
-        	responsewrapper=c.execute(personal_id);
-        }
-        
-        
-		sendMessage(responsewrapper.getTargetIds().iterator(), responsewrapper.getResponse());		//send back to server
+			 	
+	        
+	        List<Integer> idlist = null;
+	        
+	        if(c instanceof LoginCommand || c instanceof RegisterCommand)
+	        {
+	        	responsewrapper=c.execute(-1);	//pass in a -1 because user id is not used in login/register
+	        	
+	        	if(responsewrapper.getTargetIds()!=null)	//make sure they successfully logged in/registered
+	        	{
+	        		idlist=responsewrapper.getTargetIds();
+	        		personal_id=idlist.get(0);	//there should only be one id in the idlist
+	        		sessions.put(personal_id, personal_session);
+	        	}
+	        	else
+	        	{
+	        		sendInvalidMessage(responsewrapper.getResponse());
+	        		return;
+	        	}
+	        }
+	        else
+	        {
+	        	responsewrapper=c.execute(personal_id);
+	        }
+	        
+			sendMessage(responsewrapper.getTargetIds().iterator(), responsewrapper.getResponse());		//send back to server
+		}
 
-        
+		catch (CommandNotFoundException e1) {
+			// TODO Auto-generated catch block
+			
+		}
 
     }
 
