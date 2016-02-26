@@ -522,4 +522,23 @@ public class ServerFacade {
 		}
 		return false;
 	}
+
+	/**
+	 * Queries for all joinable games. Joinable games are defined as games not containing the user that still have at
+	 * least one spot open.
+	 * @param userID the user requesting the joinable games
+	 * @return a list of games joinable by the user
+     */
+	public List<Game> getJoinableGames(int userID) {
+		return null;
+	}
+
+	/**
+	 * Queries for all games containing the user
+	 * @param userID the user requesting the user's games
+	 * @return a list of games which the user is in
+     */
+	public List<Game> getUserGames(int userID) {
+		return null;
+	}
 }
