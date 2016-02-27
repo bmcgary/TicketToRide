@@ -152,7 +152,7 @@ public class Game {
 		//0-4 means visible cards
 		if(cardLocation >= 0 && cardLocation < 5){
 				if(this.playerManager.drewAlreadyCurrentTurn && gameBoard.getVisibleTrainCarCards()[cardLocation] == TrackColor.None){
-					return false;
+					return false;	//can't draw visible TrainCard on second draw
 				}
 				return gameBoard.canDrawVisibleTrainCar(cardLocation);
 		}
