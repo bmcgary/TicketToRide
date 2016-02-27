@@ -81,7 +81,7 @@ Purple
 Salt lake City
 Denver
 Red
-22
+2
 Salt Lake City
 Denver
 Yellow
