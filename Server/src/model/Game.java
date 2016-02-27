@@ -151,13 +151,10 @@ public class Game {
 		
 		//0-4 means visible cards
 		if(cardLocation >= 0 && cardLocation < 5){
-			//if the player already drew this turn, they can't get one of the visible cards
-			if(playerManager.drewAlreadyCurrentTurn){
-				return false;
-			}
-			else{
+				if(this.playerManager.drewAlreadyCurrentTurn && gameBoard.getVisibleTrainCarCards()[cardLocation] == TrackColor.None){
+					return false;
+				}
 				return gameBoard.canDrawVisibleTrainCar(cardLocation);
-			}
 		}
 		throw new InternalServerException("Trent messed up in Game::canPlayerDrawTrainCard");
 	}
@@ -177,7 +174,7 @@ public class Game {
 		}
 		
 		playerManager.addTrainCarCard(playerID, card);
-		if(playerManager.drewAlreadyCurrentTurn){
+		if(playerManager.drewAlreadyCurrentTurn || (cardLocation != 5 && card == TrackColor.None)){	//visible trainCard draw ends turn immediately
 			playerManager.advanceTurn();
 		}
 		else{
