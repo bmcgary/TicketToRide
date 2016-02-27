@@ -9,6 +9,7 @@ import model.Game;
 import model.Player;
 import model.PlayerColor;
 import server.exception.AddUserException;
+import server.exception.AlreadyLoggedInException;
 import server.exception.BadCredentialsException;
 import server.exception.InternalServerException;
 import server.exception.OutOfBoundsException;
@@ -255,8 +256,9 @@ public class ServerFacade {
 	 * @return the PlayerID of the logged in user
 	 * @throws BadCredentialsException thrown if the password is incorrect, 
 	 * the user is logged in already, or if the user isn't registered
+	 * @throws AlreadyLoggedInException 
 	 */
-	public synchronized int login(String username, String password) throws BadCredentialsException
+	public synchronized int login(String username, String password) throws BadCredentialsException, AlreadyLoggedInException
 	{
 		//logs in the user if found
 		for(User user : users){
@@ -267,7 +269,7 @@ public class ServerFacade {
 						return user.getPlayerID();
 					}
 					else{
-						throw new BadCredentialsException("User already logged in!");
+						throw new AlreadyLoggedInException("User already logged in!");
 					}
 				}
 				else{
@@ -310,7 +312,7 @@ public class ServerFacade {
 		this.addNewUser(newUser);	//if this line throws an AddUserException for improper instantiation, there's a problem and I messed up. 
 		try {
 			return login(username, password);
-		} catch (BadCredentialsException e) {
+		} catch (Exception e) {
 			//This is very bad if it happens
 			System.out.println("FATAL ERROR: User wasn't properly registered. See ServerFacade::register()");
 			e.printStackTrace();
