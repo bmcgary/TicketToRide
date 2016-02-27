@@ -91,7 +91,7 @@ public class Game {
 		}
 		
 		//player must be able to buy tracks in general
-		if(!playerManager.canBuyTrack(playerID, route.getNumTrains(), route.getTrackColor())){
+		if(!playerManager.canBuyTrack(playerID, route.getNumTrains())){
 			return false;
 		}
 		

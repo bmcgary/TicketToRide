@@ -18,10 +18,9 @@ public class PlayerManager {
 	 * Check if a player can buy track
 	 * @param PlayerID
 	 * @param trackLength
-	 * @param color
 	 * @return
 	 */
-	public boolean canBuyTrack(int playerID, int trackLength, TrackColor color)
+	public boolean canBuyTrack(int playerID, int trackLength)
 	{
 		//player must exist
 		if(this.getPlayer(playerID) == null){
@@ -56,7 +55,7 @@ public class PlayerManager {
 	public boolean canBuyTrackWithCards(int playerID, int trackLength, TrackColor color, Map<TrackColor,Integer> trainCards)
 	{
 		//helper function
-		if(!this.canBuyTrack(playerID, trackLength, color)){
+		if(!this.canBuyTrack(playerID, trackLength)){
 			return false;
 		}
 		
@@ -70,7 +69,39 @@ public class PlayerManager {
 			}
 		}
 		
-		return true;
+		//train cards actually need to be able to buy the track
+		if(color != TrackColor.None){	//general case, track isn't gray
+			int wildsNeeded = trackLength;
+			wildsNeeded -= (trainCards.containsKey(color)) ? trainCards.get(color) : 0;
+			if(wildsNeeded > 0 && trainCards.containsKey(TrackColor.None)){
+				wildsNeeded -= trainCards.get(TrackColor.None);
+			}
+			return (wildsNeeded <= 0) ? true : false;
+		}
+		else{	//gray route, any color is possible
+			assert(color == TrackColor.None);
+			int wildsNeeded = trackLength;
+			
+			//uses any one color, plus whatever wilds are desired
+			for(TrackColor tc : trainCards.keySet()){
+				if(tc == TrackColor.None){
+					continue;
+				}
+				else{
+					int cards = trainCards.get(tc);
+					if(cards > 0){
+						wildsNeeded -= cards;
+						break;
+					}
+				}
+			}
+			if(wildsNeeded > 0 && trainCards.containsKey(TrackColor.None)){
+				wildsNeeded -= trainCards.get(TrackColor.None);
+			}
+			
+			return (wildsNeeded <= 0) ? true : false;
+			
+		}
 	}
 
 	/**
