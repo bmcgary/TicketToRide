@@ -208,12 +208,17 @@ public class Game {
 		if(!playerManager.isPlayersTurn(playerID)){
 			return false;
 		}
+		//if it's the first turn, at least two must be selected instead of the normal one
+		if(playerManager.getRoundNumber() == 1 && destinationsSelected.length < 2){
+			return false;
+		}
 		return playerManager.canSelectDestinations(playerID, destinationsSelected);
 	}
 
 	public void selectDestinations(int playerID, int[] destinationsSelected) {
 		List<DestinationRoute> routes = playerManager.selectDestinations(playerID, destinationsSelected);
 		gameBoard.returnDestinationRoutes(routes);
+		assert(playerManager.isPlayersTurn(playerID)); //selecting the routes should not advance the turn
 		
 	}
 	

@@ -349,8 +349,9 @@ public class ServerFacade {
 	 * @param route the route being bought
 	 * @throws PreConditionException thrown if the player can't buy the route
 	 * @throws InternalServerException thrown if something horrible happens and Trent messed up
+	 * @throws OutOfBoundsException 
 	 */
-	public synchronized void buyRoute(int playerID, int gameID, CityToCityRoute route) throws PreConditionException, InternalServerException
+	public synchronized void buyRoute(int playerID, int gameID, CityToCityRoute route) throws PreConditionException, InternalServerException, OutOfBoundsException
 	{
 		//helper method
 		if(!this.canBuyRoute(playerID, gameID, route)){

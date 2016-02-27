@@ -11,6 +11,7 @@ import server.exception.OutOfBoundsException;
 public class PlayerManager {
 	private List<Player> players;
 	private int currentTurnIndex;
+	private int round; //keeps track of how many full rotations have occurred. 
 	public boolean drewAlreadyCurrentTurn;
 	
 	/**
@@ -80,6 +81,9 @@ public class PlayerManager {
 		currentTurnIndex += 1;
 		currentTurnIndex %= players.size();
 		drewAlreadyCurrentTurn = false;
+		if(currentTurnIndex == 0){
+			round++;
+		}
 	}
 	
 	/**
@@ -350,6 +354,14 @@ public class PlayerManager {
 			break;
 		}
 		return output;
+	}
+	
+	/**
+	 * Indicates the total number of rounds elapsed. A round requires each player to play in turn
+	 * @return the current round number. Setup phase is 0.
+	 */
+	public int getRoundNumber(){
+		return round;
 	}
 }
 
