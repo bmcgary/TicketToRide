@@ -232,7 +232,7 @@ public class GameBoard {
 		for(TrackColor tc : TrackColor.values()){
 			int toAdd = 12;
 			if(tc == TrackColor.None){
-				toAdd = 16;
+				toAdd = 14;
 			}
 			for(int i = 0; i < toAdd; ++i){
 				deckTrainCarCards.add(tc);
