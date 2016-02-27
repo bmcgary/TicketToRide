@@ -57,7 +57,7 @@ public class Game {
 		return Collections.unmodifiableList(history);
 	}
 	
-	public void startGame(){
+	public void startGame() throws InternalServerException{
 		//get all the cards set up on the board
 		gameBoard.initialize();
 		
