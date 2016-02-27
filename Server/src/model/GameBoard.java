@@ -39,11 +39,11 @@ public class GameBoard {
 		discardedTrainCarCards = new ArrayList<TrackColor>();
 	}
 	/**
-	 * Reports whether at least 3 destination routes can be drawn from the deck
+	 * Reports whether at least 1 destination route can be drawn from the deck
 	 * @return true if cards are remaining, false otherwise
 	 */
 	public boolean canDrawDestinationRoute(){
-		if(destinationRoutes.size() > 2){
+		if(destinationRoutes.size() > 0){
 			return true;
 		}
 		else{
@@ -128,6 +128,9 @@ public class GameBoard {
 	public List<DestinationRoute> drawDestinationRoutes(){
 		List<DestinationRoute> output = new ArrayList<DestinationRoute>();
 		for(int i = 0; i < 3; ++i){
+			if(destinationRoutes.size() == 0){
+				continue;
+			}
 			output.add(destinationRoutes.get(0));
 			destinationRoutes.remove(0);
 		}
