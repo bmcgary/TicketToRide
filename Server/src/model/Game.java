@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import server.exception.GameOverException;
 import server.exception.InternalServerException;
 import server.exception.OutOfBoundsException;
 import server.exception.PreConditionException;
@@ -23,12 +24,14 @@ public class Game {
 	private int gameID;
 	private List<String> history;
 	private boolean started;
+	private boolean isGameOver;
 	
 	public Game(){
 		gameBoard = new GameBoard();
 		started = false;
 		playerManager = new PlayerManager();
 		gameID = nextID++;
+		isGameOver = false;
 		history = new ArrayList<String>();
 		history.add("Game initialized");
 	}
@@ -43,6 +46,10 @@ public class Game {
 
 	public int getGameID() {
 		return gameID;
+	}
+	
+	public boolean isGameOver(){
+		return this.isGameOver;
 	}
 	
 	public void addHistoryMessage(String message){
@@ -124,7 +131,11 @@ public class Game {
 					}
 				}
 				gameBoard.discardTrainCards(toDiscard);
-				playerManager.advanceTurn();
+				try {
+					playerManager.advanceTurn();
+				} catch (GameOverException e) {
+					this.isGameOver = true;
+				}
 				return;
 			}
 		}
@@ -175,7 +186,11 @@ public class Game {
 		
 		playerManager.addTrainCarCard(playerID, card);
 		if(playerManager.drewAlreadyCurrentTurn || (cardLocation != 5 && card == TrackColor.None)){	//visible trainCard draw ends turn immediately
-			playerManager.advanceTurn();
+			try {
+				playerManager.advanceTurn();
+			} catch (GameOverException e) {
+				this.isGameOver = true;
+			}
 		}
 		else{
 			playerManager.drewAlreadyCurrentTurn = true;
@@ -196,7 +211,11 @@ public class Game {
 	public void getDestinations(int playerID) {
 		List<DestinationRoute> cards = gameBoard.drawDestinationRoutes();
 		playerManager.addDestinationRoutesToConsider(playerID, cards);
-		playerManager.advanceTurn();
+		try {
+			playerManager.advanceTurn();
+		} catch (GameOverException e) {
+			this.isGameOver = true;
+		}
 	}
 
 

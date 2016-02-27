@@ -145,6 +145,7 @@ public class GameBoard {
 		for(DestinationRoute route : routes){
 			destinationRoutes.add(route);
 		}
+		Collections.shuffle(routes);
 	}
 	
 	/**

@@ -518,7 +518,7 @@ public class ServerFacade {
 	private boolean isPlayableGame(int gameID){
 		for(Game g : games){
 			if(g.getGameID()==gameID){
-				return g.isStarted();
+				return (g.isStarted() && !g.isGameOver());
 			}
 		}
 		return false;

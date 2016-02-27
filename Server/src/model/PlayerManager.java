@@ -6,13 +6,23 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import server.exception.GameOverException;
 import server.exception.OutOfBoundsException;
 
 public class PlayerManager {
 	private List<Player> players;
 	private int currentTurnIndex;
+	private int finalTurnIndex;
 	private int round; //keeps track of how many full rotations have occurred. 
 	public boolean drewAlreadyCurrentTurn;
+	
+	public PlayerManager(){
+		players = new ArrayList<Player>();
+		currentTurnIndex = 0;
+		finalTurnIndex = -1;
+		round = 0;
+		drewAlreadyCurrentTurn = false;
+	}
 	
 	/**
 	 * Check if a player can buy track
@@ -106,14 +116,26 @@ public class PlayerManager {
 
 	/**
 	 * Advances to the next turn by incrementing the current turn index
+	 * @throws GameOverException 
 	 */
-	public void advanceTurn()
+	public void advanceTurn() throws GameOverException
 	{
+		//detects whether final round has been triggered
+		Player currentPlayer = players.get(currentTurnIndex);
+		if(currentPlayer.getTrainsLeft() < 3){
+			this.finalTurnIndex = currentTurnIndex;
+		}
+		
 		currentTurnIndex += 1;
 		currentTurnIndex %= players.size();
 		drewAlreadyCurrentTurn = false;
 		if(currentTurnIndex == 0){
 			round++;
+		}
+		
+		//if the game is over, throw an exception to the Game to end it all
+		if(currentTurnIndex == finalTurnIndex){
+			throw new GameOverException();
 		}
 	}
 	
@@ -393,6 +415,10 @@ public class PlayerManager {
 	 */
 	public int getRoundNumber(){
 		return round;
+	}
+	
+	public boolean isFinalRound(){
+		return (this.finalTurnIndex >= 0) ? true : false;
 	}
 }
 
