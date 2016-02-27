@@ -5,8 +5,7 @@ app.factory('ServerAPI', function ($rootScope) {
     return {
 
         command: function (response) {
-            alert(response);
-
+            
             //Keep switch for testing
             switch(response.command)
             {
@@ -32,6 +31,7 @@ app.factory('ServerAPI', function ($rootScope) {
                 case "GameEnded": 
 
                     $rootScope.$broadcast('server:'+response.command, response.parameters);
+					alert("A good command has come back! The server sent back something the client understoond! YIPPY!");
                     break;
 
                 default: alert("Bad Server command");

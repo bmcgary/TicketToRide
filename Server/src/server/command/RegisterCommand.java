@@ -14,7 +14,7 @@ import java.util.Collections;
  *
  * Created by rodriggl on 1/29/2016.
  */
-public class RegisterCommand implements Command {
+public class RegisterCommand extends Command {
     @SerializedName("username")
     String username;
     @SerializedName("password")
@@ -28,10 +28,10 @@ public class RegisterCommand implements Command {
         try {
             userID = serverFacade.register(username, password);
         } catch (AddUserException e) {
-            return new ResponseWrapper(-1, Response.newInvalidInputResponse());
+            return new ResponseWrapper(null, Response.newInvalidInputResponse(), super.getCommandName());
         } catch (InternalServerException e) {
-            return new ResponseWrapper(-1, Response.newServerErrorResponse());
+            return new ResponseWrapper(null, Response.newServerErrorResponse(), super.getCommandName());
         }
-        return new ResponseWrapper(userID, Response.newSuccessResponse());
+        return new ResponseWrapper(userID, Response.newSuccessResponse(), super.getCommandName());
     }
 }

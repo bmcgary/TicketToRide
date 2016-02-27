@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('ticketToRide', ['ui.router', 'ngWebSocket'])
+        .module('ticketToRide', ['ui.router', 'ngWebSocket','shoppinpal.mobile-menu'])
         .run( function ($rootScope, $state) {
 	        $rootScope.$on('$stateChangeStart', function (event, next, current) {
 	            //TODO: I am not sure what needs to be done in here
@@ -25,7 +25,31 @@
 	            	url: '/forgot',
 	            	templateUrl: 'templates/forgot.html',
 	            	controller: "forgotController"
-	            });
+	            })
+				.state('mainGame', {
+					url:'/game',
+					views:{
+						'':{templateUrl:'templates/gameScaffolding.html',
+							controller:'gameScaffoldingCtrl'
+						},
+						'menu@mainGame':{
+							templateUrl:'templates/mainGameMenu.html',
+							controller:'mainGameMenuCtrl'
+						},
+						'chat@mainGame':{
+							templateUrl:'templates/mainGameChat.html',
+							controller:'mainGameChatCtrl'
+						},
+						'canvas@mainGame':{
+							templateUrl:'templates/mainGameCanvas.html',
+							controller:'mainGameCanvasCtrl'
+						},
+						'tabs@mainGame':{
+							templateUrl:'templates/mainGameTabs.html',
+							controller:'mainGameTabsCtrl'
+						}
+					}
+				});
     	});
 })();
 

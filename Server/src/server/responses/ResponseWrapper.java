@@ -1,6 +1,8 @@
 package server.responses;
 
+import com.google.gson.annotations.SerializedName;
 import server.JsonTranslator;
+import server.command.Command;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -12,39 +14,40 @@ import java.util.List;
  * Created by rodriggl on 2/4/2016.
  */
 public class ResponseWrapper {
-    private List<Integer> targetIDs;
-    private String response;
-    
-    
-    //added by Ray with permission from Levi---------
-    public List<Integer> getTargetIDs() {
-		return targetIDs;
-	}
+    private transient List<Integer> targetIDs;
+    @SerializedName("command")
+    private String commandName;
 
-	public void setTargetIDs(List<Integer> targetIDs) {
-		this.targetIDs = targetIDs;
-	}
+    // This is an object so gson serializes fully
+    // (see http://stackoverflow.com/questions/8153582/gson-doesnt-serialize-fields-defined-in-subclasses)
+    @SerializedName("parameters")
+    private Object response;
 
-	public String getResponse() {
-		return response;
-	}
+    public ResponseWrapper(Response response, String commandName) {
+        this.commandName = commandName;
+        this.response = response;
+    }
 
-	public void setResponse(String response) {
-		this.response = response;
-	}
-	//end of what Ray added--------------------------
-
-	public ResponseWrapper(List<Integer> targetIDs, Response response) {
+	public ResponseWrapper(List<Integer> targetIDs, Response response, String commandName) {
+        this(response, commandName);
         this.targetIDs = targetIDs;
-        this.response = JsonTranslator.getGson().toJson(response);
     }
 
-    public ResponseWrapper(int targetID, Response response) {
+    public ResponseWrapper(int targetID, Response response, String commandName) {
+        this(response, commandName);
         this.targetIDs = Collections.singletonList(targetID);
-        this.response = JsonTranslator.getGson().toJson(response);
     }
 
-    public Iterator<Integer> getTargetIds() {
-        return targetIDs == null ? null : targetIDs.iterator();
+    // getters & setters
+    public List<Integer> getTargetIds() {
+        return targetIDs;
+    }
+
+    public String getResponse() {
+        return JsonTranslator.getGson().toJson(this);
+    }
+
+    public void setResponse(Response response) {
+        this.response = response;
     }
 }

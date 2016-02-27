@@ -13,7 +13,7 @@ import java.util.Collections;
  *
  * Created by rodriggl on 1/29/2016.
  */
-public class LoginCommand implements Command {
+public class LoginCommand extends Command {
     @SerializedName("username")
     private String username;
     @SerializedName("password")
@@ -25,8 +25,8 @@ public class LoginCommand implements Command {
         try {
             userID = serverFacade.login(username, password);
         } catch (BadCredentialsException e) {
-            return new ResponseWrapper(null, Response.newInvalidInputResponse());
+            return new ResponseWrapper(null, Response.newInvalidInputResponse(), super.getCommandName());
         }
-        return new ResponseWrapper(userID, Response.newSuccessResponse());
+        return new ResponseWrapper(userID, Response.newSuccessResponse(), super.getCommandName());
     }
 }

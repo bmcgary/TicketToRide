@@ -6,6 +6,7 @@
 
 		<link rel="stylesheet" href="css/animate.css">
 		<link rel="stylesheet" href="css/style.css">
+		<link rel="stylesheet" href="css/ng-mobile-menu.min.css">
 
 	    <script src="angular-1.4.9/angular.js"></script>
 	    <link rel="stylesheet" type="text/css" href="angular-1.4.9/angular-csp.css">
@@ -13,6 +14,14 @@
 	    <script src="angular-1.4.9/angular-sanitize.js"></script>
 	    <script src="https://angular-ui.github.io/ui-router/release/angular-ui-router.js"></script>
 	    <script src="https://rawgit.com/gdi2290/angular-websocket/v1.0.9/angular-websocket.js"></script>
+	    <script src="ui-bootstrap-tpls-1.1.2.min.js"></script>
+	    <script src="ng-mobile-menu.min.js"></script>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
 
 	    
 	    <!--script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
@@ -27,13 +36,29 @@
 		<div ui-view></div>
 	</body>
 	<script src="Router.js"></script>
-
-	<!-- LINK ALL CONTROLLERS HERE -->
 	<script src="API/ClientAPI.js"></script>
 	<script src="API/WebSocketFactory.js"></script>
 	<script src="API/ServerAPI.js"></script>
-	
+
+	<!-- LINK ALL MODEL CLASSES HERE -->
+	<script src="model/PlayerDataMin.js"></script>
+	<script src="model/GameDataForLobby.js"></script>
+
+	<script src="model/TrainCardColor.js"></script>
+	<script src="model/TrainTrack.js"></script>
+	<script src="model/DestinationCard.js"></script>
+	<script src="model/GameBoard.js"></script>
+	<script src="model/Player.js"></script>
+	<script src="model/Game.js"></script>
+	<script src="model/ModelFacade.js"></script>
+
+	<!-- LINK ALL CONTROLLERS HERE -->
 	<script src="templates/LoginController.js"></script>
 	<script src="templates/RegisterController.js"></script>
 	<script src="templates/ForgotController.js"></script>
+	<script src="templates/gameScaffoldingCtrl.js"></script>
+	<script src="templates/mainGameCanvasCtrl.js"></script>
+	<script src="templates/mainGameMenuCtrl.js"></script>
+	<script src="templates/mainGameTabsCtrl.js"></script>
+	<script src="templates/mainGameChatCtrl.js"></script>
 </html>
