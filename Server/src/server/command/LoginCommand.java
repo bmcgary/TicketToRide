@@ -1,6 +1,7 @@
 package server.command;
 
 import com.google.gson.annotations.SerializedName;
+import server.exception.AlreadyLoggedInException;
 import server.exception.BadCredentialsException;
 import server.ServerFacade;
 import server.responses.Response;
@@ -27,6 +28,8 @@ public class LoginCommand extends Command {
             responseWrapper.addTargetId(userID).setResponse(Response.newSuccessResponse());
         } catch (BadCredentialsException e) {
             responseWrapper.setResponse(Response.newInvalidInputResponse());
+        } catch (AlreadyLoggedInException e) {
+            responseWrapper.addTargetId(userID).setResponse(new Response("alreadyloggedin"));
         }
         return responseWrapper;
     }
