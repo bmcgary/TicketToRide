@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import server.exception.GameOverException;
 import server.exception.InternalServerException;
 import server.exception.OutOfBoundsException;
 import server.exception.PreConditionException;
@@ -23,12 +24,14 @@ public class Game {
 	private int gameID;
 	private List<String> history;
 	private boolean started;
+	private boolean isGameOver;
 	
 	public Game(){
 		gameBoard = new GameBoard();
 		started = false;
 		playerManager = new PlayerManager();
 		gameID = nextID++;
+		isGameOver = false;
 		history = new ArrayList<String>();
 		history.add("Game initialized");
 	}
@@ -45,6 +48,10 @@ public class Game {
 		return gameID;
 	}
 	
+	public boolean isGameOver(){
+		return this.isGameOver;
+	}
+	
 	public void addHistoryMessage(String message){
 		history.add(message);
 	}
@@ -57,7 +64,7 @@ public class Game {
 		return Collections.unmodifiableList(history);
 	}
 	
-	public void startGame(){
+	public void startGame() throws InternalServerException{
 		//get all the cards set up on the board
 		gameBoard.initialize();
 		
@@ -91,7 +98,7 @@ public class Game {
 		}
 		
 		//player must be able to buy tracks in general
-		if(!playerManager.canBuyTrack(playerID, route.getNumTrains(), route.getTrackColor())){
+		if(!playerManager.canBuyTrack(playerID, route.getNumTrains())){
 			return false;
 		}
 		
@@ -124,7 +131,11 @@ public class Game {
 					}
 				}
 				gameBoard.discardTrainCards(toDiscard);
-				playerManager.advanceTurn();
+				try {
+					playerManager.advanceTurn();
+				} catch (GameOverException e) {
+					this.isGameOver = true;
+				}
 				return;
 			}
 		}
@@ -151,13 +162,10 @@ public class Game {
 		
 		//0-4 means visible cards
 		if(cardLocation >= 0 && cardLocation < 5){
-			//if the player already drew this turn, they can't get one of the visible cards
-			if(playerManager.drewAlreadyCurrentTurn){
-				return false;
-			}
-			else{
+				if(this.playerManager.drewAlreadyCurrentTurn && gameBoard.getVisibleTrainCarCards()[cardLocation] == TrackColor.None){
+					return false;	//can't draw visible TrainCard on second draw
+				}
 				return gameBoard.canDrawVisibleTrainCar(cardLocation);
-			}
 		}
 		throw new InternalServerException("Trent messed up in Game::canPlayerDrawTrainCard");
 	}
@@ -177,8 +185,12 @@ public class Game {
 		}
 		
 		playerManager.addTrainCarCard(playerID, card);
-		if(playerManager.drewAlreadyCurrentTurn){
-			playerManager.advanceTurn();
+		if(playerManager.drewAlreadyCurrentTurn || (cardLocation != 5 && card == TrackColor.None)){	//visible trainCard draw ends turn immediately
+			try {
+				playerManager.advanceTurn();
+			} catch (GameOverException e) {
+				this.isGameOver = true;
+			}
 		}
 		else{
 			playerManager.drewAlreadyCurrentTurn = true;
@@ -199,7 +211,11 @@ public class Game {
 	public void getDestinations(int playerID) {
 		List<DestinationRoute> cards = gameBoard.drawDestinationRoutes();
 		playerManager.addDestinationRoutesToConsider(playerID, cards);
-		playerManager.advanceTurn();
+		try {
+			playerManager.advanceTurn();
+		} catch (GameOverException e) {
+			this.isGameOver = true;
+		}
 	}
 
 
@@ -208,12 +224,17 @@ public class Game {
 		if(!playerManager.isPlayersTurn(playerID)){
 			return false;
 		}
+		//if it's the first turn, at least two must be selected instead of the normal one
+		if(playerManager.getRoundNumber() == 1 && destinationsSelected.length < 2){
+			return false;
+		}
 		return playerManager.canSelectDestinations(playerID, destinationsSelected);
 	}
 
 	public void selectDestinations(int playerID, int[] destinationsSelected) {
 		List<DestinationRoute> routes = playerManager.selectDestinations(playerID, destinationsSelected);
 		gameBoard.returnDestinationRoutes(routes);
+		assert(playerManager.isPlayersTurn(playerID)); //selecting the routes should not advance the turn
 		
 	}
 	

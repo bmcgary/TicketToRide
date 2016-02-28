@@ -6,21 +6,31 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import server.exception.GameOverException;
 import server.exception.OutOfBoundsException;
 
 public class PlayerManager {
 	private List<Player> players;
 	private int currentTurnIndex;
+	private int finalTurnIndex;
+	private int round; //keeps track of how many full rotations have occurred. 
 	public boolean drewAlreadyCurrentTurn;
+	
+	public PlayerManager(){
+		players = new ArrayList<Player>();
+		currentTurnIndex = 0;
+		finalTurnIndex = -1;
+		round = 0;
+		drewAlreadyCurrentTurn = false;
+	}
 	
 	/**
 	 * Check if a player can buy track
 	 * @param PlayerID
 	 * @param trackLength
-	 * @param color
 	 * @return
 	 */
-	public boolean canBuyTrack(int playerID, int trackLength, TrackColor color)
+	public boolean canBuyTrack(int playerID, int trackLength)
 	{
 		//player must exist
 		if(this.getPlayer(playerID) == null){
@@ -55,7 +65,7 @@ public class PlayerManager {
 	public boolean canBuyTrackWithCards(int playerID, int trackLength, TrackColor color, Map<TrackColor,Integer> trainCards)
 	{
 		//helper function
-		if(!this.canBuyTrack(playerID, trackLength, color)){
+		if(!this.canBuyTrack(playerID, trackLength)){
 			return false;
 		}
 		
@@ -69,17 +79,64 @@ public class PlayerManager {
 			}
 		}
 		
-		return true;
+		//train cards actually need to be able to buy the track
+		if(color != TrackColor.None){	//general case, track isn't gray
+			int wildsNeeded = trackLength;
+			wildsNeeded -= (trainCards.containsKey(color)) ? trainCards.get(color) : 0;
+			if(wildsNeeded > 0 && trainCards.containsKey(TrackColor.None)){
+				wildsNeeded -= trainCards.get(TrackColor.None);
+			}
+			return (wildsNeeded <= 0) ? true : false;
+		}
+		else{	//gray route, any color is possible
+			assert(color == TrackColor.None);
+			int wildsNeeded = trackLength;
+			
+			//uses any one color, plus whatever wilds are desired
+			for(TrackColor tc : trainCards.keySet()){
+				if(tc == TrackColor.None){
+					continue;
+				}
+				else{
+					int cards = trainCards.get(tc);
+					if(cards > 0){
+						wildsNeeded -= cards;
+						break;
+					}
+				}
+			}
+			if(wildsNeeded > 0 && trainCards.containsKey(TrackColor.None)){
+				wildsNeeded -= trainCards.get(TrackColor.None);
+			}
+			
+			return (wildsNeeded <= 0) ? true : false;
+			
+		}
 	}
 
 	/**
 	 * Advances to the next turn by incrementing the current turn index
+	 * @throws GameOverException 
 	 */
-	public void advanceTurn()
+	public void advanceTurn() throws GameOverException
 	{
+		//detects whether final round has been triggered
+		Player currentPlayer = players.get(currentTurnIndex);
+		if(currentPlayer.getTrainsLeft() < 3){
+			this.finalTurnIndex = currentTurnIndex;
+		}
+		
 		currentTurnIndex += 1;
 		currentTurnIndex %= players.size();
 		drewAlreadyCurrentTurn = false;
+		if(currentTurnIndex == 0){
+			round++;
+		}
+		
+		//if the game is over, throw an exception to the Game to end it all
+		if(currentTurnIndex == finalTurnIndex){
+			throw new GameOverException();
+		}
 	}
 	
 	/**
@@ -350,6 +407,18 @@ public class PlayerManager {
 			break;
 		}
 		return output;
+	}
+	
+	/**
+	 * Indicates the total number of rounds elapsed. A round requires each player to play in turn
+	 * @return the current round number. Setup phase is 0.
+	 */
+	public int getRoundNumber(){
+		return round;
+	}
+	
+	public boolean isFinalRound(){
+		return (this.finalTurnIndex >= 0) ? true : false;
 	}
 }
 

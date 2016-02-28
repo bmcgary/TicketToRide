@@ -1,80 +1,103 @@
 var app = angular.module('ticketToRide');
 
-app.factory('ModelFacade', function ($rootScope) {
+app.factory('ModelFacade', function ($rootScope, Game) {
 	//store and access game models
-	var models = [];
-	var currentModelId = -1;
+	var usersGames = {};
+    var availableGames = {};
+	var gameInView = -1;
 
 	var getModel = function () {
-		return models[currentModelId];
+		return usersGames[gameInView];
 	};
 
+    var broadcast = function (gameId, command) {
+        if(gameId == gameInView) {
+            $rootScope.$broadcast('model:' + command, getModel());
+        }
+    }
 
-	$rootScope.$on('server:JoinGame', function (event, parameters) {
-    	//do logic
+    $rootScope.$on('server:UpdateUserGames', function (event, parameters) {
+        //do logic
 
-    	$rootScope.$broadcast('model:JoinGame', getModel());
+        broadcast(parameters.gameId, 'StartGame');
     });
 
+    $rootScope.$on('server:UpdateJoinableGames', function (event, parameters) {
+        //do logic
+
+        broadcast(parameters.gameId, 'StartGame');
+    });
+
+	$rootScope.$on('server:StartGame', function (event, parameters) {
+        //do logic
+
+    	broadcast(parameters.gameId, 'StartGame');
+    });
+
+    $rootScope.$on('server:LeaveGame', function (event, parameters) {
+        //games.Remove(parameters.gameId);
+
+        broadcast(parameters.gameId, 'LeaveGame');
+    });
 
     $rootScope.$on('server:SendChat', function (event, parameters) {
-    	//do logic
+        //future
 
-    	$rootScope.$broadcast('model:SendChat', getModel());
+        broadcast(parameters.gameId, 'SendChat');
     });
 
 
     $rootScope.$on('server:BuyRoute', function (event, parameters) {
-		//do logic
-
-    	$rootScope.$broadcast('model:BuyRoute', getModel());
+        //do logic
+        
+        broadcast(parameters.gameId, 'BuyRoute');
     });
 
 
     $rootScope.$on('server:DrawTrainCard', function (event, parameters) {
 		//do logic
 
-    	$rootScope.$broadcast('model:DrawTrainCard', getModel());
+        broadcast(parameters.gameId, 'DrawTrainCard');
     });
 
 
     $rootScope.$on('server:GetDestinations', function (event, parameters) {
 		//do logic
 
-    	$rootScope.$broadcast('model:GetDestinations', getModel());
+        broadcast(parameters.gameId, 'GetDestinations');
     });
 
 
     $rootScope.$on('server:SelectDestinations', function (event, parameters) {
 		//do logic
 
-    	$rootScope.$broadcast('model:SelectDestinations', getModel());
+        broadcast(parameters.gameId, 'SelectDestinations');
     });
     	
     return {
     	
     	canBuyRoute: function (routeIndex, trainColor, numberOfWilds) {
-    		//do logic
+            //return getModel().canBuyRoute()
     		return false;
     	},
 
-    	canDrawWildCard: function (cardLocation) {
-    		//do logic
+    	canDrawCard: function (cardLocation) {
+    		//return getModel().canDrawCard()
     		return false;
     	},
 
     	canDrawDestination: function () {
-    		//do logic
+    		//return getModel().canDrawDestination()
     		return false;
     	},
 
     	canSelectDestination: function (destinationsSelected) {
-    		//do logic
+    		//return getModel().canSelectDestination()
     		return false;
     	}
 
     	switchGame: function (gameId) {
-    		currentModelId = gameId;
+    		currentGameId = gameId;
     		$rootScope.$broadcast('model:SwitchGame', getModel());
     	}
     };

@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import server.exception.InternalServerException;
 import server.exception.OutOfBoundsException;
 
 /**
@@ -38,11 +39,11 @@ public class GameBoard {
 		discardedTrainCarCards = new ArrayList<TrackColor>();
 	}
 	/**
-	 * Reports whether at least 3 destination routes can be drawn from the deck
+	 * Reports whether at least 1 destination route can be drawn from the deck
 	 * @return true if cards are remaining, false otherwise
 	 */
 	public boolean canDrawDestinationRoute(){
-		if(destinationRoutes.size() > 2){
+		if(destinationRoutes.size() > 0){
 			return true;
 		}
 		else{
@@ -127,6 +128,9 @@ public class GameBoard {
 	public List<DestinationRoute> drawDestinationRoutes(){
 		List<DestinationRoute> output = new ArrayList<DestinationRoute>();
 		for(int i = 0; i < 3; ++i){
+			if(destinationRoutes.size() == 0){
+				continue;
+			}
 			output.add(destinationRoutes.get(0));
 			destinationRoutes.remove(0);
 		}
@@ -141,6 +145,7 @@ public class GameBoard {
 		for(DestinationRoute route : routes){
 			destinationRoutes.add(route);
 		}
+		Collections.shuffle(routes);
 	}
 	
 	/**
@@ -164,11 +169,15 @@ public class GameBoard {
 	/**
 	 * Removes a card from the TrainCar deck and returns it
 	 * @return the TrackColor pertaining to the card, null if there are no card remaining
+	 * @throws InternalServerException 
 	 */
-	public TrackColor drawDeckTrainCar(){
-		TrackColor output = deckTrainCarCards.get(0);
-		deckTrainCarCards.remove(0);
-		return output;
+	public TrackColor drawDeckTrainCar() throws InternalServerException{
+		if(this.canDrawDeckTrainCar()){
+			TrackColor output = deckTrainCarCards.get(0);
+			deckTrainCarCards.remove(0);
+			return output;
+		}
+		throw new InternalServerException("If this gets reached, Trent messed up somehow. Check GameBoard::drawDeckTrainCar()");
 	}
 	
 	/**
@@ -227,17 +236,20 @@ public class GameBoard {
 		return discardedTrainCarCards;
 	}
 
-	public void initialize() {
+	public void initialize() throws InternalServerException {
 		//add 12 of each TrackColor to deck, 16 of locomotive
 		for(TrackColor tc : TrackColor.values()){
 			int toAdd = 12;
 			if(tc == TrackColor.None){
-				toAdd = 16;
+				toAdd = 14;
 			}
 			for(int i = 0; i < toAdd; ++i){
 				deckTrainCarCards.add(tc);
 			}
 		}
+		
+		//shuffle TrainCarDeck
+		Collections.shuffle(deckTrainCarCards);
 		
 		//add 5 cards from TrainCarDeck into the visible pile
 		for(int i = 0; i < this.visibleTrainCarCards.length; ++i){

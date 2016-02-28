@@ -5,8 +5,7 @@ app.factory('ServerAPI', function ($rootScope) {
     return {
 
         command: function (response) {
-            alert(response);
-
+            
             //Keep switch for testing
             switch(response.command)
             {
