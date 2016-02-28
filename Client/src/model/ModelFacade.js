@@ -81,8 +81,8 @@ app.factory('ModelFacade', function ($rootScope, Game) {
     		return false;
     	},
 
-    	canDrawWildCard: function (cardLocation) {
-    		//return getModel().canDrawWildCard()
+    	canDrawCard: function (cardLocation) {
+    		//return getModel().canDrawCard()
     		return false;
     	},
 

@@ -1,8 +1,8 @@
 var app = angular.module('ticketToRide');
 
-app.factory('TrainCardColor', function () {
+app.factory('TrackColor', function () {
 	return {
-		WILD: "wild",
+		GRAY: "gray",
 		BLACK: "black",
 		WHITE: "white",
 		RED: "red",
