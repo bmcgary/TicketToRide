@@ -1,4 +1,4 @@
-var app = angular.module('ticketToRide', ['immutable']);
+var app = angular.module('ticketToRide');
 
 app.factory('TrainCardColor', function () {
 	return {
