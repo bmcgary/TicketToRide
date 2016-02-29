@@ -1,23 +1,41 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import server.exception.GameOverException;
+import server.exception.OutOfBoundsException;
+
 public class PlayerManager {
 	private List<Player> players;
 	private int currentTurnIndex;
-	private boolean drewAlreadyCurrentTurn;
+	private int finalTurnIndex;
+	private int round; //keeps track of how many full rotations have occurred. 
+	public boolean drewAlreadyCurrentTurn;
+	
+	public PlayerManager(){
+		players = new ArrayList<Player>();
+		currentTurnIndex = 0;
+		finalTurnIndex = -1;
+		round = 0;
+		drewAlreadyCurrentTurn = false;
+	}
 	
 	/**
 	 * Check if a player can buy track
 	 * @param PlayerID
 	 * @param trackLength
-	 * @param color
 	 * @return
 	 */
-	public boolean canBuyTrack(int playerID, int trackLength, TrackColor color)
+	public boolean canBuyTrack(int playerID, int trackLength)
 	{
+		//player must exist
+		if(this.getPlayer(playerID) == null){
+			return false;
+		}
 		//must be current player
 		if(players.get(currentTurnIndex).getPlayerID() != playerID){
 			return false;
@@ -44,10 +62,10 @@ public class PlayerManager {
 	 * @param trainCards
 	 * @return
 	 */
-	public boolean canBuyTrackWithCard(int playerID, int trackLength, TrackColor color, Map<TrackColor,Integer> trainCards)
+	public boolean canBuyTrackWithCards(int playerID, int trackLength, TrackColor color, Map<TrackColor,Integer> trainCards)
 	{
 		//helper function
-		if(!this.canBuyTrack(playerID, trackLength, color)){
+		if(!this.canBuyTrack(playerID, trackLength)){
 			return false;
 		}
 		
@@ -61,16 +79,64 @@ public class PlayerManager {
 			}
 		}
 		
-		return true;
+		//train cards actually need to be able to buy the track
+		if(color != TrackColor.None){	//general case, track isn't gray
+			int wildsNeeded = trackLength;
+			wildsNeeded -= (trainCards.containsKey(color)) ? trainCards.get(color) : 0;
+			if(wildsNeeded > 0 && trainCards.containsKey(TrackColor.None)){
+				wildsNeeded -= trainCards.get(TrackColor.None);
+			}
+			return (wildsNeeded <= 0) ? true : false;
+		}
+		else{	//gray route, any color is possible
+			assert(color == TrackColor.None);
+			int wildsNeeded = trackLength;
+			
+			//uses any one color, plus whatever wilds are desired
+			for(TrackColor tc : trainCards.keySet()){
+				if(tc == TrackColor.None){
+					continue;
+				}
+				else{
+					int cards = trainCards.get(tc);
+					if(cards > 0){
+						wildsNeeded -= cards;
+						break;
+					}
+				}
+			}
+			if(wildsNeeded > 0 && trainCards.containsKey(TrackColor.None)){
+				wildsNeeded -= trainCards.get(TrackColor.None);
+			}
+			
+			return (wildsNeeded <= 0) ? true : false;
+			
+		}
 	}
 
 	/**
 	 * Advances to the next turn by incrementing the current turn index
+	 * @throws GameOverException 
 	 */
-	public void advanceTurn()
+	public void advanceTurn() throws GameOverException
 	{
+		//detects whether final round has been triggered
+		Player currentPlayer = players.get(currentTurnIndex);
+		if(currentPlayer.getTrainsLeft() < 3){
+			this.finalTurnIndex = currentTurnIndex;
+		}
+		
 		currentTurnIndex += 1;
 		currentTurnIndex %= players.size();
+		drewAlreadyCurrentTurn = false;
+		if(currentTurnIndex == 0){
+			round++;
+		}
+		
+		//if the game is over, throw an exception to the Game to end it all
+		if(currentTurnIndex == finalTurnIndex){
+			throw new GameOverException();
+		}
 	}
 	
 	/**
@@ -79,24 +145,41 @@ public class PlayerManager {
 	 * @param PlayerID
 	 * @param routs
 	 */
-	public void addDestinationRoutes(int PlayerID,List<DestinationRoute> routes)
+	private void addDestinationRoute(int playerID, DestinationRoute route)
 	{
 		
 		Player player = null;
 		for(int i =0; i < players.size();i++)	
 		{
 			
-			if(players.get(i).getPlayerID()==PlayerID)
+			if(players.get(i).getPlayerID()==playerID)
 			{ 
 				
 				player = players.get(i);
 				
 			}
 			
-			player.getDestinationRoute().addAll(routes);
-			assert(player.getDestinationRoute().containsAll(routes));
+			player.getDestinationRoute().add(route);
+			assert(player.getDestinationRoute().contains(route));
 		}
 	}
+	
+	public void addDestinationRoutesToConsider(int playerID, List<DestinationRoute> routes){
+		Player player = null;
+		for(int i =0; i < players.size();i++)	
+		{
+			
+			if(players.get(i).getPlayerID()==playerID)
+			{ 
+				
+				player = players.get(i);
+				
+			}
+			
+			player.setDestinationRoutesToConsider((DestinationRoute[]) routes.toArray());
+		}
+	}
+	
 	/**
 	 * add trainCarCard for a player
 	 * @param playerID
@@ -131,29 +214,52 @@ public class PlayerManager {
 
 	/**
 	 * 
-	 * buy track a player indentified by playerid
-	 * @param PlayerID
-	 * @param trackLength
-	 * @param color
-	 * @param trackCards
+	 * Removes the relevant resources from the player buying a track of the given characteristics and awards the relevant points
+	 * @param PlayerID the player buying the track
+	 * @param trackLength the length of track being bought
+	 * @param color the color of the track
+	 * @param trackCards the cards used to pay for it
+	 * @throws OutOfBoundsException 
 	 */
-	
-	public void buyTrack(int PlayerID, int trackLength, TrackColor color, Map<TrackColor,Integer> trackCards)
+	public void buyTrack(int playerID, int trackLength, TrackColor color, Map<TrackColor,Integer> trackCards) throws OutOfBoundsException
 	{
-		Player player = null;
-		for(int i =0; i < players.size();i++)	
-		{
-			
-			if(players.get(i).getPlayerID()==PlayerID)
-			{ 
+		if(trackLength < 1 || trackLength > 6){
+			throw new OutOfBoundsException();
+		}
+		for(Player p : players){
+			if(p.getPlayerID() == playerID){
+				//award the relevant points
+				int pointsToAdd = 0;
+				switch(trackLength){
+				case 6:
+					pointsToAdd = 15;
+					break;
+				case 5:
+					pointsToAdd = 10;
+					break;
+				case 4:
+					pointsToAdd = 7;
+					break;
+				case 3:
+					pointsToAdd = 4;
+					break;
+				default:
+					pointsToAdd = trackLength;
+					break;
+				}
+				p.addPoints(pointsToAdd);
 				
-				player = players.get(i);
+				//remove the relevant resources
+				Map<TrackColor, Integer> playerCards = p.getTrainCarCards();
+				for(TrackColor tc : trackCards.keySet()){
+					playerCards.put(tc, playerCards.get(tc) - trackCards.get(tc));
+				}
 				
+				p.useTrains(trackLength);
+				break;
 			}
 			
-			//we need card class here
-			//Card tempCard = new Card(trackLength,color);
-			//update trackCards
+			
 		}
 	}
 	/**
@@ -210,9 +316,10 @@ public class PlayerManager {
 		result = prime * result + ((players == null) ? 0 : players.hashCode());
 		return result;
 	}
-/**
- * generate equal function
- */
+	
+	/**
+	 * generate equal function
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -234,8 +341,84 @@ public class PlayerManager {
 		return true;
 	}
 
-public List<Player> getPlayers() {
-	return Collections.unmodifiableList(players);
-}
+	private Player getPlayer(int playerID){
+		Player output = null;
+		for(Player p : this.players){
+			if(p.getPlayerID() == playerID){
+				output = p;
+				break;
+			}
+		}
+		return output;
+	}
+	
+	/**
+	 * Determines whether the player with the given ID is currently the active player
+	 * @param playerID the player being checked
+	 * @return true if the player is the active player, false otherwise
+	 */
+	public boolean isPlayersTurn(int playerID){
+		Player p = this.players.get(this.currentTurnIndex);
+		return p.getPlayerID() == playerID;
+	}
+	
+	public List<Player> getPlayers() {
+		return Collections.unmodifiableList(players);
+	}
+
+	public boolean canSelectDestinations(int playerID, int[] destinationsSelected) {
+		//player must have all the given destination indices
+		for(Player p : players){
+			if(p.getPlayerID() == playerID){
+				for(int i : destinationsSelected){
+					if(p.getDestinationRoutesToConsider()[i] == null){
+						return false;
+					}
+				}
+				break;
+			}
+		}
+		
+		//there must be at least 1 destination selected
+		if(destinationsSelected.length < 1){
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Gives the selected indices to the player's permanent list of Destination cards, returns the rest
+	 * @param playerID the Player doing the selection
+	 * @param destinationsSelected indices of the selected destination cards
+	 * @return all cards not selected
+	 */
+	public List<DestinationRoute> selectDestinations(int playerID, int[] destinationsSelected) {
+		List<DestinationRoute> output = null;
+		for(Player p : players){
+			if(p.getPlayerID() == playerID){
+				output = Arrays.asList(p.getDestinationRoutesToConsider());
+				for(int i : destinationsSelected){
+					DestinationRoute dr = p.getDestinationRoutesToConsider()[i];
+					this.addDestinationRoute(playerID, dr);
+					output.remove(dr);
+				}
+				p.setDestinationRoutesToConsider(new DestinationRoute[3]);
+			}
+			break;
+		}
+		return output;
+	}
+	
+	/**
+	 * Indicates the total number of rounds elapsed. A round requires each player to play in turn
+	 * @return the current round number. Setup phase is 0.
+	 */
+	public int getRoundNumber(){
+		return round;
+	}
+	
+	public boolean isFinalRound(){
+		return (this.finalTurnIndex >= 0) ? true : false;
+	}
 }
 

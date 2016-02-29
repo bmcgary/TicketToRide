@@ -9,6 +9,12 @@ package model;
 public class CityToCityRoute extends Route {
 	private int numTrains;
 	private TrackColor trackColor;
+	
+	public CityToCityRoute(City start, City end, int numTrains, TrackColor color) {
+		super(start, end);
+		this.numTrains = numTrains;
+		this.trackColor = color;
+	}
 	public int getNumTrains() {
 		return numTrains;
 	}

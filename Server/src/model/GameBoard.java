@@ -1,10 +1,19 @@
 package model;
 
+import java.awt.Point;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import server.exception.InternalServerException;
+import server.exception.OutOfBoundsException;
 
 /**
  * Represents and controls all aspects of the game model that comprise the board.
@@ -28,18 +37,9 @@ public class GameBoard {
 		visibleTrainCarCards = new TrackColor[5];
 		deckTrainCarCards = new ArrayList<TrackColor>();
 		discardedTrainCarCards = new ArrayList<TrackColor>();
-		this.instantiate();
-	}
-	
-	private void instantiate(){
-		//TODO: Load in everything here:
-		//load in all cities, routes
-		//load in the deck of destination Routes
-		//load in the deck of drawable TrainCarCards
-		//load in the visible TrainCarCards to the array (remove them from the deck)
 	}
 	/**
-	 * Reports whether a destination route can be drawn from the deck
+	 * Reports whether at least 1 destination route can be drawn from the deck
 	 * @return true if cards are remaining, false otherwise
 	 */
 	public boolean canDrawDestinationRoute(){
@@ -92,6 +92,12 @@ public class GameBoard {
 	 * @return True if the route is unoccupied, false otherwise
 	 */
 	public boolean isRouteAvailable(CityToCityRoute route){
+		//route must exist
+		if(!routes.contains(route)){
+			return false;
+		}
+		
+		//nobody can have the route already
 		for(Integer key : currentRoutes.keySet()){
 			List<CityToCityRoute> list = currentRoutes.get(key);
 			if(list.contains(route)){
@@ -122,6 +128,9 @@ public class GameBoard {
 	public List<DestinationRoute> drawDestinationRoutes(){
 		List<DestinationRoute> output = new ArrayList<DestinationRoute>();
 		for(int i = 0; i < 3; ++i){
+			if(destinationRoutes.size() == 0){
+				continue;
+			}
 			output.add(destinationRoutes.get(0));
 			destinationRoutes.remove(0);
 		}
@@ -136,6 +145,7 @@ public class GameBoard {
 		for(DestinationRoute route : routes){
 			destinationRoutes.add(route);
 		}
+		Collections.shuffle(routes);
 	}
 	
 	/**
@@ -159,11 +169,15 @@ public class GameBoard {
 	/**
 	 * Removes a card from the TrainCar deck and returns it
 	 * @return the TrackColor pertaining to the card, null if there are no card remaining
+	 * @throws InternalServerException 
 	 */
-	public TrackColor drawDeckTrainCar(){
-		TrackColor output = deckTrainCarCards.get(0);
-		deckTrainCarCards.remove(0);
-		return output;
+	public TrackColor drawDeckTrainCar() throws InternalServerException{
+		if(this.canDrawDeckTrainCar()){
+			TrackColor output = deckTrainCarCards.get(0);
+			deckTrainCarCards.remove(0);
+			return output;
+		}
+		throw new InternalServerException("If this gets reached, Trent messed up somehow. Check GameBoard::drawDeckTrainCar()");
 	}
 	
 	/**
@@ -220,6 +234,104 @@ public class GameBoard {
 
 	public List<TrackColor> getDiscardedTrainCarCards() {
 		return discardedTrainCarCards;
+	}
+
+	public void initialize() throws InternalServerException {
+		//add 12 of each TrackColor to deck, 16 of locomotive
+		for(TrackColor tc : TrackColor.values()){
+			int toAdd = 12;
+			if(tc == TrackColor.None){
+				toAdd = 14;
+			}
+			for(int i = 0; i < toAdd; ++i){
+				deckTrainCarCards.add(tc);
+			}
+		}
+		
+		//shuffle TrainCarDeck
+		Collections.shuffle(deckTrainCarCards);
+		
+		//add 5 cards from TrainCarDeck into the visible pile
+		for(int i = 0; i < this.visibleTrainCarCards.length; ++i){
+			this.visibleTrainCarCards[i] = this.drawDeckTrainCar();
+		}
+		
+		//use DestinationCards.txt to load in cities, destinationRoutes
+		this.loadDestinationRoutes();
+		
+		//use CityToCityRoutes.txt to load in additional cities, routes list
+		//TODO: do this. I'm waiting on @davishyer to get me the list
+		
+		
+		
+	}
+
+	private void loadDestinationRoutes(){
+		File file = new File("DestinationCards.txt");
+		BufferedReader reader = null;
+		int line = 0;
+		String city1 = null;
+		String city2 = null;;
+		
+		try{
+			reader = new BufferedReader(new FileReader(file));
+			String text = null;
+			
+			while((text = reader.readLine()) != null){
+				line++;
+				switch(line % 3){
+				case 1:
+					city1 = text;
+					break;
+				case 2:
+					city2 = text;
+					break;
+				case 3:
+					DestinationRoute dr = this.makeNewDestinationRoute(city1, city2, Integer.parseInt(text));
+					city1 = null;
+					city2 = null;
+					this.destinationRoutes.add(dr);
+				}
+				
+			}
+		} catch(FileNotFoundException e){
+			e.printStackTrace();
+		} catch(IOException e){
+			e.printStackTrace();
+		} finally{
+			try {
+				if(reader != null){
+					reader.close();
+				}
+			} catch(IOException e){
+				e.printStackTrace();
+			}
+		}
+	}
+	private DestinationRoute makeNewDestinationRoute(String city1, String city2, int points) {
+		//both shouldn't be null. That would be bad
+		assert(city1 != null && city2 != null);
+		
+		//if either city doesn't exist yet, add them to the list
+		City c1 = null;
+		City c2 = null;
+		for(City c : this.cities){
+			if(c.getName() == city1){
+				c1 = c;
+			}
+			else if(c.getName() == city2){
+				c2 = c;
+			}
+		}
+		if(c1 == null){
+			c1 = new City(new Point(0, 0), city1);
+			this.cities.add(c1);
+		}
+		if(c2 == null){
+			c1 = new City(new Point(0, 0), city2);
+			this.cities.add(c2);
+		}
+		return new DestinationRoute(c1, c2, points);
 	}
 	
 }

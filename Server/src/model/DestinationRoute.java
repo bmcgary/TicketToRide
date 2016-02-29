@@ -8,6 +8,11 @@ package model;
  */
 public class DestinationRoute extends Route {
 	private int pointValue;
+	
+	public DestinationRoute(City start, City end, int points){
+		super(start, end);
+		this.pointValue = points;
+	}
 
 	public int getPointValue() {
 		return pointValue;

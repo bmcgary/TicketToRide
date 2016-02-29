@@ -1,10 +1,12 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import server.User;
+import server.exception.OutOfBoundsException;
 
 /**
  * Represents a player in a given game. Links to universal users by means of ID
@@ -15,6 +17,7 @@ public class Player {
 	private int ID;
 	private int numTrainsLeft;
 	private List<DestinationRoute> destinationRoutes;
+	private DestinationRoute[] destinationRoutesToConsider;
 	private Map<TrackColor,Integer> trainCarCards;
 	private PlayerColor color;
 	private int pointsScored;
@@ -25,11 +28,21 @@ public class Player {
 		this.ID=ID;
 		this.color = color;
 		this.pointsScored = 0;
+		this.destinationRoutes = new ArrayList<DestinationRoute>();
+		this.destinationRoutesToConsider = new DestinationRoute[3];
 	}
 	
 	public List<DestinationRoute> getDestinationRoute()
 	{
 		return destinationRoutes;
+	}
+	
+	public DestinationRoute[] getDestinationRoutesToConsider(){
+		return destinationRoutesToConsider;
+	}
+	
+	public void setDestinationRoutesToConsider(DestinationRoute[] routes){
+		this.destinationRoutesToConsider = routes;
 	}
 	
 	public int getPlayerID()
@@ -50,7 +63,7 @@ public class Player {
 	public void useTrains(int num) throws OutOfBoundsException
 	{
 		if(this.numTrainsLeft < num){
-			throw new OutOfBoundsException();
+			throw new OutOfBoundsException("Not enough trains remaining");
 		}
 		this.numTrainsLeft -= num;
 	}
