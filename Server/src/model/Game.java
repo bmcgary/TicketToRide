@@ -211,11 +211,8 @@ public class Game {
 	public void getDestinations(int playerID) {
 		List<DestinationRoute> cards = gameBoard.drawDestinationRoutes();
 		playerManager.addDestinationRoutesToConsider(playerID, cards);
-		try {
-			playerManager.advanceTurn();
-		} catch (GameOverException e) {
-			this.isGameOver = true;
-		}
+		assert(playerManager.isPlayersTurn(playerID)); //getting destinations shouldn't end the turn yet
+		assert(playerManager.getPlayers().get(playerID).getDestinationRoutesToConsider().length > 0);
 	}
 
 
@@ -234,7 +231,14 @@ public class Game {
 	public void selectDestinations(int playerID, int[] destinationsSelected) {
 		List<DestinationRoute> routes = playerManager.selectDestinations(playerID, destinationsSelected);
 		gameBoard.returnDestinationRoutes(routes);
-		assert(playerManager.isPlayersTurn(playerID)); //selecting the routes should not advance the turn
+		assert(playerManager.isPlayersTurn(playerID));
+		try {
+			playerManager.advanceTurn();
+		} catch (GameOverException e) {
+			this.isGameOver = true;
+			return;
+		}
+		assert(!playerManager.isPlayersTurn(playerID));
 		
 	}
 	
