@@ -29,7 +29,7 @@ import server.exception.OutOfBoundsException;
 import server.exception.PreConditionException;
 
 public class ServerFacade_Test {
-
+	
 	/*
 	 * do you think we need a card class?
 	 */
@@ -257,25 +257,60 @@ public class ServerFacade_Test {
 		
 	}
 
+	/**
+	 * Player can select a route on the map to purchase
 
 
 
+	 */
 	@Test
-	public void testCanBuyRoute() {
-		fail("Not yet implemented");
+	public void testCanBuyRoute() throws InternalServerException {
+		City city1 = new City(new Point(2,2),"LA");
+		City city2 = new City(new Point(3,3),"SA");
+		CityToCityRoute ctoc1 = new CityToCityRoute(city1,city2,3,TrackColor.Orange);
+
+		serverFacade.canBuyRoute(1,1,ctoc1);
 	}
+	//Player can use wilds as part of a route purchase
+	//are you handling this case?
+	public void testCanBuyRouteWithWrongResources()
+	{
+		/*
+		 * 		for(int i = 0; i < route.getNumTrains(); ++i){	//this allows us to check every combination of wild cards/route color
+			Map<TrackColor, Integer> trainCards = new HashMap<TrackColor, Integer>();
+			trainCards.put(route.getTrackColor(), route.getNumTrains()-i);
+			trainCards.put(TrackColor.None, i);
+			if(playerManager.canBuyTrackWithCards(playerID, route.getNumTrains(), route.getTrackColor(), trainCards)){
+				return true;
+			}
+		}
+		 */
+		//I do not understand how you check if a player has required cards
+		//Player cannot purchase a route with less than the required cards
+		
+		//Player cannot purchase a route with more than the required cards
+		//Player cannot purchase a route with cards of the wrong color
+		//Player cannot purchase a route they do not have enough trains for
+	}
+	
+//	Player can cancel buying a route 
+	//not handle or it should not be a function on the server side?
+	
+//	Routes are populated with trains the color of the player who purchased them
+
+	
+	//Player cannot buy adjacent route if less than 4 players in the game
+//	Player cannot draw a destination ticket after building
+//	Player cannot draw a train card after building
+//	Player's destination cards are updated when building the route completes the destination
 
 	@Test
 	public void testBuyRoute() {
 		fail("Not yet implemented");
 	}
 	
-	//Player can draw two from the visible cards
-	//Player can only draw one wild from the visible cards
-	//Visible cards are reset if there are more than two wilds
-	//Player cannot select wild card after drawing one from visible cards
-	//Player cannot draw destination ticket after initial train draw until next turn
-	//Player cannot build route after intial train draw until next turn
+
+
 	
 	//I can not add a playmanager object to a game...!
 	@Test (expected=OutOfBoundsException.class)
@@ -286,52 +321,72 @@ public class ServerFacade_Test {
 	
 	@Test 
 	public void testCanDrawTrainCard() throws OutOfBoundsException, InternalServerException {
+		
+		
+		//before checking if a player can draw train card I need to manipulate the playermanager class to meet the following contraint
+		//playerManager.drewAlreadyCurrentTurn && gameBoard.getVisibleTrainCarCards()[cardLocation] == TrackColor.None
+		//but currently, i can not manipulate the playermanager object using existing code
+		
+		
+		
 		//Player can draw from the deck
 		serverFacade.canDrawTrainCard(1, 1, 1);
 		
 		//Player can draw one from the visible cards and one from the deck
 		assertTrue(serverFacade.canDrawTrainCard(1, 1, 5));
 		assertTrue(serverFacade.canDrawTrainCard(1, 1, 3));
-
-
-
-
+		
+		//Player can draw two from the visible cards
+		assertTrue(serverFacade.canDrawTrainCard(1, 1, 3));
+		assertTrue(serverFacade.canDrawTrainCard(1, 1, 2));
+		
+		//	//Player can only draw one wild from the visible cards
+		//Visible cards are reset if there are more than two wilds
+		
+		//how do you define wildcards?
 	}
 
 	@Test
-	public void testDrawTrainCard() {
-
-		fail("Not yet implemented");
+	public void testDrawTrainCardFailAfterVisible() throws OutOfBoundsException, InternalServerException
+	{
+		//Player cannot select wild card after drawing one from visible cards
+		assertTrue(serverFacade.canDrawTrainCard(1, 1, 3));
+		//Player cannot draw destination ticket after initial train draw until next turn
+		//Player cannot build route after intial train draw until next turn
+		
+		//how do you handle those two cases??
+		// using playerManager.drewAlreadyCurrentTurn && gameBoard.getVisibleTrainCarCards()[cardLocation] == TrackColor.None????
 	}
 
+
+	@Test
+	public void testDrawTrainCard() throws PreConditionException, OutOfBoundsException, InternalServerException {
+		//same problem, I can not manipulate playermanager to check if it indeed update cards.
+		serverFacade.drawTrainCard(1,1,3);
+	}
+
+	//Player can scroll through list of destination tickets in hand
+	//???junit test for this case??
+	
+	//When less than three destinations are left, card(s) do not appear on the modal
+	//When destinations are exhausted, deck no longer appears
+	//When destinations are completed upon drawing, status is automatically changed
+	//When destinations are drawn they appear in the player's hand
+	//are you handling those cases???
+	///
+	//Player cannot draw a train card after drawing destination
+	//Player cannot build a route after drawing destination
+	
 	/**
-	 * Player can scroll through list of destination tickets in hand
-When destinations are exhausted, deck no longer appears
-When less than three destinations are left, card(s) do not appear on the modal
-Player cannot draw a train card after drawing destination
-Player cannot build a route after drawing destination
-When destinations are completed upon drawing, status is automatically changed
-When destinations are drawn they appear in the player's hand
+
+
 	 */
 	@Test
 	public void testCanGetDestinations() {
 
 		fail("Not yet implemented");
 	}
-	/**
-	 * Player can select a route on the map to purchase
-Player can use wilds as part of a route purchase
-Player cannot purchase a route with less than the required cards
-Player cannot purchase a route with more than the required cards
-Player cannot purchase a route with cards of the wrong color
-Player cannot purchase a route they do not have enough trains for
-Player can cancel buying a route
-Player cannot buy adjacent route if less than 4 players in the game
-Routes are populated with trains the color of the player who purchased them
-Player cannot draw a destination ticket after building
-Player cannot draw a train card after building
-Player's destination cards are updated when building the route completes the destination
-	 */
+
 	@Test
 	public void testGetDestinations() {
 		fail("Not yet implemented");
