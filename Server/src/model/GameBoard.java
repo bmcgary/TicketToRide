@@ -260,7 +260,7 @@ public class GameBoard {
 		this.loadDestinationRoutes();
 		
 		//use CityToCityRoutes.txt to load in additional cities, routes list
-		//TODO: do this. I'm waiting on @davishyer to get me the list
+		this.loadCityToCityRoutes();
 		
 		
 		
@@ -332,6 +332,12 @@ public class GameBoard {
 			this.cities.add(c2);
 		}
 		return new DestinationRoute(c1, c2, points);
+	}
+	
+	private void loadCityToCityRoutes() {
+		assert(false); //not yet implemented
+		//TODO: this
+		
 	}
 	
 }
