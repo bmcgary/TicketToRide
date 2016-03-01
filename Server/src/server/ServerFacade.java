@@ -45,7 +45,7 @@ public class ServerFacade {
 			return;
 		}
 		else{
-			assert(newGame.getPlayerManager().getNumPlayers() > 0);
+			assert(newGame.getPlayerManager().getNumPlayers() == 0);
 		}
 		
 		//add game
@@ -486,7 +486,7 @@ public class ServerFacade {
 	
 	public synchronized void sendClientModelInformation()
 	{
-		
+		//TODO: this
 	}
 	
 	public Map<Integer, CityToCityRoute> getCityMapping()
