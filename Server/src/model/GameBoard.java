@@ -21,7 +21,7 @@ import server.exception.OutOfBoundsException;
  *
  */
 public class GameBoard {
-	private List<City> cities;
+	public List<City> cities;
 	private List<CityToCityRoute> routes;
 	private Map<Integer, List<CityToCityRoute>> currentRoutes;
 	private List<DestinationRoute> destinationRoutes;
