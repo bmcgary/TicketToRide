@@ -2,28 +2,32 @@ package server;
 
 import static org.junit.Assert.*;
 
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import server.ServerFacade;
 
-public class ServerFacadeTest {
-
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
+public class ServerFacade_test {
+	ServerFacade serverFacade;
+	/**
+	 * //are you using the singleton design pattern to create the serverFacade object??? It seems you made the constructor to be private.
+	 //I can not create one here. So I temporarily changed the visibility of the serverfacade constructor to the default public...
+	 */
+	
 	@Before
-	public void setUp() throws Exception {
+	public void setUp()
+	{
+		serverFacade = new ServerFacade();
+		serverFacade.getServerFacade();
 	}
-
-	@After
-	public void tearDown() throws Exception {
+	/**
+	 * why getserverfacade is static???
+	 */
+	@Test
+	public void testGetServerFacade() {
+	
+		assertNotEquals(serverFacade.getServerFacade(),null);
 	}
 
 	@Test
@@ -138,6 +142,16 @@ public class ServerFacadeTest {
 
 	@Test
 	public void testGetCityMapping() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testGetJoinableGames() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testGetUserGames() {
 		fail("Not yet implemented");
 	}
 
