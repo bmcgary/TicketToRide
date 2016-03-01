@@ -18,13 +18,13 @@ import server.exception.PreConditionException;
  *
  */
 public class Game {
-	private GameBoard gameBoard;
-	private PlayerManager playerManager;
-	private static int nextID = 1;
-	private int gameID;
-	private List<String> history;
-	private boolean started;
-	private boolean isGameOver;
+	protected GameBoard gameBoard;
+	protected PlayerManager playerManager;
+	protected static int nextID = 1;
+	protected int gameID;
+	protected List<String> history;
+	protected boolean started;
+	protected boolean isGameOver;
 	
 	public Game(){
 		gameBoard = new GameBoard();
@@ -240,6 +240,15 @@ public class Game {
 		}
 		assert(!playerManager.isPlayersTurn(playerID));
 		
+	}
+	
+	public boolean containsPlayer(int playerID){
+		for(Player p : playerManager.getPlayers()){
+			if(p.getPlayerID() == playerID){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	
