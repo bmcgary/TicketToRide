@@ -1,15 +1,18 @@
 var app = angular.module('ticketToRide');
 
-app.factory('TrainTrack', function (TrainCardColor) {
+app.factory('TrainRoute', function (TrainCardColor) {
 
     //private data
     var trackId = -1;
     var trainsRequired = -1;
     var trackColor = "";
-    var coordinates = {}; //We need some kind of rectangle to contain here
+    var coordinates = {
+        "boundingBox": {}, //We need some kind of bounding rectangle here
+        "tracks": [] //This is a list of all the individual bounding rectangles in a route
+    }; 
 
     //constructor 
-    function TrainTrack (trackId, trainsRequired, trackColor, coordinates) {
+    function TrainRoute (trackId, trainsRequired, trackColor, coordinates) {
         this.trackId = trackId;
         this.trainsRequired = trainsRequired;
         this.trackColor = trackColor;
@@ -17,26 +20,26 @@ app.factory('TrainTrack', function (TrainCardColor) {
     }
 
     //public data
-    TrainTrack.prototype.getTrackId = function() {
+    TrainRoute.prototype.getTrackId = function() {
         return this.trackId;
     };
 
-    TrainTrack.prototype.getTrainsRequired = function() {
+    TrainRoute.prototype.getTrainsRequired = function() {
         return this.trainsRequired;
     };
 
-    TrainTrack.prototype.getTrackColor = function() {
+    TrainRoute.prototype.getTrackColor = function() {
         return this.trackColor;
     };
 
-    TrainTrack.prototype.getCoordinates = function() {
+    TrainRoute.prototype.getCoordinates = function() {
         return this.coordinates;
     };
 
-    TrainTrack.prototype.toString = function() {
+    TrainRoute.prototype.toString = function() {
         return "TrackId = " + trackId + " TrainsRequired = " + this.trainsRequired + " TrackColor = " + this.trackColor + "\n";
     };
 
 
-    return TrainTrack;
+    return TrainRoute;
 });
