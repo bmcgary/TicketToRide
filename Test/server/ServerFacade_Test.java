@@ -24,6 +24,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import server.exception.AddUserException;
+import server.exception.InternalServerException;
+import server.exception.PreConditionException;
 
 public class ServerFacade_Test {
 
@@ -74,7 +76,7 @@ public class ServerFacade_Test {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		ServerFacade.getServerFacade();
+		serverFacade = ServerFacade.getServerFacade();
 		
 		
 	}
@@ -216,22 +218,31 @@ public class ServerFacade_Test {
 		serverFacade.addNewUser(user);	
 		//assertEquals(serverFacade.g)  checking if an user is added successfully into a game
 	}
-	
-	@Test
-	public void testCanAddPlayerToGame() {
-		assertFalse(serverFacade.canAddPlayerToGame(1,2,PlayerColor.Blue));//no game id
-		assertFalse(serverFacade.canAddPlayerToGame(1,1,PlayerColor.Red));//wrong color
-
-	}
+	/*
+	 * we need getters to get games info in the facade
+	 */
 
 	@Test
 	public void testAddPlayerToGame() {
-		fail("Not yet implemented");
+		assertFalse(serverFacade.canAddPlayerToGame(1,2,PlayerColor.Blue));//no game id
+		
+		assertFalse(serverFacade.canAddPlayerToGame(1,1,PlayerColor.Red));//wrong color
+		
+		assertFalse(serverFacade.canAddPlayerToGame(1,10,PlayerColor.Red));//no game
 	}
+	/*
+	 * 	// no way to create a game currently
 
-	@Test
-	public void testCanStartGame() {
-		fail("Not yet implemented");
+	 */
+	
+	@Test(expected=PreConditionException.class)
+	public void testCanStartGame() throws PreConditionException, InternalServerException {
+		User user1 = new User("user1","password1");
+		User user2 = new User("user2","password2");
+		
+		serverFacade.startGame(1, 1);
+		
+
 	}
 
 	@Test
