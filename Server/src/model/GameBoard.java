@@ -21,13 +21,13 @@ import server.exception.OutOfBoundsException;
  *
  */
 public class GameBoard {
-	private List<City> cities;
-	private List<CityToCityRoute> routes;
-	private Map<Integer, List<CityToCityRoute>> currentRoutes;
-	private List<DestinationRoute> destinationRoutes;
-	private List<TrackColor> deckTrainCarCards;
-	private TrackColor[] visibleTrainCarCards;
-	private List<TrackColor> discardedTrainCarCards;
+	protected List<City> cities;
+	protected List<CityToCityRoute> routes;
+	protected Map<Integer, List<CityToCityRoute>> currentRoutes;
+	protected List<DestinationRoute> destinationRoutes;
+	protected List<TrackColor> deckTrainCarCards;
+	protected TrackColor[] visibleTrainCarCards;
+	protected List<TrackColor> discardedTrainCarCards;
 	
 	public GameBoard(){
 		cities = new ArrayList<City>();
@@ -266,7 +266,7 @@ public class GameBoard {
 		
 	}
 
-	private void loadDestinationRoutes(){
+	protected void loadDestinationRoutes(){
 		File file = new File("DestinationCards.txt");
 		BufferedReader reader = null;
 		int line = 0;
@@ -308,7 +308,7 @@ public class GameBoard {
 			}
 		}
 	}
-	private DestinationRoute makeNewDestinationRoute(String city1, String city2, int points) {
+	protected DestinationRoute makeNewDestinationRoute(String city1, String city2, int points) {
 		//both shouldn't be null. That would be bad
 		assert(city1 != null && city2 != null);
 		
@@ -334,7 +334,7 @@ public class GameBoard {
 		return new DestinationRoute(c1, c2, points);
 	}
 	
-	private void loadCityToCityRoutes() {
+	protected void loadCityToCityRoutes() {
 		assert(false); //not yet implemented
 		//TODO: this
 		
