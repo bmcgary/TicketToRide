@@ -1,0 +1,86 @@
+var app = angular.module('myApp', []);
+app.controller('myCtrl', function($scope) {
+    var myGames = [
+      {
+        id:"10",
+        players:[
+          "John",
+          "Ben",
+          "Kyle"
+        ],
+        yourColor:"red"
+      },
+      {
+        id:"11",
+        players:[
+          "Josh",
+          "Tyler",
+          "Jared"
+        ],
+        yourColor:"pink"
+      },
+      {
+        id:"12",
+        players:
+        [
+          "Fred",
+          "Ron",
+          "Ben"
+        ],
+        yourColor:"Blue"
+      }
+  ];
+  var availableGames = [
+    {
+      id:"10",
+      players:[
+        "ted",
+        "blake",
+        "Ben"
+      ],
+      colorAvailable:[
+        "blue",
+        "red",
+        "Orange"
+      ]
+    },
+    {
+      id:"11",
+      players:[
+        "Fred",
+        "Ted",
+        "Mike"
+      ],
+      colorAvailable:[
+        "blue",
+        "red",
+        "Orange"
+      ]
+    },
+    {
+      id:"12",
+      players:
+      [
+        "Kyle",
+        "Matt",
+        "Jared"
+      ],
+      colorAvailable:[
+        "yellow",
+        "red",
+        "purple"
+      ]
+    }
+];
+    $scope.myGames = myGames;
+    $scope.availableGames = availableGames;
+
+
+  $scope.reJoinGame = function (id){
+    console.log("you are rejoing: "+id);
+  }
+  $scope.joinGame = function (id){
+    console.log("you are joing a new game: "+id);
+  }
+
+});
