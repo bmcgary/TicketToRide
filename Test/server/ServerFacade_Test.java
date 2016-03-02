@@ -29,6 +29,8 @@ import org.junit.Test;
 
 import server.ServerFacade;
 import server.exception.AddUserException;
+import server.exception.AlreadyLoggedInException;
+import server.exception.BadCredentialsException;
 import server.exception.InternalServerException;
 import server.exception.OutOfBoundsException;
 import server.exception.PreConditionException;
@@ -188,21 +190,45 @@ public class ServerFacade_Test {
 	discardedTrainCarCards.add(TrackColor.Black);
 	
 	}
-
+	
 	@Test
 	public void testGetServerFacade() {
 		assertNotEquals(serverFacade.getServerFacade(),null);
 	}
-
-	/*
-	 * we could throw different exceptions if the game is null, or gameboard is null, or playermanager..
-	 * I think the createGame function has logic problem.  Even if we have nothing inside the playermanager,
-	 * it still passes junit tests
+	/* error:
+	 * not handle if a user name is empty not handle is username is larger than 25 char.
+	 * not checking if a user enters his/her email...we require a user to enter his/her email??
+	 * I can even enter a chinese character..this is a creepy test case. 
 	 */
 	@Test
-	public void testCreateGame() {
-		serverFacade.createGame(game1);
+	public void registered() throws AddUserException
+	{
+		User user = new User("","passdasdsad啦啦啦啦啦ada啦dasdasdasdasdaasdasd");
+		serverFacade.addNewUser(user);
+		
 	}
+	/*
+	 * successful case
+	 */
+	@Test
+	public void registeredSuccess() throws AddUserException
+	{
+		User user = new User("name","pass");
+		serverFacade.addNewUser(user);	
+	}
+	/*
+	 * existing object
+	 */
+	@Test(expected = AddUserException.class)
+	public void registeredUserNameexistobject() throws AddUserException
+	{
+		User user = new User("name","pass");
+		serverFacade.addNewUser(user);	
+		serverFacade.addNewUser(user);	
+
+	}
+	// a test case says a user can switch to the login screen??  Is this handled by the server side..i thought
+	//it should be a functionality in the augular.js???
 	
 	/*
 	 * we add a new user to the game identified by his PASSWORD????? and username
@@ -225,6 +251,77 @@ public class ServerFacade_Test {
 		User user  = new User("user","password");
 		serverFacade.addNewUser(user);	
 		//assertEquals(serverFacade.g)  checking if an user is added successfully into a game
+	}
+	
+	/*
+	 * test login successful
+	 */
+	@Test 
+	public void loginSuccessful() throws AddUserException, BadCredentialsException, AlreadyLoggedInException
+	{
+		User user = new User("myname11","mypassword");
+		serverFacade.addNewUser(user);
+		serverFacade.login("myname11", "mypassword");
+		
+		
+	}
+	
+	/*
+	 * test login - wrong user name/password
+	 */
+	@Test(expected=BadCredentialsException.class)
+	public void loginWrongCredientials() throws AddUserException, BadCredentialsException, AlreadyLoggedInException
+	{
+		User user = new User("myname22","mypassword");
+		serverFacade.addNewUser(user);
+		serverFacade.login("myname23", "mypassword");
+			
+	}
+	
+	/*
+	 * test login - already logged in
+	 */
+	@Test(expected=AlreadyLoggedInException.class)
+	public void loginAlreadyLoggedIn() throws AddUserException, BadCredentialsException, AlreadyLoggedInException
+	{
+		User user = new User("mynameL","mypassword");
+		serverFacade.addNewUser(user);
+		serverFacade.login("mynameL", "mypassword");
+		serverFacade.login("mynameL", "mypassword");
+
+			
+	}
+	
+	/*
+	 * test if a user can create a game with more than 25 char
+	 */
+	@Test
+	public void user25CharName()
+	{
+		
+		serverFacade.cr
+	}
+	
+	/*
+	 * test if a user can create a game less than 3 char
+	 */
+	@Test
+	public void user3CharName()
+	{
+		
+	}
+	
+	//a test case says user can switch to the register screen. I personally think it should be handled by Augular.js
+	
+	
+	/*
+	 * we could throw different exceptions if the game is null, or gameboard is null, or playermanager..
+	 * I think the createGame function has logic problem.  Even if we have nothing inside the playermanager,
+	 * it still passes junit tests
+	 */
+	@Test
+	public void testCreateGame() {
+		serverFacade.createGame(game1);
 	}
 	/*
 	 * we need getters to get games info in the facade
