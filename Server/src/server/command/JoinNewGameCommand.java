@@ -10,6 +10,6 @@ import server.responses.ResponseWrapper;
 public class JoinNewGameCommand extends Command {
     @Override
     public ResponseWrapper execute(int userID) {
-        return new ResponseWrapper(userID, Response.newServerErrorResponse(), super.getCommandName());
+        return new ResponseWrapper(userID, Response.newServerErrorResponse(), commandName);
     }
 }
