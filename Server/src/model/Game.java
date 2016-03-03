@@ -18,13 +18,13 @@ import server.exception.PreConditionException;
  *
  */
 public class Game {
-	private GameBoard gameBoard;
-	private PlayerManager playerManager;
-	private static int nextID = 1;
-	private int gameID;
-	private List<String> history;
-	private boolean started;
-	private boolean isGameOver;
+	protected GameBoard gameBoard;
+	protected PlayerManager playerManager;
+	protected static int nextID = 1;
+	protected int gameID;
+	protected List<String> history;
+	protected boolean started;
+	protected boolean isGameOver;
 	
 	public Game(){
 		gameBoard = new GameBoard();
@@ -211,11 +211,8 @@ public class Game {
 	public void getDestinations(int playerID) {
 		List<DestinationRoute> cards = gameBoard.drawDestinationRoutes();
 		playerManager.addDestinationRoutesToConsider(playerID, cards);
-		try {
-			playerManager.advanceTurn();
-		} catch (GameOverException e) {
-			this.isGameOver = true;
-		}
+		assert(playerManager.isPlayersTurn(playerID)); //getting destinations shouldn't end the turn yet
+		assert(playerManager.getPlayers().get(playerID).getDestinationRoutesToConsider().length > 0);
 	}
 
 
@@ -234,8 +231,24 @@ public class Game {
 	public void selectDestinations(int playerID, int[] destinationsSelected) {
 		List<DestinationRoute> routes = playerManager.selectDestinations(playerID, destinationsSelected);
 		gameBoard.returnDestinationRoutes(routes);
-		assert(playerManager.isPlayersTurn(playerID)); //selecting the routes should not advance the turn
+		assert(playerManager.isPlayersTurn(playerID));
+		try {
+			playerManager.advanceTurn();
+		} catch (GameOverException e) {
+			this.isGameOver = true;
+			return;
+		}
+		assert(!playerManager.isPlayersTurn(playerID));
 		
+	}
+	
+	public boolean containsPlayer(int playerID){
+		for(Player p : playerManager.getPlayers()){
+			if(p.getPlayerID() == playerID){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	

@@ -14,14 +14,14 @@ import server.exception.OutOfBoundsException;
  *
  */
 public class Player {
-	private int ID;
-	private int numTrainsLeft;
-	private List<DestinationRoute> destinationRoutes;
-	private DestinationRoute[] destinationRoutesToConsider;
-	private Map<TrackColor,Integer> trainCarCards;
-	private PlayerColor color;
-	private int pointsScored;
-	private boolean longestRoute;
+	protected int ID;
+	protected int numTrainsLeft;
+	protected List<DestinationRoute> destinationRoutes;
+	protected DestinationRoute[] destinationRoutesToConsider;
+	protected Map<TrackColor,Integer> trainCarCards;
+	protected PlayerColor color;
+	protected int pointsScored;
+	protected boolean longestRoute;
 	
 	Player(int ID, PlayerColor color)
 	{

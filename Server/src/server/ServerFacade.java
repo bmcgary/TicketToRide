@@ -1,6 +1,7 @@
 package server;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +46,7 @@ public class ServerFacade {
 			return;
 		}
 		else{
-			assert(newGame.getPlayerManager().getNumPlayers() > 0);
+			assert(newGame.getPlayerManager().getNumPlayers() == 0);
 		}
 		
 		//add game
@@ -486,7 +487,7 @@ public class ServerFacade {
 	
 	public synchronized void sendClientModelInformation()
 	{
-		
+		//TODO: this
 	}
 	
 	public Map<Integer, CityToCityRoute> getCityMapping()
@@ -499,7 +500,7 @@ public class ServerFacade {
 	 * @param playerID the player to check
 	 * @return false if the player is not logged in or doesn't exist, true otherwise
 	 */
-	private boolean isPlayerLoggedIn(int playerID){
+	protected boolean isPlayerLoggedIn(int playerID){
 		//player must exist be logged in
 		for(User u : users){
 			if(u.getPlayerID() == playerID){
@@ -517,7 +518,7 @@ public class ServerFacade {
 	 * @param gameID the game to be checked
 	 * @return false if the game doesn't exist or hasn't started yet, true otherwise
 	 */
-	private boolean isPlayableGame(int gameID){
+	protected boolean isPlayableGame(int gameID){
 		for(Game g : games){
 			if(g.getGameID()==gameID){
 				return (g.isStarted() && !g.isGameOver());
@@ -533,7 +534,13 @@ public class ServerFacade {
 	 * @return a list of games joinable by the user
      */
 	public List<Game> getJoinableGames(int userID) {
-		return null;
+		List<Game> output = new ArrayList<Game>();
+		for(Game g : games){
+			if(isPlayableGame(g.getGameID()) && !g.containsPlayer(userID)){
+				output.add(g);
+			}
+		}
+		return Collections.unmodifiableList(output);
 	}
 
 	/**
@@ -542,6 +549,28 @@ public class ServerFacade {
 	 * @return a list of games which the user is in
      */
 	public List<Game> getUserGames(int userID) {
-		return null;
+		List<Game> output = new ArrayList<Game>();
+		for(Game g : games){
+			if(g.containsPlayer(userID)){
+				output.add(g);
+			}
+		}
+		return Collections.unmodifiableList(output);
+	}
+	
+	/**
+	 * Gets all games currently on the server facade
+	 * @return an unmodifiable collection of games
+	 */
+	public List<Game> getAllGames(){
+		return Collections.unmodifiableList(games);
+	}
+	
+	/**
+	 * Gets all users currently registered on the server facade
+	 * @return an unmodifiable collection of users
+	 */
+	public List<User> getAllUsers(){
+		return Collections.unmodifiableList(users);
 	}
 }

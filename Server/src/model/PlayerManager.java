@@ -10,10 +10,10 @@ import server.exception.GameOverException;
 import server.exception.OutOfBoundsException;
 
 public class PlayerManager {
-	private List<Player> players;
-	private int currentTurnIndex;
-	private int finalTurnIndex;
-	private int round; //keeps track of how many full rotations have occurred. 
+	protected List<Player> players;
+	protected int currentTurnIndex;
+	protected int finalTurnIndex;
+	protected int round; //keeps track of how many full rotations have occurred. 
 	public boolean drewAlreadyCurrentTurn;
 	
 	public PlayerManager(){
@@ -145,7 +145,7 @@ public class PlayerManager {
 	 * @param PlayerID
 	 * @param routs
 	 */
-	private void addDestinationRoute(int playerID, DestinationRoute route)
+	protected void addDestinationRoute(int playerID, DestinationRoute route)
 	{
 		
 		Player player = null;
@@ -341,7 +341,7 @@ public class PlayerManager {
 		return true;
 	}
 
-	private Player getPlayer(int playerID){
+	protected Player getPlayer(int playerID){
 		Player output = null;
 		for(Player p : this.players){
 			if(p.getPlayerID() == playerID){

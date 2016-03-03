@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class User {
-	private static int nextID = 1;
-	private int playerID;
-	private String username;
-	private String password;
-	private List<Integer> joinedGames;
-	private boolean loggedIn;
+	protected static int nextID = 1;
+	protected int playerID;
+	protected String username;
+	protected String password;
+	protected List<Integer> joinedGames;
+	protected boolean loggedIn;
 	
 
 	public User(String username, String password){
