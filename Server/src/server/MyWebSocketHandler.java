@@ -49,7 +49,8 @@ public class MyWebSocketHandler {
         System.out.println("Message: " + message);
 		try {
             Command command = CommandFactory.makeCommand(message);
-            ResponseWrapper responseWrapper = command.execute(personal_id);
+            // TODO: to stop errors
+            ResponseWrapper responseWrapper = command.execute(personal_id).get(0);
 	        
 	        if(command instanceof LoginCommand || command instanceof RegisterCommand)
 	        {

@@ -3,6 +3,9 @@ package server.command;
 import server.responses.Response;
 import server.responses.ResponseWrapper;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  *
  *
@@ -10,7 +13,7 @@ import server.responses.ResponseWrapper;
  */
 public class GetInitialCardsCommand extends Command {
     @Override
-    public ResponseWrapper execute(int userID) {
-        return new ResponseWrapper(userID, Response.newServerErrorResponse(), commandName);
+    public List<ResponseWrapper> execute(int userID) {
+        return Collections.singletonList(new ResponseWrapper(userID, Response.newServerErrorResponse(), commandName));
     }
 }

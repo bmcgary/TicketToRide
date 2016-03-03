@@ -3,11 +3,11 @@ package server.command;
 import com.google.gson.annotations.SerializedName;
 import server.exception.AlreadyLoggedInException;
 import server.exception.BadCredentialsException;
-import server.ServerFacade;
 import server.responses.Response;
 import server.responses.ResponseWrapper;
 
 import java.util.Collections;
+import java.util.List;
 
 /**
  *
@@ -21,7 +21,7 @@ public class LoginCommand extends Command {
     private String password;
 
     @Override
-    public ResponseWrapper execute(int userID) {
+    public List<ResponseWrapper> execute(int userID) {
         ResponseWrapper responseWrapper = new ResponseWrapper(commandName);
         try {
             userID = serverFacade.login(username, password);
@@ -31,6 +31,6 @@ public class LoginCommand extends Command {
         } catch (AlreadyLoggedInException e) {
             responseWrapper.addTargetId(userID).setResponse(new Response("alreadyloggedin"));
         }
-        return responseWrapper;
+        return Collections.singletonList(responseWrapper);
     }
 }

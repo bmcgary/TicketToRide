@@ -11,8 +11,8 @@ public class GamesResponse extends Response {
     @SerializedName("games")
     GameInfo[] games;
 
-    public GamesResponse(GameInfo[] games, String description) {
-        super(description);
+    public GamesResponse(GameInfo[] games) {
+        super(getSuccessString());
         this.games = games;
     }
 }
