@@ -37,6 +37,11 @@ import server.exception.PreConditionException;
 
 public class ServerFacade_Test {
 	
+	//registered, login , logout, 
+	// create game, add player,
+	//leave game,
+	//buy routes, draw train card
+	
 	/*
 	 * do you think we need a card class?
 	 */
