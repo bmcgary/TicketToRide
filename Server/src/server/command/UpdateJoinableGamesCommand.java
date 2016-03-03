@@ -1,7 +1,12 @@
 package server.command;
 
+import model.Game;
+import server.responses.GamesResponse;
 import server.responses.Response;
 import server.responses.ResponseWrapper;
+import server.responses.dto.GameInfo;
+
+import java.util.List;
 
 /**
  *
@@ -11,6 +16,12 @@ import server.responses.ResponseWrapper;
 public class UpdateJoinableGamesCommand extends Command {
     @Override
     public ResponseWrapper execute(int userID) {
-        return new ResponseWrapper(userID, Response.newServerErrorResponse(), commandName);
+        ResponseWrapper responseWrapper = new ResponseWrapper(userID, commandName);
+        List<Game> games = serverFacade.getJoinableGames(userID);
+        GameInfo[] gameInfo = new GameInfo[games.size()];
+        for (int i = 0; i < games.size(); ++i) {
+            gameInfo[i] = new GameInfo(games.get(i));
+        }
+        return responseWrapper.setResponse(new GamesResponse(gameInfo, Response.getSuccessString()));
     }
 }

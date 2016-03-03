@@ -16,14 +16,20 @@ public class Response {
     }
 
     public static Response newSuccessResponse() {
-        return new Response("success");
+        return new Response(getSuccessString());
     }
 
     public static Response newInvalidInputResponse() {
-        return new Response("invalid input");
+        return new Response(getInvalidInputString());
     }
 
     public static Response newServerErrorResponse() {
-        return new Response("server error");
+        return new Response(getServerErrorResponse());
     }
+
+    public static String getSuccessString() { return "success"; }
+
+    public static String getInvalidInputString() { return "invalid input"; }
+
+    public static String getServerErrorResponse() { return "server error"; }
 }
