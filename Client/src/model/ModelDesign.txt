@@ -1,0 +1,79 @@
+class GameDataForLobby {
+    
+    LobbyPlayer[] players;
+    int usersPlayerId;
+    int gameId;
+    String gameName;
+};
+
+class LobbyPlayer {
+
+    String playerName;
+    String playerColor;
+    int playerId;
+};
+
+class Game {
+
+    Opponent[] opponents;
+    Player player;
+    Gameboard board;
+    int gameId;
+    String gameName;
+    String[] gameHistory;
+    String[] gameChat;
+};
+
+class GameBoard {
+
+    boolean deckHasDestinations;
+    boolean deckHasTrains;
+    boolean isFirstRound;
+    boolean isLastRound;
+    Map <int, int> tracksPurchased = {}; //Map <routeIndex, playerId>
+    TrainCardColor[] cardsVisible;
+};
+
+class Opponent {
+
+    String playerName;
+    String playerColor;
+    int points;
+    int trainsLeft;
+    int playerId;
+};
+
+class Player {
+
+    String playerName;
+    String playerColor;
+    int points;
+    int trainsLeft;
+    Map<TrainCardColor, int> trainCards;
+    DestinationCard[] destinationCards;
+    int playerId;
+};
+
+class DestinationCard {
+
+    String cityName1;
+    String cityName2;
+    boolean isComplete;
+    int points;
+};
+
+class TrainRoute {
+
+    int trackId;
+    int trainsRequired;
+    String trackColor;
+    Rect boundingBox;
+    Rect[] tracks;
+};
+
+enum TrainCardColor {};
+enum TrackColor {};
+
+//I am thinking that I will add
+enum PlayerColor {};
+class Rect {};

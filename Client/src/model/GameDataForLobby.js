@@ -2,41 +2,15 @@ var app = angular.module('ticketToRide');
 
 app.factory('GameDataForLobby', function (LobbyPlayer) {
     
-    //private data
-    var players = [];
-    var usersPlayerId = -1;
-    var gameId = -1;
-    var gameName = "";
+    GameDataForLobby.prototype.players = [];
+    GameDataForLobby.prototype.usersPlayerId = -1;
+    GameDataForLobby.prototype.gameId = -1;
+    GameDataForLobby.prototype.gameName = "";
 
     //constructor 
-    function GameDataForLobby (players, usersPlayerId, gameId, gameName) {
+    function GameDataForLobby (gameDataJSON) {
 
     }
-
-    //public getters
-    GameDataForLobby.prototype.getPlayers = function() {
-        return this.players;
-    };
-
-    GameDataForLobby.prototype.getPlayer = function(playerId) {
-        return this.players[playerId];
-    };
-
-    GameDataForLobby.prototype.getUsersId = function() {
-        return this.usersPlayerId;
-    };
-
-    GameDataForLobby.prototype.getGameId = function() {
-        return this.gameId;
-    };
-
-    GameDataForLobby.prototype.getGameName = function() {
-        return this.gameName;
-    };
-
-    //public methods
-
-
 
     return GameDataForLobby;
 });

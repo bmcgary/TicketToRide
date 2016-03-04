@@ -14,7 +14,7 @@ app.factory('ModelFacade', function ($rootScope, Game) {
         if(gameId == gameInView) {
             $rootScope.$broadcast('model:' + command, getModel());
         }
-    }
+    };
 
     $rootScope.$on('server:UpdateUserGames', function (event, parameters) {
         //do logic
@@ -94,10 +94,10 @@ app.factory('ModelFacade', function ($rootScope, Game) {
     	canSelectDestination: function (destinationsSelected) {
     		//return getModel().canSelectDestination()
     		return false;
-    	}
+    	},
 
     	switchGame: function (gameId) {
-    		currentGameId = gameId;
+    		gameInView = gameId;
     		$rootScope.$broadcast('model:SwitchGame', getModel());
     	}
     };
