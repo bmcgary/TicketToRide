@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'selenium-webdriver'
+require 'pry'
 
 driver = Selenium::WebDriver.for :firefox
 driver.get "http://google.com"
