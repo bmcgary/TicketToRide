@@ -35,5 +35,16 @@ public class TestPlayerManager extends PlayerManager
 		this.drewAlreadyCurrentTurn = drewAlreadyCurrentTurn;
 	}
 	
+	public Player getPlayerByID(int playerID) {
+		for (int i = 0; i < players.size(); i++)
+		{
+			if (players.get(i).getPlayerID() == playerID)
+			{
+				return players.get(i);
+			}
+		}
+		return null;
+	}
+	
 	
 }

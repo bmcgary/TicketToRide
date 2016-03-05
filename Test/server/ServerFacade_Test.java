@@ -14,7 +14,11 @@ import model.CityToCityRoute;
 import model.DestinationRoute;
 import model.Game;
 import model.GameBoard;
+import model.Player;
 import model.PlayerColor;
+import model.TestGame;
+import model.TestGameBoard;
+import model.TestPlayerManager;
 import model.TrackColor;
 
 import org.junit.After;
@@ -461,8 +465,8 @@ public class ServerFacade_Test {
 			//System.out.println("DON'T TRUST TEST RESULTS");
 		}
 		
-		Game game1 = new Game();
-		Game game2 = new Game();
+		TestGame game1 = new TestGame();
+		TestGame game2 = new TestGame();
 		int game1ID = game1.getGameID();
 		int game2ID = game2.getGameID();
 		facade.createGame(game1); //assume this game is started by test1 with Blue
@@ -479,6 +483,7 @@ public class ServerFacade_Test {
 		
 		//call canGetDestinations on game that has already finished
 		//figure out how to update game2 so it is considered over
+		game2.setGameOver(true);
 		assertFalse(facade.canGetDestinations(test3ID, game2ID));
 		
 		//call canGetDestinations on game that does not exist
@@ -510,20 +515,26 @@ public class ServerFacade_Test {
 			fail("Was unable to draw train card");
 		}
 		
-		//call canGetDestinations on game when no destinations remain
-		//figure out how to clear the list of destinations
-		assertFalse(facade.canGetDestinations(test1ID, game1ID));
-		
 		//get game in position where getDestinations returns true
 		if(facade.canGetDestinations(test1ID, game1ID))
 		{
 			facade.getDestinations(test1ID, game1ID);
 			//verify destination routes were added for user to consider
+			TestPlayerManager manager = (TestPlayerManager)game1.getPlayerManager();
+			Player player1 = manager.getPlayerByID(test1ID);
+			assertTrue(player1.getDestinationRoutesToConsider().length > 0);
 		}
 		else
 		{
 			fail("Something went wrong. Unable to run all tests");
 		}
+		/*
+		//call canGetDestinations on game when no destinations remain
+		//figure out how to clear the list of destinations
+		TestGameBoard board = (TestGameBoard)game1.getGameBoard();
+		board.setDestinationRoutes(new List<DestinationRoute>());
+		assertFalse(facade.canGetDestinations(test1ID, game1ID));
+		*/
 	}
 
 	@Test

@@ -4,6 +4,13 @@ import java.util.List;
 
 public class TestGame extends Game{
 	
+	public TestGame()
+	{
+		super();
+		gameBoard = new TestGameBoard();
+		playerManager = new TestPlayerManager();
+	}
+	
 	public GameBoard getGameBoard() {
 		return gameBoard;
 	}
