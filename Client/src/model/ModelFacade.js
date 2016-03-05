@@ -3,7 +3,7 @@ var app = angular.module('ticketToRide');
 app.factory('ModelFacade', function ($rootScope, Game) {
 	//store and access game models
 	var usersGames = {};
-    var availableGames = {};
+    var joinableGames = {};
 	var gameInView = -1;
 
 	var getModel = function () {
@@ -97,8 +97,8 @@ app.factory('ModelFacade', function ($rootScope, Game) {
     	},
 
     	switchGame: function (gameId) {
-    		gameInView = gameId;
-    		$rootScope.$broadcast('model:SwitchGame', getModel());
+            gameInView = gameId;
+            broadcast(gameInView, 'SwitchGame');
     	}
     };
 });
