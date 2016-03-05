@@ -1,10 +1,6 @@
 package server.command;
 
 import com.google.gson.annotations.SerializedName;
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 import server.exception.AlreadyLoggedInException;
 import server.exception.BadCredentialsException;
 import server.ServerFacade;
