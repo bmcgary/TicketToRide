@@ -1,3 +1,9 @@
+class ModelFacade {
+    static Map<int, Game> usersGames; //Map<gameId, Game>
+    static Map<int LobbyGame> joinableGames; //Map<gameId, LobbyGame>
+    static int gameInView; //gameId
+};
+
 class GameDataForLobby {
     
     LobbyPlayer[] players;
