@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import server.ServerFacade;
 import server.exception.AddUserException;
 import server.exception.InternalServerException;
 import server.exception.OutOfBoundsException;
@@ -242,19 +243,77 @@ public class ServerFacade_Test {
 	 */
 	
 	@Test(expected=PreConditionException.class)
-	public void testCanStartGame() throws PreConditionException, InternalServerException {
-		User user1 = new User("user1","password1");
-		User user2 = new User("user2","password2");
+	public void testStartGame() throws PreConditionException, InternalServerException {
+
+		ServerFacade facade = ServerFacade.getServerFacade();
+		int test1ID;
+		int test2ID;
+		int test3ID;
+		int test4ID;
 		
-		serverFacade.startGame(1, 1);
-	}
-	
-	//currently need add some functionalities to allow me to create a game
-	@Test
-	public void testStartGame() {
-		User user1 = new User("user1","password1");
-		User user2 = new User("user2","password2");
+		//register multiple users
+		try
+		{
+			test1ID = facade.register("test1", "test1");
+			test2ID = facade.register("test2", "test2");
+			test3ID = facade.register("test3", "test3");
+			test4ID = facade.register("test4", "test4");
+		}
+		catch(AddUserException e)
+		{
+			System.out.println("Something went wrong trying to register users");
+			System.out.println("DON'T TRUST TEST RESULTS");
+		}	
+		catch(InternalServerException e)
+		{
+			System.out.println("Something went wrong trying to register users");
+			System.out.println("DON'T TRUST TEST RESULTS");
+		}
 		
+		//create two games
+		Game game1 = new Game();
+		Game game2 = new Game();
+		int game1ID = game1.getGameID();
+		int game2ID = game2.getGameID();
+		facade.createGame(game1); //assume this game is started by test1 with Blue
+		facade.createGame(game2); //assume this game is started by test3 with Blue
+		
+		//call canStartGame with only one user in game.
+		assertFalse(facade.canStartGame(test1ID, game1ID));
+		
+		//call canStartGame with user who did not create it.
+		facade.addPlayerToGame(test2ID, game1ID, PlayerColor.Red);
+		assertFalse(facade.canStartGame(test2ID, game1ID))
+		
+		//logout with one user
+		//call canStartGame with logged out user (should be user who created game)
+		facade.addPlayerToGame(test4ID, game2ID, PlayerColor.Red);
+		facade.logout(test3ID);
+		assertFalse(facade.canStartGame(test3ID, game2ID));
+		
+		//call canStartGame with user that does not exist
+		int nonExistantID = -1;
+		assertFalse(facade.canStartGame(nonExistantID, game1ID))
+		
+		//call canStartGame with game that does not exist
+		assertFalse(facade.canStartGame(test1ID, nonExistantID));
+		assertFalse(facade.canStartGame(test1ID, null));
+		
+		//call canStartGame with valid credentials
+		assertTrue(facade.canStartGame(test1ID, game1ID));
+		
+		//call startGame
+		//verify game has been started and all other necessary states
+		facade.startGame(test1ID, game1ID);
+		assertTrue(game1.containsPlayer(test1ID));
+		assertTrue(game1.containsPlayer(test2ID));
+		assertTrue(game1.isStarted());
+		assertFalse(game1.isGameOver());
+
+		//Perhaps check some more things on the game??
+				
+		//call canStartGame on game that has already been started
+		assertFalse(facade.canStartGame(test1ID, game1ID));
 	}
 
 	/**
