@@ -262,13 +262,15 @@ public class ServerFacade_Test {
 		}
 		catch(AddUserException e)
 		{
-			System.out.println("Something went wrong trying to register users");
-			System.out.println("DON'T TRUST TEST RESULTS");
+			fail("Something went wrong trying to register users");
+			//System.out.println("Something went wrong trying to register users");
+			//System.out.println("DON'T TRUST TEST RESULTS");
 		}	
 		catch(InternalServerException e)
 		{
-			System.out.println("Something went wrong trying to register users");
-			System.out.println("DON'T TRUST TEST RESULTS");
+			fail("Something went wrong trying to register users");
+			//System.out.println("Something went wrong trying to register users");
+			//System.out.println("DON'T TRUST TEST RESULTS");
 		}
 		
 		//create two games
@@ -448,13 +450,15 @@ public class ServerFacade_Test {
 		}
 		catch(AddUserException e)
 		{
-			System.out.println("Something went wrong trying to register users");
-			System.out.println("DON'T TRUST TEST RESULTS");
+			fail("Something went wrong trying to register users");
+			//System.out.println("Something went wrong trying to register users");
+			//System.out.println("DON'T TRUST TEST RESULTS");
 		}	
 		catch(InternalServerException e)
 		{
-			System.out.println("Something went wrong trying to register users");
-			System.out.println("DON'T TRUST TEST RESULTS");
+			fail("Something went wrong trying to register users");
+			//System.out.println("Something went wrong trying to register users");
+			//System.out.println("DON'T TRUST TEST RESULTS");
 		}
 		
 		Game game1 = new Game();
@@ -501,6 +505,10 @@ public class ServerFacade_Test {
 			facade.drawTrainCard(test1ID, game1ID, 1);
 			assertFalse(facade.canGetDestinations(test1ID, game1ID));
 		}
+		else
+		{
+			fail("Was unable to draw train card");
+		}
 		
 		//call canGetDestinations on game when no destinations remain
 		//figure out how to clear the list of destinations
@@ -511,6 +519,10 @@ public class ServerFacade_Test {
 		{
 			facade.getDestinations(test1ID, game1ID);
 			//verify destination routes were added for user to consider
+		}
+		else
+		{
+			fail("Something went wrong. Unable to run all tests");
 		}
 	}
 
