@@ -1,6 +1,10 @@
 package server.command;
 
 import com.google.gson.annotations.SerializedName;
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 import server.exception.AlreadyLoggedInException;
 import server.exception.BadCredentialsException;
 import server.ServerFacade;
@@ -25,6 +29,7 @@ public class LoginCommand extends Command {
         ResponseWrapper responseWrapper = new ResponseWrapper(commandName);
         try {
             userID = serverFacade.login(username, password);
+            
             responseWrapper.addTargetId(userID).setResponse(Response.newSuccessResponse());
         } catch (BadCredentialsException e) {
             responseWrapper.setResponse(Response.newInvalidInputResponse());
