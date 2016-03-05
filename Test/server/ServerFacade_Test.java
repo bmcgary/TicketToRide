@@ -244,7 +244,8 @@ public class ServerFacade_Test {
 	
 	@Test(expected=PreConditionException.class)
 	public void testStartGame() throws PreConditionException, InternalServerException {
-
+		//Note: this test will not work properly until Issue #13 is resolved
+		fail("Note: this test will not work properly until Issue #13 is resolved");
 		ServerFacade facade = ServerFacade.getServerFacade();
 		int test1ID;
 		int test2ID;
@@ -424,31 +425,93 @@ public class ServerFacade_Test {
 		serverFacade.drawTrainCard(1,1,3);
 	}
 
-	//Player can scroll through list of destination tickets in hand
-	//???junit test for this case??
 	
-	//When less than three destinations are left, card(s) do not appear on the modal
-	//When destinations are exhausted, deck no longer appears
-	//When destinations are completed upon drawing, status is automatically changed
-	//When destinations are drawn they appear in the player's hand
-	//are you handling those cases???
-	///
-	//Player cannot draw a train card after drawing destination
-	//Player cannot build a route after drawing destination
-	
-	/**
-
-
-	 */
-	@Test
-	public void testCanGetDestinations() {
-
-		fail("Not yet implemented");
-	}
 
 	@Test
-	public void testGetDestinations() {
-		fail("Not yet implemented");
+	public void testGetDestinations() { //Note: this test will not work properly until Issue #13 is resolved
+		
+		fail("Note: this test will not work properly until Issue #13 is resolved");
+		
+		ServerFacade facade = ServerFacade.getServerFacade();
+		int test1ID;
+		int test2ID;
+		int test3ID;
+		int test4ID;
+		
+		//register multiple users
+		try
+		{
+			test1ID = facade.register("test1", "test1");
+			test2ID = facade.register("test2", "test2");
+			test3ID = facade.register("test3", "test3");
+			test4ID = facade.register("test4", "test4");
+		}
+		catch(AddUserException e)
+		{
+			System.out.println("Something went wrong trying to register users");
+			System.out.println("DON'T TRUST TEST RESULTS");
+		}	
+		catch(InternalServerException e)
+		{
+			System.out.println("Something went wrong trying to register users");
+			System.out.println("DON'T TRUST TEST RESULTS");
+		}
+		
+		Game game1 = new Game();
+		Game game2 = new Game();
+		int game1ID = game1.getGameID();
+		int game2ID = game2.getGameID();
+		facade.createGame(game1); //assume this game is started by test1 with Blue
+		facade.createGame(game2); //assume this game is started by test3 with Blue
+		
+		facade.addPlayerToGame(test2ID, game1ID, PlayerColor.Red);
+		facade.addPlayerToGame(test4ID, game2ID, PlayerColor.Red);
+		
+		//call canGetDestinations on game that has not yet started
+		assertFalse(facade.canGetDestinations(test1ID, game1ID));
+		
+		facade.startGame(test1ID, game1ID);
+		facade.startGame(test3ID, game2ID);
+		
+		//call canGetDestinations on game that has already finished
+		//figure out how to update game2 so it is considered over
+		assertFalse(facade.canGetDestinations(test3ID, game2ID));
+		
+		//call canGetDestinations on game that does not exist
+		assertFalse(facade.canGetDestinations(test1ID, -1));
+		assertFalse(facade.canGetDestinations(test1ID, null));
+		
+		//call canGetDestination on game with invalid user
+		assertFalse(facade.canGetDestinations(-1, game1ID));
+		
+		//call canGetDestinations on game when not user's turn
+		assertFalse(facade.canGetDestinations(test2ID, game1ID));
+		
+		//call canGetDestinations on game when not logged in
+		facade.logout(test1ID);
+		assertFalse(facade.canGetDestinations(test1ID, game1ID));
+		facade.login("test1", "test1"); //ensure that logging back in worked
+		
+		//working example
+		assertTrue(facade.canGetDestinations(test1ID, game1ID));
+		
+		//call canGetDestinations on game when already called draw train car
+		if(facade.canDrawTrainCard(test1ID, game1ID, 0)) //try to ensure this test will happen
+		{
+			facade.drawTrainCard(test1ID, game1ID, 1);
+			assertFalse(facade.canGetDestinations(test1ID, game1ID));
+		}
+		
+		//call canGetDestinations on game when no destinations remain
+		//figure out how to clear the list of destinations
+		assertFalse(facade.canGetDestinations(test1ID, game1ID));
+		
+		//get game in position where getDestinations returns true
+		if(facade.canGetDestinations(test1ID, game1ID))
+		{
+			facade.getDestinations(test1ID, game1ID);
+			//verify destination routes were added for user to consider
+		}
 	}
 
 	@Test
