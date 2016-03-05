@@ -20,9 +20,13 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class ServerMain {
+	
+	private Map<Object, Object> paramMap = new HashMap<>();
 
     public static void main(String[] args) throws Exception
     {
@@ -63,7 +67,11 @@ public class ServerMain {
 
             URI command=exchange.getRequestURI();
             String theCommand=command.toString();
+            theCommand = deparameterize(theCommand, paramMap);
+            //.
 
+            //theCommand = theCommand.split("\?")[0];
+            
             System.out.println("    Command received: " + theCommand);
             String[] params=theCommand.split("/",2);
 
@@ -128,6 +136,37 @@ public class ServerMain {
             }
 
         }
+    }
+    
+    public static String deparameterize(String uri, Map parameters) {
+        int i = uri.lastIndexOf('?');
+        if (i == -1) {
+            return uri;
+        }
+
+        parameters.clear();
+        String[] params = uri.substring(i + 1).split("&");
+        for (int j = 0; j < params.length; j++) {
+            String p = params[j];
+            int k = p.indexOf('=');
+            if (k == -1) {
+                break;
+            }
+            String name = p.substring(0, k);
+            String value = p.substring(k + 1);
+            Object values = parameters.get(name);
+            if (values == null) {
+                parameters.put(name, new String[]{value});
+            } else {
+                String[] v1 = (String[])values;
+                String[] v2 = new String[v1.length + 1];
+                System.arraycopy(v1, 0, v2, 0, v1.length);
+                v2[v1.length] = value;
+                parameters.put(name, v2);
+            }
+        }
+
+        return uri.substring(0, i);
     }
 }
 
