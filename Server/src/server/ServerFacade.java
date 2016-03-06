@@ -54,7 +54,7 @@ public class ServerFacade {
 		games.add(newGame);
 		assert(games.contains(newGame));
 		
-		//add creater to the game under the color that they choose
+		//add creator to the game under the color that they choose
 		try {
 			this.addPlayerToGame(playerID, newGame.getGameID(), color);
 		} catch (PreConditionException e) {
@@ -69,7 +69,7 @@ public class ServerFacade {
 	 * @param newUser the user to be added
 	 * @throws AddUserException thrown if the new user wasn't instantiated properly or a user with the same name already exists
 	 */
-	public synchronized void addNewUser(User newUser) throws AddUserException
+	private synchronized void addNewUser(User newUser) throws AddUserException
 	{
 		//check to make sure user was added properly
 		if(newUser == null || newUser.getPlayerID() <= 0 || newUser.getPlayerID() == Integer.MAX_VALUE){
@@ -585,5 +585,15 @@ public class ServerFacade {
 	 */
 	public List<User> getAllUsers(){
 		return Collections.unmodifiableList(users);
+	}
+	
+	public static void main(String args[]) throws AddUserException, InternalServerException{
+		ServerFacade sf = ServerFacade.getServerFacade();
+		int pid = sf.register("Trent", "trent");
+		int pid2 = sf.register("Jacob",  "jacob");
+		Game g = new Game();
+		sf.createGame(g, pid, PlayerColor.Black);
+		System.out.println(sf.canAddPlayerToGame(pid2, 1, PlayerColor.Red));
+		System.out.println("Success!");
 	}
 }
