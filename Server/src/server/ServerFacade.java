@@ -1,5 +1,9 @@
 package server;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -508,7 +512,18 @@ public class ServerFacade {
 	public synchronized void saveGameState()
 	{
 		Gson gson = new Gson();
-		System.out.println(gson.toJson(games.get(0)));
+		String relativePath = new File("").getAbsolutePath() + "/Server/src/saveFiles/";
+		String output = "";
+		for(Game g : games){
+			output += gson.toJson(g) + "\n";
+		}
+		try {
+			PrintWriter writer = new PrintWriter(relativePath + "save.txt", "UTF-8");
+			writer.println(output);
+			writer.close();
+		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 		//TODO: the rest
 	}
 	
@@ -611,7 +626,9 @@ public class ServerFacade {
 		int pid = sf.register("Trent", "trent");
 		int pid2 = sf.register("Jacob",  "jacob");
 		Game g = new Game();
+		Game g2 = new Game();
 		sf.createGame(g, pid, PlayerColor.Black);
+		sf.createGame(g2, pid, PlayerColor.Black);
 		sf.addPlayerToGame(pid2, 1, PlayerColor.Green);
 		sf.startGame(pid, 1);
 		Map<TrackColor, Integer> m = new HashMap<TrackColor, Integer>();
