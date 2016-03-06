@@ -188,6 +188,13 @@ public class ServerFacade_Test {
 	discardedTrainCarCards.add(TrackColor.Black);
 	
 	}
+	
+	@After
+	public void firebombServerFacade()
+	{
+		//Call firebomb on ServerFacade after each test
+		//ensure each test starts fresh
+	}
 
 	@Test
 	public void testGetServerFacade() {

@@ -587,6 +587,11 @@ public class ServerFacade {
 		return Collections.unmodifiableList(users);
 	}
 	
+	private static void firebomb()
+	{
+		serverFacade = null;
+	}
+	
 	public static void main(String args[]) throws AddUserException, InternalServerException{
 		ServerFacade sf = ServerFacade.getServerFacade();
 		int pid = sf.register("Trent", "trent");
