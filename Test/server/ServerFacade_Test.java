@@ -112,9 +112,9 @@ public class ServerFacade_Test {
 	List<TrackColor> deckTrainCarCards = new ArrayList<TrackColor>();
 	TrackColor[] visibleTrainCarCards= new TrackColor[256];
 	List<TrackColor> discardedTrainCarCards = new ArrayList<TrackColor>();
-	City city1 = new City(new Point(3,4),"LA");
-	City city2 = new City(new Point(4,5),"SA");
-	City city3 = new City(new Point(5,5),"GA");
+	City city1 = new City("LA");
+	City city2 = new City("SA");
+	City city3 = new City("GA");
 	
 	
 	cities.addAll(Arrays.asList(city1,city2,city3));
@@ -144,9 +144,9 @@ public class ServerFacade_Test {
 	List<TrackColor> deckTrainCarCards = new ArrayList<TrackColor>();
 	TrackColor[] visibleTrainCarCards= new TrackColor[256];
 	List<TrackColor> discardedTrainCarCards = new ArrayList<TrackColor>();
-	City city1 = new City(new Point(0,1),"LA");
-	City city2 = new City(new Point(1,0),"SA");
-	City city3 = new City(new Point(1,0),"GA");
+	City city1 = new City("LA");
+	City city2 = new City("SA");
+	City city3 = new City("GA");
 	
 	cities.addAll(Arrays.asList(city1,city2,city3));
 	CityToCityRoute ctoc1 = new CityToCityRoute(city1,city2,3,TrackColor.Orange);
@@ -174,9 +174,9 @@ public class ServerFacade_Test {
 	List<TrackColor> deckTrainCarCards = new ArrayList<TrackColor>();
 	TrackColor[] visibleTrainCarCards= new TrackColor[256];
 	List<TrackColor> discardedTrainCarCards = new ArrayList<TrackColor>();
-	City city1 = new City(new Point(2,2),"LA");
-	City city2 = new City(new Point(3,3),"SA");
-	City city3 = new City(new Point(1,2),"GA");
+	City city1 = new City("LA");
+	City city2 = new City("SA");
+	City city3 = new City("GA");
 	
 	cities.addAll(Arrays.asList(city1,city2,city3));
 	CityToCityRoute ctoc1 = new CityToCityRoute(city1,city2,3,TrackColor.Orange);
@@ -195,15 +195,6 @@ public class ServerFacade_Test {
 	
 	}
 	
-	@After
-	public void firebombServerFacade()
-	{
-		//Call firebomb on ServerFacade after each test
-		//ensure each test starts fresh
-		ServerFacade.firebomb();
-	}
-
-
 	@Test
 	public void testGetServerFacade() {
 		assertNotEquals(serverFacade.getServerFacade(),null);
@@ -507,9 +498,7 @@ public class ServerFacade_Test {
 	}
 	/*
 	 * 	// no way to create a game currently
-	 * I need a lot of functions to connect different objects together.
-	 * For example, may you show me how to add a game to games? 
-	 * or add players to a game?
+
 
 	 */
 	
