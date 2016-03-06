@@ -2,9 +2,11 @@ package server;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import model.City;
 import model.CityToCityRoute;
 import model.Game;
 import model.Player;
@@ -14,6 +16,7 @@ import server.exception.AddUserException;
 import server.exception.AlreadyLoggedInException;
 import server.exception.BadCredentialsException;
 import server.exception.InternalServerException;
+import server.exception.InvalidCredentialsException;
 import server.exception.OutOfBoundsException;
 import server.exception.PreConditionException;
 
@@ -317,10 +320,16 @@ public class ServerFacade {
 	 * @param password the password to be added
 	 * @return the playerID of the newly created user
 	 * @throws AddUserException thrown if the user cannot be added, usually for a user name already taken
+	 * @throws InvalidCredentialsException 
 	 */
-	public synchronized int register(String username,String password) throws AddUserException, InternalServerException
+	public synchronized int register(String username,String password) throws AddUserException, InternalServerException, InvalidCredentialsException
 	{
 		User newUser = new User(username, password);
+		for(User u : this.users){
+			if(u.getUsername().equals(username)){
+				throw new InvalidCredentialsException("That username already exists!");
+			}
+		}
 		this.addNewUser(newUser);	//if this line throws an AddUserException for improper instantiation, there's a problem and I messed up. 
 		try {
 			return login(username, password);
@@ -592,7 +601,7 @@ public class ServerFacade {
 		serverFacade = null;
 	}
 	
-	public static void main(String args[]) throws AddUserException, InternalServerException, PreConditionException{
+	public static void main(String args[]) throws AddUserException, InternalServerException, PreConditionException, InvalidCredentialsException, OutOfBoundsException{
 		ServerFacade sf = ServerFacade.getServerFacade();
 		int pid = sf.register("Trent", "trent");
 		int pid2 = sf.register("Jacob",  "jacob");
@@ -600,6 +609,9 @@ public class ServerFacade {
 		sf.createGame(g, pid, PlayerColor.Black);
 		sf.addPlayerToGame(pid2, 1, PlayerColor.Green);
 		sf.startGame(pid, 1);
+		Map<TrackColor, Integer> m = new HashMap<TrackColor, Integer>();
+		m.put(TrackColor.Red, 1);
+		sf.buyRoute(pid, 1, new CityToCityRoute(new City("Seattle"), new City("Portland"), 1, TrackColor.None), m);
 		System.out.println("Success!");
 	}
 }

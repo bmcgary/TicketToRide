@@ -31,6 +31,7 @@ public class Player {
 		this.trainCarCards = new HashMap<TrackColor, Integer>();
 		this.destinationRoutes = new ArrayList<DestinationRoute>();
 		this.destinationRoutesToConsider = new DestinationRoute[3];
+		this.numTrainsLeft = 45;
 	}
 	
 	public List<DestinationRoute> getDestinationRoute()
