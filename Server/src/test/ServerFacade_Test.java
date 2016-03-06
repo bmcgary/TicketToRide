@@ -516,16 +516,15 @@ public class ServerFacade_Test {
 
 	 */
 	
-	@Test(expected=PreConditionException.class)
-	public void testStartGame() throws PreConditionException, InternalServerException {
-		//Note: this test will not work properly until Issue #13 is resolved
-		fail("Note: this test will not work properly until Issue #13 is resolved");
+	@Test
+	public void testStartGame() {
+
 		ServerFacade facade = ServerFacade.getServerFacade();
 		int test1ID = 0;
 		int test2ID = 0;
 		int test3ID = 0;
 		int test4ID = 0;
-		
+
 		//register multiple users
 		try
 		{
@@ -533,67 +532,67 @@ public class ServerFacade_Test {
 			test2ID = facade.register("test2", "test2");
 			test3ID = facade.register("test3", "test3");
 			test4ID = facade.register("test4", "test4");
+
+
+			//create two games
+			Game game1 = new Game();
+			Game game2 = new Game();
+			int game1ID = game1.getGameID();
+			int game2ID = game2.getGameID();
+			facade.createGame(game1,test1ID,PlayerColor.Blue); //assume this game is started by test1 with Blue
+			facade.createGame(game2,test3ID,PlayerColor.Blue); //assume this game is started by test3 with Blue
+
+			//call canStartGame with only one user in game.
+			assertFalse(facade.canStartGame(test1ID, game1ID));
+
+			//call canStartGame with user who did not create it.
+			facade.addPlayerToGame(test2ID, game1ID, PlayerColor.Red);
+			assertFalse(facade.canStartGame(test2ID, game1ID));
+
+			//logout with one user
+			//call canStartGame with logged out user (should be user who created game)
+			facade.addPlayerToGame(test4ID, game2ID, PlayerColor.Red);
+			try {
+				facade.logout(test3ID);
+			} catch (BadCredentialsException e) {
+				fail("Failed to logout correctly.");
+			}
+			assertFalse(facade.canStartGame(test3ID, game2ID));
+
+			//call canStartGame with user that does not exist
+			int nonExistantID = -1;
+			assertFalse(facade.canStartGame(nonExistantID, game1ID));
+
+			//call canStartGame with game that does not exist
+			assertFalse(facade.canStartGame(test1ID, nonExistantID));
+
+			//call canStartGame with valid credentials
+			assertTrue(facade.canStartGame(test1ID, game1ID));
+
+			//call startGame
+			//verify game has been started and all other necessary states
+			facade.startGame(test1ID, game1ID);
+			assertTrue(game1.containsPlayer(test1ID));
+			assertTrue(game1.containsPlayer(test2ID));
+			assertTrue(game1.isStarted());
+			assertFalse(game1.isGameOver());
+
+			//Perhaps check some more things on the game??
+
+			//call canStartGame on game that has already been started
+			assertFalse(facade.canStartGame(test1ID, game1ID));
 		}
 		catch(AddUserException e)
 		{
 			fail("Something went wrong trying to register users");
-			//System.out.println("Something went wrong trying to register users");
-			//System.out.println("DON'T TRUST TEST RESULTS");
 		}	
 		catch(InternalServerException e)
 		{
 			fail("Something went wrong trying to register users");
-			//System.out.println("Something went wrong trying to register users");
-			//System.out.println("DON'T TRUST TEST RESULTS");
+		} catch (PreConditionException e1) {
+			e1.printStackTrace();
+			fail("Something went wrong");
 		}
-		
-		//create two games
-		Game game1 = new Game();
-		Game game2 = new Game();
-		int game1ID = game1.getGameID();
-		int game2ID = game2.getGameID();
-		facade.createGame(game1,test1ID,PlayerColor.Blue); //assume this game is started by test1 with Blue
-		facade.createGame(game2,test3ID,PlayerColor.Blue); //assume this game is started by test3 with Blue
-		
-		//call canStartGame with only one user in game.
-		assertFalse(facade.canStartGame(test1ID, game1ID));
-		
-		//call canStartGame with user who did not create it.
-		facade.addPlayerToGame(test2ID, game1ID, PlayerColor.Red);
-		assertFalse(facade.canStartGame(test2ID, game1ID));
-		
-		//logout with one user
-		//call canStartGame with logged out user (should be user who created game)
-		facade.addPlayerToGame(test4ID, game2ID, PlayerColor.Red);
-		try {
-			facade.logout(test3ID);
-		} catch (BadCredentialsException e) {
-			fail("Failed to logout correctly.");
-		}
-		assertFalse(facade.canStartGame(test3ID, game2ID));
-		
-		//call canStartGame with user that does not exist
-		int nonExistantID = -1;
-		assertFalse(facade.canStartGame(nonExistantID, game1ID));
-		
-		//call canStartGame with game that does not exist
-		assertFalse(facade.canStartGame(test1ID, nonExistantID));
-		
-		//call canStartGame with valid credentials
-		assertTrue(facade.canStartGame(test1ID, game1ID));
-		
-		//call startGame
-		//verify game has been started and all other necessary states
-		facade.startGame(test1ID, game1ID);
-		assertTrue(game1.containsPlayer(test1ID));
-		assertTrue(game1.containsPlayer(test2ID));
-		assertTrue(game1.isStarted());
-		assertFalse(game1.isGameOver());
-
-		//Perhaps check some more things on the game??
-				
-		//call canStartGame on game that has already been started
-		assertFalse(facade.canStartGame(test1ID, game1ID));
 	}
 
 	/**
@@ -766,7 +765,7 @@ public class ServerFacade_Test {
 			//call canGetDestinations on game when already called draw train car
 			if(facade.canDrawTrainCard(test1ID, game1ID, 0)) //try to ensure this test will happen
 			{
-				facade.drawTrainCard(test1ID, game1ID, 1);
+				facade.drawTrainCard(test1ID, game1ID, 0);
 				assertFalse(facade.canGetDestinations(test1ID, game1ID));
 			}
 			else
