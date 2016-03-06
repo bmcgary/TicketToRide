@@ -79,7 +79,7 @@ public class ServerFacade {
 	 * @param newUser the user to be added
 	 * @throws AddUserException thrown if the new user wasn't instantiated properly or a user with the same name already exists
 	 */
-	public synchronized void addNewUser(User newUser) throws AddUserException
+	private synchronized void addNewUser(User newUser) throws AddUserException
 	{
 		//check to make sure user was added properly
 		if(newUser == null || newUser.getPlayerID() <= 0 || newUser.getPlayerID() == Integer.MAX_VALUE){
