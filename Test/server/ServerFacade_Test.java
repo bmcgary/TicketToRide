@@ -29,11 +29,17 @@ import org.junit.Test;
 
 import server.ServerFacade;
 import server.exception.AddUserException;
+import server.exception.AlreadyLoggedInException;
+import server.exception.BadCredentialsException;
 import server.exception.InternalServerException;
 import server.exception.OutOfBoundsException;
 import server.exception.PreConditionException;
 
 public class ServerFacade_Test {
+	
+
+
+	//buy routes, draw train card
 	
 	/*
 	 * do you think we need a card class?
@@ -188,21 +194,54 @@ public class ServerFacade_Test {
 	discardedTrainCarCards.add(TrackColor.Black);
 	
 	}
+	
+	@After
+	public void firebombServerFacade()
+	{
+		//Call firebomb on ServerFacade after each test
+		//ensure each test starts fresh
+		ServerFacade.firebomb();
+	}
+
 
 	@Test
 	public void testGetServerFacade() {
 		assertNotEquals(serverFacade.getServerFacade(),null);
 	}
-
-	/*
-	 * we could throw different exceptions if the game is null, or gameboard is null, or playermanager..
-	 * I think the createGame function has logic problem.  Even if we have nothing inside the playermanager,
-	 * it still passes junit tests
+	/* error:
+	 * not handle if a user name is empty not handle is username is larger than 25 char.
+	 * not checking if a user enters his/her email...we require a user to enter his/her email??
+	 * I can even enter a chinese character..this is a creepy test case. 
 	 */
 	@Test
-	public void testCreateGame() {
-		serverFacade.createGame(game1);
+	public void registered() throws AddUserException
+	{
+		User user = new User("","passdasdsad啦啦啦啦啦ada啦dasdasdasdasdaasdasd");
+		serverFacade.addNewUser(user);
+		
 	}
+	/*
+	 * successful case
+	 */
+	@Test
+	public void registeredSuccess() throws AddUserException
+	{
+		User user = new User("name","pass");
+		serverFacade.addNewUser(user);	
+	}
+	/*
+	 * existing object
+	 */
+	@Test(expected = AddUserException.class)
+	public void registeredUserNameexistobject() throws AddUserException
+	{
+		User user = new User("name","pass");
+		serverFacade.addNewUser(user);	
+		serverFacade.addNewUser(user);	
+
+	}
+	// a test case says a user can switch to the login screen??  Is this handled by the server side..i thought
+	//it should be a functionality in the augular.js???
 	
 	/*
 	 * we add a new user to the game identified by his PASSWORD????? and username
@@ -218,13 +257,241 @@ public class ServerFacade_Test {
 		serverFacade.addNewUser(user1);	
 	}
 	/*
-	 * we need more getters, especially you define all variables as private. We can not even access them. For example, we may need a getUsers...
+	 * create game // how do we identify a game? by name, ID, or something else
+	 * It seems we can create a game with empty input
+	 * I personally think that currently the serverfacade is the one creating the game not the user.
+	 * is that a problem??
+	 */
+	@Test
+	public void createGame()
+	{
+		TestGame game = new TestGame();
+		//User user = new User("testUser","password");
+		//user.
+		serverFacade.createGame(game);
+	}
+	
+	
+	/*
+	 * add player to the game
+	 * A player can join a game without logging in..
+	 */
+	
+	@Test
+	public void addPlayer()
+	{
+		TestGame game = new TestGame();
+		User user = new User("testUser","password");
+		System.out.println(user.loggedIn);
+		user.joinGame(game.getGameID());
+		
+	}
+	/*
+	 * player can join a game when there are 5 players already in the game
+	 */
+	@Test
+	public void addPlayerFullPlayers()
+	{
+		TestGame game = new TestGame();
+		User user1 = new User("user1","password");
+		User user2 = new User("user2","password");
+		User user3 = new User("user3","password");
+		User user4 = new User("user4","password");
+		User user5 = new User("user5","password");
+		User user6 = new User("user6","password");
+		user1.joinGame(game.getGameID());
+		user2.joinGame(game.getGameID());
+		user3.joinGame(game.getGameID());
+		user4.joinGame(game.getGameID());
+		user5.joinGame(game.getGameID());
+		user6.joinGame(game.getGameID());
+	}
+	/*
+	 * player can join a game when it has started already
+	 * It seems we can not start a game???
+	 */
+	@Test
+	public void addPlayerGameAlreadyStarted() throws PreConditionException, InternalServerException, BadCredentialsException, AlreadyLoggedInException, AddUserException
+	{
+		TestGame game = new TestGame();
+		User user1 = new User("user111","password");
+		User user2 = new User("user222","password");
+		User user3 = new User("user333","password");
+		User user4 = new User("user444","password");
+		User user5 = new User("user555","password");
+		serverFacade.addNewUser(user1);
+		serverFacade.addNewUser(user2);
+		serverFacade.addNewUser(user3);
+		serverFacade.addNewUser(user4);
+		serverFacade.addNewUser(user5);
+
+		serverFacade.login("user111","password");
+		serverFacade.login("user222","password");
+		serverFacade.login("user333","password");
+		serverFacade.login("user444","password");
+		serverFacade.login("user555","password");
+
+		serverFacade.createGame(game);
+		serverFacade.addPlayerToGame(user1.getPlayerID(), game.getGameID(), PlayerColor.Black);
+		serverFacade.addPlayerToGame(user2.getPlayerID(), game.getGameID(), PlayerColor.Blue);
+		serverFacade.addPlayerToGame(user3.getPlayerID(), game.getGameID(), PlayerColor.Green);
+		serverFacade.addPlayerToGame(user4.getPlayerID(), game.getGameID(), PlayerColor.Red);
+
+
+		user1.joinGame(game.getGameID());
+		user2.joinGame(game.getGameID());
+		user3.joinGame(game.getGameID());
+		user4.joinGame(game.getGameID());
+		//user5.joinGame(game.getGameID());
+		serverFacade.startGame(user1.playerID, game.getGameID());
+	}
+	/*
+	 * play can not start a game when there is only a player
+	 */
+	
+	@Test(expected=PreConditionException.class)
+	public void addPlayerOnlyOnePlayer() throws PreConditionException, InternalServerException
+	{
+		TestGame game = new TestGame();
+		User user1 = new User("user111","password");
+		serverFacade.startGame(user1.playerID, game.getGameID());
+	}
+	/*
+	 * test login successful
 	 */
 	@Test 
-	public void testAddNewUserSuccessful() throws AddUserException {
-		User user  = new User("user","password");
-		serverFacade.addNewUser(user);	
-		//assertEquals(serverFacade.g)  checking if an user is added successfully into a game
+	public void loginSuccessful() throws AddUserException, BadCredentialsException, AlreadyLoggedInException
+	{
+		User user = new User("myname11","mypassword");
+		serverFacade.addNewUser(user);
+		serverFacade.login("myname11", "mypassword");
+		
+		
+	}
+	
+	/*
+	 * test login - wrong user name/password
+	 */
+	@Test(expected=BadCredentialsException.class)
+	public void loginWrongCredientials() throws AddUserException, BadCredentialsException, AlreadyLoggedInException
+	{
+		User user = new User("myname22","mypassword");
+		serverFacade.addNewUser(user);
+		serverFacade.login("myname23", "mypassword");
+			
+	}
+	
+	/*
+	 * test login - already logged in
+	 */
+	@Test(expected=AlreadyLoggedInException.class)
+	public void loginAlreadyLoggedIn() throws AddUserException, BadCredentialsException, AlreadyLoggedInException
+	{
+		User user = new User("mynameL","mypassword");
+		serverFacade.addNewUser(user);
+		serverFacade.login("mynameL", "mypassword");
+		serverFacade.login("mynameL", "mypassword");
+
+			
+	}
+	
+	/*
+	 * can logout
+	 */
+	@Test
+	public void logout() throws BadCredentialsException, AddUserException, AlreadyLoggedInException
+	{
+		User user = new User("mynamelogout","mypassword");
+		serverFacade.addNewUser(user);
+		serverFacade.login("mynamelogout", "mypassword");
+		serverFacade.logout(user.playerID);
+	}
+	//failed to log out
+	@Test(expected=BadCredentialsException.class)
+	public void logoutFailed() throws BadCredentialsException
+	{
+		
+		serverFacade.logout(2);
+		serverFacade.logout(19999);
+
+	}
+	
+	/*
+	 * user can not logout another user
+	 * this test case doese not make sense in the server side
+	 * we are testing from the serverFacade perspective and we actually can logout another user
+	 * I am not sure if I understand this test case correctly
+	 */
+	
+	
+	
+	
+	
+	/*
+	 * test if a player can join the game if he has already joined
+	 * the player can join a game that he has already joined
+	 */
+	@Test
+	public void joinAlreadyJoinedGame() throws AddUserException, BadCredentialsException, AlreadyLoggedInException
+	{
+		TestGame game = new TestGame();
+		User user1 = new User("already","password");
+
+		serverFacade.addNewUser(user1);
+		serverFacade.login("already","password");
+		user1.joinGame(game.getGameID());
+		user1.joinGame(game.getGameID());
+
+	}
+	/*
+	 * we can add players with duplicate color
+	 */
+	@Test
+	public void duplicateColor() throws AddUserException, BadCredentialsException, AlreadyLoggedInException
+	{
+		TestGame game = new TestGame();
+		User user1 = new User("duplicate1","password");
+		User user2 = new User("duplicate2","password");
+
+		serverFacade.addNewUser(user1);
+		serverFacade.addNewUser(user2);
+
+		serverFacade.login("duplicate1","password");
+		serverFacade.login("duplicate2","password");
+
+
+		serverFacade.createGame(game);
+		serverFacade.addPlayerToGame(user1.getPlayerID(), game.getGameID(), PlayerColor.Black);
+		serverFacade.addPlayerToGame(user2.getPlayerID(), game.getGameID(), PlayerColor.Black);
+	}
+	
+	/*
+	 * user can join a game when he is not logged in
+	 */
+	@Test
+	public void canJoinAgamewhenNotLogin() throws AddUserException, BadCredentialsException, AlreadyLoggedInException
+	{
+		TestGame game = new TestGame();
+		User user1 = new User("notLogIn","password");
+		serverFacade.addNewUser(user1);
+		serverFacade.createGame(game);
+		user1.joinGame(game.getGameID());
+	}
+	
+	/**
+	 * things to need to review to tomorrow again 
+	 * buy route
+	 * draw train card
+	 */
+	
+	/*
+	 * we could throw different exceptions if the game is null, or gameboard is null, or playermanager..
+	 * I think the createGame function has logic problem.  Even if we have nothing inside the playermanager,
+	 * it still passes junit tests
+	 */
+	@Test
+	public void testCreateGame() {
+		serverFacade.createGame(game1);
 	}
 	/*
 	 * we need getters to get games info in the facade
