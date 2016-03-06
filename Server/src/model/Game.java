@@ -25,8 +25,20 @@ public class Game {
 	protected List<String> history;
 	protected boolean started;
 	protected boolean isGameOver;
+	protected String name;
 	
+	public Game(String name){
+		this.constructHelper(name);
+	}
+	
+	//default name will be Game{ID} where {ID} is the current ID number
 	public Game(){
+		String tName = "Game" + nextID;
+		this.constructHelper(tName);
+	}
+	
+	private void constructHelper(String name){
+		this.name = name;
 		gameBoard = new GameBoard();
 		started = false;
 		playerManager = new PlayerManager();
@@ -46,6 +58,10 @@ public class Game {
 
 	public int getGameID() {
 		return gameID;
+	}
+	
+	public String getName(){
+		return this.name;
 	}
 	
 	public boolean isGameOver(){
