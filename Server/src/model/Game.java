@@ -113,6 +113,7 @@ public class Game {
 		//remove resources from player
 		if(playerManager.canBuyTrackWithCards(playerID, route.getNumTrains(), route.getTrackColor(), cards)){
 			playerManager.buyTrack(playerID, route.getNumTrains(), route.getTrackColor(), cards);
+			this.addHistoryMessage("Player + " + playerID + " bought route " + route.toString());
 			
 			//assigns the route to the player
 			gameBoard.claimRoute(playerID, route);
@@ -130,7 +131,9 @@ public class Game {
 			} catch (GameOverException e) {
 				this.isGameOver = true;
 			}
-			return;
+		}
+		else{
+			throw new PreConditionException("Player " + playerID + " cannot buy the route");
 		}
 		
 
@@ -188,6 +191,8 @@ public class Game {
 			playerManager.drewAlreadyCurrentTurn = true;
 		}
 		
+		this.addHistoryMessage("Player " + playerID + " drew a card");
+		
 	}
 
 	public boolean canPlayerGetDestinations(int playerID) {
@@ -205,6 +210,7 @@ public class Game {
 		playerManager.addDestinationRoutesToConsider(playerID, cards);
 		assert(playerManager.isPlayersTurn(playerID)); //getting destinations shouldn't end the turn yet
 		assert(playerManager.getPlayers().get(playerID).getDestinationRoutesToConsider().length > 0);
+		this.addHistoryMessage("Player " + playerID + " drew destination cards");
 	}
 
 
@@ -231,6 +237,7 @@ public class Game {
 			return;
 		}
 		assert(!playerManager.isPlayersTurn(playerID));
+		this.addHistoryMessage("Player " + playerID + " selected " + destinationsSelected.length + " cards");
 		
 	}
 	
