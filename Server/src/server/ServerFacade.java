@@ -9,6 +9,7 @@ import model.CityToCityRoute;
 import model.Game;
 import model.Player;
 import model.PlayerColor;
+import model.TrackColor;
 import server.exception.AddUserException;
 import server.exception.AlreadyLoggedInException;
 import server.exception.BadCredentialsException;
@@ -326,10 +327,11 @@ public class ServerFacade {
 	 * @param playerID The player wanting to buy the route
 	 * @param gameID The game in which this takes place
 	 * @param route the desired route
+	 * @param cards the cards desired to use in order to purchase the route
 	 * @return true if the route can be bought, false otherwise
 	 * @throws InternalServerException 
 	 */
-	public boolean canBuyRoute(int playerID, int gameID, CityToCityRoute route) throws InternalServerException
+	public boolean canBuyRoute(int playerID, int gameID, CityToCityRoute route, Map<TrackColor, Integer> cards) throws InternalServerException
 	{
 		//Helper methods
 		if(!this.isPlayerLoggedIn(playerID) || !this.isPlayableGame(gameID)){
@@ -338,7 +340,7 @@ public class ServerFacade {
 		else{
 			for(Game g : games){
 				if(g.getGameID() == gameID){
-					return g.canPlayerBuyRoute(playerID, route);
+					return g.canPlayerBuyRoute(playerID, route, cards);
 				}
 			}
 			throw new InternalServerException("See ServerFacade::canBuyRoute");
@@ -350,21 +352,22 @@ public class ServerFacade {
 	 * @param playerID the player buying the route
 	 * @param gameID the game for the purchase
 	 * @param route the route being bought
+	 * @param cards TODO
 	 * @throws PreConditionException thrown if the player can't buy the route
 	 * @throws InternalServerException thrown if something horrible happens and Trent messed up
 	 * @throws OutOfBoundsException 
 	 */
-	public synchronized void buyRoute(int playerID, int gameID, CityToCityRoute route) throws PreConditionException, InternalServerException, OutOfBoundsException
+	public synchronized void buyRoute(int playerID, int gameID, CityToCityRoute route, Map<TrackColor, Integer> cards) throws PreConditionException, InternalServerException, OutOfBoundsException
 	{
 		//helper method
-		if(!this.canBuyRoute(playerID, gameID, route)){
+		if(!this.canBuyRoute(playerID, gameID, route, cards)){
 			throw new PreConditionException("Player: " + playerID + " cannot buy requested route in game " + gameID);
 		}
 		
 		else{
 			for(Game g : games){
 				if(g.getGameID() == gameID){
-					g.buyRoute(playerID, route);
+					g.buyRoute(playerID, route, cards);
 					return;
 				}
 			}

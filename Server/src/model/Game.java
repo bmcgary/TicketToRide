@@ -91,7 +91,7 @@ public class Game {
 		return started;
 	}
 
-	public boolean canPlayerBuyRoute(int playerID, CityToCityRoute route) {
+	public boolean canPlayerBuyRoute(int playerID, CityToCityRoute route, Map<TrackColor, Integer> cards) {
 		//route must be available
 		if(!gameBoard.isRouteAvailable(route)){
 			return false;
@@ -103,45 +103,37 @@ public class Game {
 		}
 		
 		//player must have the appropriate resources
-		for(int i = 0; i < route.getNumTrains(); ++i){	//this allows us to check every combination of wild cards/route color
-			Map<TrackColor, Integer> trainCards = new HashMap<TrackColor, Integer>();
-			trainCards.put(route.getTrackColor(), route.getNumTrains()-i);
-			trainCards.put(TrackColor.None, i);
-			if(playerManager.canBuyTrackWithCards(playerID, route.getNumTrains(), route.getTrackColor(), trainCards)){
-				return true;
-			}
+		if(playerManager.canBuyTrackWithCards(playerID, route.getNumTrains(), route.getTrackColor(), cards)){
+			return true;
 		}
 		return false;
 	}
 
-	public void buyRoute(int playerID, CityToCityRoute route) throws PreConditionException, OutOfBoundsException {
+	public void buyRoute(int playerID, CityToCityRoute route, Map<TrackColor, Integer> cards) throws PreConditionException, OutOfBoundsException {
 		//remove resources from player
-		for(int i = 0; i < route.getNumTrains(); ++i){	//this allows us to check every combination of wild cards/route color
-			Map<TrackColor, Integer> trainCards = new HashMap<TrackColor, Integer>();
-			trainCards.put(route.getTrackColor(), route.getNumTrains()-i);
-			trainCards.put(TrackColor.None, i);
-			if(playerManager.canBuyTrackWithCards(playerID, route.getNumTrains(), route.getTrackColor(), trainCards)){
-				//this assumes the player will want to use regular cards before wild cards
-				playerManager.buyTrack(playerID, route.getNumTrains(), route.getTrackColor(), trainCards);
-				//return the cards to the gameBoard discarded deck
-				List<TrackColor> toDiscard = new ArrayList<TrackColor>();
-				for(TrackColor tc : trainCards.keySet()){
-					for(int j = 0; j < trainCards.get(tc); ++j){
-						toDiscard.add(tc);
-					}
+		if(playerManager.canBuyTrackWithCards(playerID, route.getNumTrains(), route.getTrackColor(), cards)){
+			playerManager.buyTrack(playerID, route.getNumTrains(), route.getTrackColor(), cards);
+			
+			//assigns the route to the player
+			gameBoard.claimRoute(playerID, route);
+			
+			//return the cards to the gameBoard discarded deck
+			List<TrackColor> toDiscard = new ArrayList<TrackColor>();
+			for(TrackColor tc : cards.keySet()){
+				for(int j = 0; j < cards.get(tc); ++j){
+					toDiscard.add(tc);
 				}
-				gameBoard.discardTrainCards(toDiscard);
-				try {
-					playerManager.advanceTurn();
-				} catch (GameOverException e) {
-					this.isGameOver = true;
-				}
-				return;
 			}
+			gameBoard.discardTrainCards(toDiscard);
+			try {
+				playerManager.advanceTurn();
+			} catch (GameOverException e) {
+				this.isGameOver = true;
+			}
+			return;
 		}
 		
-		//assigns the route to the player
-		gameBoard.claimRoute(playerID, route);
+
 	}
 
 	public boolean canPlayerDrawTrainCard(int playerID, int cardLocation) throws OutOfBoundsException, InternalServerException {
