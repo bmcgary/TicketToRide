@@ -196,6 +196,7 @@ public class ServerFacade_Test {
 	public void testGetServerFacade() {
 		assertNotEquals(serverFacade.getServerFacade(),null);
 	}
+	
 	/* error:
 	 * not handle if a user name is empty not handle is username is larger than 25 char.
 	 * I can even enter a chinese character..this is a creepy test case. 
@@ -212,6 +213,7 @@ public class ServerFacade_Test {
 			fail("should have thrown exception");
 		} catch (InvalidCredentialsException e) {}
 	}
+	
 	/*
 	 * successful case
 	 */
@@ -335,10 +337,10 @@ public class ServerFacade_Test {
 		//user5.joinGame(game.getGameID());
 		//serverFacade.startGame(user1.playerID, game.getGameID());
 	}
+	
 	/*
 	 * play can not start a game when there is only a player
 	 */
-	
 	@Test(expected=PreConditionException.class)
 	public void addPlayerOnlyOnePlayer() throws PreConditionException, InternalServerException, InvalidCredentialsException
 	{
@@ -346,6 +348,7 @@ public class ServerFacade_Test {
 		User user1 = new User("user111","password");
 		//serverFacade.startGame(user1.playerID, game.getGameID());
 	}
+	
 	/*
 	 * test login successful
 	 */
@@ -444,6 +447,7 @@ public class ServerFacade_Test {
 		user1.joinGame(game.getGameID());
 
 	}
+	
 	/*
 	 * GOOD
 	 */
@@ -588,6 +592,7 @@ public class ServerFacade_Test {
 
 		serverFacade.canBuyRoute(1,1,ctoc1);*/
 	}
+	
 	//Player can use wilds as part of a route purchase
 	//are you handling this case?
 	public void testCanBuyRouteWithWrongResources()
