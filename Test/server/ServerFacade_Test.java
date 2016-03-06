@@ -72,14 +72,14 @@ public class ServerFacade_Test {
 	}
 	 */
 	ServerFacade serverFacade;
-	Game game1; //version 1
-	GameBoard gameboard1;
+	TestGame game1; //version 1
+	TestGameBoard gameboard1;
 	
-	Game game2;//version2
-	GameBoard gameboard2;
+	TestGame game2;//version2
+	TestGameBoard gameboard2;
 	
-	Game game3;//version3
-	GameBoard gameboard3;
+	TestGame game3;//version3
+	TestGameBoard gameboard3;
 	
 
 	/**
@@ -103,8 +103,8 @@ public class ServerFacade_Test {
 	//May you show me a way to add a gameboard to a game?
 	@Before
 	public void buildGame_version1() throws Exception{
-	game1 = new Game();
-	gameboard1 = new GameBoard();
+	game1 = new TestGame();
+	gameboard1 = new TestGameBoard();
 	List<City> cities = new ArrayList<City>();
 	List<CityToCityRoute> routes = new ArrayList<CityToCityRoute>();
 	Map<Integer, List<CityToCityRoute>> currentRoutes = new HashMap<Integer,List<CityToCityRoute>>();
@@ -473,17 +473,71 @@ public class ServerFacade_Test {
 	 * things to need to review to tomorrow again 
 	 * buy route
 	 * draw train card
+	 * @throws AddUserException 
+	 * @throws AlreadyLoggedInException 
+	 * @throws BadCredentialsException 
+	 * @throws OutOfBoundsException 
+	 * @throws InternalServerException 
+	 * @throws PreConditionException 
 	 */
 	
 	/*
-	 * we could throw different exceptions if the game is null, or gameboard is null, or playermanager..
-	 * I think the createGame function has logic problem.  Even if we have nothing inside the playermanager,
-	 * it still passes junit tests
+	 * can buy a route
 	 */
 	@Test
-	public void testCreateGame() {
-		serverFacade.createGame(game1);
+	public void buyRoute() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, PreConditionException, InternalServerException, OutOfBoundsException
+	{
+		User user = new User("canBuy","password");
+		User user2 = new User("canBuy2","password");
+		User user3 = new User("canBuy3","password");
+		User user4 = new User("canBuy4","password");
+
+		serverFacade.addNewUser(user);
+		serverFacade.addNewUser(user2);
+		serverFacade.addNewUser(user3);
+		serverFacade.addNewUser(user4);
+		serverFacade.login("canBuy","password");
+		serverFacade.login("canBuy2","password");
+		serverFacade.login("canBuy3","password");
+		serverFacade.login("canBuy4","password");
+
+
+		City city1 = new City("LA");
+		City city2 = new City("SA");
+		CityToCityRoute ctoc1 = new CityToCityRoute(city1,city2,3,TrackColor.Orange);
+		//ctoc1.
+		Map<TrackColor,Integer> cards = new HashMap<TrackColor,Integer>();
+		cards.put(TrackColor.Orange, 8);
+		TestGameBoard testGB = new TestGameBoard();
+		testGB.getRoutes().add(ctoc1);
+		TestGame game = new TestGame();
+		game.setGameBoard(testGB);
+		serverFacade.createGame(game, user.playerID, PlayerColor.Black);
+		serverFacade.addPlayerToGame(user2.playerID, game.getGameID(),PlayerColor.Blue);
+		serverFacade.addPlayerToGame(user3.playerID, game.getGameID(),PlayerColor.Green);
+		serverFacade.addPlayerToGame(user4.playerID, game.getGameID(),PlayerColor.Yellow);
+		serverFacade.startGame(user.playerID, game.getGameID());
+		serverFacade.buyRoute(user.playerID, game.getGameID(), ctoc1, cards);
+		
+		
 	}
+	
+	/*
+	 * can not buy a route when not log in
+	 */
+	@Test
+	public void buyRouteNotLogin() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InternalServerException
+	{
+		User user = new User("buyrouteNotLogin","password");
+		serverFacade.addNewUser(user);
+		//serverFacade.login("buyrouteNotLogin","password");
+		City city1 = new City("LA");
+		City city2 = new City("SA");	
+		CityToCityRoute ctoc1 = new CityToCityRoute(city1,city2,3,TrackColor.Orange);
+		assertFalse(serverFacade.isPlayerLoggedIn(user.playerID));
+		assertFalse(serverFacade.canBuyRoute(user.playerID, 1, ctoc1, new HashMap<TrackColor, Integer>()));
+	}
+
 	/*
 	 * we need getters to get games info in the facade
 	 */
@@ -579,41 +633,7 @@ public class ServerFacade_Test {
 		assertFalse(facade.canStartGame(test1ID, game1ID));
 	}
 
-	/**
-	 * Player can select a route on the map to purchase
 
-
-
-	 */
-	@Test
-	public void testCanBuyRoute() throws InternalServerException {
-		City city1 = new City(new Point(2,2),"LA");
-		City city2 = new City(new Point(3,3),"SA");
-		CityToCityRoute ctoc1 = new CityToCityRoute(city1,city2,3,TrackColor.Orange);
-
-		serverFacade.canBuyRoute(1,1,ctoc1);
-	}
-	//Player can use wilds as part of a route purchase
-	//are you handling this case?
-	public void testCanBuyRouteWithWrongResources()
-	{
-		/*
-		 * 		for(int i = 0; i < route.getNumTrains(); ++i){	//this allows us to check every combination of wild cards/route color
-			Map<TrackColor, Integer> trainCards = new HashMap<TrackColor, Integer>();
-			trainCards.put(route.getTrackColor(), route.getNumTrains()-i);
-			trainCards.put(TrackColor.None, i);
-			if(playerManager.canBuyTrackWithCards(playerID, route.getNumTrains(), route.getTrackColor(), trainCards)){
-				return true;
-			}
-		}
-		 */
-		//I do not understand how you check if a player has required cards
-		//Player cannot purchase a route with less than the required cards
-		
-		//Player cannot purchase a route with more than the required cards
-		//Player cannot purchase a route with cards of the wrong color
-		//Player cannot purchase a route they do not have enough trains for
-	}
 	
 //	Player can cancel buying a route 
 	//not handle or it should not be a function on the server side?
@@ -621,15 +641,7 @@ public class ServerFacade_Test {
 //	Routes are populated with trains the color of the player who purchased them
 
 	
-	//Player cannot buy adjacent route if less than 4 players in the game
-//	Player cannot draw a destination ticket after building
-//	Player cannot draw a train card after building
-//	Player's destination cards are updated when building the route completes the destination
 
-	@Test
-	public void testBuyRoute() {
-		fail("Not yet implemented");
-	}
 	
 
 
@@ -793,74 +805,11 @@ public class ServerFacade_Test {
 		*/
 	}
 
-	@Test
-	public void testCanSelectDestinations() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSelectDestinations() {
-		fail("Not yet implemented");
-	}
 
 
 
-	@Test
-	public void testSendClientModelInformation() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetCityMapping() {
-		fail("Not yet implemented");
-	}
 
 
-	//something not sure if we need to test
-	/**
-	 * 	@Test
-	public void testCanLeaveGame() {
-		fail("Not yet implemented");
-	}
 
-	@Test
-	public void testLeaveGame() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testLogin() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testLogout() {
-		fail("Not yet implemented");
-	}
-		@Test
-	public void testLoadGameState() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSaveGameState() {
-		fail("Not yet implemented");
-	}
-	
-	@Test
-	public void testGetUserGames() {
-		fail("Not yet implemented");
-	}
-	
-	@Test
-	public void testGetJoinableGames() {
-		fail("Not yet implemented");
-	}
-	
-	@Test
-	public void testRegister() {
-		fail("Not yet implemented");
-	}
-	 */
 
 }
