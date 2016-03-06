@@ -28,6 +28,7 @@ public class GameBoard {
 	protected List<TrackColor> deckTrainCarCards;
 	protected TrackColor[] visibleTrainCarCards;
 	protected List<TrackColor> discardedTrainCarCards;
+	protected static Map<Integer, CityToCityRoute> routeMapping;
 	private static String relativePath = new File("").getAbsolutePath() + "/Server/src/model/";
 	
 	public GameBoard(){
@@ -38,6 +39,7 @@ public class GameBoard {
 		visibleTrainCarCards = new TrackColor[5];
 		deckTrainCarCards = new ArrayList<TrackColor>();
 		discardedTrainCarCards = new ArrayList<TrackColor>();
+		routeMapping = new HashMap<Integer, CityToCityRoute>();
 	}
 	/**
 	 * Reports whether at least 1 destination route can be drawn from the deck
@@ -350,6 +352,7 @@ public class GameBoard {
 			reader = new BufferedReader(new FileReader(file));
 			String text = null;
 			
+			int routeIndex = 1;
 			while((text = reader.readLine()) != null){
 				line++;
 				switch(line % 4){
@@ -370,6 +373,8 @@ public class GameBoard {
 					city2 = null;
 					color = null;
 					this.routes.add(c2cr);
+					GameBoard.routeMapping.put(routeIndex, c2cr);
+					routeIndex++;
 				}
 				
 			}
@@ -412,6 +417,14 @@ public class GameBoard {
 			this.cities.add(c2);
 		}
 		return new CityToCityRoute(c1, c2, trains, color);
+	}
+	
+	public static Map<Integer, CityToCityRoute> getRouteMapping(){
+		if(GameBoard.routeMapping.keySet().size() < 1){
+			GameBoard gb = new GameBoard();
+			gb.loadCityToCityRoutes();
+		}
+		return GameBoard.routeMapping;
 	}
 	
 }

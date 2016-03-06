@@ -6,9 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gson.Gson;
+
 import model.City;
 import model.CityToCityRoute;
 import model.Game;
+import model.GameBoard;
 import model.Player;
 import model.PlayerColor;
 import model.TrackColor;
@@ -504,7 +507,9 @@ public class ServerFacade {
 	
 	public synchronized void saveGameState()
 	{
-		//TODO: saving stuff
+		Gson gson = new Gson();
+		System.out.println(gson.toJson(games.get(0)));
+		//TODO: the rest
 	}
 	
 	public synchronized void sendClientModelInformation()
@@ -514,7 +519,7 @@ public class ServerFacade {
 	
 	public Map<Integer, CityToCityRoute> getCityMapping()
 	{
-		return null;
+		return GameBoard.getRouteMapping();
 	}
 	
 	/**
@@ -611,6 +616,8 @@ public class ServerFacade {
 		sf.startGame(pid, 1);
 		Map<TrackColor, Integer> m = new HashMap<TrackColor, Integer>();
 		m.put(TrackColor.Red, 1);
+		System.out.println(sf.getCityMapping());
+		sf.saveGameState();
 		sf.buyRoute(pid, 1, new CityToCityRoute(new City("Seattle"), new City("Portland"), 1, TrackColor.None), m);
 		System.out.println("Success!");
 	}
