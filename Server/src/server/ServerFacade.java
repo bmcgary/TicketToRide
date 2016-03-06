@@ -35,7 +35,7 @@ public class ServerFacade {
 		users = new ArrayList<>();
 	}
 
-	public synchronized void createGame(Game newGame)
+	public synchronized void createGame(Game newGame, int playerID, PlayerColor color) throws InternalServerException
 	{
 		//check to make sure game was instantiated properly
 		if(newGame == null || newGame.getGameBoard() == null){
@@ -53,6 +53,15 @@ public class ServerFacade {
 		//add game
 		games.add(newGame);
 		assert(games.contains(newGame));
+		
+		//add creater to the game under the color that they choose
+		try {
+			this.addPlayerToGame(playerID, newGame.getGameID(), color);
+		} catch (PreConditionException e) {
+			// If this happens, Trent somehow messed up the createGame method
+			e.printStackTrace();
+			throw new InternalServerException("Trent messed up in ServerFacade::createGame()");
+		}
 	}
 	
 	/**
@@ -133,19 +142,20 @@ public class ServerFacade {
 	 * @param playerID the ID of the player
 	 * @param gameID the ID of the game
 	 * @param playerColor the color wished to join with
+	 * @throws PreConditionException 
 	 */
-	public synchronized void addPlayerToGame(int playerID, int gameID, PlayerColor playerColor)
+	public synchronized void addPlayerToGame(int playerID, int gameID, PlayerColor playerColor) throws PreConditionException
 	{
 		//helper check
 		if(!this.canAddPlayerToGame(playerID, gameID, playerColor)){
-			assert(false);
-			return;
+			throw new PreConditionException("Player can't be added to the game");
 		}
 		
 		//update game's playerManager
 		for(Game game : games){
 			if(game.getGameID() == gameID){
 				game.getPlayerManager().addPlayer(playerID, playerColor);
+				game.addHistoryMessage("Player " + playerID + " added to game.");
 			}
 		}
 		
