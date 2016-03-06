@@ -587,7 +587,7 @@ public class ServerFacade {
 		return Collections.unmodifiableList(users);
 	}
 	
-	private static void firebomb()
+	public static void firebomb()
 	{
 		serverFacade = null;
 	}

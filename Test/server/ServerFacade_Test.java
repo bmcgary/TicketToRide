@@ -200,6 +200,7 @@ public class ServerFacade_Test {
 	{
 		//Call firebomb on ServerFacade after each test
 		//ensure each test starts fresh
+		ServerFacade.firebomb();
 	}
 
 
