@@ -587,13 +587,14 @@ public class ServerFacade {
 		return Collections.unmodifiableList(users);
 	}
 	
-	public static void main(String args[]) throws AddUserException, InternalServerException{
+	public static void main(String args[]) throws AddUserException, InternalServerException, PreConditionException{
 		ServerFacade sf = ServerFacade.getServerFacade();
 		int pid = sf.register("Trent", "trent");
 		int pid2 = sf.register("Jacob",  "jacob");
 		Game g = new Game();
 		sf.createGame(g, pid, PlayerColor.Black);
-		System.out.println(sf.canAddPlayerToGame(pid2, 1, PlayerColor.Red));
+		sf.addPlayerToGame(pid2, 1, PlayerColor.Green);
+		sf.startGame(pid, 1);
 		System.out.println("Success!");
 	}
 }

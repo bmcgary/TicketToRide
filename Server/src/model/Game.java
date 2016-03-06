@@ -93,9 +93,7 @@ public class Game {
 		
 		//give each player 3 destination cards
 		for(Player p : this.getPlayerManager().getPlayers()){
-			for(int i = 0; i < 3; ++i){
-				playerManager.addDestinationRoutesToConsider(p.getPlayerID(), gameBoard.drawDestinationRoutes());
-			}
+			playerManager.addDestinationRoutesToConsider(p.getPlayerID(), gameBoard.drawDestinationRoutes());
 		}
 		
 		//locks new players out now, declares the game has been started

@@ -8,16 +8,11 @@ import java.awt.Point;
  *
  */
 public class City {
-	private Point location;
 	private String name;
-	public City(Point location, String name){
-		this.location = location;
+	public City(String name){
 		this.name = name;
 	}
 	
-	public Point getLocation() {
-		return location;
-	}
 	public String getName() {
 		return name;
 	}
@@ -29,9 +24,6 @@ public class City {
 		}
 		City obj = (City) o;
 		if(!this.getName().equals(obj.getName())){
-			return false;
-		}
-		else if(!this.getLocation().equals(obj.getLocation())){
 			return false;
 		}
 		else{

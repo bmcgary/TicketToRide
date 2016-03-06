@@ -44,7 +44,7 @@ Blue
 6
 San Francisco
 Salt Lake City
-Brown
+Orange
 5
 San Francisco
 Salt Lake City
@@ -52,7 +52,7 @@ White
 5
 Salt Lake City
 Las Vegas
-Brown
+Orange
 3
 Las Vegas
 Los Angeles
@@ -353,7 +353,7 @@ Blue
 Montreal
 New York
 Blue
-3S
+3
 New York
 Washington
 Orange

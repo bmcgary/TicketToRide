@@ -165,18 +165,17 @@ public class PlayerManager {
 	}
 	
 	public void addDestinationRoutesToConsider(int playerID, List<DestinationRoute> routes){
+		System.out.println("Destination routes to consider size: " + routes.size());
 		Player player = null;
 		for(int i =0; i < players.size();i++)	
-		{
-			
+		{	
 			if(players.get(i).getPlayerID()==playerID)
 			{ 
-				
 				player = players.get(i);
-				
 			}
-			
-			player.setDestinationRoutesToConsider((DestinationRoute[]) routes.toArray());
+		}
+		if(player != null){
+			player.setDestinationRoutesToConsider(routes.toArray(new DestinationRoute[routes.size()]));
 		}
 	}
 	

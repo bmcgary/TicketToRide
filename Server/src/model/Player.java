@@ -28,6 +28,7 @@ public class Player {
 		this.ID=ID;
 		this.color = color;
 		this.pointsScored = 0;
+		this.trainCarCards = new HashMap<TrackColor, Integer>();
 		this.destinationRoutes = new ArrayList<DestinationRoute>();
 		this.destinationRoutesToConsider = new DestinationRoute[3];
 	}
