@@ -1,8 +1,6 @@
 package server;
 
-import org.junit.*;
 import static org.junit.Assert.*;
-
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -55,23 +53,7 @@ public class ServerFacade_Test {
 	 */
 	
 	/*
-	 * 	private List<City> cities;
-	private List<CityToCityRoute> routes;
-	private Map<Integer, List<CityToCityRoute>> currentRoutes;
-	private List<DestinationRoute> destinationRoutes;
-	private List<TrackColor> deckTrainCarCards;
-	private TrackColor[] visibleTrainCarCards;
-	private List<TrackColor> discardedTrainCarCards;
-	
-	public GameBoard(){
-		cities = new ArrayList<City>();
-		routes = new ArrayList<CityToCityRoute>();
-		currentRoutes = new HashMap<Integer, List<CityToCityRoute>>();
-		destinationRoutes = new ArrayList<DestinationRoute>();
-		visibleTrainCarCards = new TrackColor[5];
-		deckTrainCarCards = new ArrayList<TrackColor>();
-		discardedTrainCarCards = new ArrayList<TrackColor>();
-	}
+
 	 */
 	ServerFacade serverFacade;
 	TestGame game1; //version 1
@@ -261,7 +243,7 @@ public class ServerFacade_Test {
 		TestGame game = new TestGame();
 		//User user = new User("testUser","password");
 		//user.
-		serverFacade.createGame(game);
+	//	serverFacade.createGame(game, 0, null);
 	}
 	
 	
@@ -324,11 +306,11 @@ public class ServerFacade_Test {
 		serverFacade.login("user444","password");
 		serverFacade.login("user555","password");
 
-		serverFacade.createGame(game);
-		serverFacade.addPlayerToGame(user1.getPlayerID(), game.getGameID(), PlayerColor.Black);
-		serverFacade.addPlayerToGame(user2.getPlayerID(), game.getGameID(), PlayerColor.Blue);
-		serverFacade.addPlayerToGame(user3.getPlayerID(), game.getGameID(), PlayerColor.Green);
-		serverFacade.addPlayerToGame(user4.getPlayerID(), game.getGameID(), PlayerColor.Red);
+		serverFacade.createGame(game, user1.playerID, PlayerColor.Green);
+	//	serverFacade.addPlayerToGame(user1.getPlayerID(), game.getGameID(), PlayerColor.Black);
+	//	serverFacade.addPlayerToGame(user2.getPlayerID(), game.getGameID(), PlayerColor.Blue);
+	//	serverFacade.addPlayerToGame(user3.getPlayerID(), game.getGameID(), PlayerColor.Green);
+	//	serverFacade.addPlayerToGame(user4.getPlayerID(), game.getGameID(), PlayerColor.Red);
 
 
 		user1.joinGame(game.getGameID());
@@ -485,6 +467,8 @@ public class ServerFacade_Test {
 	
 	/*
 	 * can buy a route
+	 * it seems we can not buy a route. I am missing something here.
+	 * 
 	 */
 	@Test
 	public void buyRoute() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, PreConditionException, InternalServerException, OutOfBoundsException
@@ -519,9 +503,16 @@ public class ServerFacade_Test {
 		serverFacade.addPlayerToGame(user3.playerID, game.getGameID(),PlayerColor.Green);
 		serverFacade.addPlayerToGame(user4.playerID, game.getGameID(),PlayerColor.Yellow);
 		serverFacade.startGame(user.playerID, game.getGameID());
+	//	serverFacade.
 		serverFacade.buyRoute(user.playerID, game.getGameID(), ctoc1, cards);
+		//no enough resources
 		
+		cards.put(TrackColor.Orange, 0);
+
 		
+		assertFalse(serverFacade.getAllGames().get(game.getGameID()).getPlayerManager().canBuyTrack(user.playerID, 2));
+		assertFalse(serverFacade.getAllGames().get(game.getGameID()).getPlayerManager().canBuyTrackWithCards(user.playerID, 2, TrackColor.Black, cards));
+	
 	}
 	
 	/*
@@ -557,6 +548,47 @@ public class ServerFacade_Test {
 
 
 	 */
+	/*
+	 * can draw train card
+	 */
+	@Test
+	public void canDraw() throws AddUserException, InternalServerException, PreConditionException, OutOfBoundsException, BadCredentialsException, AlreadyLoggedInException
+	{
+		TestGame testGame = new TestGame();
+		TestGameBoard testBoard = new TestGameBoard();
+		TrackColor[] t = new TrackColor[10];
+		t[0] = TrackColor.Black;
+		t[1] = TrackColor.Green;
+		testBoard.setVisibleTrainCarCards(t);
+		User user = new User("canDraw","password");
+		serverFacade.register("canDraw", "password");
+		//serverFacade.login("canDraw", "password");
+		serverFacade.createGame(testGame, user.playerID, PlayerColor.Red);
+		System.out.println(serverFacade.getAllGames().get(testGame.getGameID()).getPlayerManager().isPlayersTurn(user.playerID));
+
+		//serverFacade.getAllGames().get(testGame.getGameID()).getPlayerManager().isPlayersTurn(user.playerID);
+		serverFacade.drawTrainCard(user.playerID, testGame.getGameID(), 1);
+
+	}
+	
+	 
+	/*
+	 * can not draw train card - when not log in- not current turn- invalide input - no train cards exist
+	 */
+	@Test
+	public void canNotDraw()
+	{
+		//you are not checking if the current game started
+	}
+
+	/*
+	 * draw card can trigger the end of the game
+	 */
+	@Test
+	public void drawTriggerEnd()
+	{
+		
+	}
 	
 	@Test(expected=PreConditionException.class)
 	public void testStartGame() throws PreConditionException, InternalServerException {
@@ -812,31 +844,6 @@ public class ServerFacade_Test {
 
 
 
-<<<<<<< HEAD
-=======
-	@Test
-	public void testGetCityMapping() {
-		fail("Not yet implemented");
-	}
-
-
-	public static void main(String[] args)
-	{
-		String[] testClasses = new String[]{
-				"ServerFacade_Test"
-		};
-		
-		org.junit.runner.JUnitCore.main(testClasses);
-	}
-	
-	
-	//something not sure if we need to test
-	/**
-	 * 	@Test
-	public void testCanLeaveGame() {
-		fail("Not yet implemented");
-	}
->>>>>>> origin/master
 
 
 }
