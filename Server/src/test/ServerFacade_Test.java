@@ -518,8 +518,7 @@ public class ServerFacade_Test {
 	
 	@Test(expected=PreConditionException.class)
 	public void testStartGame() throws PreConditionException, InternalServerException {
-		//Note: this test will not work properly until Issue #13 is resolved
-		fail("Note: this test will not work properly until Issue #13 is resolved");
+
 		ServerFacade facade = ServerFacade.getServerFacade();
 		int test1ID = 0;
 		int test2ID = 0;
