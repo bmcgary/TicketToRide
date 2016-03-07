@@ -1,18 +1,29 @@
 package server;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gson.Gson;
+
+import model.City;
 import model.CityToCityRoute;
 import model.Game;
+import model.GameBoard;
 import model.Player;
 import model.PlayerColor;
+import model.TrackColor;
 import server.exception.AddUserException;
 import server.exception.AlreadyLoggedInException;
 import server.exception.BadCredentialsException;
 import server.exception.InternalServerException;
+import server.exception.InvalidCredentialsException;
 import server.exception.OutOfBoundsException;
 import server.exception.PreConditionException;
 
@@ -34,7 +45,7 @@ public class ServerFacade {
 		users = new ArrayList<>();
 	}
 
-	public synchronized void createGame(Game newGame)
+	public synchronized void createGame(Game newGame, int playerID, PlayerColor color) throws InternalServerException
 	{
 		//check to make sure game was instantiated properly
 		if(newGame == null || newGame.getGameBoard() == null){
@@ -52,6 +63,15 @@ public class ServerFacade {
 		//add game
 		games.add(newGame);
 		assert(games.contains(newGame));
+		
+		//add creator to the game under the color that they choose
+		try {
+			this.addPlayerToGame(playerID, newGame.getGameID(), color);
+		} catch (PreConditionException e) {
+			// If this happens, Trent somehow messed up the createGame method
+			e.printStackTrace();
+			throw new InternalServerException("Trent messed up in ServerFacade::createGame()");
+		}
 	}
 	
 	/**
@@ -59,7 +79,7 @@ public class ServerFacade {
 	 * @param newUser the user to be added
 	 * @throws AddUserException thrown if the new user wasn't instantiated properly or a user with the same name already exists
 	 */
-	public synchronized void addNewUser(User newUser) throws AddUserException
+	private synchronized void addNewUser(User newUser) throws AddUserException
 	{
 		//check to make sure user was added properly
 		if(newUser == null || newUser.getPlayerID() <= 0 || newUser.getPlayerID() == Integer.MAX_VALUE){
@@ -132,19 +152,20 @@ public class ServerFacade {
 	 * @param playerID the ID of the player
 	 * @param gameID the ID of the game
 	 * @param playerColor the color wished to join with
+	 * @throws PreConditionException 
 	 */
-	public synchronized void addPlayerToGame(int playerID, int gameID, PlayerColor playerColor)
+	public synchronized void addPlayerToGame(int playerID, int gameID, PlayerColor playerColor) throws PreConditionException
 	{
 		//helper check
 		if(!this.canAddPlayerToGame(playerID, gameID, playerColor)){
-			assert(false);
-			return;
+			throw new PreConditionException("Player can't be added to the game");
 		}
 		
 		//update game's playerManager
 		for(Game game : games){
 			if(game.getGameID() == gameID){
 				game.getPlayerManager().addPlayer(playerID, playerColor);
+				game.addHistoryMessage("Player " + playerID + " added to game.");
 			}
 		}
 		
@@ -306,10 +327,16 @@ public class ServerFacade {
 	 * @param password the password to be added
 	 * @return the playerID of the newly created user
 	 * @throws AddUserException thrown if the user cannot be added, usually for a user name already taken
+	 * @throws InvalidCredentialsException 
 	 */
-	public synchronized int register(String username,String password) throws AddUserException, InternalServerException
+	public synchronized int register(String username,String password) throws AddUserException, InternalServerException, InvalidCredentialsException
 	{
 		User newUser = new User(username, password);
+		for(User u : this.users){
+			if(u.getUsername().equals(username)){
+				throw new InvalidCredentialsException("That username already exists!");
+			}
+		}
 		this.addNewUser(newUser);	//if this line throws an AddUserException for improper instantiation, there's a problem and I messed up. 
 		try {
 			return login(username, password);
@@ -326,10 +353,11 @@ public class ServerFacade {
 	 * @param playerID The player wanting to buy the route
 	 * @param gameID The game in which this takes place
 	 * @param route the desired route
+	 * @param cards the cards desired to use in order to purchase the route
 	 * @return true if the route can be bought, false otherwise
 	 * @throws InternalServerException 
 	 */
-	public boolean canBuyRoute(int playerID, int gameID, CityToCityRoute route) throws InternalServerException
+	public boolean canBuyRoute(int playerID, int gameID, CityToCityRoute route, Map<TrackColor, Integer> cards) throws InternalServerException
 	{
 		//Helper methods
 		if(!this.isPlayerLoggedIn(playerID) || !this.isPlayableGame(gameID)){
@@ -338,7 +366,7 @@ public class ServerFacade {
 		else{
 			for(Game g : games){
 				if(g.getGameID() == gameID){
-					return g.canPlayerBuyRoute(playerID, route);
+					return g.canPlayerBuyRoute(playerID, route, cards);
 				}
 			}
 			throw new InternalServerException("See ServerFacade::canBuyRoute");
@@ -350,21 +378,22 @@ public class ServerFacade {
 	 * @param playerID the player buying the route
 	 * @param gameID the game for the purchase
 	 * @param route the route being bought
+	 * @param cards TODO
 	 * @throws PreConditionException thrown if the player can't buy the route
 	 * @throws InternalServerException thrown if something horrible happens and Trent messed up
 	 * @throws OutOfBoundsException 
 	 */
-	public synchronized void buyRoute(int playerID, int gameID, CityToCityRoute route) throws PreConditionException, InternalServerException, OutOfBoundsException
+	public synchronized void buyRoute(int playerID, int gameID, CityToCityRoute route, Map<TrackColor, Integer> cards) throws PreConditionException, InternalServerException, OutOfBoundsException
 	{
 		//helper method
-		if(!this.canBuyRoute(playerID, gameID, route)){
+		if(!this.canBuyRoute(playerID, gameID, route, cards)){
 			throw new PreConditionException("Player: " + playerID + " cannot buy requested route in game " + gameID);
 		}
 		
 		else{
 			for(Game g : games){
 				if(g.getGameID() == gameID){
-					g.buyRoute(playerID, route);
+					g.buyRoute(playerID, route, cards);
 					return;
 				}
 			}
@@ -482,7 +511,20 @@ public class ServerFacade {
 	
 	public synchronized void saveGameState()
 	{
-		//TODO: saving stuff
+		Gson gson = new Gson();
+		String relativePath = new File("").getAbsolutePath() + "/Server/src/saveFiles/";
+		String output = "";
+		for(Game g : games){
+			output += gson.toJson(g) + "\n";
+		}
+		try {
+			PrintWriter writer = new PrintWriter(relativePath + "save.txt", "UTF-8");
+			writer.println(output);
+			writer.close();
+		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		//TODO: the rest
 	}
 	
 	public synchronized void sendClientModelInformation()
@@ -492,7 +534,7 @@ public class ServerFacade {
 	
 	public Map<Integer, CityToCityRoute> getCityMapping()
 	{
-		return null;
+		return GameBoard.getRouteMapping();
 	}
 	
 	/**
@@ -572,5 +614,28 @@ public class ServerFacade {
 	 */
 	public List<User> getAllUsers(){
 		return Collections.unmodifiableList(users);
+	}
+	
+	public static void firebomb()
+	{
+		serverFacade = null;
+	}
+	
+	public static void main(String args[]) throws AddUserException, InternalServerException, PreConditionException, InvalidCredentialsException, OutOfBoundsException{
+		ServerFacade sf = ServerFacade.getServerFacade();
+		int pid = sf.register("Trent", "trent");
+		int pid2 = sf.register("Jacob",  "jacob");
+		Game g = new Game();
+		Game g2 = new Game();
+		sf.createGame(g, pid, PlayerColor.Black);
+		sf.createGame(g2, pid, PlayerColor.Black);
+		sf.addPlayerToGame(pid2, 1, PlayerColor.Green);
+		sf.startGame(pid, 1);
+		Map<TrackColor, Integer> m = new HashMap<TrackColor, Integer>();
+		m.put(TrackColor.Red, 1);
+		System.out.println(sf.getCityMapping());
+		sf.saveGameState();
+		sf.buyRoute(pid, 1, new CityToCityRoute(new City("Seattle"), new City("Portland"), 1, TrackColor.None), m);
+		System.out.println("Success!");
 	}
 }

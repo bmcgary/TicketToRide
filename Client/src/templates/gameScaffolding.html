@@ -1,103 +1,59 @@
 
 <!-- This is the scaffolding for the main game -->
 <div class="gameScaffolding">
-<div id="sp-nav" style="background-color:#33FFFF;">
-	<div>
-<!--		<div style="height:50vh;" ui-view="menu"></div> 
-		<hr>
-		<div style="height:50vh;" ui-view="chat"></div>-->
-		<ul>
-			<li ng-repeat="game in allGames">
-				{{ game.name }}
-			</li>
-		</ul>
-	</div> 
-</div>
+
 <div id="sp-page"> <!-- the main game screen-->
-	
-<!--
-<nav class="navbar navbar-default" style="background-color:orange">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="#">Brand</a>
-    </div>
-
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-	<li class="dropdown">
-            <a href="#/game" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Change Games <span class="caret"></span></a>
-            <ul class="dropdown-menu">
-		    <li ng-repeat="game in allGames track by $index">
-			{{ game.name }}
-	    	    </li>
-			<li>baasdf</li>
+<div style="height:100%; position:fixed; width:100%;">
+      <nav class="navbar navbar-default" role="navigation" style="margin-bottom:0px;">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" ng-init="navCollapsed = true" ng-click="navCollapsed = !navCollapsed">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" ui-sref="mainGame">Ticket To Ride</a>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
+          <ul class="nav navbar-nav">
+            <li uib-dropdown="">
+              <a href="#/game" uib-dropdown-toggle="">
+                        Other Games  <b class="caret"></b>
+              </a>
+              <tree tree="games" style="cursor:pointer;"></tree>
+            </li>
+	   <li>
+		<a ui-sref="mainGame2"> Change View </a>
+	   </li>
           </ul>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>-->
+        </div>
+        <!-- /.navbar-collapse -->
+      </nav>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<nav style="background-color:orange">
-		
-	<button ng-click="toggleMenu();" ng-class="showMenu ? 'fa fa-arrow-left' : 'fa fa-bars'" class="btn btn-md btn-default" style="background:none; color:yellow; border-width: 5px;"></button>
-		<!--
-     <ul class="navbar-nav">
-	<li class="dropdown">
-	  <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Change Games <span class="caret"></span></a>
-	  <ul class="dropdown-menu" role="menu">
-	    <li ng-repeat="game in allGames track by $index">
-			{{ game.name }}
-	    </li>
-	  </ul>
-	</li>
-      </ul>-->
-
-
-	</nav>
-
-	<div class="col-xs-2" style="height:100vh; background-color:red;">
-		<div>
-			<div style="height:50vh;" ui-view="menu"></div> 
+	<div class="col-xs-2" style="height:100%; background-color:red;">
+				
+		<div class="row" style="">
+			<div style="height:100%; padding-bottom:100%;" ui-view="menu"></div> 
 			<hr>
-			<div style="height:50vh;" ui-view="chat"></div>
+			<div style="" ui-view="chat"></div>
 		</div>
 	</div> 
-	<div class="col-xs-10">	
-		<div class="row">
-		<div class="col-xs-12" style="height:70vh; background-color:blue;">
-			<div ui-view="canvas"></div>
+	<div class="col-xs-10" style="height:100%;">
+		<div class="row" style="height:72%;">
+			<div class="col-xs-9" style="height:100%;padding-left:0;">
+				<div ui-view="canvas"></div>
+			</div>
+			<div class="col-xs-3" style="background-color:yellow; height:100%;">
+				<div ui-view="tabs"></div>
+			</div>
 		</div>
-		</div>
-		<div class="row">
-		<div class="col-xs-12" style="height:30vh; background-color:green;">
-			<div ui-view="tabs"></div>
-		</div>
+		<div class="row" style="height:28%; background-color:green;">
+			<div class="col-xs-12" style="height:100%">
+				<div ui-view="tabs"></div>
+			</div>
 		</div>
 	</div>
+</div>
 </div>
 </div>

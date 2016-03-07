@@ -41,5 +41,10 @@ public class CityToCityRoute extends Route {
 		}
 	}
 	
+	@Override
+	public String toString(){
+		return this.getStart().getName() + " - " + this.getEnd().getName();
+	}
+	
 
 }

@@ -1,6 +1,7 @@
 package server;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -93,6 +94,28 @@ public class MyWebSocketHandler {
                 System.err.println("Failed to send to user " + id);
             }
         });
+    }
+    
+    public void sendMessages(ArrayList<ResponseWrapper> wrappers)
+    {
+    	//go through each response wrapper
+    	for(int i=0; i<wrappers.size(); i++)
+    	{
+    		
+    		Iterator<Integer> targetIds=wrappers.get(i).getTargetIds().iterator();
+    		String message=wrappers.get(i).getResponse();
+    		
+    		//send the message of this particular response wrapper to all of its targetIDs
+    		targetIds.forEachRemaining(targetId -> {
+    			try{
+    				sessions.get(targetId).getRemote().sendString(message);
+    			} catch(IOException e) {
+    				System.err.println("Failed to send to user " + id);
+    			}
+    			
+    		});
+    		
+    	}
     }
     
     public void sendInvalidMessage(String message) 

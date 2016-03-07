@@ -1,0 +1,48 @@
+<!-- This is the scaffolding for the main game -->
+<div class="gameScaffolding">
+<div id="sp-nav" style="background-color:#33FFFF; height:100%">
+	<div>
+		<ul>
+			<li ng-repeat="game in games">
+				{{ game.name }}
+			</li>
+		</ul>
+		<hr>
+		<ul>
+			<li>
+				<a ui-sref="mainGame"> Change View </a>
+			</li>
+		</ul>
+	</div> 
+</div>
+<div id="sp-page"> <!-- the main game screen-->
+
+
+	<div class="col-xs-2" style="height:100%; background-color:red;">
+		<div class="row" style="background-color:orange">
+			<center><button ng-click="toggleMenu();" ng-class="showMenu ? 'fa fa-arrow-left' : 'fa fa-bars'" class="btn btn-md btn-default" style="background:none; color:yellow; border-width: 5px;"></button></center>
+		</div>
+		
+		<div class="row" style="">
+			<div style="height:100%; padding-bottom:100%;" ui-view="menu"></div> 
+			<hr>
+			<div style="" ui-view="chat"></div>
+		</div>
+	</div> 
+	<div class="col-xs-10" style="height:100%;background-color:blue;">	
+		<div class="row" style="height:75%;">
+			<div class="col-xs-9" style="height:100%;">
+				<div ui-view="canvas"></div>
+			</div>
+			<div class="col-xs-3" style="background-color:yellow; height:100%;">
+				<div ui-view="tabs"></div>
+			</div>
+		</div>
+		<div class="row" style="height:25%; background-color:green;">
+			<div class="col-xs-12" style="height:100%">
+				<div ui-view="tabs"></div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>

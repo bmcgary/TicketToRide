@@ -28,6 +28,8 @@ public class GameBoard {
 	protected List<TrackColor> deckTrainCarCards;
 	protected TrackColor[] visibleTrainCarCards;
 	protected List<TrackColor> discardedTrainCarCards;
+	protected static Map<Integer, CityToCityRoute> routeMapping;
+	private static String relativePath = new File("").getAbsolutePath() + "/Server/src/model/";
 	
 	public GameBoard(){
 		cities = new ArrayList<City>();
@@ -37,6 +39,7 @@ public class GameBoard {
 		visibleTrainCarCards = new TrackColor[5];
 		deckTrainCarCards = new ArrayList<TrackColor>();
 		discardedTrainCarCards = new ArrayList<TrackColor>();
+		routeMapping = new HashMap<Integer, CityToCityRoute>();
 	}
 	/**
 	 * Reports whether at least 1 destination route can be drawn from the deck
@@ -267,11 +270,11 @@ public class GameBoard {
 	}
 
 	protected void loadDestinationRoutes(){
-		File file = new File("DestinationCards.txt");
+		File file = new File(relativePath + "DestinationCards.txt");
 		BufferedReader reader = null;
 		int line = 0;
 		String city1 = null;
-		String city2 = null;;
+		String city2 = null;
 		
 		try{
 			reader = new BufferedReader(new FileReader(file));
@@ -286,7 +289,7 @@ public class GameBoard {
 				case 2:
 					city2 = text;
 					break;
-				case 3:
+				case 0:
 					DestinationRoute dr = this.makeNewDestinationRoute(city1, city2, Integer.parseInt(text));
 					city1 = null;
 					city2 = null;
@@ -309,35 +312,119 @@ public class GameBoard {
 		}
 	}
 	protected DestinationRoute makeNewDestinationRoute(String city1, String city2, int points) {
-		//both shouldn't be null. That would be bad
-		assert(city1 != null && city2 != null);
+		//both shouldn't be null or the same. That would be bad
+		assert(city1 != null && city2 != null && !city1.equals(city2));
 		
 		//if either city doesn't exist yet, add them to the list
 		City c1 = null;
 		City c2 = null;
 		for(City c : this.cities){
-			if(c.getName() == city1){
+			if(c.getName().equals(city1)){
 				c1 = c;
 			}
-			else if(c.getName() == city2){
+			else if(c.getName().equals(city2)){
 				c2 = c;
+			}
+			if(c1 != null && c2 != null){
+				break;
 			}
 		}
 		if(c1 == null){
-			c1 = new City(new Point(0, 0), city1);
+			c1 = new City(city1);
 			this.cities.add(c1);
 		}
 		if(c2 == null){
-			c1 = new City(new Point(0, 0), city2);
+			c2 = new City(city2);
 			this.cities.add(c2);
 		}
 		return new DestinationRoute(c1, c2, points);
 	}
 	
 	protected void loadCityToCityRoutes() {
-		assert(false); //not yet implemented
-		//TODO: this
+		File file = new File(relativePath + "CityToCityRoutes.txt");
+		BufferedReader reader = null;
+		int line = 0;
+		String city1 = null;
+		String city2 = null;
+		TrackColor color = null;
 		
+		try{
+			reader = new BufferedReader(new FileReader(file));
+			String text = null;
+			
+			int routeIndex = 1;
+			while((text = reader.readLine()) != null){
+				line++;
+				switch(line % 4){
+				case 1:
+					city1 = text;
+					break;
+				case 2:
+					city2 = text;
+					break;
+				case 3:
+					System.out.print(line + "\n");
+					color = TrackColor.valueOf(text);
+					break;
+				case 0:
+					CityToCityRoute c2cr = null;
+					c2cr = this.makeNewC2CRoute(city1, city2, color, Integer.parseInt(text));
+					city1 = null;
+					city2 = null;
+					color = null;
+					this.routes.add(c2cr);
+					GameBoard.routeMapping.put(routeIndex, c2cr);
+					routeIndex++;
+				}
+				
+			}
+		} catch(FileNotFoundException e){
+			e.printStackTrace();
+		} catch(IOException e){
+			e.printStackTrace();
+		} finally{
+			try {
+				if(reader != null){
+					reader.close();
+				}
+			} catch(IOException e){
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	protected CityToCityRoute makeNewC2CRoute(String city1, String city2, TrackColor color, int trains) {
+		//both shouldn't be null or the same. That would be bad
+		assert(city1 != null && city2 != null && !city1.equals(city2));
+		
+		//if either city doesn't exist yet, add them to the list
+		City c1 = null;
+		City c2 = null;
+		for(City c : this.cities){
+			if(c.getName().equals(city1)){
+				c1 = c;
+			}
+			else if(c.getName().equals(city2)){
+				c2 = c;
+			}
+		}
+		if(c1 == null){
+			c1 = new City(city1);
+			this.cities.add(c1);
+		}
+		if(c2 == null){
+			c2 = new City(city2);
+			this.cities.add(c2);
+		}
+		return new CityToCityRoute(c1, c2, trains, color);
+	}
+	
+	public static Map<Integer, CityToCityRoute> getRouteMapping(){
+		if(GameBoard.routeMapping.keySet().size() < 1){
+			GameBoard gb = new GameBoard();
+			gb.loadCityToCityRoutes();
+		}
+		return GameBoard.routeMapping;
 	}
 	
 }

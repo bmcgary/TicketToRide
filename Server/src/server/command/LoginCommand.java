@@ -25,6 +25,7 @@ public class LoginCommand extends Command {
         ResponseWrapper responseWrapper = new ResponseWrapper(commandName);
         try {
             userID = serverFacade.login(username, password);
+            
             responseWrapper.addTargetId(userID).setResponse(Response.newSuccessResponse());
         } catch (BadCredentialsException e) {
             responseWrapper.setResponse(Response.newInvalidInputResponse());
