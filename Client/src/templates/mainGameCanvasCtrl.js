@@ -4,10 +4,33 @@ app.controller('mainGameCanvasCtrl', function ($scope, ClientAPI) {
 
     var canvas = document.getElementById('canvas');
     var context = canvas.getContext('2d');
-    canvas.width = 800; canvas.height = 505;
 
+	setUpCanvas();
+		
+	//Set the canvas size to the size of the view it is contained in.
+	function setUpCanvas()
+	{
+		var myEl = document.getElementById("canvasHolder");
+    	canvas.width = myEl.offsetWidth; canvas.height = myEl.offsetHeight;
+	}
+
+
+//This is for changing canvas size on window change.
+/*
+var addEvent = function(object, type, callback) {
+    if (object == null || typeof(object) == 'undefined') return;
+    if (object.addEventListener) {
+        object.addEventListener(type, callback, false);
+    } else if (object.attachEvent) {
+        object.attachEvent("on" + type, callback);
+    } else {
+        object["on"+type] = callback;
+    }
+};
+*/
+	//addEvent(window, 'resize', setUpCanvas);
     trackTransforms(context);
-
+	
 
     var mapImage = new Image();
     mapImage.onload = function ()
