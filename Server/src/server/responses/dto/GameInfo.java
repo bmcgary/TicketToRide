@@ -21,8 +21,7 @@ public class GameInfo {
 
     public GameInfo(Game game) {
         gameId = game.getGameID();
-        // TODO: no game name yet
-        //gameName = game.getGameName();
+        gameName = game.getName();
         List<Player> players = game.getPlayerManager().getPlayers();
         playerInfos = new PlayerInfo[players.size()];
         for (int i = 0; i < players.size(); ++i) {
