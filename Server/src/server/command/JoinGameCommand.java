@@ -1,9 +1,11 @@
 package server.command;
 import com.google.gson.annotations.SerializedName;
+import model.Game;
 import model.Player;
 import model.PlayerColor;
 import server.CommandParser;
 import server.User;
+import server.exception.PreConditionException;
 import server.responses.Response;
 import server.responses.ResponseWrapper;
 import server.responses.UpdateGameResponse;
@@ -11,6 +13,7 @@ import server.responses.UpdateGameResponse;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -39,17 +42,31 @@ public class JoinGameCommand extends Command {
             }
             return responses;
         } else {
-            serverFacade.addPlayerToGame(userID, gameId, color);
-            // start game if possible
-            //Response gameResponse = new UpdateUserGamesResponse(gameId);
+            try {
+                serverFacade.addPlayerToGame(userID, gameId, color);
+            } catch (PreConditionException e) {
+                e.printStackTrace();
+                responses.add(responseWrapper.setResponse(Response.newServerErrorResponse()));
+                return responses;
+            }
+            responses.add(responseWrapper.setResponse(Response.newSuccessResponse()));
 
+            // get game
+            Game thisGame = serverFacade.getAllGames().parallelStream().filter(game -> game.getGameID() == gameId).findFirst().get();
+
+            // update game responses
+            responses.add(new ResponseWrapper(-1, new UpdateGameResponse(thisGame, false), "UpdateGame"));
+
+            // update user games responses
             Command userGames = new UpdateUserGamesCommand();
-            List<Player> gamePlayers = serverFacade.getAllGames().get(gameId).getPlayerManager().getPlayers();
-            gamePlayers.stream().forEach(player -> responses.addAll(userGames.execute(player.getPlayerID())));
-            List<Integer> allUserIds = new ArrayList<>();
-            serverFacade.getAllUsers().forEach(user -> allUserIds.add(user.getPlayerID()));
-            //responses.add(new ResponseWrapper(allUserIds, "updateGame", new UpdateGameResponse()))
-            return null;
+            thisGame.getPlayerManager().getPlayers().stream().forEach(player -> responses.addAll(userGames.execute(player.getPlayerID())));
+
+            // start game response
+            if (thisGame.getPlayerManager().getPlayers().size() == 5) {
+                responses.addAll(new StartGameCommand(gameId).execute(-1));
+            }
+
+            return responses;
         }
     }
 }

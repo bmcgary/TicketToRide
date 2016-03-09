@@ -62,6 +62,8 @@ public class ResponseWrapper {
         return this;
     }
 
+    public String getCommandName() { return commandName; }
+
     public String getResponse() {
         return JsonTranslator.getGson().toJson(this);
     }
@@ -69,5 +71,13 @@ public class ResponseWrapper {
     public ResponseWrapper setResponse(Response response) {
         this.response = response;
         return this;
+    }
+
+    public boolean isPublic() {
+        return targetIds != null && targetIds.get(0) == -1;
+    }
+
+    public boolean isPrivate() {
+        return targetIds == null;
     }
 }

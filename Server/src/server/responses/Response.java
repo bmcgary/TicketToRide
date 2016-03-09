@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
  */
 public class Response {
     @SerializedName("description")
-    private String description;
+    String description;
 
     public Response(String description) {
         this.description = description;
