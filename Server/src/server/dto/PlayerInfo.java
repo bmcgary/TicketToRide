@@ -17,11 +17,9 @@ public class PlayerInfo {
     @SerializedName("color")
     private String colorName;
     @SerializedName("playerOrder")
-    private int playerOrder;
-
-    public PlayerInfo(Player player, int playerOrder) {
-        this.username = serverFacade.getAllUsers().get(player.getPlayerID()).getUsername();
-        this.colorName = player.getPlayerColor().toString();
-        this.playerOrder = playerOrder;
-    }
+    private Integer playerOrder;
+    @SerializedName("trainsLeft")
+    private Integer trainsLeft;
+    @SerializedName("cards")
+    private CardInfo[] cardInfos;
 }
