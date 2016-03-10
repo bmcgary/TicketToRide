@@ -1,5 +1,6 @@
 package server.command;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class BuyRouteCommand extends Command {
 	private int numberOfWilds;
 
     @Override
-    public ResponseWrapper execute(int userID) {
+    public List<ResponseWrapper> execute(int userID) {
 
     	//get the route that the player is trying to buy
     	CityToCityRoute route=getRoute();
@@ -52,7 +53,7 @@ public class BuyRouteCommand extends Command {
 			e.printStackTrace();
 		}
     	
-        return new ResponseWrapper(userID, Response.newServerErrorResponse(), commandName);
+        return Collections.singletonList(new ResponseWrapper(userID, Response.newServerErrorResponse(), commandName));
     }
     
     private CityToCityRoute getRoute()
