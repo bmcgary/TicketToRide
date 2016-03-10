@@ -474,6 +474,11 @@ public class ServerFacade {
 			return false;
 		}
 		
+		//checks that destinationsSelected isn't null
+		if(destinationsSelected == null){
+			return false;
+		}
+		
 		//checks boundaries for indices
 		for(int i : destinationsSelected){
 			if(i > 2 || i < 0){

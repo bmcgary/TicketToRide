@@ -163,6 +163,11 @@ public class Game {
 			return false;
 		}
 		
+		//player cannot have destination cards under consideration
+		if(playerManager.getPlayer(playerID).getDestinationRoutesToConsider()[0]!=null){
+			return false;
+		}
+		
 		//5 means top of the deck
 		if(cardLocation == 5 && gameBoard.canDrawDeckTrainCar()){
 			return true;
@@ -213,6 +218,12 @@ public class Game {
 		if(!playerManager.isPlayersTurn(playerID) || playerManager.drewAlreadyCurrentTurn){
 			return false;
 		}
+		
+		//player cannot already have cards under consideration
+		if(playerManager.getPlayer(playerID).getDestinationRoutesToConsider()[0] != null){
+			return false;
+		}
+		
 		//game board must have sufficient cards left
 		return gameBoard.canDrawDestinationRoute();
 	}

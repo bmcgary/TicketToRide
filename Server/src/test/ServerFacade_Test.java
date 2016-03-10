@@ -807,6 +807,7 @@ public class ServerFacade_Test {
 		
 		try
 		{
+			ServerFacade.firebomb();
 			ServerFacade facade = ServerFacade.getServerFacade();
 			int user1 = facade.register("test1", "test1");
 			int user2 = facade.register("test2", "test2");
@@ -820,6 +821,8 @@ public class ServerFacade_Test {
 			facade.addPlayerToGame(user2, game1ID, PlayerColor.Red);
 			
 			facade.startGame(user1, game1ID);
+			facade.selectDestinations(user1, game1ID, new int[]{0,1,2});
+			facade.selectDestinations(user2, game1ID, new int[]{0,1,2});
 			
 			if (facade.canGetDestinations(user1, game1ID)) {
 				facade.getDestinations(user1, game1ID);
@@ -864,6 +867,7 @@ public class ServerFacade_Test {
 				//update current turn
 			TestPlayerManager manager = (TestPlayerManager)game1.getPlayerManager();
 			manager.setCurrentTurnIndex(1);
+			manager.getPlayerByID(user2).setDestinationRoutesToConsider(new DestinationRoute[]{null, null, null});
 			if (facade.canDrawTrainCard(user2, game1ID, 0))
 			{
 				facade.drawTrainCard(user2, game1ID, 0);
