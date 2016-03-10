@@ -35,25 +35,12 @@ import server.exception.AddUserException;
 import server.exception.AlreadyLoggedInException;
 import server.exception.BadCredentialsException;
 import server.exception.InternalServerException;
+import server.exception.InvalidCredentialsException;
 import server.exception.OutOfBoundsException;
 import server.exception.PreConditionException;
 
 public class ServerFacade_Test {
 	
-
-
-	//buy routes, draw train card
-	
-	/*
-	 * do you think we need a card class?
-	 */
-	
-	/*
-	 * all class variables (such as cities, routes) in the gameboard class are private
-	 * then how could we create a gameboard object? see the code below. same problem for the game class
-	 * don't we need some setters? For example, in the game class, we should have a setter called setGameboard
-	 * so we can create a gameboard and add it to the game.
-	 */
 	
 	/*
 	 * 	private List<City> cities;
@@ -102,8 +89,6 @@ public class ServerFacade_Test {
 	 * set up a game for testing
 	 * @throws Exception
 	 */
-	// current no way to create a gameboard...or do I miss something here?
-	//May you show me a way to add a gameboard to a game?
 	@Before
 	public void buildGame_version1() throws Exception{
 	/*game1 = new Game();
@@ -205,79 +190,35 @@ public class ServerFacade_Test {
 		//ensure each test starts fresh
 		ServerFacade.firebomb();
 	}
-	
-	/*
-	 * for Trent
-	 * can buy a route
-	 * it seems we can not buy a route. I am missing something here.
-	 * 
-	 */
-	@Test
-	public void buyRoute() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, PreConditionException, InternalServerException, OutOfBoundsException
-	{
-		User user = new User("canBuy","password");
-		User user2 = new User("canBuy2","password");
-		User user3 = new User("canBuy3","password");
-		User user4 = new User("canBuy4","password");
 
-		serverFacade.addNewUser(user);
-		serverFacade.addNewUser(user2);
-		serverFacade.addNewUser(user3);
-		serverFacade.addNewUser(user4);
-		serverFacade.login("canBuy","password");
-		serverFacade.login("canBuy2","password");
-		serverFacade.login("canBuy3","password");
-		serverFacade.login("canBuy4","password");
-
-
-		City city1 = new City("LA");
-		City city2 = new City("SA");
-		CityToCityRoute ctoc1 = new CityToCityRoute(city1,city2,3,TrackColor.Orange);
-		//ctoc1.
-		Map<TrackColor,Integer> cards = new HashMap<TrackColor,Integer>();
-		cards.put(TrackColor.Orange, 8);
-		TestGameBoard testGB = new TestGameBoard();
-		testGB.getRoutes().add(ctoc1);
-		TestGame game = new TestGame();
-		game.setGameBoard(testGB);
-		serverFacade.createGame(game, user.getPlayerID(), PlayerColor.Black);
-		serverFacade.addPlayerToGame(user2.getPlayerID(), game.getGameID(),PlayerColor.Blue);
-		serverFacade.addPlayerToGame(user3.getPlayerID(), game.getGameID(),PlayerColor.Green);
-		serverFacade.addPlayerToGame(user4.getPlayerID(), game.getGameID(),PlayerColor.Yellow);
-		serverFacade.startGame(user.getPlayerID(), game.getGameID());
-	//	serverFacade.
-		serverFacade.buyRoute(user.getPlayerID(), game.getGameID(), ctoc1, cards);
-		//no enough resources
-		
-		cards.put(TrackColor.Orange, 0);
-
-		
-		assertFalse(serverFacade.getAllGames().get(game.getGameID()).getPlayerManager().canBuyTrack(user.getPlayerID(), 2));
-		assertFalse(serverFacade.getAllGames().get(game.getGameID()).getPlayerManager().canBuyTrackWithCards(user.getPlayerID(), 2, TrackColor.Black, cards));
-	
-	}
 
 	@Test
 	public void testGetServerFacade() {
 		assertNotEquals(serverFacade.getServerFacade(),null);
 	}
+	
 	/* error:
 	 * not handle if a user name is empty not handle is username is larger than 25 char.
-	 * not checking if a user enters his/her email...we require a user to enter his/her email??
 	 * I can even enter a chinese character..this is a creepy test case. 
 	 */
 	@Test
-	public void registered() throws AddUserException
+	public void registered() throws AddUserException, InternalServerException
 	{
-		User user = new User("","passdasdsad啦啦啦啦啦ada啦dasdasdasdasdaasdasd");
-		//serverFacade.addNewUser(user);
-		
+		try {
+			serverFacade.register("", "password");
+			fail("should have thrown exception");
+		} catch (InvalidCredentialsException e) {}
+		try {
+			serverFacade.register("test1", "passdasdsad啦啦啦啦啦ada啦dasdasdasdasdaasdasd");
+			fail("should have thrown exception");
+		} catch (InvalidCredentialsException e) {}
 	}
+	
 	/*
 	 * successful case
 	 */
 	@Test
-	public void registeredSuccess() throws AddUserException
+	public void registeredSuccess() throws AddUserException, InvalidCredentialsException
 	{
 		User user = new User("name","pass");
 		//serverFacade.addNewUser(user);	
@@ -286,15 +227,13 @@ public class ServerFacade_Test {
 	 * existing object
 	 */
 	@Test(expected = AddUserException.class)
-	public void registeredUserNameexistobject() throws AddUserException
+	public void registeredUserNameexistobject() throws AddUserException, InvalidCredentialsException
 	{
 		User user = new User("name","pass");
 		//serverFacade.addNewUser(user);	
 		//serverFacade.addNewUser(user);	
 
 	}
-	// a test case says a user can switch to the login screen??  Is this handled by the server side..i thought
-	//it should be a functionality in the augular.js???
 	
 	/*
 	 * we add a new user to the game identified by his PASSWORD????? and username
@@ -303,7 +242,7 @@ public class ServerFacade_Test {
 	 * 
 	 */
 	@Test (expected=AddUserException.class)
-	public void testAddNewUserWithExistingUserName() throws AddUserException {
+	public void testAddNewUserWithExistingUserName() throws AddUserException, InvalidCredentialsException {
 		User user  = new User("user","password");
 		User user1  = new User("user","password");
 		//serverFacade.addNewUser(user);
@@ -326,12 +265,11 @@ public class ServerFacade_Test {
 	
 	
 	/*
-	 * add player to the game
-	 * A player can join a game without logging in..
+	 * INVALID TEST CASE
 	 */
 	
 	@Test
-	public void addPlayer()
+	public void addPlayer() throws InvalidCredentialsException
 	{
 		TestGame game = new TestGame();
 		User user = new User("testUser","password");
@@ -340,10 +278,10 @@ public class ServerFacade_Test {
 		
 	}
 	/*
-	 * player can join a game when there are 5 players already in the game
+	 * INVALID TEST CASE
 	 */
 	@Test
-	public void addPlayerFullPlayers()
+	public void addPlayerFullPlayers() throws InvalidCredentialsException
 	{
 		TestGame game = new TestGame();
 		User user1 = new User("user1","password");
@@ -359,12 +297,13 @@ public class ServerFacade_Test {
 		user5.joinGame(game.getGameID());
 		user6.joinGame(game.getGameID());
 	}
+	
 	/*
 	 * player can join a game when it has started already
 	 * It seems we can not start a game???
 	 */
 	@Test
-	public void addPlayerGameAlreadyStarted() throws PreConditionException, InternalServerException, BadCredentialsException, AlreadyLoggedInException, AddUserException
+	public void addPlayerGameAlreadyStarted() throws PreConditionException, InternalServerException, BadCredentialsException, AlreadyLoggedInException, AddUserException, InvalidCredentialsException
 	{
 		TestGame game = new TestGame();
 		User user1 = new User("user111","password");
@@ -398,22 +337,23 @@ public class ServerFacade_Test {
 		//user5.joinGame(game.getGameID());
 		//serverFacade.startGame(user1.playerID, game.getGameID());
 	}
+	
 	/*
 	 * play can not start a game when there is only a player
 	 */
-	
 	@Test(expected=PreConditionException.class)
-	public void addPlayerOnlyOnePlayer() throws PreConditionException, InternalServerException
+	public void addPlayerOnlyOnePlayer() throws PreConditionException, InternalServerException, InvalidCredentialsException
 	{
 		TestGame game = new TestGame();
 		User user1 = new User("user111","password");
 		//serverFacade.startGame(user1.playerID, game.getGameID());
 	}
+	
 	/*
 	 * test login successful
 	 */
 	@Test 
-	public void loginSuccessful() throws AddUserException, BadCredentialsException, AlreadyLoggedInException
+	public void loginSuccessful() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException
 	{
 		User user = new User("myname11","mypassword");
 		//serverFacade.addNewUser(user);
@@ -424,41 +364,63 @@ public class ServerFacade_Test {
 	
 	/*
 	 * test login - wrong user name/password
+	 * GOOD
 	 */
-	@Test(expected=BadCredentialsException.class)
-	public void loginWrongCredientials() throws AddUserException, BadCredentialsException, AlreadyLoggedInException
+	@Test
+	public void loginWrongCredientials() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException
 	{
-		User user = new User("myname22","mypassword");
-		//serverFacade.addNewUser(user);
-		serverFacade.login("myname23", "mypassword");
-			
+		int id = 0;
+		try {
+			id = serverFacade.register("myname22","mypassword");
+		} catch (InternalServerException e) {
+			e.printStackTrace();
+			fail("Unable to register");
+		}
+		serverFacade.logout(id);
+		
+		try
+		{
+			serverFacade.login("myname23", "mypassword");
+			fail("should have thrown exception");
+		}
+		catch(BadCredentialsException e){}
+		try
+		{
+			serverFacade.login("myname22", "mypassWord");
+			fail("should have thrown exception");
+		}
+		catch(BadCredentialsException e){}			
 	}
 	
 	/*
 	 * test login - already logged in
+	 * GOOD
 	 */
 	@Test(expected=AlreadyLoggedInException.class)
-	public void loginAlreadyLoggedIn() throws AddUserException, BadCredentialsException, AlreadyLoggedInException
+	public void loginAlreadyLoggedIn() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException
 	{
-		User user = new User("mynameL","mypassword");
-		//serverFacade.addNewUser(user);
-		serverFacade.login("mynameL", "mypassword");
-		serverFacade.login("mynameL", "mypassword");
-
-			
+		//registering also logs in
+		try {
+			serverFacade.register("mynameL","mypassword");
+		} catch (InternalServerException e) {
+			e.printStackTrace();
+			fail("Unable to register");
+		}
+		serverFacade.login("mynameL", "mypassword");			
 	}
 	
 	/*
 	 * can logout
 	 */
 	@Test
-	public void logout() throws BadCredentialsException, AddUserException, AlreadyLoggedInException
+	public void logout() throws BadCredentialsException, AddUserException, AlreadyLoggedInException, InvalidCredentialsException
 	{
 		User user = new User("mynamelogout","mypassword");
 		//serverFacade.addNewUser(user);
 		serverFacade.login("mynamelogout", "mypassword");
 		//serverFacade.logout(user.playerID);
 	}
+	
 	//failed to log out
 	@Test(expected=BadCredentialsException.class)
 	public void logoutFailed() throws BadCredentialsException
@@ -467,25 +429,14 @@ public class ServerFacade_Test {
 		serverFacade.logout(2);
 		serverFacade.logout(19999);
 
-	}
-	
-	/*
-	 * user can not logout another user
-	 * this test case doese not make sense in the server side
-	 * we are testing from the serverFacade perspective and we actually can logout another user
-	 * I am not sure if I understand this test case correctly
-	 */
-	
-	
-	
+	}	
 	
 	
 	/*
-	 * test if a player can join the game if he has already joined
-	 * the player can join a game that he has already joined
+	 * INVALID TEST CASE
 	 */
 	@Test
-	public void joinAlreadyJoinedGame() throws AddUserException, BadCredentialsException, AlreadyLoggedInException
+	public void joinAlreadyJoinedGame() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException
 	{
 		TestGame game = new TestGame();
 		User user1 = new User("already","password");
@@ -496,33 +447,27 @@ public class ServerFacade_Test {
 		user1.joinGame(game.getGameID());
 
 	}
+	
 	/*
-	 * we can add players with duplicate color
+	 * GOOD
 	 */
-	@Test
-	public void duplicateColor() throws AddUserException, BadCredentialsException, AlreadyLoggedInException
+	@Test(expected = PreConditionException.class)
+	public void duplicateColor() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException, InternalServerException, PreConditionException
 	{
 		TestGame game = new TestGame();
-		User user1 = new User("duplicate1","password");
-		User user2 = new User("duplicate2","password");
 
-		//serverFacade.addNewUser(user1);
-		//serverFacade.addNewUser(user2);
+		int id1 = serverFacade.register("duplicate1","password");
+		int id2 = serverFacade.register("duplicate2","password");
 
-		serverFacade.login("duplicate1","password");
-		serverFacade.login("duplicate2","password");
-
-
-		//serverFacade.createGame(game);
-		//serverFacade.addPlayerToGame(user1.getPlayerID(), game.getGameID(), PlayerColor.Black);
-		//serverFacade.addPlayerToGame(user2.getPlayerID(), game.getGameID(), PlayerColor.Black);
+		serverFacade.createGame(game, id1, PlayerColor.Black);
+		serverFacade.addPlayerToGame(id2, game.getGameID(), PlayerColor.Black);
 	}
 	
 	/*
 	 * user can join a game when he is not logged in
 	 */
 	@Test
-	public void canJoinAgamewhenNotLogin() throws AddUserException, BadCredentialsException, AlreadyLoggedInException
+	public void canJoinAgamewhenNotLogin() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException
 	{
 		TestGame game = new TestGame();
 		User user1 = new User("notLogIn","password");
@@ -530,12 +475,6 @@ public class ServerFacade_Test {
 		//serverFacade.createGame(game);
 		user1.joinGame(game.getGameID());
 	}
-	
-	/**
-	 * things to need to review to tomorrow again 
-	 * buy route
-	 * draw train card
-	 */
 	
 	/*
 	 * we could throw different exceptions if the game is null, or gameboard is null, or playermanager..
@@ -546,9 +485,7 @@ public class ServerFacade_Test {
 	public void testCreateGame() {
 		//serverFacade.createGame(game1);
 	}
-	/*
-	 * we need getters to get games info in the facade
-	 */
+
 
 	@Test
 	public void testAddPlayerToGame() {
@@ -558,13 +495,6 @@ public class ServerFacade_Test {
 		
 		assertFalse(serverFacade.canAddPlayerToGame(1,10,PlayerColor.Red));//no game
 	}
-	/*
-	 * 	// no way to create a game currently
-	 * I need a lot of functions to connect different objects together.
-	 * For example, may you show me how to add a game to games? 
-	 * or add players to a game?
-
-	 */
 	
 	@Test
 	public void testStartGame() {
@@ -642,6 +572,9 @@ public class ServerFacade_Test {
 		} catch (PreConditionException e1) {
 			e1.printStackTrace();
 			fail("Something went wrong");
+		} catch (InvalidCredentialsException e1) {
+			e1.printStackTrace();
+			fail("Problems registering");
 		}
 	}
 
@@ -659,6 +592,7 @@ public class ServerFacade_Test {
 
 		serverFacade.canBuyRoute(1,1,ctoc1);*/
 	}
+	
 	//Player can use wilds as part of a route purchase
 	//are you handling this case?
 	public void testCanBuyRouteWithWrongResources()
@@ -697,10 +631,6 @@ public class ServerFacade_Test {
 		fail("Not yet implemented");
 	}
 	
-
-
-	
-	//I can not add a playmanager object to a game...!
 	@Test (expected=OutOfBoundsException.class)
 	public void testCanDrawTrainCardFailling() throws OutOfBoundsException, InternalServerException {
 		serverFacade.canDrawTrainCard(1, 1, 10);
@@ -749,7 +679,7 @@ public class ServerFacade_Test {
 
 	@Test
 	public void testDrawTrainCard() throws PreConditionException, OutOfBoundsException, InternalServerException {
-		//same problem, I can not manipulate playermanager to check if it indeed update cards.
+		
 		serverFacade.drawTrainCard(1,1,3);
 	}
 
@@ -865,17 +795,111 @@ public class ServerFacade_Test {
 		catch (OutOfBoundsException e) {
 			e.printStackTrace();
 			fail("Something went wrong");
+		} catch (InvalidCredentialsException e) {
+			e.printStackTrace();
+			fail("Problems registering");
 		}
 	}
 
 	@Test
-	public void testCanSelectDestinations() {
-		fail("Not yet implemented");
-	}
-
-	@Test
 	public void testSelectDestinations() {
-		fail("Not yet implemented");
+		
+		try
+		{
+			ServerFacade facade = ServerFacade.getServerFacade();
+			int user1 = facade.register("test1", "test1");
+			int user2 = facade.register("test2", "test2");
+			int[] destinations = new int[]{0,1,2};
+			
+			TestGame game1 = new TestGame();
+			int game1ID = game1.getGameID();
+			
+			facade.createGame(game1, user1, PlayerColor.Blue);
+			
+			facade.addPlayerToGame(user2, game1ID, PlayerColor.Red);
+			
+			facade.startGame(user1, game1ID);
+			
+			if (facade.canGetDestinations(user1, game1ID)) {
+				facade.getDestinations(user1, game1ID);
+			}
+			else
+			{
+				fail("Something went wrong with getDestinations");
+			}
+			
+			//Not the correct turn
+			assertFalse(facade.canSelectDestinations(user2, game1ID, destinations));
+			
+			//Not logged in
+			facade.logout(user1);
+			assertFalse(facade.canSelectDestinations(user1, game1ID, destinations));
+			facade.login("test1", "test1");
+			
+			//invalid inputs
+			assertFalse(facade.canSelectDestinations(-1, game1ID, destinations));
+			assertFalse(facade.canSelectDestinations(user1, -1, destinations));
+			assertFalse(facade.canSelectDestinations(user1, game1ID, null));
+			
+			//valid usage
+			assertTrue(facade.canSelectDestinations(user1, game1ID, destinations));
+			facade.selectDestinations(user1, game1ID, destinations);
+			//test results
+			
+			//selecting destinations updates player's score
+				//update a player with routes such that they have a destination
+				//update destination deck such that that is the only destination available
+				//update so it is that player's turn
+				//getDestinations
+				//selectDestination
+				//verify score increased by desired amount
+			
+			//selecting destinations ends the game
+				//update current turn and finalTurnIndex such that this is final turn
+				//getDestinations
+				//verify game ended
+			
+			//selecting destinations when already drawn train card
+				//update current turn
+			TestPlayerManager manager = (TestPlayerManager)game1.getPlayerManager();
+			manager.setCurrentTurnIndex(1);
+			if (facade.canDrawTrainCard(user2, game1ID, 0))
+			{
+				facade.drawTrainCard(user2, game1ID, 0);
+				assertFalse(facade.canSelectDestinations(user2, game1ID, destinations));
+			}
+			else
+			{
+				fail("Could not draw train card");
+			}
+			
+			/*
+			 * 1,5,7,8,9
+			 */
+		}
+		catch(AddUserException e)
+		{
+			e.printStackTrace();
+			fail("Something went wrong.");
+		} catch (InternalServerException e) {
+			e.printStackTrace();
+			fail("Something went wrong");
+		} catch (PreConditionException e) {
+			e.printStackTrace();
+			fail("Something went wrong.");
+		} catch (OutOfBoundsException e) {
+			e.printStackTrace();
+			fail("Something went wrong with destination indices");
+		} catch (BadCredentialsException e) {
+			e.printStackTrace();
+			fail("Something went wrong with logging out");
+		} catch (AlreadyLoggedInException e) {
+			e.printStackTrace();
+			fail("Problem logging in");
+		} catch (InvalidCredentialsException e) {
+			e.printStackTrace();
+			fail("Problems registering");
+		}
 	}
 
 
