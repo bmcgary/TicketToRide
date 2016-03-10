@@ -190,7 +190,55 @@ public class ServerFacade_Test {
 		//ensure each test starts fresh
 		ServerFacade.firebomb();
 	}
+	/*
+	 * can buy a route
+	 * it seems we can not buy a route. I am missing something here.
+	 * 
+	 */
+	@Test
+	public void buyRoute() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, PreConditionException, InternalServerException, OutOfBoundsException
+	{
+		User user = new User("canBuy","password");
+		User user2 = new User("canBuy2","password");
+		User user3 = new User("canBuy3","password");
+		User user4 = new User("canBuy4","password");
 
+	//	serverFacade.addNewUser(user);
+	//	serverFacade.addNewUser(user2);
+	//	serverFacade.addNewUser(user3);
+	//	serverFacade.addNewUser(user4);
+		serverFacade.login("canBuy","password");
+		serverFacade.login("canBuy2","password");
+		serverFacade.login("canBuy3","password");
+		serverFacade.login("canBuy4","password");
+
+
+		City city1 = new City("LA");
+		City city2 = new City("SA");
+		CityToCityRoute ctoc1 = new CityToCityRoute(city1,city2,3,TrackColor.Orange);
+		//ctoc1.
+		Map<TrackColor,Integer> cards = new HashMap<TrackColor,Integer>();
+		cards.put(TrackColor.Orange, 8);
+		TestGameBoard testGB = new TestGameBoard();
+		testGB.getRoutes().add(ctoc1);
+		TestGame game = new TestGame();
+		game.setGameBoard(testGB);
+		serverFacade.createGame(game, user.getPlayerID(), PlayerColor.Black);
+		serverFacade.addPlayerToGame(user2.getPlayerID(), game.getGameID(),PlayerColor.Blue);
+		serverFacade.addPlayerToGame(user3.getPlayerID(), game.getGameID(),PlayerColor.Green);
+		serverFacade.addPlayerToGame(user4.getPlayerID(), game.getGameID(),PlayerColor.Yellow);
+		serverFacade.startGame(user.getPlayerID(), game.getGameID());
+	//	serverFacade.
+		serverFacade.buyRoute(user.getPlayerID(), game.getGameID(), ctoc1, cards);
+		//no enough resources
+		
+		cards.put(TrackColor.Orange, 0);
+
+		
+		assertFalse(serverFacade.getAllGames().get(game.getGameID()).getPlayerManager().canBuyTrack(user.getPlayerID(), 2));
+		assertFalse(serverFacade.getAllGames().get(game.getGameID()).getPlayerManager().canBuyTrackWithCards(user.getPlayerID(), 2, TrackColor.Black, cards));
+	
+	}
 
 	@Test
 	public void testGetServerFacade() {
