@@ -18,4 +18,14 @@ public class GameInfo {
     private String gameName;
     @SerializedName("players")
     private PlayerInfo[] playerInfos;
+
+    public GameInfo(Game game) {
+        gameId = game.getGameID();
+        gameName = game.getName();
+        List<Player> players = game.getPlayerManager().getPlayers();
+        playerInfos = new PlayerInfo[players.size()];
+        for (int i = 0; i < players.size(); ++i) {
+            playerInfos[i] = new PlayerInfo(players.get(i), i);
+        }
+    }
 }

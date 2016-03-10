@@ -3,7 +3,7 @@ package server.command;
 import model.Game;
 import server.responses.GamesResponse;
 import server.responses.ResponseWrapper;
-import server.responses.dto.GameInfo;
+import server.dto.GameInfo;
 
 import java.util.Collections;
 import java.util.List;
