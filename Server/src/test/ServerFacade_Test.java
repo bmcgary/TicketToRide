@@ -346,7 +346,7 @@ public class ServerFacade_Test {
 	{
 		TestGame game = new TestGame();
 		User user1 = new User("user111","password");
-		//serverFacade.startGame(user1.playerID, game.getGameID());
+		serverFacade.startGame(user1.getPlayerID(), game.getGameID());
 	}
 	
 	/*
@@ -632,8 +632,12 @@ public class ServerFacade_Test {
 	}
 	
 	@Test (expected=OutOfBoundsException.class)
-	public void testCanDrawTrainCardFailling() throws OutOfBoundsException, InternalServerException {
-		serverFacade.canDrawTrainCard(1, 1, 10);
+	public void testCanDrawTrainCardFailling() throws OutOfBoundsException, InternalServerException, AddUserException, InvalidCredentialsException {
+		ServerFacade.firebomb();
+		ServerFacade sf = ServerFacade.getServerFacade();
+		int id1 = sf.register("test1", "test1");
+		sf.createGame(new Game(), id1, PlayerColor.Black);
+		sf.canDrawTrainCard(1, 1, 10);
 
 	}
 	
