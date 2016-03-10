@@ -1,7 +1,7 @@
 package server.responses;
 
 import com.google.gson.annotations.SerializedName;
-import server.responses.dto.GameInfo;
+import server.dto.GameInfo;
 
 /**
  *

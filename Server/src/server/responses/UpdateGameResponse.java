@@ -2,7 +2,7 @@ package server.responses;
 
 import com.google.gson.annotations.SerializedName;
 import model.Game;
-import server.responses.dto.GameInfo;
+import server.dto.GameInfo;
 
 /**
  *

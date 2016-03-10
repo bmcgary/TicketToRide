@@ -1,4 +1,4 @@
-package server.responses.dto;
+package server.dto;
 
 import com.google.gson.annotations.SerializedName;
 import model.Game;
