@@ -395,7 +395,7 @@ public class PlayerManager {
 		List<DestinationRoute> output = null;
 		for(Player p : players){
 			if(p.getPlayerID() == playerID){
-				output = Arrays.asList(p.getDestinationRoutesToConsider());
+				output = new ArrayList<DestinationRoute>(Arrays.asList(p.getDestinationRoutesToConsider()));
 				for(int i : destinationsSelected){
 					DestinationRoute dr = p.getDestinationRoutesToConsider()[i];
 					this.addDestinationRoute(playerID, dr);

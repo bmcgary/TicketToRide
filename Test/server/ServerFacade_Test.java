@@ -690,28 +690,19 @@ public class ServerFacade_Test {
 	@Test 
 	public void testCanDrawTrainCard() throws OutOfBoundsException, InternalServerException {
 		
-		
-		//before checking if a player can draw train card I need to manipulate the playermanager class to meet the following contraint
-		//playerManager.drewAlreadyCurrentTurn && gameBoard.getVisibleTrainCarCards()[cardLocation] == TrackColor.None
-		//but currently, i can not manipulate the playermanager object using existing code
+
 		
 		
 		
-		//Player can draw from the deck
 		serverFacade.canDrawTrainCard(1, 1, 1);
 		
-		//Player can draw one from the visible cards and one from the deck
 		assertTrue(serverFacade.canDrawTrainCard(1, 1, 5));
 		assertTrue(serverFacade.canDrawTrainCard(1, 1, 3));
 		
-		//Player can draw two from the visible cards
 		assertTrue(serverFacade.canDrawTrainCard(1, 1, 3));
 		assertTrue(serverFacade.canDrawTrainCard(1, 1, 2));
 		
-		//	//Player can only draw one wild from the visible cards
-		//Visible cards are reset if there are more than two wilds
-		
-		//how do you define wildcards?
+
 	}
 
 	@Test
