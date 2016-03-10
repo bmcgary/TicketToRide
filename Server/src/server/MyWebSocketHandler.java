@@ -1,8 +1,9 @@
 package server;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Iterator;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
@@ -14,6 +15,8 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import server.command.Command;
 import server.exception.CommandNotFoundException;
 import server.responses.Response;
+import server.command.LoginCommand;
+import server.command.RegisterCommand;
 import server.responses.ResponseWrapper;
 
 
@@ -21,7 +24,8 @@ import server.responses.ResponseWrapper;
 public class MyWebSocketHandler {
 
     static HashMap<Integer, Session> sessions = new HashMap<>();
-    Integer personal_id = -1;
+    static Integer id=0;
+    Integer personal_id=-1;
     Session personal_session;
 
     @OnWebSocketClose
@@ -43,35 +47,33 @@ public class MyWebSocketHandler {
 
     @OnWebSocketMessage
     public void onMessage(String message) {
-        // debugging
         System.out.println("Message: " + message);
-
-        Command command;
 		try {
-            command = CommandFactory.makeCommand(message);
-        } catch (CommandNotFoundException e) {
-            sendPrivateMessage(new ResponseWrapper(Response.newServerErrorResponse()).getResponse());
-            return;
-        }
+            Command command = CommandFactory.makeCommand(message);
+            // TODO: to stop errors
+            ResponseWrapper responseWrapper = command.execute(personal_id).get(0);
 
-        List<ResponseWrapper> responses = command.execute(personal_id);
-
-        responses.forEach(responseWrapper -> {
-            // Check to see if this is a private response
-            if (responseWrapper.isPrivate())
-                sendPrivateMessage(responseWrapper.getResponse());
-            // Check to see if this is a global message
-            else if (responseWrapper.isPublic())
-                sendPublicMessage(responseWrapper.getResponse());
-            else {
-                String commandName = responseWrapper.getCommandName();
-                if (commandName.equalsIgnoreCase("login") || commandName.equalsIgnoreCase("register")) {
+	        if(command instanceof LoginCommand || command instanceof RegisterCommand)
+	        {
+	        	if(responseWrapper.getTargetIds()!= null)	//make sure they successfully logged in/registered
+	        	{
                     personal_id = responseWrapper.getTargetIds().get(0); //there should only be one id in the idlist
-                    sessions.put(personal_id, personal_session);
-                }
-                sendMessage(responseWrapper);
-            }
-        });
+	        		sessions.put(personal_id, personal_session);
+	        	}
+	        	else
+	        	{
+	        		sendInvalidMessage(responseWrapper.getResponse());
+	        		return;
+	        	}
+	        }
+
+			sendMessage(responseWrapper.getTargetIds().iterator(), responseWrapper.getResponse());		//send back to server
+		}
+
+		catch (CommandNotFoundException e1) {
+			sendInvalidMessage(new ResponseWrapper(Response.newServerErrorResponse()).getResponse());
+		}
+
     }
 
     public void sendPublicMessage(String message) {
@@ -84,22 +86,45 @@ public class MyWebSocketHandler {
         });
     }
 
-    public void sendMessage(ResponseWrapper responseWrapper) {
-        responseWrapper.getTargetIds().forEach(targetId -> {
+    public void sendMessage(Iterator<Integer> targetIds, String message) {
+        targetIds.forEachRemaining(targetId -> {
             try {
-                sessions.get(targetId).getRemote().sendString(responseWrapper.getResponse());
+                sessions.get(targetId).getRemote().sendString(message);
             } catch (IOException e) {
-                System.err.println("Failed to send to user " + targetId);
+                System.err.println("Failed to send to user " + id);
             }
         });
     }
-    
-    public void sendPrivateMessage(String message)
+
+    public void sendMessages(ArrayList<ResponseWrapper> wrappers)
+    {
+    	//go through each response wrapper
+    	for(int i=0; i<wrappers.size(); i++)
+    	{
+
+    		Iterator<Integer> targetIds=wrappers.get(i).getTargetIds().iterator();
+    		String message=wrappers.get(i).getResponse();
+
+    		//send the message of this particular response wrapper to all of its targetIDs
+    		targetIds.forEachRemaining(targetId -> {
+    			try{
+    				sessions.get(targetId).getRemote().sendString(message);
+    			} catch(IOException e) {
+    				System.err.println("Failed to send to user " + id);
+    			}
+
+    		});
+
+    	}
+    }
+
+    public void sendInvalidMessage(String message)
     {
     	try {
 			personal_session.getRemote().sendString(message);
 		} catch (IOException e) {
-            System.err.println("Failed to send to unnumbered user");
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
     }
 }
