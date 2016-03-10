@@ -210,7 +210,7 @@ public class Game {
 
 	public boolean canPlayerGetDestinations(int playerID) {
 		//must be player's turn
-		if(!playerManager.isPlayersTurn(playerID)){
+		if(!playerManager.isPlayersTurn(playerID) || playerManager.drewAlreadyCurrentTurn){
 			return false;
 		}
 		//game board must have sufficient cards left

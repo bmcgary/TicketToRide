@@ -206,11 +206,11 @@ public class ServerFacade_Test {
 	{
 		try {
 			serverFacade.register("", "password");
-			fail("should have thrown exception");
+			fail("should have thrown exception blank username");
 		} catch (InvalidCredentialsException e) {}
 		try {
 			serverFacade.register("test1", "passdasdsad啦啦啦啦啦ada啦dasdasdasdasdaasdasd");
-			fail("should have thrown exception");
+			fail("should have thrown exception invalid characters");
 		} catch (InvalidCredentialsException e) {}
 	}
 	
@@ -745,8 +745,9 @@ public class ServerFacade_Test {
 			//call canGetDestinations on game when already called draw train car
 			if(facade.canDrawTrainCard(test1ID, game1ID, 0)) //try to ensure this test will happen
 			{
-				facade.drawTrainCard(test1ID, game1ID, 0);
+				facade.drawTrainCard(test1ID, game1ID, 5);
 				assertFalse(facade.canGetDestinations(test1ID, game1ID));
+				facade.drawTrainCard(test1ID, game1ID, 5);
 			}
 			else
 			{
@@ -754,12 +755,12 @@ public class ServerFacade_Test {
 			}
 
 			//get game in position where getDestinations returns true
-			if(facade.canGetDestinations(test1ID, game1ID))
+			if(facade.canGetDestinations(test2ID, game1ID))
 			{
-				facade.getDestinations(test1ID, game1ID);
+				facade.getDestinations(test2ID, game1ID);
 				//verify destination routes were added for user to consider
 				TestPlayerManager manager = (TestPlayerManager)game1.getPlayerManager();
-				Player player1 = manager.getPlayerByID(test1ID);
+				Player player1 = manager.getPlayerByID(test2ID);
 				assertTrue(player1.getDestinationRoutesToConsider().length > 0);
 			}
 			else
