@@ -1,0 +1,105 @@
+<!-- cant decide if i want an image at the top<nav class="navbar navbar-inverse">
+	<div class="container-fluid">
+		<div class="navbar-header">
+      <img src="../images/tickettoRideBanner.jpg" class ="gameLobbyBannerPicture"alt="" />
+		</div>
+	</div>
+</nav>
+
+<div >
+  <h1>Ticket To Ride Game Lobby</h1>
+</div>
+or just a header or a bar -->
+<!--NAVBAR -->
+<nav class="navbar navbar-inverse">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="#">Ticket To Ride Game Lobby</a>
+		</div>
+	</div>
+</nav>
+<!-- END NAVBAR-->
+<!--Create newGame BUTTON AND MODAL -->
+<div>
+	<button type="button" name="button" class="button" ng-click="toggleCreateNewGameModal()">Create New Game</button>
+	<modal-dialog show='modalShown' width='750px' height='60%'>
+		<div class="box-header">
+			<h2>Create New Game</h2>
+		</div>
+			<label for="username">New Game Name</label>
+			<br/>
+			<input type="text" class="form-control" ng-model="newGameName" required=""/>
+			<br/>
+			<label>Click color to join:</label>
+			<button type="submit" ng-click="createNewGame('green',newGameName)"class="button buttonGreen">Green</button>
+			<button type="submit" ng-click="createNewGame('blue',newGameName)"class="button buttonBlue">Blue</button>
+			<button type="submit" ng-click="createNewGame('red',newGameName)"class="button buttonRed">Red</button>
+			<button type="submit" ng-click="createNewGame('gray',newGameName)"class="button buttonGray">Gray</button>
+			<button type="submit" ng-click="createNewGame('black',newGameName)"class="button buttonBlack">Black</button></br>
+			<!-- end of list of buttons-->
+    		<br/>
+	</modal-dialog>
+</div>
+<!--Create newGame BUTTON AND MODAL -->
+<div class="container .col-md-12">
+	<!--AVAILABLE GAMES BOX -->
+	<div class="lobby-box animated fadeInUp col-md-6">
+		<div class="box-header">
+			<h2>Available Games</h2>
+		</div>
+		<div class="row" ng-repeat-start="game in availableGames" ng-click="showDetailAvailableGames(game)" ng-class-odd="'alt'">
+			<label class="col-xs-3 cap">Game Name:{{game.id}}</label>
+			<label class="col-xs-2 strong">players in Game:{{game.players.length}}</label>
+			<div class="col-xs-2 text-right">
+				<a href="">
+					<i ng-hide="activeAvailableGames==game.id" class="fa fa-plus"></i>
+      		<i ng-show="activeAvailableGames==game.id" class="fa fa-minus"></i>
+				</a>
+			</div>
+		</div>
+		<div class="row" ng-repeat-end="" ng-show="activeAvailableGames==game.id" ng-class-odd="'alt'">
+			<div class="col-md-3 col-xs-6 small">
+				<div>
+					<label>Players: </label>
+					<span ng-repeat="players in game.players">{{players}}</span>
+				</div>
+				<div>
+					<label>Colors: </label>
+					<span ng-repeat="color in game.colorAvailable">
+          	<button type="button" name="button" class="button" ng-click="joinGame(game,color)">{{color}}</button>
+          </span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--END AVAILABLE GAMES BOX -->
+	<!--YOUR GAMES BOX -->
+	<div class="lobby-box animated fadeInUp col-md-6">
+		<div class="box-header">
+			<h2>Your Games</h2>
+		</div>
+		<div class="row" ng-repeat-start="game in myGames" ng-click="showDetailMyGames(game)" ng-class-odd="'alt'">
+			<label class="col-xs-3 cap">Game Name:{{game.id}}</label>
+			<label class="col-xs-2 strong">players in Game:{{game.players.length}}</label>
+			<div class="col-xs-2 text-right">
+				<a href="">
+					<i ng-hide="activeMyGames==game.id" class="fa fa-plus"></i>
+        	<i ng-show="activeMyGames==game.id" class="fa fa-minus"></i>
+				</a>
+			</div>
+		</div>
+		<div class="row" ng-repeat-end="" ng-show="activeMyGames==game.id" ng-class-odd="'alt'">
+			<div class="col-md-3 col-xs-6 small">
+				<div>
+					<label>Players: </label>
+					<span ng-repeat="players in game.players">{{players}}</span>
+				</div>
+				<div>
+					<label>Your Color:{{game.yourColor}} </label>
+					<button type="button" name="button" class="button" ng-click="reJoinGame(game)">Rejoin Game</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--END YOUR GAMES BOX -->
+</div>

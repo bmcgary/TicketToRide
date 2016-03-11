@@ -31,6 +31,20 @@ public class BuyRouteCommand extends Command {
 	private String trainColor;
 	@SerializedName("numberOfWilds")
 	private int numberOfWilds;
+
+	@Override
+	public ResponseWrapper execute(int userID) {
+
+		//get the route that the player is trying to buy
+		CityToCityRoute route=getRoute();
+
+		//create the map containing the cards and how many wilds the player wants to use
+		Map<TrackColor, Integer> cards=new HashMap<TrackColor, Integer>();
+		Integer number_of_cards = route.getNumTrains()-numberOfWilds;
+		TrackColor trackcolor=TrackColor.valueOf(trainColor);
+		cards.put(trackcolor, number_of_cards);
+
+		try {
 	
     @Override
     public ResponseWrapper execute(int userID) {
@@ -51,29 +65,29 @@ public class BuyRouteCommand extends Command {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	
-        return new ResponseWrapper(userID, Response.newServerErrorResponse(), commandName);
-    }
-    
-    private CityToCityRoute getRoute()
-    {
-    	List<Game> games=serverFacade.getAllGames();
-    	Game game=null;
-    	
-    	for(int i=0; i<games.size(); i++)
-    	{
-    		if(games.get(i).getGameID()==gameID)
-    		{
-    			game=games.get(i);
-    			break;
-    		}
-    	}
-    	
-    	GameBoard board=game.getGameBoard();
-    	List<CityToCityRoute> routes=board.getRoutes();
-    	CityToCityRoute route=routes.get(routeIndex);
-    	
-    	return route;
-    		
-    }
+
+		return new ResponseWrapper(userID, Response.newServerErrorResponse(), commandName);
+	}
+
+	private CityToCityRoute getRoute()
+	{
+		List<Game> games=serverFacade.getAllGames();
+		Game game=null;
+
+		for(int i=0; i<games.size(); i++)
+		{
+			if(games.get(i).getGameID()==gameID)
+			{
+				game=games.get(i);
+				break;
+			}
+		}
+
+		GameBoard board=game.getGameBoard();
+		List<CityToCityRoute> routes=board.getRoutes();
+		CityToCityRoute route=routes.get(routeIndex);
+
+		return route;
+
+	}
 }
