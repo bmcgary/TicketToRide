@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('ticketToRide', ['ui.router', 'ngWebSocket','shoppinpal.mobile-menu','ui.navbar','ui.bootstrap'])
+        .module('ticketToRide', ['ui.router', 'ngWebSocket','shoppinpal.mobile-menu','ui.navbar','ui.bootstrap','smart-table'])
         .run( function ($rootScope, $state) {
 	        $rootScope.$on('$stateChangeStart', function (event, next, current) {
 	            //TODO: I am not sure what needs to be done in here
@@ -28,6 +28,11 @@
 	            	templateUrl: 'templates/forgot.html',
 	            	controller: "forgotController"
 	            })
+              .state('gameLobby', {
+	            	url: '/gameLobby',
+	            	templateUrl: 'templates/gameLobby.html',
+	            	controller: "gameLobbyController"
+	            })
 				.state('mainGame', {
 					url:'/game',
 					views:{
@@ -46,9 +51,13 @@
 							templateUrl:'templates/mainGameCanvas.html',
 							controller:'mainGameCanvasCtrl'
 						},
-						'tabs@mainGame':{
-							templateUrl:'templates/mainGameTabs.html',
-							controller:'mainGameTabsCtrl'
+						'rightTabs@mainGame':{
+							templateUrl:'templates/mainGameRightTabs.html',
+							controller:'mainGameRightTabsCtrl'
+						},
+						'bottomTabs@mainGame':{
+							templateUrl:'templates/mainGameBottomTabs.html',
+							controller:'mainGameBottomTabsCtrl'
 						}
 					}
 				})
@@ -80,4 +89,3 @@
 ;
     	});
 })();
-

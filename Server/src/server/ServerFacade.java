@@ -169,13 +169,6 @@ public class ServerFacade {
 				game.addHistoryMessage("Player " + playerID + " added to game.");
 			}
 		}
-		
-		//update User's current games
-		for(User user : users){
-			if(user.getPlayerID() == playerID){
-				user.joinGame(gameID);
-			}
-		}
 	}
 	
 	/**

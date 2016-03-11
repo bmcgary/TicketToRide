@@ -1,0 +1,44 @@
+  <uib-tabset active="activeJustified" justified="true">
+    <uib-tab index="0" heading="Train Cards">
+	train cards go here
+    </uib-tab>
+    <uib-tab index="1" heading="Destination Cards">
+
+
+	<table st-table="destinations" class="table table-striped" >
+		<thead>
+		<tr>
+			<th >City</th>
+			<th >City</th>
+			<th >Completed</th>
+			<th >Points</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr ng-repeat="dest in destinations" st-safe-src="destinations">
+			<td>{{ dest.cityName1 }}</td>
+			<td>{{ dest.cityName2 }}</td>
+			<td><i ng-class="{'fa fa-check': (dest.isComplete == true), 'fa fa-times': (dest.isComplete != true) }"
+				ng-style="{ color: dest.isComplete == true ? 'green' : 'red' }"></i></td>
+			<td>{{ dest.points }}</td>
+		</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="5" class="text-center">
+					<div st-pagination="" st-items-by-page="1" st-displayed-pages="7"></div>
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+
+    </uib-tab>
+ <!--   <uib-tab index="2" heading="Long Justified" class="tabHeading">
+	Long Labeled Justified content
+    </uib-tab>-->
+  </uib-tabset>
+
+
+<!--
+I am the tabbed portion of the main game
+<button ng-click="display()">CLICK ME!</button>-->

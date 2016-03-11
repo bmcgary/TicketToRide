@@ -11,7 +11,7 @@ app.factory('ModelFacade', function ($rootScope, Game) {
 	};
 
     var broadcast = function (gameId, command) {
-        if(gameId == gameInView) {
+        if(gameId == gameInView) { //TODO Does this mean only the game being played will be updated? not any other game thats going on behind the scenes?
             $rootScope.$broadcast('model:' + command, getModel());
         }
     };
