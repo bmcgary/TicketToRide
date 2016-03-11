@@ -31,7 +31,6 @@ public class BuyRouteCommand extends Command {
 	private String trainColor;
 	@SerializedName("numberOfWilds")
 	private int numberOfWilds;
-<<<<<<< HEAD
 
 	@Override
 	public ResponseWrapper execute(int userID) {
@@ -46,7 +45,6 @@ public class BuyRouteCommand extends Command {
 		cards.put(trackcolor, number_of_cards);
 
 		try {
-=======
 	
     @Override
     public ResponseWrapper execute(int userID) {
@@ -61,7 +59,6 @@ public class BuyRouteCommand extends Command {
     	cards.put(trackcolor, number_of_cards);
     	
     	try {
->>>>>>> e748a1d0e2b1a08a7a288869b132d342ede88b98
 			serverFacade.buyRoute(userID, gameID, route, cards);
 		} catch (PreConditionException | InternalServerException
 				| OutOfBoundsException e) {
