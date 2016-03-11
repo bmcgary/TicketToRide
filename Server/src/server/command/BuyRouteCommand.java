@@ -31,6 +31,7 @@ public class BuyRouteCommand extends Command {
 	private String trainColor;
 	@SerializedName("numberOfWilds")
 	private int numberOfWilds;
+<<<<<<< HEAD
 
 	@Override
 	public ResponseWrapper execute(int userID) {
@@ -45,6 +46,22 @@ public class BuyRouteCommand extends Command {
 		cards.put(trackcolor, number_of_cards);
 
 		try {
+=======
+	
+    @Override
+    public ResponseWrapper execute(int userID) {
+
+    	//get the route that the player is trying to buy
+    	CityToCityRoute route=getRoute();
+    	
+    	//create the map containing the cards and how many wilds the player wants to use
+    	Map<TrackColor, Integer> cards=new HashMap<TrackColor, Integer>();
+    	Integer number_of_cards = route.getNumTrains()-numberOfWilds;
+    	TrackColor trackcolor=TrackColor.valueOf(trainColor);
+    	cards.put(trackcolor, number_of_cards);
+    	
+    	try {
+>>>>>>> e748a1d0e2b1a08a7a288869b132d342ede88b98
 			serverFacade.buyRoute(userID, gameID, route, cards);
 		} catch (PreConditionException | InternalServerException
 				| OutOfBoundsException e) {

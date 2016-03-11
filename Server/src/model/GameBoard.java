@@ -145,6 +145,9 @@ public class GameBoard {
 	 * @param routes the routes to be added back to the deck
 	 */
 	public void returnDestinationRoutes(List<DestinationRoute> routes){
+		if(routes == null){
+			return;
+		}
 		for(DestinationRoute route : routes){
 			destinationRoutes.add(route);
 		}

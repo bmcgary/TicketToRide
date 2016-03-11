@@ -110,11 +110,6 @@ public class Game {
 			return false;
 		}
 		
-		//player must be able to buy tracks in general
-		if(!playerManager.canBuyTrack(playerID, route.getNumTrains())){
-			return false;
-		}
-		
 		//player must have the appropriate resources
 		if(playerManager.canBuyTrackWithCards(playerID, route.getNumTrains(), route.getTrackColor(), cards)){
 			return true;
@@ -124,29 +119,24 @@ public class Game {
 
 	public void buyRoute(int playerID, CityToCityRoute route, Map<TrackColor, Integer> cards) throws PreConditionException, OutOfBoundsException {
 		//remove resources from player
-		if(playerManager.canBuyTrackWithCards(playerID, route.getNumTrains(), route.getTrackColor(), cards)){
-			playerManager.buyTrack(playerID, route.getNumTrains(), route.getTrackColor(), cards);
-			this.addHistoryMessage("Player + " + playerID + " bought route " + route.toString());
-			
-			//assigns the route to the player
-			gameBoard.claimRoute(playerID, route);
-			
-			//return the cards to the gameBoard discarded deck
-			List<TrackColor> toDiscard = new ArrayList<TrackColor>();
-			for(TrackColor tc : cards.keySet()){
-				for(int j = 0; j < cards.get(tc); ++j){
-					toDiscard.add(tc);
-				}
-			}
-			gameBoard.discardTrainCards(toDiscard);
-			try {
-				playerManager.advanceTurn();
-			} catch (GameOverException e) {
-				this.isGameOver = true;
+		playerManager.buyTrack(playerID, route.getNumTrains(), route.getTrackColor(), cards);
+		this.addHistoryMessage("Player + " + playerID + " bought route " + route.toString());
+		
+		//assigns the route to the player
+		gameBoard.claimRoute(playerID, route);
+		
+		//return the cards to the gameBoard discarded deck
+		List<TrackColor> toDiscard = new ArrayList<TrackColor>();
+		for(TrackColor tc : cards.keySet()){
+			for(int j = 0; j < cards.get(tc); ++j){
+				toDiscard.add(tc);
 			}
 		}
-		else{
-			throw new PreConditionException("Player " + playerID + " cannot buy the route");
+		gameBoard.discardTrainCards(toDiscard);
+		try {
+			playerManager.advanceTurn();
+		} catch (GameOverException e) {
+			this.isGameOver = true;
 		}
 		
 
@@ -160,6 +150,11 @@ public class Game {
 		
 		//must be current player
 		if(!playerManager.isPlayersTurn(playerID)){
+			return false;
+		}
+		
+		//player cannot have destination cards under consideration
+		if(playerManager.getPlayer(playerID).getDestinationRoutesToConsider()[0]!=null){
 			return false;
 		}
 		
@@ -210,9 +205,15 @@ public class Game {
 
 	public boolean canPlayerGetDestinations(int playerID) {
 		//must be player's turn
-		if(!playerManager.isPlayersTurn(playerID)){
+		if(!playerManager.isPlayersTurn(playerID) || playerManager.drewAlreadyCurrentTurn){
 			return false;
 		}
+		
+		//player cannot already have cards under consideration
+		if(playerManager.getPlayer(playerID).getDestinationRoutesToConsider()[0] != null){
+			return false;
+		}
+		
 		//game board must have sufficient cards left
 		return gameBoard.canDrawDestinationRoute();
 	}

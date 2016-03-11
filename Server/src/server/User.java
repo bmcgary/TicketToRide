@@ -27,6 +27,11 @@ public class User {
 					throw new InvalidCredentialsException("Username contains invalid characters");
 				}
 			}
+			for(char c : password.toCharArray()){
+				if(!Character.isLetterOrDigit(c)){
+					throw new InvalidCredentialsException("Username contains invalid characters");
+				}
+			}
 		}
 		playerID = nextID++;
 		this.username = username;
