@@ -1,6 +1,6 @@
 var app = angular.module('ticketToRide');
 
-app.controller('mainGameTabsCtrl', function ($scope, ClientAPI) {
+app.controller('mainGameRightTabsCtrl', function ($scope, ClientAPI) {
 
 	$scope.display = function()
 	{

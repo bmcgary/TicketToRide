@@ -1,6 +1,6 @@
 var app = angular.module('ticketToRide');
 
-app.controller('gameScaffoldingCtrl', function ($scope, ClientAPI, $spMenu) {
+app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $spMenu) {
 	$scope.showMenu = false;
     $scope.toggleMenu = function(){
         $scope.showMenu = !$scope.showMenu;
@@ -11,6 +11,29 @@ app.controller('gameScaffoldingCtrl', function ($scope, ClientAPI, $spMenu) {
 	{
 		console.log("Change game to this game Id: " + game);
 	}
+
+	/*$rootScope.on('model:SwitchGame',function(event, params)
+	{
+
+	});*/
+
+$scope.destinations = [
+	{cityName1:'CITY 1',cityName2: 'CITY 2',isComplete: true,points:10},
+	{cityName1:'CITY 3',cityName2: 'CITY 4',isComplete: false,points:10},
+{cityName1:'CITY 5',cityName2: 'CITY 6',isComplete: true,points:10},
+{cityName1:'CITY 7',cityName2: 'CITY 8',isComplete: true,points:10},
+{cityName1:'CITY 9',cityName2: 'CITY 10',isComplete: true,points:10},
+{cityName1:'CITY 11',cityName2: 'CITY 12',isComplete: true,points:10},
+{cityName1:'CITY 13',cityName2: 'CITY 14',isComplete: true,points:10},
+{cityName1:'CITY 15',cityName2: 'CITY 16',isComplete: true,points:10},
+{cityName1:'CITY 17',cityName2: 'CITY 18',isComplete: true,points:10},
+{cityName1:'CITY 19',cityName2: 'CITY 20',isComplete: true,points:10},
+{cityName1:'CITY 21',cityName2: 'CITY 22',isComplete: true,points:10},
+{cityName1:'CITY 23',cityName2: 'CITY 24',isComplete: true,points:10},
+{cityName1:'CITY 25',cityName2: 'CITY 26',isComplete: true,points:10},
+{cityName1:'CITY 27',cityName2: 'CITY 28',isComplete: true,points:10},
+{cityName1:'CITY 29',cityName2: 'CITY 30',isComplete: true,points:10},
+{cityName1:'CITY 31',cityName2: 'CITY 32',isComplete: true,points:10}];
 
 $scope.games = [
 
@@ -34,28 +57,5 @@ $scope.games = [
     link: "#/game",
 	gameId: 4,
 	action:$scope.changeGame
-  }/*{
-    name: "States",
-    link: "#",
-    subtree: [{
-      name: "state 1",
-      link: "state1",
-      subtree: [{name: "state 1",
-      link: "state1"}]
-    }, {
-      name: "state 2",
-      link: "state2"
-    }]
-  }, {
-    name: "No states",
-    link: "#/game",
-    subtree: [{
-      name: "no state connected",
-      link: "#"
-    }]
-  }, {
-    name: "divider",
-    link: "#/game"
-
-  },*/ ];
+  }];
 });
