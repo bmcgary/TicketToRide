@@ -28,6 +28,11 @@
 	            	templateUrl: 'templates/forgot.html',
 	            	controller: "forgotController"
 	            })
+              .state('gameLobby', {
+	            	url: '/gameLobby',
+	            	templateUrl: 'templates/gameLobby.html',
+	            	controller: "gameLobbyController"
+	            })
 				.state('mainGame', {
 					url:'/game',
 					views:{
@@ -80,4 +85,3 @@
 ;
     	});
 })();
-
