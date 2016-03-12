@@ -194,7 +194,7 @@ public class ServerFacade_Test {
 	//VALID
 	@Test
 	public void testGetServerFacade() {
-		assertNotEquals(serverFacade.getServerFacade(),null);
+		assertNotEquals(ServerFacade.getServerFacade(),null);
 	}
 
 	/* error:
@@ -399,26 +399,48 @@ public class ServerFacade_Test {
 		serverFacade.logout(19999);
 	}
 	
-	/*
-	 * create game // how do we identify a game? by name, ID, or something else
-	 * It seems we can create a game with empty input
-	 * I personally think that currently the serverfacade is the one creating the game not the user.
-	 * is that a problem??
-	 */
+	
+	
 	@Test
-	public void createGame()
+	public void testCreateGame() throws AddUserException, InternalServerException, InvalidCredentialsException, BadCredentialsException, AlreadyLoggedInException
 	{
+		int userID = serverFacade.register("test1", "test1");
 		TestGame game = new TestGame();
-		//User user = new User("testUser","password");
-		//user.
-		//serverFacade.createGame(game);
+		
+		try{
+		serverFacade.createGame(game, userID, null);
+		fail("should have thrown exception, null color");
+		}
+		catch (InternalServerException e){}
+		
+		try{
+		serverFacade.createGame(null, userID, PlayerColor.Black);
+		fail("should have thrown exception, null game");
+		} catch (InternalServerException e) {}
+		
+		try{
+		serverFacade.createGame(game, -1, PlayerColor.Blue);
+		fail("should have thrown exception, nonexistant player");
+		} catch (InternalServerException e) {}
+		
+		serverFacade.logout(userID);
+		try{
+		serverFacade.createGame(game, userID, PlayerColor.Blue);
+		fail("should have thrown exception, not logged in");
+		} catch (InternalServerException e) {}
+		serverFacade.login("test1", "test1");
+		
+		//success case
+		serverFacade.createGame(game, userID, PlayerColor.Blue);
+		//verify created correctly and user is in first index
+		
+
 	}
 
 
 	/*
-	 * INVALID TEST CASE
+	 * INVALID
 	 */
-
 	@Test
 	public void addPlayer() throws InvalidCredentialsException
 	{
@@ -427,8 +449,9 @@ public class ServerFacade_Test {
 		//System.out.println(user.loggedIn);
 
 	}
+	
 	/*
-	 * INVALID TEST CASE
+	 * INVALID
 	 */
 	@Test
 	public void addPlayerFullPlayers() throws InvalidCredentialsException
@@ -543,17 +566,6 @@ public class ServerFacade_Test {
 		assertTrue(serverFacade.canAddPlayerToGame(playerID, newGame.getGameID(), PlayerColor.Red));
 		
 	}
-
-	/*
-	 * we could throw different exceptions if the game is null, or gameboard is null, or playermanager..
-	 * I think the createGame function has logic problem.  Even if we have nothing inside the playermanager,
-	 * it still passes junit tests
-	 */
-	@Test
-	public void testCreateGame() {
-		//serverFacade.createGame(game1);
-	}
-
 
 	@Test
 	public void testAddPlayerToGame() {
