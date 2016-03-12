@@ -274,7 +274,6 @@ public class ServerFacade_Test {
 		TestGame game = new TestGame();
 		User user = new User("testUser","password");
 		//System.out.println(user.loggedIn);
-		user.joinGame(game.getGameID());
 
 	}
 	/*
@@ -290,12 +289,6 @@ public class ServerFacade_Test {
 		User user4 = new User("user4","password");
 		User user5 = new User("user5","password");
 		User user6 = new User("user6","password");
-		user1.joinGame(game.getGameID());
-		user2.joinGame(game.getGameID());
-		user3.joinGame(game.getGameID());
-		user4.joinGame(game.getGameID());
-		user5.joinGame(game.getGameID());
-		user6.joinGame(game.getGameID());
 	}
 
 	/*
@@ -424,16 +417,15 @@ public class ServerFacade_Test {
 	 * INVALID TEST CASE
 	 */
 	@Test
-	public void joinAlreadyJoinedGame() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException
+	public void joinAlreadyJoinedGame() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException, InternalServerException
 	{
-		TestGame game = new TestGame();
-		User user1 = new User("already","password");
-
-		//serverFacade.addNewUser(user1);
-		serverFacade.login("already","password");
-		user1.joinGame(game.getGameID());
-		user1.joinGame(game.getGameID());
-
+		int userID = serverFacade.register("joinAlready", "joinedGame");
+		Game newGame = new Game();
+		serverFacade.createGame(newGame, userID, PlayerColor.Black);
+		
+		//Try as the same color and as a new color
+		assertFalse(serverFacade.canAddPlayerToGame(userID, newGame.getGameID(), PlayerColor.Black));
+		assertFalse(serverFacade.canAddPlayerToGame(userID, newGame.getGameID(), PlayerColor.Red));
 	}
 
 	/*
@@ -455,13 +447,31 @@ public class ServerFacade_Test {
 	 * user can join a game when he is not logged in
 	 */
 	@Test
-	public void canJoinAgamewhenNotLogin() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException
+	public void canJoinAgamewhenNotLogin() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException, InternalServerException
 	{
-		TestGame game = new TestGame();
-		User user1 = new User("notLogIn","password");
-		//serverFacade.addNewUser(user1);
-		//serverFacade.createGame(game);
-		user1.joinGame(game.getGameID());
+		int playerID = serverFacade.register("canJoin", "notLoggedIn");
+		Game newGame = new Game();
+		int gameCreatorID = serverFacade.register("game", "creator");
+		serverFacade.createGame(newGame, gameCreatorID, PlayerColor.Blue);
+		
+		//log 1st player out, try to log in with a variety of tactics
+		serverFacade.logout(playerID);
+		assertFalse(serverFacade.canAddPlayerToGame(playerID, newGame.getGameID(), PlayerColor.Red));
+		assertFalse(serverFacade.canAddPlayerToGame(playerID, newGame.getGameID(), PlayerColor.Blue));
+		assertFalse(serverFacade.canAddPlayerToGame(playerID, newGame.getGameID()-1, PlayerColor.Red));
+		assertFalse(serverFacade.canAddPlayerToGame(playerID, 0, PlayerColor.Yellow));
+		
+		//log out gameCreator, try similar things
+		serverFacade.logout(gameCreatorID);
+		assertFalse(serverFacade.canAddPlayerToGame(gameCreatorID, newGame.getGameID(), PlayerColor.Red));
+		assertFalse(serverFacade.canAddPlayerToGame(gameCreatorID, newGame.getGameID(), PlayerColor.Blue));
+		assertFalse(serverFacade.canAddPlayerToGame(gameCreatorID, 0, PlayerColor.Red));
+		
+		//log 1st player back in, ensure he can join now
+		playerID = serverFacade.login("canJoin", "notLoggedIn");
+		assertFalse(serverFacade.canAddPlayerToGame(playerID, newGame.getGameID(), PlayerColor.Blue));
+		assertTrue(serverFacade.canAddPlayerToGame(playerID, newGame.getGameID(), PlayerColor.Red));
+		
 	}
 
 	/*

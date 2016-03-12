@@ -19,6 +19,7 @@ import model.GameBoard;
 import model.Player;
 import model.PlayerColor;
 import model.TrackColor;
+import server.dto.GameInfo;
 import server.exception.AddUserException;
 import server.exception.AlreadyLoggedInException;
 import server.exception.BadCredentialsException;
@@ -166,13 +167,6 @@ public class ServerFacade {
 			if(game.getGameID() == gameID){
 				game.getPlayerManager().addPlayer(playerID, playerColor);
 				game.addHistoryMessage("Player " + playerID + " added to game.");
-			}
-		}
-		
-		//update User's current games
-		for(User user : users){
-			if(user.getPlayerID() == playerID){
-				user.joinGame(gameID);
 			}
 		}
 	}
@@ -620,7 +614,17 @@ public class ServerFacade {
 	public List<User> getAllUsers(){
 		return Collections.unmodifiableList(users);
 	}
-	
+
+	/**
+	 * Get pertinent information from the specified game
+	 * @param gameID the id for the desired game
+	 * @return game information pertinent to the client
+     */
+	public GameInfo getGameInfo(int gameID) {
+		//TODO: implement this
+		return null;
+	}
+
 	public static void firebomb()
 	{
 		serverFacade = null;

@@ -10,7 +10,6 @@ public class User {
 	protected int playerID;
 	protected String username;
 	protected String password;
-	protected List<Integer> joinedGames;
 	protected boolean loggedIn;
 	
 
@@ -36,7 +35,6 @@ public class User {
 		playerID = nextID++;
 		this.username = username;
 		this.password = password;
-		joinedGames = new ArrayList<Integer>();
 		loggedIn = false;
 	}
 	
@@ -58,16 +56,6 @@ public class User {
 
 	public String getPassword() {
 		return password;
-	}
-
-	public void joinGame(int gameID){
-		joinedGames.add(gameID);
-	}
-	
-	public void leaveGame(int gameID){
-		if(joinedGames.contains(gameID)){
-			joinedGames.remove(gameID);
-		}
 	}
 
 }

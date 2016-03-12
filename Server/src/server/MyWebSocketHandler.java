@@ -50,13 +50,16 @@ public class MyWebSocketHandler {
         System.out.println("Message: " + message);
 		try {
             Command command = CommandFactory.makeCommand(message);
-            ResponseWrapper responseWrapper = command.execute(personal_id);
-	        
+            // TODO: to stop errors
+            ResponseWrapper responseWrapper = command.execute(personal_id).get(0);
+
 	        if(command instanceof LoginCommand || command instanceof RegisterCommand)
 	        {
-	        	if(responseWrapper.getTargetIds()!= null)	//make sure they successfully logged in/registered
+	        	//make sure they successfully logged in/registered
+	        	if(responseWrapper.getTargetIds()!= null)
 	        	{
-                    personal_id = responseWrapper.getTargetIds().get(0); //there should only be one id in the idlist
+	        		//there should only be one id in the idlist
+                    personal_id = responseWrapper.getTargetIds().get(0);
 	        		sessions.put(personal_id, personal_session);
 	        	}
 	        	else
@@ -65,8 +68,9 @@ public class MyWebSocketHandler {
 	        		return;
 	        	}
 	        }
-	        
-			sendMessage(responseWrapper.getTargetIds().iterator(), responseWrapper.getResponse());		//send back to server
+
+	        //a message will be sent back regardless of whether request was successful or not
+			sendMessage(responseWrapper.getTargetIds().iterator(), responseWrapper.getResponse());		//send back to client
 		}
 
 		catch (CommandNotFoundException e1) {
@@ -94,16 +98,16 @@ public class MyWebSocketHandler {
             }
         });
     }
-    
+
     public void sendMessages(ArrayList<ResponseWrapper> wrappers)
     {
     	//go through each response wrapper
     	for(int i=0; i<wrappers.size(); i++)
     	{
-    		
+
     		Iterator<Integer> targetIds=wrappers.get(i).getTargetIds().iterator();
     		String message=wrappers.get(i).getResponse();
-    		
+
     		//send the message of this particular response wrapper to all of its targetIDs
     		targetIds.forEachRemaining(targetId -> {
     			try{
@@ -111,13 +115,13 @@ public class MyWebSocketHandler {
     			} catch(IOException e) {
     				System.err.println("Failed to send to user " + id);
     			}
-    			
+
     		});
-    		
+
     	}
     }
-    
-    public void sendInvalidMessage(String message) 
+
+    public void sendInvalidMessage(String message)
     {
     	try {
 			personal_session.getRemote().sendString(message);
