@@ -627,7 +627,8 @@ public class ServerFacade {
 
 	public static void firebomb()
 	{
-		serverFacade = null;
+		serverFacade.games.clear();
+		serverFacade.users.clear();
 	}
 	
 	public static void main(String args[]) throws AddUserException, InternalServerException, PreConditionException, InvalidCredentialsException, OutOfBoundsException{
