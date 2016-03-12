@@ -1,6 +1,6 @@
 var app = angular.module('ticketToRide');
 
-app.factory('ModelFacade', function ($rootScope, Game, ModelContainer) {
+app.factory('ModelFacade', function ($rootScope, Game, ModelContainer, TrainCardColor, StaticTrackList) {
 	//store and access game models
 	var usersGames = {};
     var joinableGames = {};
@@ -78,23 +78,44 @@ app.factory('ModelFacade', function ($rootScope, Game, ModelContainer) {
     return {
     	
     	canBuyRoute: function (routeIndex, trainColor, numberOfWilds) {
-            //return getModel().canBuyRoute()
-    		return false;
+            var model = getModel();
+
+            var type = typeof(model.board.tracksPurchased[routeIndex]);
+            if(type != 'undefined' && type != 'null') { //route is owned
+                return false;
+            } else if(numberOfWilds > model.player.trainCards[TrainCardColor.WILD]) {
+                return false;
+            } else {
+                return StaticTrackList.routeIndex.trainsRequired <= (numberOfWilds + model.player.trainCards[trainColor]);
+            }
     	},
 
     	canDrawCard: function (cardLocation) {
-    		//return getModel().canDrawCard()
-    		return false;
+    		var model = getModel();
+
+            if(cardLocation == 0) {
+                return model.board.deckHasTrains;
+            } else if(model.board.mustDrawAgain) {
+                return TrainCardColor.WILD != model.board.cardsVisible[cardLocation - 1];
+            } else {
+                return  true;
+            }
     	},
 
-    	canDrawDestination: function () {
-    		//return getModel().canDrawDestination()
-    		return false;
+    	canDrawDestination: function (index) {
+    		var model = getModel();
+
+    		return model.board.deckHasDestinations && !model.board.mustDrawAgain;
     	},
 
     	canSelectDestination: function (destinationsSelected) {
-    		//return getModel().canSelectDestination()
-    		return false;
+    		var model = getModel();
+
+            if(model.board.isFirstRound) {
+                return destinationsSelected.length >= 2;
+            } else {
+                return destinationsSelected.length >= 1;
+            }
     	},
 
     	switchGame: function (gameId) {

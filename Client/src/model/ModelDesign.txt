@@ -1,5 +1,4 @@
 class ModelContainer {
-
     //Game data
     int getGameId();
     String getGameName(); 
@@ -15,8 +14,7 @@ class ModelContainer {
     boolean isLastRound();
     TrainCardColor getCardVisibleAt(index); 
     int[] getRoutesOwned(); //routeIds
-    int getOwnerOfTrack(routeId); //playerId
-    TrainCardColor getPlayerColorByPlayerId(playerId);
+    TrainCardColor getPlayerColorByRouteId(routeId);
 
     //Opponent Data
     int getOpponentsSize();

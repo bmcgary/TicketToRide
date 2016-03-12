@@ -8,6 +8,7 @@ app.factory('GameBoard', function (TrainCardColor, StaticTrackList) {
     GameBoard.prototype.isLastRound = false;
     GameBoard.prototype.tracksPurchased = {}; //Map <routeIndex, playerId>
     GameBoard.prototype.cardsVisible = []; //TrainCardColor[]
+    GameBoard.prototype.mustDrawAgain = false;
 
     //constructor 
     function GameBoard (gameDataJSON) {
