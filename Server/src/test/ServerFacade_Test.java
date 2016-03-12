@@ -203,7 +203,7 @@ public class ServerFacade_Test {
 	 */
 	//VALID
 	@Test
-	public void testInvalidRegisterInputs() throws AddUserException, InternalServerException
+	public void testRegisterInvalidInputs() throws AddUserException, InternalServerException
 	{
 		//too short username
 		try {
@@ -221,6 +221,12 @@ public class ServerFacade_Test {
 		try {
 			serverFacade.register("name", "abc");
 			fail("should have thrown exception too small password");
+		} catch (InvalidCredentialsException e) {}
+		
+		//null inputs
+		try {
+			serverFacade.register(null, null);
+			fail("should have thrown exception null inputs");
 		} catch (InvalidCredentialsException e) {}
 		
 		//this one should work
@@ -256,7 +262,7 @@ public class ServerFacade_Test {
 			e.printStackTrace();
 			fail("invalid credentials when registering");
 		}
-		//Note this assumes the User equals checks username and password and not userID
+		
 		List<User> users = sf.getAllUsers();
 		User user = null;
 		for (User u : users)
@@ -269,20 +275,130 @@ public class ServerFacade_Test {
 		assertFalse(user == null);
 		assertTrue(user.isLoggedIn());
 	}
+	
+	/*
+	 * test login successful
+	 */
+	//VALID
+	@Test
+	public void testLoginSuccessful() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException, InternalServerException
+	{
+		int userID = serverFacade.register("myname11", "mypassword");
+		serverFacade.logout(userID);
+		int userIDTest = serverFacade.login("myname11", "mypassword");
+		
+		assertEquals(userID,userIDTest);
+
+		List<User> users = serverFacade.getAllUsers();
+		User user = null;
+		for (User u : users)
+		{
+			if (u.getUsername().equals("myname11") && u.getPassword().equals("mypassword"))
+			{
+				user = u;
+			}
+		}
+		assertFalse(user == null);
+		assertTrue(user.isLoggedIn());
+	}
 
 	/*
-	 * we add a new user to the game identified by his PASSWORD????? and username
-	 * we are passing in the password as a parameter into the user object.. ?
-	 *
-	 *
+	 * test login - wrong user name/password
 	 */
-	@Test (expected=InvalidCredentialsException.class)
-	public void testAddNewUserWithExistingUserName() throws AddUserException, InvalidCredentialsException, InternalServerException {
-		User user  = new User("user","password");
-		User user1  = new User("user","password");
-		serverFacade.register(user.getUsername(), user.getPassword());
-		serverFacade.register(user1.getUsername(), user1.getPassword());
+	//VALID
+	@Test
+	public void testLoginWrongCredientials() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException
+	{
+		int id = 0;
+		try {
+			id = serverFacade.register("myname22","mypassword");
+		} catch (InternalServerException e) {
+			e.printStackTrace();
+			fail("Unable to register");
+		}
+		serverFacade.logout(id);
+
+		try
+		{
+			serverFacade.login("myname23", "mypassword");
+			fail("should have thrown exception");
+		}
+		catch(BadCredentialsException e){}
+		try
+		{
+			serverFacade.login("myname22", "mypassWord");
+			fail("should have thrown exception");
+		}
+		catch(BadCredentialsException e){}
+		try
+		{
+			serverFacade.login(null, null);
+			fail("should have thrown exception");
+		}
+		catch(BadCredentialsException e){}
+		
+		List<User> users = serverFacade.getAllUsers();
+		User user = null;
+		for (User u : users)
+		{
+			if (u.getUsername().equals("myname22") && u.getPassword().equals("mypassword"))
+			{
+				user = u;
+			}
+		}
+		assertFalse(user == null);
+		assertFalse(user.isLoggedIn());
 	}
+
+	/*
+	 * test login - already logged in
+	 */
+	//VALID
+	@Test(expected=AlreadyLoggedInException.class)
+	public void testLoginAlreadyLoggedIn() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException
+	{
+		//registering also logs in
+		try {
+			serverFacade.register("mynameL","mypassword");
+		} catch (InternalServerException e) {
+			e.printStackTrace();
+			fail("Unable to register");
+		}
+		serverFacade.login("mynameL", "mypassword");
+	}
+
+	/*
+	 * can logout
+	 */
+	//VALID
+	@Test
+	public void testLogout() throws BadCredentialsException, AddUserException, AlreadyLoggedInException, InvalidCredentialsException, InternalServerException
+	{
+		int userID = serverFacade.register("myname11", "mypassword");
+		serverFacade.logout(userID);
+		
+		List<User> users = serverFacade.getAllUsers();
+		User user = null;
+		for (User u : users)
+		{
+			if (u.getUsername().equals("myname11") && u.getPassword().equals("mypassword"))
+			{
+				user = u;
+			}
+		}
+		assertFalse(user == null);
+		assertFalse(user.isLoggedIn());
+	}
+
+	//failed to log out
+	//VALID
+	@Test(expected=BadCredentialsException.class)
+	public void testLogoutFailed() throws BadCredentialsException
+	{
+		serverFacade.logout(2);
+		serverFacade.logout(19999);
+	}
+	
 	/*
 	 * create game // how do we identify a game? by name, ID, or something else
 	 * It seems we can create a game with empty input
@@ -366,87 +482,6 @@ public class ServerFacade_Test {
 		User user1 = new User("user111","password");
 		serverFacade.startGame(user1.getPlayerID(), game.getGameID());
 	}
-
-	/*
-	 * test login successful
-	 */
-	@Test
-	public void loginSuccessful() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException, InternalServerException
-	{
-		int userID = serverFacade.register("myname11", "mypassword");
-		serverFacade.logout(userID);
-		serverFacade.login("myname11", "mypassword");
-
-
-	}
-
-	/*
-	 * test login - wrong user name/password
-	 * GOOD
-	 */
-	@Test
-	public void loginWrongCredientials() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException
-	{
-		int id = 0;
-		try {
-			id = serverFacade.register("myname22","mypassword");
-		} catch (InternalServerException e) {
-			e.printStackTrace();
-			fail("Unable to register");
-		}
-		serverFacade.logout(id);
-
-		try
-		{
-			serverFacade.login("myname23", "mypassword");
-			fail("should have thrown exception");
-		}
-		catch(BadCredentialsException e){}
-		try
-		{
-			serverFacade.login("myname22", "mypassWord");
-			fail("should have thrown exception");
-		}
-		catch(BadCredentialsException e){}
-	}
-
-	/*
-	 * test login - already logged in
-	 * GOOD
-	 */
-	@Test(expected=AlreadyLoggedInException.class)
-	public void loginAlreadyLoggedIn() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException
-	{
-		//registering also logs in
-		try {
-			serverFacade.register("mynameL","mypassword");
-		} catch (InternalServerException e) {
-			e.printStackTrace();
-			fail("Unable to register");
-		}
-		serverFacade.login("mynameL", "mypassword");
-	}
-
-	/*
-	 * can logout
-	 */
-	@Test
-	public void logout() throws BadCredentialsException, AddUserException, AlreadyLoggedInException, InvalidCredentialsException, InternalServerException
-	{
-		int userID = serverFacade.register("myname11", "mypassword");
-		serverFacade.logout(userID);
-	}
-
-	//failed to log out
-	@Test(expected=BadCredentialsException.class)
-	public void logoutFailed() throws BadCredentialsException
-	{
-
-		serverFacade.logout(2);
-		serverFacade.logout(19999);
-
-	}
-
 
 	/*
 	 * INVALID TEST CASE
@@ -665,7 +700,7 @@ public class ServerFacade_Test {
 	}
 
 	@Test (expected=OutOfBoundsException.class)
-	public void testCanDrawTrainCardFailling() throws OutOfBoundsException, InternalServerException, AddUserException, InvalidCredentialsException {
+	public void testCanDrawTrainCardFailing() throws OutOfBoundsException, InternalServerException, AddUserException, InvalidCredentialsException {
 		ServerFacade.firebomb();
 		ServerFacade sf = ServerFacade.getServerFacade();
 		int id1 = sf.register("test1", "test1");
