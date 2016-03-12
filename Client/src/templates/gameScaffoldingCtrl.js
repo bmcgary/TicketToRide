@@ -7,6 +7,8 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
 		$spMenu.toggle();
     }
 	*/
+
+	
 	$scope.currentTurn = 'yourTurn';
 		
 	$scope.toggleTurn = function()
@@ -26,6 +28,44 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
 	{
 
 	});*/
+//----------------------- Main menu data --------------------------------------
+$scope.thisPlayer = {
+	playerName:'player 4',
+	playerColor:'green',
+	points:6,
+	trainsLeft:7,
+	playerId:4
+};
+$scope.opponents = [{
+	playerName:'player 1',
+	playerColor:'blue',
+	points:10,
+	trainsLeft:15,
+	playerId:0
+},
+{
+	playerName:'player 2',
+	playerColor:'black',
+	points:1,
+	trainsLeft:1,
+	playerId:1
+},
+{
+	playerName:'player 3',
+	playerColor:'yellow',
+	points:5,
+	trainsLeft:5,
+	playerId:2
+},
+{
+	playerName:'player 4',
+	playerColor:'orange',
+	points:6,
+	trainsLeft:7,
+	playerId:3
+}];
+
+
 //----------------------- Right tabed section's model data --------------------
 $scope.cardsVisible = ['black','yellow', 'blue', 'green', 'wild'];
 
