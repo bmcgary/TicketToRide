@@ -7,26 +7,27 @@ app.factory('ModelFacade', function ($rootScope, Game, ModelContainer, TrainCard
 	var gameInView = -1;
 
 	var getModel = function () {
-		return new ModelContainer(usersGames[gameInView]);
+		return usersGames[gameInView];
 	};
 
     var broadcast = function (gameId, command) {
         if(gameId == gameInView) { //QUESTION: Does this mean only the game being played will be updated? not any other game thats going on behind the scenes?
             //RESPONSE: No, it means that the controllers will only be notified about changes in the game being played. 
-            $rootScope.$broadcast('model:' + command, getModel());
+            $rootScope.$broadcast('model:' + command, new ModelContainer(getModel());
         }
     };
 
+    //Lobby stuff//////////////
     $rootScope.$on('server:UpdateUserGames', function (event, parameters) {
         //do logic
 
-        broadcast(parameters.gameId, 'StartGame');
+        broadcast(parameters.gameId, 'UpdateUserGames');
     });
 
     $rootScope.$on('server:UpdateJoinableGames', function (event, parameters) {
         //do logic
 
-        broadcast(parameters.gameId, 'StartGame');
+        broadcast(parameters.gameId, 'UpdateJoinableGames');
     });
 
 	$rootScope.$on('server:StartGame', function (event, parameters) {
@@ -36,11 +37,12 @@ app.factory('ModelFacade', function ($rootScope, Game, ModelContainer, TrainCard
     });
 
     $rootScope.$on('server:LeaveGame', function (event, parameters) {
-        //games.Remove(parameters.gameId);
-
+        //future
+        delete usersGames[parameters.gameId];
         broadcast(parameters.gameId, 'LeaveGame');
     });
 
+    //In Game/////////////////////
     $rootScope.$on('server:SendChat', function (event, parameters) {
         //future
 
