@@ -1,13 +1,14 @@
 var app = angular.module('ticketToRide');
 
 app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $spMenu) {
-	$scope.showMenu = false;
+/*	$scope.showMenu = false;
     $scope.toggleMenu = function(){
         $scope.showMenu = !$scope.showMenu;
 		$spMenu.toggle();
     }
-	
+	*/
 	$scope.currentTurn = 'yourTurn';
+		
 	$scope.toggleTurn = function()
 	{
 		if($scope.currentTurn === 'yourTurn')
@@ -25,8 +26,10 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
 	{
 
 	});*/
+//----------------------- Right tabed section's model data --------------------
 $scope.cardsVisible = ['black','yellow', 'blue', 'green', 'wild'];
 
+//----------------------- Bottom tabed section's model data -------------------
 $scope.destinations = [
 	{cityName1:'CITY 1',cityName2: 'CITY 2',isComplete: true,points:10},
 	{cityName1:'CITY 3',cityName2: 'CITY 4',isComplete: false,points:10},
@@ -45,6 +48,20 @@ $scope.destinations = [
 	{cityName1:'CITY 29',cityName2: 'CITY 30',isComplete: true,points:10},
 	{cityName1:'CITY 31',cityName2: 'CITY 32',isComplete: true,points:10}];
 
+$scope.playersTrainCards = 
+{
+	'blue':0,
+	'black':1,
+	'green':2,
+	'yellow':3,
+	'orange':4,
+	'purple':5,
+	'red':6,
+	'white':7,
+	'wild':8
+}
+
+//------------------------------ Stuff in the nav bar -------------------------
 $scope.games = [
 
 	{
