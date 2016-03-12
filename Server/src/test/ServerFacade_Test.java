@@ -191,7 +191,7 @@ public class ServerFacade_Test {
 		ServerFacade.firebomb();
 	}
 
-
+	//VALID
 	@Test
 	public void testGetServerFacade() {
 		assertNotEquals(serverFacade.getServerFacade(),null);
@@ -201,38 +201,73 @@ public class ServerFacade_Test {
 	 * not handle if a user name is empty not handle is username is larger than 25 char.
 	 * I can even enter a chinese character..this is a creepy test case.
 	 */
+	//VALID
 	@Test
-	public void registered() throws AddUserException, InternalServerException
+	public void testInvalidRegisterInputs() throws AddUserException, InternalServerException
 	{
+		//too short username
 		try {
 			serverFacade.register("", "password");
 			fail("should have thrown exception blank username");
 		} catch (InvalidCredentialsException e) {}
+		
+		//invalid characters
 		try {
 			serverFacade.register("test1", "passdasdsad啦啦啦啦啦ada啦dasdasdasdasdaasdasd");
 			fail("should have thrown exception invalid characters");
 		} catch (InvalidCredentialsException e) {}
+		
+		//too short password
+		try {
+			serverFacade.register("name", "abc");
+			fail("should have thrown exception too small password");
+		} catch (InvalidCredentialsException e) {}
+		
+		//this one should work
+		try {
+			serverFacade.register("name", "password");
+		} catch (InvalidCredentialsException e) {
+			e.printStackTrace();
+			fail("threw exception on valid inputs");
+		}
+		
+		//user already exists
+		try {
+			serverFacade.register("name", "password2");
+			fail("should have thrown exception duplicate user");
+		} catch (InvalidCredentialsException e) {}
 	}
 
-	/*
-	 * successful case
-	 */
+	//VALID
 	@Test
-	public void registeredSuccess() throws AddUserException, InvalidCredentialsException
+	public void testRegisterSuccessCase() throws InvalidCredentialsException
 	{
-		User user = new User("name","pass");
-		//serverFacade.addNewUser(user);
-	}
-	/*
-	 * existing object
-	 */
-	@Test(expected = AddUserException.class)
-	public void registeredUserNameexistobject() throws AddUserException, InvalidCredentialsException
-	{
-		User user = new User("name","pass");
-		//serverFacade.addNewUser(user);
-		//serverFacade.addNewUser(user);
-
+		ServerFacade sf = ServerFacade.getServerFacade();
+		
+		try {
+			sf.register("name", "pass");
+		} catch (InternalServerException e) {
+			e.printStackTrace();
+			fail("something went wrong registering valid user");
+		} catch (AddUserException e) {
+			e.printStackTrace();
+			fail("Something went wrong registering valid user");
+		} catch (InvalidCredentialsException e) {
+			e.printStackTrace();
+			fail("invalid credentials when registering");
+		}
+		//Note this assumes the User equals checks username and password and not userID
+		List<User> users = sf.getAllUsers();
+		User user = null;
+		for (User u : users)
+		{
+			if (u.getUsername().equals("name") && u.getPassword().equals("pass"))
+			{
+				user = u;
+			}
+		}
+		assertFalse(user == null);
+		assertTrue(user.isLoggedIn());
 	}
 
 	/*
