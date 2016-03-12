@@ -7,7 +7,7 @@ app.factory('GameBoard', function (TrainCardColor, StaticTrackList) {
     GameBoard.prototype.isFirstRound = true;
     GameBoard.prototype.isLastRound = false;
     GameBoard.prototype.tracksPurchased = {}; //Map <routeIndex, playerId>
-    GameBoard.prototype.cardsVisible = [];
+    GameBoard.prototype.cardsVisible = []; //TrainCardColor[]
 
     //constructor 
     function GameBoard (gameDataJSON) {

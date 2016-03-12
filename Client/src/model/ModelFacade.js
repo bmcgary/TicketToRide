@@ -1,17 +1,18 @@
 var app = angular.module('ticketToRide');
 
-app.factory('ModelFacade', function ($rootScope, Game) {
+app.factory('ModelFacade', function ($rootScope, Game, ModelContainer) {
 	//store and access game models
 	var usersGames = {};
     var joinableGames = {};
 	var gameInView = -1;
 
 	var getModel = function () {
-		return usersGames[gameInView];
+		return new ModelContainer(usersGames[gameInView]);
 	};
 
     var broadcast = function (gameId, command) {
-        if(gameId == gameInView) { //TODO Does this mean only the game being played will be updated? not any other game thats going on behind the scenes?
+        if(gameId == gameInView) { //QUESTION: Does this mean only the game being played will be updated? not any other game thats going on behind the scenes?
+            //RESPONSE: No, it means that the controllers will only be notified about changes in the game being played. 
             $rootScope.$broadcast('model:' + command, getModel());
         }
     };
