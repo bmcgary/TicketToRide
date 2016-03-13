@@ -890,7 +890,6 @@ public class ServerFacade_Test {
 			facade.startGame(test3ID, game2ID);
 
 			//call canGetDestinations on game that has already finished
-			//figure out how to update game2 so it is considered over
 			game2.setGameOver(true);
 			assertFalse(facade.canGetDestinations(test3ID, game2ID));
 
@@ -912,6 +911,8 @@ public class ServerFacade_Test {
 			//TODO verify first round behavior with Trent
 			//working example
 			assertTrue(facade.canGetDestinations(test1ID, game1ID));
+			
+			//TODO test where already called getDestinations this turn
 
 			//call canGetDestinations on game when already called draw train car
 			if(facade.canDrawTrainCard(test1ID, game1ID, 0)) //try to ensure this test will happen
@@ -977,7 +978,7 @@ public class ServerFacade_Test {
 	//*********************************************************************************
 	//SELECT DESTINATIONS TESTS
 
-	//VALID
+	//Portions of this test may need to be rewritten
 	@Test
 	public void testSelectDestinations() {
 
@@ -1088,6 +1089,16 @@ public class ServerFacade_Test {
 	public void testSendClientModelInformation() {
 		fail("Not yet implemented");
 	}
+	
+	@Test
+	public void testLoadGameState() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testSaveGameState() {
+		fail("Not yet implemented");
+	}
 
 	@Test
 	public void testGetCityMapping() {
@@ -1107,35 +1118,7 @@ public class ServerFacade_Test {
 
 	//something not sure if we need to test
 	/**
-	 * 	@Test
-	public void testCanLeaveGame() {
-	fail("Not yet implemented");
-	}
-
-	 @Test
-	 public void testLeaveGame() {
-	 fail("Not yet implemented");
-	 }
-
-	 @Test
-	 public void testLogin() {
-	 fail("Not yet implemented");
-	 }
-
-	 @Test
-	 public void testLogout() {
-	 fail("Not yet implemented");
-	 }
-	 @Test
-	 public void testLoadGameState() {
-	 fail("Not yet implemented");
-	 }
-
-	 @Test
-	 public void testSaveGameState() {
-	 fail("Not yet implemented");
-	 }
-
+	 * 	
 	 @Test
 	 public void testGetUserGames() {
 	 fail("Not yet implemented");
@@ -1146,10 +1129,6 @@ public class ServerFacade_Test {
 	 fail("Not yet implemented");
 	 }
 
-	 @Test
-	 public void testRegister() {
-	 fail("Not yet implemented");
-	 }
 	 */
 
 }
