@@ -105,6 +105,16 @@ public class Game {
 	}
 
 	public boolean canPlayerBuyRoute(int playerID, CityToCityRoute route, Map<TrackColor, Integer> cards) {
+		//must be player's current turn
+		if(playerManager.getPlayers().get(playerManager.currentTurnIndex).getPlayerID() != playerID){
+			return false;
+		}
+		
+		//player cannot be holding destination routes to consider
+		if(playerManager.getPlayer(playerID).getDestinationRoutesToConsider()[0] != null){
+			return false;
+		}
+		
 		//route must be available
 		if(!gameBoard.isRouteAvailable(route)){
 			return false;
