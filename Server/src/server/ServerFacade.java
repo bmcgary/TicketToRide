@@ -46,19 +46,24 @@ public class ServerFacade {
 		users = new ArrayList<>();
 	}
 
-	public synchronized void createGame(Game newGame, int playerID, PlayerColor color) throws InternalServerException
+	public synchronized void createGame(Game newGame, int playerID, PlayerColor color) throws InternalServerException, PreConditionException
 	{
 		//check to make sure game was instantiated properly
 		if(newGame == null || newGame.getGameBoard() == null){
-			assert(false);
-			return;
+			throw new PreConditionException("Game/GameBoard improperly instantiated");
 		}
 		else if(newGame.getPlayerManager() == null){
-			assert(false);
-			return;
+			throw new PreConditionException("PlayerManager was not properly instantiated");
+		}
+		else if(color == null){
+			throw new PreConditionException("PlayerColor was null");
 		}
 		else{
 			assert(newGame.getPlayerManager().getNumPlayers() == 0);
+		}
+		
+		if(!this.isPlayerLoggedIn(playerID)){
+			throw new PreConditionException("Creating player either doesn't exist or isn't logged in");
 		}
 		
 		//add game

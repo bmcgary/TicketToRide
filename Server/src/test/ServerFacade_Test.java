@@ -414,7 +414,7 @@ public class ServerFacade_Test {
 	
 	//VALID
 	@Test
-	public void testCreateGame() throws AddUserException, InternalServerException, InvalidCredentialsException, BadCredentialsException, AlreadyLoggedInException
+	public void testCreateGame() throws AddUserException, InternalServerException, InvalidCredentialsException, BadCredentialsException, AlreadyLoggedInException, PreConditionException
 	{
 		int userID = serverFacade.register("test1", "test1");
 		TestGame game = new TestGame();
@@ -424,26 +424,29 @@ public class ServerFacade_Test {
 		serverFacade.createGame(game, userID, null);
 		fail("should have thrown exception, null color");
 		}
-		catch (InternalServerException e){}
+		catch (PreConditionException e) {}
 		
 		//null game
 		try{
 		serverFacade.createGame(null, userID, PlayerColor.Black);
 		fail("should have thrown exception, null game");
-		} catch (InternalServerException e) {}
+		}
+		catch (PreConditionException e) {}
 		
 		//nonexistant player
 		try{
 		serverFacade.createGame(game, -1, PlayerColor.Blue);
 		fail("should have thrown exception, nonexistant player");
-		} catch (InternalServerException e) {}
+		}
+		catch (PreConditionException e) {}
 		
 		//logged out
 		serverFacade.logout(userID);
 		try{
 		serverFacade.createGame(game, userID, PlayerColor.Blue);
 		fail("should have thrown exception, not logged in");
-		} catch (InternalServerException e) {}
+		} 
+		catch (PreConditionException e) {}
 		serverFacade.login("test1", "test1");
 		
 		//success case
@@ -472,7 +475,7 @@ public class ServerFacade_Test {
 	 * VALID
 	 */
 	@Test
-	public void testAddPlayerSuccessCase() throws InvalidCredentialsException, AddUserException, InternalServerException
+	public void testAddPlayerSuccessCase() throws InvalidCredentialsException, AddUserException, InternalServerException, PreConditionException
 	{
 		TestGame game = new TestGame();
 		int id1 = serverFacade.register("test1", "test1");
@@ -562,7 +565,7 @@ public class ServerFacade_Test {
 	 * VALID
 	 */
 	@Test
-	public void testAddPlayerAlreadyJoinedGame() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException, InternalServerException
+	public void testAddPlayerAlreadyJoinedGame() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException, InternalServerException, PreConditionException
 	{
 		int userID = serverFacade.register("joinAlready", "joinedGame");
 		Game newGame = new Game();
@@ -590,7 +593,7 @@ public class ServerFacade_Test {
 	
 	//VALID
 	@Test
-	public void testAddPlayerNotLoggedIn() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException, InternalServerException
+	public void testAddPlayerNotLoggedIn() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException, InternalServerException, PreConditionException
 	{
 		int playerID = serverFacade.register("canJoin", "notLoggedIn");
 		Game newGame = new Game();
@@ -618,7 +621,7 @@ public class ServerFacade_Test {
 	
 	//VALID
 	@Test
-	public void testAddPlayerInvalidInputs() throws AddUserException, InternalServerException, InvalidCredentialsException
+	public void testAddPlayerInvalidInputs() throws AddUserException, InternalServerException, InvalidCredentialsException, PreConditionException
 	{
 		int id1 = serverFacade.register("test1", "test1");
 		int id2 = serverFacade.register("test2", "test2");
@@ -794,7 +797,7 @@ public class ServerFacade_Test {
 	//INVALID
 	//This test needs a bit of rewriting
 	@Test (expected=OutOfBoundsException.class)
-	public void testCanDrawTrainCardFailing() throws OutOfBoundsException, InternalServerException, AddUserException, InvalidCredentialsException {
+	public void testCanDrawTrainCardFailing() throws OutOfBoundsException, InternalServerException, AddUserException, InvalidCredentialsException, PreConditionException {
 		ServerFacade.firebomb();
 		ServerFacade sf = ServerFacade.getServerFacade();
 		int id1 = sf.register("test1", "test1");
