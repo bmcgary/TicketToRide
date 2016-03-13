@@ -399,30 +399,33 @@ public class ServerFacade_Test {
 		serverFacade.logout(19999);
 	}
 	
-	
-	
+	//VALID
 	@Test
 	public void testCreateGame() throws AddUserException, InternalServerException, InvalidCredentialsException, BadCredentialsException, AlreadyLoggedInException
 	{
 		int userID = serverFacade.register("test1", "test1");
 		TestGame game = new TestGame();
 		
-		try{
-		serverFacade.createGame(game, userID, null);
-		fail("should have thrown exception, null color");
-		}
-		catch (InternalServerException e){}
+		//null color
+//		try{
+//		serverFacade.createGame(game, userID, null);
+//		fail("should have thrown exception, null color");
+//		}
+//		catch (InternalServerException e){}
 		
+		//null game
 		try{
 		serverFacade.createGame(null, userID, PlayerColor.Black);
 		fail("should have thrown exception, null game");
 		} catch (InternalServerException e) {}
 		
+		//nonexistant player
 		try{
 		serverFacade.createGame(game, -1, PlayerColor.Blue);
 		fail("should have thrown exception, nonexistant player");
 		} catch (InternalServerException e) {}
 		
+		//logged out
 		serverFacade.logout(userID);
 		try{
 		serverFacade.createGame(game, userID, PlayerColor.Blue);
@@ -434,7 +437,19 @@ public class ServerFacade_Test {
 		serverFacade.createGame(game, userID, PlayerColor.Blue);
 		//verify created correctly and user is in first index
 		
-
+		TestGame test = null;
+		List<Game> games = serverFacade.getAllGames();
+		for (Game g : games)
+		{
+			if (g.getGameID() == game.getGameID())
+			{
+				test = (TestGame) g;
+			}
+		}
+		assertFalse(test == null);
+		assertTrue(test.containsPlayer(userID));
+		assertFalse(test.isStarted());
+		assertFalse(test.isGameOver());
 	}
 
 
