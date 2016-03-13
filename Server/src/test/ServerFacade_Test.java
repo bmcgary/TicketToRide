@@ -186,6 +186,7 @@ public class ServerFacade_Test {
 	@After
 	public void firebombServerFacade()
 	{
+		//TODO should this actually be @Before?
 		//Call firebomb on ServerFacade after each test
 		//ensure each test starts fresh
 		ServerFacade.firebomb();
@@ -468,7 +469,7 @@ public class ServerFacade_Test {
 	//ADD PLAYER TESTS
 
 	/*
-	 * INVALID
+	 * VALID
 	 */
 	@Test
 	public void testAddPlayerSuccessCase() throws InvalidCredentialsException, AddUserException, InternalServerException
@@ -615,6 +616,7 @@ public class ServerFacade_Test {
 		assertTrue(serverFacade.canAddPlayerToGame(playerID, newGame.getGameID(), PlayerColor.Red));
 	}
 	
+	//VALID
 	@Test
 	public void testAddPlayerInvalidInputs() throws AddUserException, InternalServerException, InvalidCredentialsException
 	{
@@ -635,7 +637,10 @@ public class ServerFacade_Test {
 		} catch (PreConditionException e){}
 	}
 
-
+	//*********************************************************************************
+	//START GAME TESTS
+	
+	//VALID
 	@Test
 	public void testStartGame() {
 
@@ -718,12 +723,21 @@ public class ServerFacade_Test {
 		}
 	}
 
-	/**
-	 * Player can select a route on the map to purchase
+	//*********************************************************************************
+	//LEAVE GAME TESTS
+	
+	@Test
+	public void testLeaveGame()
+	{
+		fail("Not yet implemented in ServerFacade");
+	}
+	
+	//*********************************************************************************
+	//BUY ROUTE TESTS
+	//TODO verify/rewrite all these tests
 
-
-
-	 */
+	//INVALID 
+	//This test needs to be rewritten
 	@Test
 	public void testCanBuyRoute() throws InternalServerException {
 		/*City city1 = new City(new Point(2,2),"LA");
@@ -735,6 +749,8 @@ public class ServerFacade_Test {
 
 	//Player can use wilds as part of a route purchase
 	//are you handling this case?
+	//INVALID 
+	//This test needs to be rewritten
 	public void testCanBuyRouteWithWrongResources()
 	{
 		/*
@@ -770,7 +786,13 @@ public class ServerFacade_Test {
 	public void testBuyRoute() {
 		fail("Not yet implemented");
 	}
+	
+	//*********************************************************************************
+	//DRAW TRAIN CARD TESTS
+	//TODO verify/rewrite all these tests
 
+	//INVALID
+	//This test needs a bit of rewriting
 	@Test (expected=OutOfBoundsException.class)
 	public void testCanDrawTrainCardFailing() throws OutOfBoundsException, InternalServerException, AddUserException, InvalidCredentialsException {
 		ServerFacade.firebomb();
@@ -781,6 +803,7 @@ public class ServerFacade_Test {
 
 	}
 
+	//INVALID
 	@Test
 	public void testCanDrawTrainCard() throws OutOfBoundsException, InternalServerException {
 
@@ -808,6 +831,7 @@ public class ServerFacade_Test {
 		//how do you define wildcards?
 	}
 
+	//INVALID
 	@Test
 	public void testDrawTrainCardFailAfterVisible() throws OutOfBoundsException, InternalServerException
 	{
@@ -820,15 +844,17 @@ public class ServerFacade_Test {
 		// using playerManager.drewAlreadyCurrentTurn && gameBoard.getVisibleTrainCarCards()[cardLocation] == TrackColor.None????
 	}
 
-
+	//INVALID
 	@Test
 	public void testDrawTrainCard() throws PreConditionException, OutOfBoundsException, InternalServerException {
 
 		serverFacade.drawTrainCard(1,1,3);
 	}
 
+	//*********************************************************************************
+	//GET DESTINATIONS TESTS
 
-
+	//VALID
 	@Test
 	public void testGetDestinations() {
 
@@ -883,6 +909,7 @@ public class ServerFacade_Test {
 			assertFalse(facade.canGetDestinations(test1ID, game1ID));
 			facade.login("test1", "test1"); //ensure that logging back in worked
 
+			//TODO verify first round behavior with Trent
 			//working example
 			assertTrue(facade.canGetDestinations(test1ID, game1ID));
 
@@ -913,6 +940,7 @@ public class ServerFacade_Test {
 			}
 			/*
 		//call canGetDestinations on game when no destinations remain
+		 * TODO verify first round behavior before implementing this test
 		//figure out how to clear the list of destinations
 		TestGameBoard board = (TestGameBoard)game1.getGameBoard();
 		board.setDestinationRoutes(new List<DestinationRoute>());
@@ -945,7 +973,11 @@ public class ServerFacade_Test {
 			fail("Problems registering");
 		}
 	}
+	
+	//*********************************************************************************
+	//SELECT DESTINATIONS TESTS
 
+	//VALID
 	@Test
 	public void testSelectDestinations() {
 
@@ -994,7 +1026,7 @@ public class ServerFacade_Test {
 			facade.selectDestinations(user1, game1ID, destinations);
 			//test results
 
-			//selecting destinations updates player's score
+			// TODO selecting destinations updates player's score
 			//update a player with routes such that they have a destination
 			//update destination deck such that that is the only destination available
 			//update so it is that player's turn
@@ -1002,13 +1034,12 @@ public class ServerFacade_Test {
 			//selectDestination
 			//verify score increased by desired amount
 
-			//selecting destinations ends the game
+			//TODO selecting destinations ends the game
 			//update current turn and finalTurnIndex such that this is final turn
 			//getDestinations
 			//verify game ended
 
 			//selecting destinations when already drawn train card
-			//update current turn
 			TestPlayerManager manager = (TestPlayerManager)game1.getPlayerManager();
 			manager.setCurrentTurnIndex(1);
 			manager.getPlayerByID(user2).setDestinationRoutesToConsider(new DestinationRoute[]{null, null, null});
@@ -1023,7 +1054,7 @@ public class ServerFacade_Test {
 			}
 
 			/*
-			 * 1,5,7,8,9
+			 * 5(when destinations to consider is empty?), 7(not valid to test), 8(to do), 9(to do)
 			 */
 		}
 		catch(AddUserException e)
