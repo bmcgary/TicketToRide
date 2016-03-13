@@ -1,16 +1,24 @@
 package server;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import model.City;
 import model.CityToCityRoute;
@@ -510,25 +518,52 @@ public class ServerFacade {
 	
 	public synchronized void loadGameState()
 	{
-		//TODO: loading stuff
+		Gson gson = new Gson();
+		String relativePath = new File("").getAbsolutePath() + "/Server/src/saveFiles/";
+		String file = relativePath + "saveUsers.json";
+		
+		//first load users
+		try{
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			User[] usersArray = gson.fromJson(br, User[].class);
+			users = Arrays.asList(usersArray);
+		} catch (IOException e){
+			e.printStackTrace();
+		}
+		
+		//then load games
+		file = relativePath + "saveGames.json";
+		try{
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			Game[] gamesArray = gson.fromJson(br, Game[].class);
+			games = Arrays.asList(gamesArray);
+		} catch (IOException e){
+			e.printStackTrace();
+		}
 	}
 	
 	public synchronized void saveGameState()
 	{
-		Gson gson = new Gson();
-		String relativePath = new File("").getAbsolutePath() + "/Server/src/saveFiles/";
-		String output = "";
-		for(Game g : games){
-			output += gson.toJson(g) + "\n";
-		}
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		String relativePath = new File("").getAbsolutePath() + "/Server/src/saveFiles/";	
+		
+		//first do users
 		try {
-			PrintWriter writer = new PrintWriter(relativePath + "save.txt", "UTF-8");
-			writer.println(output);
+			PrintWriter writer = new PrintWriter(relativePath + "saveUsers.json", "UTF-8");
+			writer.println(gson.toJson(users));
 			writer.close();
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		//TODO: the rest
+		
+		//then do games
+		try {
+			PrintWriter writer = new PrintWriter(relativePath + "saveGames.json", "UTF-8");
+			writer.println(gson.toJson(games));
+			writer.close();
+		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public synchronized void sendClientModelInformation()
@@ -648,9 +683,14 @@ public class ServerFacade {
 		sf.startGame(pid, 1);
 		Map<TrackColor, Integer> m = new HashMap<TrackColor, Integer>();
 		m.put(TrackColor.Red, 1);
-		System.out.println(sf.getCityMapping());
 		sf.saveGameState();
-		sf.buyRoute(pid, 1, new CityToCityRoute(new City("Seattle"), new City("Portland"), 1, TrackColor.None), m);
+		sf.selectDestinations(pid, 1, new int[]{0,1});
+		sf.selectDestinations(pid2, 1, new int[]{0,1});
+		if(sf.canBuyRoute(pid, 1, new CityToCityRoute(new City("Seattle"), new City("Portland"), 1, TrackColor.None), m)){
+			sf.buyRoute(pid, 1, new CityToCityRoute(new City("Seattle"), new City("Portland"), 1, TrackColor.None), m);
+		}
+		sf.loadGameState();
+		sf.selectDestinations(pid, 1, new int[]{0,1});
 		System.out.println("Success!");
 	}
 }
