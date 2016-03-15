@@ -111,7 +111,13 @@ public class MyWebSocketHandler {
     		//send the message of this particular response wrapper to all of its targetIDs
     		targetIds.forEachRemaining(targetId -> {
     			try{
-    				sessions.get(targetId).getRemote().sendString(message);
+    				
+    				//-1 means to send to everyone, otherwise, send the message to the specified targetId.
+    				if(targetId==-1)
+    					sendPublicMessage(message);
+    				else
+    					sessions.get(targetId).getRemote().sendString(message);
+    				
     			} catch(IOException e) {
     				System.err.println("Failed to send to user " + id);
     			}
