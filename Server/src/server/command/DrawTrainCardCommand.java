@@ -19,7 +19,7 @@ import com.google.gson.annotations.SerializedName;
  */
 public class DrawTrainCardCommand extends Command {
 	@SerializedName("gameId")
-	private int gameID;
+	private int gameId;
 	@SerializedName("cardLocation")
 	private int cardLocation;
 	
@@ -31,7 +31,7 @@ public class DrawTrainCardCommand extends Command {
     	
     	try {
     		
-			serverFacade.drawTrainCard(userID, gameID, cardLocation);
+			serverFacade.drawTrainCard(userID, gameId, cardLocation);
 			
 		} catch (PreConditionException | OutOfBoundsException | InternalServerException e) {
 			
@@ -47,7 +47,6 @@ public class DrawTrainCardCommand extends Command {
         responses.add(responseWrapper);
         
         return responses;
-    	
-        //return Collections.singletonList(new ResponseWrapper(userID, Response.newServerErrorResponse(), commandName));
+
     }
 }

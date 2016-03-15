@@ -70,7 +70,7 @@ public class MyWebSocketHandler {
 	        }
 
 	        //a message will be sent back regardless of whether request was successful or not
-			sendMessage(responseWrapper.getTargetIds().iterator(), responseWrapper.getResponse());		//send back to client
+			sendMessage(responseWrapper.getTargetIds().iterator(), responseWrapper.getResponse());
 		}
 
 		catch (CommandNotFoundException e1) {
