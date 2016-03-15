@@ -55,9 +55,11 @@ public class MyWebSocketHandler {
 
 	        if(command instanceof LoginCommand || command instanceof RegisterCommand)
 	        {
-	        	if(responseWrapper.getTargetIds()!= null)	//make sure they successfully logged in/registered
+	        	//make sure they successfully logged in/registered
+	        	if(responseWrapper.getTargetIds()!= null)
 	        	{
-                    personal_id = responseWrapper.getTargetIds().get(0); //there should only be one id in the idlist
+	        		//there should only be one id in the idlist
+                    personal_id = responseWrapper.getTargetIds().get(0);
 	        		sessions.put(personal_id, personal_session);
 	        	}
 	        	else
@@ -67,7 +69,8 @@ public class MyWebSocketHandler {
 	        	}
 	        }
 
-			sendMessage(responseWrapper.getTargetIds().iterator(), responseWrapper.getResponse());		//send back to server
+	        //a message will be sent back regardless of whether request was successful or not
+			sendMessage(responseWrapper.getTargetIds().iterator(), responseWrapper.getResponse());		//send back to client
 		}
 
 		catch (CommandNotFoundException e1) {
