@@ -1,4 +1,4 @@
-package server.dto;
+package server.dto.gameplay;
 
 import com.google.gson.annotations.SerializedName;
 

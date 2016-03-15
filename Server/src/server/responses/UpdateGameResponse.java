@@ -2,7 +2,7 @@ package server.responses;
 
 import com.google.gson.annotations.SerializedName;
 import model.Game;
-import server.dto.GameInfo;
+import server.dto.lobby.LobbyGameInfo;
 
 /**
  *
@@ -12,23 +12,23 @@ public class UpdateGameResponse extends Response {
     @SerializedName("gameId")
     private int gameId;
     @SerializedName("game")
-    private GameInfo gameInfo;
+    private LobbyGameInfo lobbyGameInfo;
 
     public UpdateGameResponse(Game game, boolean isNew) {
         super("");
         this.gameId = game.getGameID();
         if (game.getPlayerManager().getPlayers().size() == 5) {
             super.description = "delete";
-            this.gameInfo = null;
+            this.lobbyGameInfo = null;
         } else {
             super.description = isNew ? "add" : "update";
-            this.gameInfo = new GameInfo(game);
+            this.lobbyGameInfo = new LobbyGameInfo(game);
         }
     }
 
     public UpdateGameResponse(int gameId) {
         super("delete");
         this.gameId = gameId;
-        this.gameInfo = null;
+        this.lobbyGameInfo = null;
     }
 }
