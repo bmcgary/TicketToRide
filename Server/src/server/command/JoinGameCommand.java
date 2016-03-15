@@ -5,6 +5,7 @@ import model.Player;
 import model.PlayerColor;
 import server.CommandParser;
 import server.User;
+import server.exception.GameNotFoundException;
 import server.exception.PreConditionException;
 import server.responses.Response;
 import server.responses.ResponseWrapper;
@@ -42,9 +43,11 @@ public class JoinGameCommand extends Command {
             }
             return responses;
         } else {
+            Game thisGame;
             try {
                 serverFacade.addPlayerToGame(userID, gameId, color);
-            } catch (PreConditionException e) {
+                thisGame = serverFacade.getGame(gameId);
+            } catch (PreConditionException | GameNotFoundException e) {
                 e.printStackTrace();
                 responses.add(responseWrapper.setResponse(Response.newServerErrorResponse()));
                 return responses;
@@ -52,14 +55,14 @@ public class JoinGameCommand extends Command {
             responses.add(responseWrapper.setResponse(Response.newSuccessResponse()));
 
             // get game
-            Game thisGame = serverFacade.getAllGames().parallelStream().filter(game -> game.getGameID() == gameId).findFirst().get();
 
             // update game responses
             responses.add(new ResponseWrapper(-1, new UpdateGameResponse(thisGame, false), "UpdateGame"));
 
             // update user games responses
             Command userGames = new UpdateUserGamesCommand();
-            thisGame.getPlayerManager().getPlayers().stream().forEach(player -> responses.addAll(userGames.execute(player.getPlayerID())));
+            List<Player> players = thisGame.getPlayerManager().getPlayers();
+            players.stream().forEach(player -> responses.addAll(userGames.execute(player.getPlayerID())));
 
             // start game response
             if (thisGame.getPlayerManager().getPlayers().size() == 5) {
