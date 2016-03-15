@@ -4,11 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.google.gson.Gson;
 
@@ -19,14 +15,7 @@ import model.GameBoard;
 import model.Player;
 import model.PlayerColor;
 import model.TrackColor;
-import server.dto.GameInfo;
-import server.exception.AddUserException;
-import server.exception.AlreadyLoggedInException;
-import server.exception.BadCredentialsException;
-import server.exception.InternalServerException;
-import server.exception.InvalidCredentialsException;
-import server.exception.OutOfBoundsException;
-import server.exception.PreConditionException;
+import server.exception.*;
 
 public class ServerFacade {
 	private static ServerFacade serverFacade;
@@ -616,13 +605,16 @@ public class ServerFacade {
 	}
 
 	/**
-	 * Get pertinent information from the specified game
+	 * Get a specified game
 	 * @param gameID the id for the desired game
-	 * @return game information pertinent to the client
+	 * @return game requested
      */
-	public GameInfo getGameInfo(int gameID) {
-		//TODO: implement this
-		return null;
+	public Game getGame(int gameID) throws GameNotFoundException {
+		Optional<Game> possibleGame = games.parallelStream().filter(game -> game.getGameID() == gameID).findFirst();
+		if (possibleGame.isPresent())
+			return possibleGame.get();
+		else
+			throw new GameNotFoundException("could not find game " + gameID);
 	}
 
 	public static void firebomb()
