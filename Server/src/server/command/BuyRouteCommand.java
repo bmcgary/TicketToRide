@@ -1,5 +1,6 @@
 package server.command;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +36,9 @@ public class BuyRouteCommand extends Command {
 
     @Override
     public List<ResponseWrapper> execute(int userID) {
+    	
+        List<ResponseWrapper> responses = new ArrayList<>();
+        ResponseWrapper responseWrapper = new ResponseWrapper(userID, commandName);
 
     	//get the route that the player is trying to buy
     	CityToCityRoute route=getRoute();
@@ -46,14 +50,24 @@ public class BuyRouteCommand extends Command {
     	cards.put(trackcolor, number_of_cards);
 
     	try {
+    		
 			serverFacade.buyRoute(userID, gameID, route, cards);
-		} catch (PreConditionException | InternalServerException
-				| OutOfBoundsException e) {
-			// TODO Auto-generated catch block
+			
+		} catch (PreConditionException | InternalServerException| OutOfBoundsException e) {
+			
 			e.printStackTrace();
+			
+			responseWrapper.setResponse(Response.newServerErrorResponse());
+			responses.add(responseWrapper);
+			return responses;
 		}
     	
-        return Collections.singletonList(new ResponseWrapper(userID, Response.newServerErrorResponse(), commandName));
+        responseWrapper.setResponse(Response.newSuccessResponse());
+        responses.add(responseWrapper);
+        
+        return responses;
+    	
+        
     }
     
     private CityToCityRoute getRoute()
