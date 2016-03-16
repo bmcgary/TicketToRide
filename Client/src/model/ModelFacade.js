@@ -12,8 +12,8 @@ app.factory('ModelFacade', function ($rootScope, Game, ModelContainer, TrainCard
 
     var broadcast = function (gameId, command) {
         if(gameId == gameInView) { //QUESTION: Does this mean only the game being played will be updated? not any other game thats going on behind the scenes?
-            //RESPONSE: No, it means that the controllers will only be notified about changes in the game being played. 
-            $rootScope.$broadcast('model:' + command, new ModelContainer(getModel());
+            //RESPONSE: No, it means that the controllers will only be notified about changes in the game being played.
+            $rootScope.$broadcast('model:' + command, new ModelContainer(getModel()));
         }
     };
 
@@ -52,7 +52,7 @@ app.factory('ModelFacade', function ($rootScope, Game, ModelContainer, TrainCard
 
     $rootScope.$on('server:BuyRoute', function (event, parameters) {
         //do logic
-        
+
         broadcast(parameters.gameId, 'BuyRoute');
     });
 
@@ -76,9 +76,9 @@ app.factory('ModelFacade', function ($rootScope, Game, ModelContainer, TrainCard
 
         broadcast(parameters.gameId, 'SelectDestinations');
     });
-    	
+
     return {
-    	
+
     	canBuyRoute: function (routeIndex, trainColor, numberOfWilds) {
             var model = getModel();
 

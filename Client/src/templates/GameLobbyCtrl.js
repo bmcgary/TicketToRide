@@ -66,6 +66,8 @@ app.controller('gameLobbyController', function($scope, $rootScope, ClientAPI, $u
 	$scope.myGames = myGames;
 	$scope.availableGames = availableGames;
 	//end of dummy DATA
+	//Create GAMES
+
 	//GET AVAILABLE GAMES TODO
 	/*
 		i need to do something like this to hit the server but i cant get it to work
@@ -73,6 +75,7 @@ app.controller('gameLobbyController', function($scope, $rootScope, ClientAPI, $u
 	function getAvailableGames() {
 		ClientAPI.updateJoinableGames();
 	}
+	//getAvailableGames();
 	//getAvailableGames(); // maybe call the function to get the data
 	$rootScope.$on('server:updateJoinableGames', function(event, parameters) {
 		alert("Listener reached");
@@ -120,10 +123,19 @@ app.controller('gameLobbyController', function($scope, $rootScope, ClientAPI, $u
 	$scope.createNewGame = function (color, name){
 		if(name.length >0){
 			console.log(color);
+			ClientAPI.createGame(name, color);
 		}else{
 			console.log('error');
 		}
 	}
+
+	$rootScope.$on('server:CreateGame', function (event, parameters) {
+		/*if(parameters.description == "success") {
+			$state.go('gameLobby');
+		}*/
+		alert("we did it");
+		console.log(parameters);
+	});
 
 });
 //THIS IS THE DIRECTIVE FOR THE CREATENEWGAME popup
