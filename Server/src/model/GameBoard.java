@@ -366,7 +366,6 @@ public class GameBoard {
 					city2 = text;
 					break;
 				case 3:
-					System.out.print(line + "\n");
 					color = TrackColor.valueOf(text);
 					break;
 				case 0:

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
@@ -51,26 +52,28 @@ public class MyWebSocketHandler {
 		try {
             Command command = CommandFactory.makeCommand(message);
             // TODO: to stop errors
-            ResponseWrapper responseWrapper = command.execute(personal_id).get(0);
+            //ResponseWrapper responseWrapper = command.execute(personal_id).get(0);
+            List<ResponseWrapper> responseWrappers = command.execute(personal_id);
 
 	        if(command instanceof LoginCommand || command instanceof RegisterCommand)
 	        {
 	        	//make sure they successfully logged in/registered
-	        	if(responseWrapper.getTargetIds()!= null)
+	        	if(responseWrappers.get(0).getTargetIds()!= null)
 	        	{
 	        		//there should only be one id in the idlist
-                    personal_id = responseWrapper.getTargetIds().get(0);
+                    personal_id = responseWrappers.get(0).getTargetIds().get(0);
 	        		sessions.put(personal_id, personal_session);
 	        	}
 	        	else
 	        	{
-	        		sendInvalidMessage(responseWrapper.getResponse());
+	        		sendInvalidMessage(responseWrappers.get(0).getResponse());
 	        		return;
 	        	}
 	        }
 
 	        //a message will be sent back regardless of whether request was successful or not
-			sendMessage(responseWrapper.getTargetIds().iterator(), responseWrapper.getResponse());		//send back to client
+			//sendMessage(responseWrapper.getTargetIds().iterator(), responseWrapper.getResponse());
+	        sendMessages(responseWrappers);
 		}
 
 		catch (CommandNotFoundException e1) {
@@ -99,7 +102,7 @@ public class MyWebSocketHandler {
         });
     }
 
-    public void sendMessages(ArrayList<ResponseWrapper> wrappers)
+    public void sendMessages(List<ResponseWrapper> wrappers)
     {
     	//go through each response wrapper
     	for(int i=0; i<wrappers.size(); i++)
@@ -111,7 +114,13 @@ public class MyWebSocketHandler {
     		//send the message of this particular response wrapper to all of its targetIDs
     		targetIds.forEachRemaining(targetId -> {
     			try{
-    				sessions.get(targetId).getRemote().sendString(message);
+    				
+    				//-1 means to send to everyone, otherwise, send the message to the specified targetId.
+    				if(targetId==-1)
+    					sendPublicMessage(message);
+    				else
+    					sessions.get(targetId).getRemote().sendString(message);
+    				
     			} catch(IOException e) {
     				System.err.println("Failed to send to user " + id);
     			}

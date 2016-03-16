@@ -5,6 +5,7 @@ import model.Game;
 import model.PlayerColor;
 import server.User;
 import server.exception.InternalServerException;
+import server.exception.PreConditionException;
 import server.responses.Response;
 import server.responses.ResponseWrapper;
 import server.responses.UpdateGameResponse;
@@ -39,7 +40,7 @@ public class CreateGameCommand extends Command {
 
         try {
             serverFacade.createGame(game, userID, color);
-        } catch (InternalServerException e) {
+        } catch (InternalServerException | PreConditionException e) {
             e.printStackTrace();
             responseWrapper.setResponse(Response.newServerErrorResponse());
             responses.add(responseWrapper);

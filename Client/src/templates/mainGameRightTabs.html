@@ -1,2 +1,11 @@
-I am the tabbed portion of the main game
-<button ng-click="display()">CLICK ME!</button>
+<center>
+	<div ng-class="disableCard('destination') ? '' : 'trainDeckCardsContainer'"> <!-- The destination cards pic -->
+		<img ng-class="disableCard('destination') ? 'trainDeckCardsDisabled' : 'trainDeckCards'" src="images/routeCards/ttr-route-back.jpg" height="{{ heightAmount }}" ng-click="cardSelected('destination')"></img>
+	</div>
+	<div ng-class="disableCard(5) ? '' : 'trainDeckCardsContainer'"> <!-- The Train card deck pic -->
+		<img ng-class="disableCard(5) ? 'trainDeckCardsDisabled' : 'trainDeckCards'" src="images/trainCards/ttr-train-back.jpg" height="{{ heightAmount }}" ng-click="cardSelected(5)"></img>
+	</div>
+	<div ng-class="disableCard($index) ? '' : 'trainDeckCardsContainer'" class="" ng-repeat="card in cardsVisible track by $index">
+		<img ng-class="disableCard($index) ? 'trainDeckCardsDisabled' : 'trainDeckCards'" src="images/trainCards/ttr-train-{{ card }}.jpg" height="{{ heightAmount }}" ng-click="cardSelected($index)"></img>
+	</div>
+</center>

@@ -1,3 +1,47 @@
+class ModelContainer {
+    //Game data
+    int getGameId();
+    String getGameName(); 
+    int getGameHistorySize() 
+    String getGameHistoryAtIndex(index);
+    int getGameChatSize();
+    String getGameChatAtIndex(index); 
+    
+    //Board data
+    boolean deckHasDestinations();
+    boolean deckHasTrains();
+    boolean isFirstRound();
+    boolean isLastRound();
+    TrainCardColor getCardVisibleAt(index); 
+    int[] getRoutesOwned(); //routeIds
+    TrainCardColor getPlayerColorByRouteId(routeId);
+
+    //Opponent Data
+    int getOpponentsSize();
+    String getOpponentName(index);
+    TrainCardColor getOpponentColor(index); 
+    int getOpponentPoints(index);
+    int getOpponentTrainsLeft(index);
+    int getOpponentPlayerId(index);
+
+    //Player Data
+    Strint getPlayerName();
+    TrainCardColor getPlayerColor(); 
+    int getPlayerPoints();
+    int getPlayerTrainsLeft(); 
+    int getPlayerId();
+    int getTrainCardsByColor(trainCardColor);
+
+    //DestinationCard Data
+    int getPlayersDestinationSize();
+    String getPlayersDestinationCityName1(index);
+    String getPlayersDestinationCityName2(index);
+    boolean getPlayersDestinationIsComplete(index);
+    int getPlayersDestinationPoints(index);
+};
+
+
+
 class ModelFacade {
     static Map<int, Game> usersGames; //Map<gameId, Game>
     static Map<int LobbyGame> joinableGames; //Map<gameId, LobbyGame>

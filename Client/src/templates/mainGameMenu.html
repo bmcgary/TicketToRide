@@ -1,2 +1,28 @@
-I am the menu html for the main game
-<button ng-click="display()">CLICK ME!</button>
+<div>
+	<div>
+		<div class="circle col-xs-3" style="background:{{ thisPlayer.playerColor }};">
+		</div>
+		<div class="col-xs-9" style="padding-bottom:10px;">
+			<div>
+				<span> {{ thisPlayer.playerName }} </span>
+			</div>
+			<div>
+				<div>Points: {{ thisPlayer.points }}</div>
+				<div>Trains left: {{ thisPlayer.trainsLeft }} </div>
+			</div>
+		</div>
+	</div>
+	<div ng-repeat="opponent in opponents">
+		<div class="circle col-xs-3" style="background:{{ opponent.playerColor }}; padding-top:10px;">
+		</div>
+		<div class="col-xs-9" style="padding-bottom:10px;">
+			<div>
+				<span> {{ opponent.playerName }} </span>
+			</div>
+			<div>
+				<div>Points: {{ opponent.points }}</div>
+				<div>Trains left: {{ opponent.trainsLeft }} </div>
+			</div>
+		</div>
+	</div>
+</div>

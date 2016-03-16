@@ -18,6 +18,11 @@ public class City {
 	}
 	
 	@Override
+	public String toString(){
+		return name;
+	}
+	
+	@Override
 	public boolean equals(Object o){
 		if(this.getClass() != o.getClass()){
 			return false;
