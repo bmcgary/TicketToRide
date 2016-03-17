@@ -7,7 +7,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -22,7 +28,17 @@ import model.GameBoard;
 import model.Player;
 import model.PlayerColor;
 import model.TrackColor;
-import server.exception.*;
+import server.exception.AddUserException;
+import server.exception.AlreadyLoggedInException;
+import server.exception.BadCredentialsException;
+import server.exception.GameNotFoundException;
+import server.exception.InternalServerException;
+import server.exception.InvalidCredentialsException;
+import server.exception.OutOfBoundsException;
+import server.exception.PreConditionException;
+
+
+
 
 public class ServerFacade {
 	private static ServerFacade serverFacade;
