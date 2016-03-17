@@ -61,7 +61,7 @@ public class ServerFacade {
 		if(!this.isPlayerLoggedIn(playerID)){
 			throw new PreConditionException("Creating player either doesn't exist or isn't logged in");
 		}
-
+		
 		//add game
 		games.add(newGame);
 		assert(games.contains(newGame));
@@ -509,7 +509,7 @@ public class ServerFacade {
 		Gson gson = new Gson();
 		String relativePath = new File("").getAbsolutePath() + "/Server/src/saveFiles/";
 		String file = relativePath + "saveUsers.json";
-
+		
 		//first load users
 		try{
 			BufferedReader br = new BufferedReader(new FileReader(file));
@@ -518,7 +518,7 @@ public class ServerFacade {
 		} catch (IOException e){
 			e.printStackTrace();
 		}
-
+		
 		//then load games
 		file = relativePath + "saveGames.json";
 		try{
@@ -529,12 +529,12 @@ public class ServerFacade {
 			e.printStackTrace();
 		}
 	}
-
+	
 	public synchronized void saveGameState()
 	{
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		String relativePath = new File("").getAbsolutePath() + "/Server/src/saveFiles/";
-
+		String relativePath = new File("").getAbsolutePath() + "/Server/src/saveFiles/";	
+		
 		//first do users
 		try {
 			PrintWriter writer = new PrintWriter(relativePath + "saveUsers.json", "UTF-8");
@@ -543,7 +543,7 @@ public class ServerFacade {
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-
+		
 		//then do games
 		try {
 			PrintWriter writer = new PrintWriter(relativePath + "saveGames.json", "UTF-8");
