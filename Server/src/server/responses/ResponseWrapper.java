@@ -24,13 +24,13 @@ public class ResponseWrapper {
     @SerializedName("parameters")
     private Object response;
 
-    public ResponseWrapper(List<Integer> targetIDs, Response response, String commandName) {
+    public ResponseWrapper(List<Integer> targetIDs, Object response, String commandName) {
         this.targetIds = targetIDs;
         this.response = response;
         this.commandName = commandName;
     }
 
-    public ResponseWrapper(Response response) {
+    public ResponseWrapper(Object response) {
         this(null, response, null);
     }
 
@@ -42,7 +42,7 @@ public class ResponseWrapper {
         this(targetID, null, commandName);
     }
 
-    public ResponseWrapper(int targetID, Response response, String commandName) {
+    public ResponseWrapper(int targetID, Object response, String commandName) {
         this(Collections.singletonList(targetID), response, commandName);
     }
 
