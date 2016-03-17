@@ -3,6 +3,7 @@ package server.command;
 import com.google.gson.annotations.SerializedName;
 import server.dto.gameplay.GamePlayInfo;
 import server.exception.GameNotFoundException;
+import server.responses.DataResponse;
 import server.responses.Response;
 import server.responses.ResponseWrapper;
 
@@ -55,11 +56,11 @@ public class SendClientModelInformationCommand extends Command {
 
         ResponseWrapper notInGame = new ResponseWrapper(playersNotInGame, new Response("not in game"), commandName);
         responses.add(notInGame);
-        responseWrapper.setTargetIds(playersInGame).setResponse(gamePlayInfo);
+        responseWrapper.setTargetIds(playersInGame).setResponse(new DataResponse(gamePlayInfo));
 
         playersInGame.parallelStream().forEach(playerId -> {
             ResponseWrapper privateResponseWrapper = new ResponseWrapper(playerId, "PrivateClientModelInformation");
-            responses.add(privateResponseWrapper.setResponse(gamePlayInfo.getPrivateInfo(playerId)));
+            responses.add(privateResponseWrapper.setResponse(new DataResponse(gamePlayInfo.getPrivateInfo(playerId))));
         });
 
         return responses;
