@@ -9,6 +9,7 @@ import server.responses.ResponseWrapper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -32,19 +33,31 @@ public class SendClientModelInformationCommand extends Command {
 
     public List<ResponseWrapper> execute(List<Integer> playerIds) {
         List<ResponseWrapper> responses = new ArrayList<>();
-        ResponseWrapper responseWrapper = new ResponseWrapper(commandName).setTargetIds(playerIds);
+        ResponseWrapper responseWrapper = new ResponseWrapper(commandName);
         responses.add(responseWrapper);
         if (gamePlayInfo == null) {
             try {
                 gamePlayInfo = new GamePlayInfo(serverFacade.getGame(gameId));
             } catch (GameNotFoundException e) {
-                responseWrapper.setResponse(Response.newServerErrorResponse());
+                responseWrapper.setTargetIds(playerIds).setResponse(Response.newServerErrorResponse());
                 return responses;
             }
         }
-        responseWrapper.setResponse(gamePlayInfo);
+        List<Integer> gamePlayInfoPlayerIds = gamePlayInfo.getPlayerIds();
+        List<Integer> playersNotInGame = new ArrayList<>();
+        List<Integer> playersInGame = new ArrayList<>();
+        playerIds.forEach(playerId -> {
+            if (gamePlayInfoPlayerIds.contains(playerId))
+                playersInGame.add(playerId);
+            else
+                playersNotInGame.add(playerId);
+        });
 
-        playerIds.parallelStream().forEach(playerId -> {
+        ResponseWrapper notInGame = new ResponseWrapper(playersNotInGame, new Response("not in game"), commandName);
+        responses.add(notInGame);
+        responseWrapper.setTargetIds(playersInGame).setResponse(gamePlayInfo);
+
+        playersInGame.parallelStream().forEach(playerId -> {
             ResponseWrapper privateResponseWrapper = new ResponseWrapper(playerId, "PrivateClientModelInformation");
             responses.add(privateResponseWrapper.setResponse(gamePlayInfo.getPrivateInfo(playerId)));
         });
