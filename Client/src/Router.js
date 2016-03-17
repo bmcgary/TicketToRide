@@ -4,10 +4,17 @@
     angular
         .module('ticketToRide', ['ui.router', 'ngWebSocket','shoppinpal.mobile-menu','ui.navbar','ui.bootstrap','smart-table'])
         .run( function ($rootScope, $state) {
-	        $rootScope.$on('$stateChangeStart', function (event, next, current) {
-	            //TODO: I am not sure what needs to be done in here
+	        $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
 				//Check if the user is logged in, if they are do nothing,
 				//if they aren't switch state to login
+
+/*				if (toState.authenticate && true){ //TODO The "true" should be changed to check the model if the user is acutally logged in or not
+				  // User isn’t authenticated
+				  $state.transitionTo("login");
+//Prob not needed but just incase ------> //$rootScope.redirTo = toState.name; //save this so once they log in we redirect to their first choice
+				  event.preventDefault(); 
+				}
+*/
 	        });
     	})
         .config( function ($stateProvider, $urlRouterProvider) {
@@ -16,22 +23,26 @@
 	            .state('login', {
 	                url: '/login',
 	                templateUrl: 'templates/login.html',
-	                controller: "loginController"
+	                controller: "loginController",
+					authenticate: false
 	            })
 	            .state('register', {
 	                url: '/register',
 	                templateUrl: 'templates/register.html',
-	                controller: "registerController"
+	                controller: "registerController",
+					authenticate: false
 	            })
 	            .state('forgot', {
 	            	url: '/forgot',
 	            	templateUrl: 'templates/forgot.html',
-	            	controller: "forgotController"
+	            	controller: "forgotController",
+					authenticate: false
 	            })
               .state('gameLobby', {
 	            	url: '/gameLobby',
 	            	templateUrl: 'templates/gameLobby.html',
-	            	controller: "gameLobbyController"
+	            	controller: "gameLobbyController",
+					authenticate: true
 	            })
 				.state('mainGame', {
 					url:'/game',
@@ -59,7 +70,8 @@
 							templateUrl:'templates/mainGameBottomTabs.html',
 							controller:'mainGameBottomTabsCtrl'
 						}
-					}
+					},
+					authenticate: true
 				})
 	            .state('mainGame2', {
 	            	url: '/game2',
@@ -79,11 +91,16 @@
 							templateUrl:'templates/mainGameCanvas.html',
 							controller:'mainGameCanvasCtrl'
 						},
-						'tabs@mainGame2':{
-							templateUrl:'templates/mainGameTabs.html',
-							controller:'mainGameTabsCtrl'
+						'rightTabs@mainGame2':{
+							templateUrl:'templates/mainGameRightTabs.html',
+							controller:'mainGameRightTabsCtrl'
+						},
+						'bottomTabs@mainGame2':{
+							templateUrl:'templates/mainGameBottomTabs.html',
+							controller:'mainGameBottomTabsCtrl'
 						}
-					}
+					},
+					authenticate: true
 	            })
 
 ;

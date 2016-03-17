@@ -178,6 +178,7 @@ p.small {
     height:auto;
     display:block;
     z-index:999;
+	cursor:pointer;
 }
 
 .trainDeckCardsContainer

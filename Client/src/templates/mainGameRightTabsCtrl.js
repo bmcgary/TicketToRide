@@ -1,10 +1,11 @@
 var app = angular.module('ticketToRide');
 
-app.controller('mainGameRightTabsCtrl', function ($scope, ClientAPI) {
+app.controller('mainGameRightTabsCtrl', function ($scope, ClientAPI, $uibModal) {
 
 	setUpHeight();
 		
 	//Set the height size to the size of the view it is contained in.
+	// that way the train cards are scaled to fit in their correct sport correctly
 	function setUpHeight()
 	{
 		var myEl = document.getElementById("rightTabs");
@@ -13,17 +14,19 @@ app.controller('mainGameRightTabsCtrl', function ($scope, ClientAPI) {
 		$scope.heightAmount = (height / 7) + "px";
 	}
 
+	//All clicking comes here. the State pattern is used to figure out where to go next
 	$scope.cardSelected = function(input)
 	{
 		states[$scope.currentTurn]['cardSelected'](input);
 	}
 
-
+	//shoule a specific card be disabled or not?
 	$scope.disableCard = function(input)
 	{
 		return states[$scope.currentTurn]['disableCard'](input);
 	}
 
+	//---------------------------- States used ------------------------------------------
 	var notYourTurnState = 
 	{
 		'disableCard':function(input){return true;},
@@ -31,6 +34,7 @@ app.controller('mainGameRightTabsCtrl', function ($scope, ClientAPI) {
 	}
 	var yourTurnState = 
 	{
+		//What cards should be disabled???
 		'disableCard':function(input){
 			switch(input)
 			{
@@ -46,11 +50,13 @@ app.controller('mainGameRightTabsCtrl', function ($scope, ClientAPI) {
 			}
 
 		},
+		//A card was selected. What to do next
 		'cardSelected':function(input){
 			switch(input)
 			{
 				case 'destination':
-					console.log("Destination card selected");
+					//pop up a modol showing the destination cards that could be selected
+					openDestinationModal(2);
 					break;
 				case 5:
 					console.log("Train deck card selected");
@@ -94,6 +100,71 @@ app.controller('mainGameRightTabsCtrl', function ($scope, ClientAPI) {
 	var states = {'notYourTurn':notYourTurnState, 'yourTurn':yourTurnState};
 	var canDrawWild = false;
 
-	
+    //Destination modal -------------------------------------------------------
+	function openDestinationModal(amountOfdestsToPick)
+	{
+		var modalInstance = $uibModal.open({
+			  animation: true,
+			  templateUrl: 'destinationModal.html',
+			  controller: 'destinationModalCtrl',
+			  backdrop : 'static',
+			  keyboard: false,
+			  //size: size,
+			  resolve: 
+			  {
+				   amountOfdestsToPick: function () 
+ 				   {
+				     return amountOfdestsToPick;
+				   }
+			  }
+			});
+
+		modalInstance.result.then(
+			function (selectedItems)  //they selected stuff
+			{
+		  		console.log(selectedItems); //from here ship it out via the ClientAPI
+			});//dont need a function for canceling since that isn't allowed
+	}
+
+});
+
+// Destination modal's controller ------------------------------------------------------------------------
+app.controller('destinationModalCtrl', function ($scope, $uibModalInstance, amountOfdestsToPick) {
+
+  $scope.alert = {showAlert: false, message: "", type:""};	
+  $scope.amountOfDestinationsToPick = amountOfdestsToPick;
+
+//TODO where do we get this info from? From the game model? from an ajax call??? is it passed in??
+  $scope.availableDestsToPickFrom = [{selected:false, url:'ttr-route-boston-miami.jpg'},{selected:false, url:'ttr-route-calgary-phoenix.jpg'},{selected:false, url:'ttr-route-calgary-saltLakeCity.jpg'}];
+
+  $scope.checkBoxSelected = function(index)
+  {
+	$scope.availableDestsToPickFrom[index]['selected'] = !$scope.availableDestsToPickFrom[index]['selected'];
+  }
+
+  $scope.ok = function () {
+	//check that they have chosen enough
+	var selectedIndexes = [];
+	for(index in $scope.availableDestsToPickFrom)
+	{
+		if($scope.availableDestsToPickFrom[index]['selected'])
+		{
+			selectedIndexes.push(index);
+		}
+	} 
+
+	if(selectedIndexes.length >= $scope.amountOfDestinationsToPick)
+    	$uibModalInstance.close(selectedIndexes);
+	else
+		showAlert("You need to chose at least " + $scope.amountOfDestinationsToPick + " destination cards", 'danger');
+  };
+
+
+	function showAlert(message, type)
+	{
+		$scope.alert.showAlert = true;
+		$scope.alert.message = message;
+		$scope.alert.type = type;
+	}
 
 });
