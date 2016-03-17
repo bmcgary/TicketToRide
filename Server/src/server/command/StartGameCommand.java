@@ -45,7 +45,7 @@ public class StartGameCommand extends Command {
 
         GamePlayInfo gamePlayInfo = new GamePlayInfo(game);
         List<Integer> playerIds = gamePlayInfo.getPlayerIds();
-        responseWrapper.setTargetIds(playerIds).setResponse(new Response("game has started"));
+        responseWrapper.setTargetIds(playerIds).setResponse(Response.newSuccessResponse());
 
         SendClientModelInformationCommand command = new SendClientModelInformationCommand(gameId);
         command.setGamePlayInfo(gamePlayInfo);
