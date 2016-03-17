@@ -37,9 +37,6 @@ import server.exception.InvalidCredentialsException;
 import server.exception.OutOfBoundsException;
 import server.exception.PreConditionException;
 
-
-
-
 public class ServerFacade {
 	private static ServerFacade serverFacade;
 	private List<Game> games;
