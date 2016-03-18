@@ -1,7 +1,9 @@
 package server.responses;
 
 import com.google.gson.annotations.SerializedName;
-import server.dto.GameInfo;
+import server.dto.lobby.LobbyGameInfo;
+
+import java.util.List;
 
 /**
  *
@@ -9,9 +11,9 @@ import server.dto.GameInfo;
  */
 public class GamesResponse extends Response {
     @SerializedName("games")
-    GameInfo[] games;
+    List<LobbyGameInfo> games;
 
-    public GamesResponse(GameInfo[] games) {
+    public GamesResponse(List<LobbyGameInfo> games) {
         super(getSuccessString());
         this.games = games;
     }

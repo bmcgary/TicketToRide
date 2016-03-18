@@ -1,12 +1,13 @@
 package server.command;
 
 import model.Game;
+import server.dto.lobby.LobbyGameInfo;
 import server.responses.GamesResponse;
 import server.responses.ResponseWrapper;
-import server.dto.GameInfo;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -23,11 +24,8 @@ public class UpdateUserGamesCommand extends Command {
     public List<ResponseWrapper> execute(int userID) {
         ResponseWrapper responseWrapper = new ResponseWrapper(userID, commandName);
         List<Game> games = serverFacade.getUserGames(userID);
-        GameInfo[] gameInfo = new GameInfo[games.size()];
-        for (int i = 0; i < games.size(); ++i) {
-            gameInfo[i] = new GameInfo(games.get(i));
-        }
-        responseWrapper.setResponse(new GamesResponse(gameInfo));
+        List<LobbyGameInfo> lobbyGameInfos = games.parallelStream().map(LobbyGameInfo::new).collect(Collectors.toList());
+        responseWrapper.setResponse(new GamesResponse(lobbyGameInfos));
         return Collections.singletonList(responseWrapper);
     }
 }

@@ -2,8 +2,11 @@ package server.dto;
 
 import com.google.gson.annotations.SerializedName;
 import model.Player;
-import model.PlayerColor;
 import server.ServerFacade;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -11,17 +14,22 @@ import server.ServerFacade;
  * Created by rodriggl on 3/3/2016.
  */
 public class PlayerInfo {
-    private transient final ServerFacade serverFacade = ServerFacade.getServerFacade();
+    // transfer information
     @SerializedName("username")
     private String username;
     @SerializedName("color")
     private String colorName;
-    @SerializedName("playerOrder")
-    private int playerOrder;
 
-    public PlayerInfo(Player player, int playerOrder) {
-        this.username = serverFacade.getAllUsers().get(player.getPlayerID()).getUsername();
+    // internal information
+    private transient int playerId;
+
+    public PlayerInfo(Player player) {
+        this.username = ServerFacade.getServerFacade().getAllUsers().get(player.getPlayerID()).getUsername();
         this.colorName = player.getPlayerColor().toString();
-        this.playerOrder = playerOrder;
+        this.playerId = player.getPlayerID();
+    }
+
+    public int getPlayerId() {
+        return playerId;
     }
 }

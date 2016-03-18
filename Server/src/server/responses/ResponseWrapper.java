@@ -2,6 +2,7 @@ package server.responses;
 
 import com.google.gson.annotations.SerializedName;
 import server.JsonTranslator;
+import server.dto.gameplay.GamePlayInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,18 +18,19 @@ public class ResponseWrapper {
     @SerializedName("command")
     private String commandName;
 
-    // This is an object so gson serializes fully
+    // This was an object so gson serialized fully, but now an object to support multiple responses, not necessarily
+    // a response object.
     // (see http://stackoverflow.com/questions/8153582/gson-doesnt-serialize-fields-defined-in-subclasses)
     @SerializedName("parameters")
     private Object response;
 
-    public ResponseWrapper(List<Integer> targetIDs, Response response, String commandName) {
+    public ResponseWrapper(List<Integer> targetIDs, Object response, String commandName) {
         this.targetIds = targetIDs;
         this.response = response;
         this.commandName = commandName;
     }
 
-    public ResponseWrapper(Response response) {
+    public ResponseWrapper(Object response) {
         this(null, response, null);
     }
 
@@ -40,7 +42,7 @@ public class ResponseWrapper {
         this(targetID, null, commandName);
     }
 
-    public ResponseWrapper(int targetID, Response response, String commandName) {
+    public ResponseWrapper(int targetID, Object response, String commandName) {
         this(Collections.singletonList(targetID), response, commandName);
     }
 
@@ -68,8 +70,8 @@ public class ResponseWrapper {
         return JsonTranslator.getGson().toJson(this);
     }
 
-    public ResponseWrapper setResponse(Response response) {
-        this.response = response;
+    public ResponseWrapper setResponse(Object obj) {
+        this.response = obj;
         return this;
     }
 
