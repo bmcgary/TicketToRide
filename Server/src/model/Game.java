@@ -106,7 +106,7 @@ public class Game {
 
 	public boolean canPlayerBuyRoute(int playerID, CityToCityRoute route, Map<TrackColor, Integer> cards) {
 		//must be player's current turn
-		if(playerManager.getPlayers().get(playerManager.currentTurnIndex).getPlayerID() != playerID){
+		if(getPlayerByIndex(playerManager.currentTurnIndex).getPlayerID() != playerID){
 			return false;
 		}
 		
