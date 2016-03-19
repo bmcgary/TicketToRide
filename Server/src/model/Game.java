@@ -115,6 +115,11 @@ public class Game {
 			return false;
 		}
 		
+		//player cannot have already drawn a card this turn
+		if(playerManager.drewAlreadyCurrentTurn){
+			return false;
+		}
+		
 		//route must be available
 		if(!gameBoard.isRouteAvailable(route)){
 			return false;
