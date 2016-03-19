@@ -165,7 +165,6 @@ public class PlayerManager {
 	}
 	
 	public void addDestinationRoutesToConsider(int playerID, List<DestinationRoute> routes){
-		System.out.println("Destination routes to consider size: " + routes.size());
 		Player player = null;
 		for(Player p : players)	
 		{	
