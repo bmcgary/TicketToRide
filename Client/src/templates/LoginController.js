@@ -9,10 +9,11 @@ app.controller('loginController', function ($rootScope, $scope, ClientAPI) {
     		$state.go('gameLobby');
     	} else if (parameters.description == "alreadyloggedin") {
     		alert("You are currently logged in already!");
+            $state.go('gameLobby');
     	} else if(parameters.description == "invalid input") {
     		alert("Error: Invalid Input");
     	} else {
-    		alert("Unexpected Server description...");
+    		alert("Unexpected Server description: " + parameters.description);
     	}
     });
 });

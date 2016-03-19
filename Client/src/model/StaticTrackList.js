@@ -1,6 +1,6 @@
 var app = angular.module('ticketToRide');
 
-app.factory('StaticTrackList', function (TrainRoute, TrackColor) {
+app.factory('StaticTrackList', function (TrainRoute, TrackColor) { //Fix the conventions
 	return {
 		1: new TrainRoute(1, 1, TrackColor.GRAY, []), 
 		2: new TrainRoute(2, 1, TrackColor.GRAY, []), 
