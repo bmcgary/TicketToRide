@@ -87,9 +87,9 @@ app.factory('ModelFacade', function ($rootScope, Game, ModelContainer, TrainCard
             var type = typeof(model.board.tracksPurchased[routeIndex]);
             if(type != 'undefined' && type != 'null') { //route is owned
                 return false;
-            } else if(numberOfWilds > model.player.trainCards[TrainCardColor.WILD]) {
+            } else if(numberOfWilds > model.player.trainCards[TrainCardColor.WILD]) { //The player has enough wilds
                 return false;
-            } else {
+            } else { //The player has enough cards of that train color
                 return StaticTrackList.routeIndex.trainsRequired <= (numberOfWilds + model.player.trainCards[trainColor]);
             }
     	},
@@ -97,9 +97,9 @@ app.factory('ModelFacade', function ($rootScope, Game, ModelContainer, TrainCard
     	canDrawCard: function (cardLocation) {
     		var model = getModel();
 
-            if(cardLocation == 0) {
+            if(cardLocation == 0) { //The player is drawing from the top of the deck
                 return model.board.deckHasTrains;
-            } else if(model.board.mustDrawAgain) {
+            } else if(model.board.mustDrawAgain) { //The player has already drawn one card, so the second cannot be a wild
                 return TrainCardColor.WILD != model.board.cardsVisible[cardLocation - 1];
             } else {
                 return  true;
@@ -109,19 +109,21 @@ app.factory('ModelFacade', function ($rootScope, Game, ModelContainer, TrainCard
     	canDrawDestination: function () {
     		var model = getModel();
 
+            //The player can draw destinations, as long as there are destinations to be drawn, and the player has not already drawn a train card
     		return model.board.deckHasDestinations && !model.board.mustDrawAgain;
     	},
 
     	canSelectDestination: function (destinationsSelected) {
     		var model = getModel();
 
-            if(model.board.isFirstRound) { //change to better constraints
+            if(model.board.isFirstRound) { //During the first round, the player must select at least 2 destinations
                 return destinationsSelected.length >= 2;
-            } else {
+            } else { //Otherwise, the player must select at least 1 destination
                 return destinationsSelected.length >= 1;
             }
     	},
 
+        //All in game controllers must listen for the "model:SwitchGame" command. This will give the controller a new model from the selected game
     	switchGame: function (gameId) {
             gameInView = gameId;
             broadcast(gameInView, 'SwitchGame');
