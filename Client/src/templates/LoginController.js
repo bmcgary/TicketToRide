@@ -2,7 +2,12 @@ var app = angular.module('ticketToRide');
 
 app.controller('loginController', function ($rootScope, $scope, ClientAPI) {
     $scope.submit = function () {
-        ClientAPI.login($scope.username, $scope.password);
+        if($scope.username.length > 25 || $scope.username.length < 4 ||
+        $scope.password.length > 25 || $scope.password.length < 4) {
+            alert("Error: Invalid input constraints.");
+        } else {
+            ClientAPI.login($scope.username, $scope.password);
+        }
     };
     $rootScope.$on('server:Login', function (event, parameters) {
     	if(parameters.description == "success") {
