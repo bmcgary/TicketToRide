@@ -109,7 +109,7 @@ public class PlayerManager {
 				wildsNeeded -= trainCards.get(TrackColor.None);
 			}
 			
-			return (wildsNeeded <= 0) ? true : false;
+			return wildsNeeded <= 0;
 			
 		}
 	}
