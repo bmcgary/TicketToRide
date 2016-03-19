@@ -44,7 +44,7 @@ public class Game {
 		gameID = nextID++;
 		isGameOver = false;
 		history = new ArrayList<String>();
-		history.add("Game initialized");
+		history.add("Game created");
 	}
 	
 	public GameBoard getGameBoard() {
@@ -97,7 +97,7 @@ public class Game {
 		
 		//locks new players out now, declares the game has been started
 		started = true;
-		this.addHistoryMessage("Game initialized");
+		this.addHistoryMessage("Game started, good luck!");
 	}
 	
 	public boolean isStarted(){
