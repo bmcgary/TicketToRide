@@ -274,6 +274,10 @@ public class Game {
 		return false;
 	}
 	
+	public Player getPlayerByIndex(int index){
+		return playerManager.getPlayers().get(0);
+	}
+	
 	
 
 }

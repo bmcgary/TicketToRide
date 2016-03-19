@@ -221,7 +221,7 @@ public class ServerFacade {
 		 }
 		 
 		 //player starting game must be 0th slot in game's list
-		 if(game.getPlayerManager().getPlayers().get(0).getPlayerID() != playerID){	//can anyone say Demeter's law?
+		 if(game.getPlayerByIndex(0).getPlayerID() != playerID){
 			 return false;
 		 }
 		 
