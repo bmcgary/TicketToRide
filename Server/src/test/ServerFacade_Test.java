@@ -936,7 +936,7 @@ public class ServerFacade_Test {
 				//verify destination routes were added for user to consider
 				TestPlayerManager manager = (TestPlayerManager)game1.getPlayerManager();
 				Player player1 = manager.getPlayerByID(test2ID);
-				assertTrue(player1.getDestinationRoutesToConsider().length > 0);
+				assertTrue(player1.getDestinationRoutesToConsider().size() > 0);
 			}
 			else
 			{
@@ -1046,7 +1046,7 @@ public class ServerFacade_Test {
 			//selecting destinations when already drawn train card
 			TestPlayerManager manager = (TestPlayerManager)game1.getPlayerManager();
 			manager.setCurrentTurnIndex(1);
-			manager.getPlayerByID(user2).setDestinationRoutesToConsider(new DestinationRoute[]{null, null, null});
+			manager.getPlayerByID(user2).setDestinationRoutesToConsider(null);
 			if (facade.canDrawTrainCard(user2, game1ID, 0))
 			{
 				facade.drawTrainCard(user2, game1ID, 0);

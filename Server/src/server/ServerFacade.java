@@ -193,21 +193,11 @@ public class ServerFacade {
 	 */
 	public boolean canStartGame(int playerID, int gameID)
 	{
-		User user = null;
 		Game game = null;
 		 //player must exist and be logged in
-		for(User u : this.users){
-			if(u.getPlayerID() == playerID){
-			 	user = u;
-			 	if(!user.isLoggedIn()){
-			 		return false;
-			 	}
-			 	break;
-			 }
-		 }
-		 if(user == null){	//guarantees user was found
-		 	return false;
-		 }
+		if(!this.isPlayerLoggedIn(playerID)){
+			return false;
+		}
 		 
 		 //game must exist
 		 for (Game g : this.games){
@@ -231,7 +221,7 @@ public class ServerFacade {
 		 }
 		 
 		 //player starting game must be 0th slot in game's list
-		 if(game.getPlayerManager().getPlayers().get(0).getPlayerID() != playerID){	//can anyone say Demeter's law?
+		 if(game.getPlayerByIndex(0).getPlayerID() != playerID){
 			 return false;
 		 }
 		 
@@ -693,8 +683,8 @@ public class ServerFacade {
 		if(sf.canBuyRoute(pid, 1, new CityToCityRoute(new City("Seattle"), new City("Portland"), 1, TrackColor.None), m)){
 			sf.buyRoute(pid, 1, new CityToCityRoute(new City("Seattle"), new City("Portland"), 1, TrackColor.None), m);
 		}
-		sf.loadGameState();
-		sf.selectDestinations(pid, 1, new int[]{0,1});
+		//sf.loadGameState();
+		//sf.selectDestinations(pid, 1, new int[]{0,1});
 		System.out.println("Success!");
 	}
 }
