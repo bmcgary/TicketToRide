@@ -175,7 +175,7 @@ public class PlayerManager {
 			}
 		}
 		if(player != null){
-			player.setDestinationRoutesToConsider(routes.toArray(new DestinationRoute[routes.size()]));
+			player.setDestinationRoutesToConsider(routes);
 		}
 	}
 	
@@ -370,7 +370,7 @@ public class PlayerManager {
 		for(Player p : players){
 			if(p.getPlayerID() == playerID){
 				for(int i : destinationsSelected){
-					if(p.getDestinationRoutesToConsider()[i] == null){
+					if(p.getDestinationRoutesToConsider() == null){
 						return false;
 					}
 				}
@@ -395,13 +395,13 @@ public class PlayerManager {
 		List<DestinationRoute> output = null;
 		for(Player p : players){
 			if(p.getPlayerID() == playerID){
-				output = new ArrayList<DestinationRoute>(Arrays.asList(p.getDestinationRoutesToConsider()));
+				output = new ArrayList<DestinationRoute>(p.getDestinationRoutesToConsider());
 				for(int i : destinationsSelected){
-					DestinationRoute dr = p.getDestinationRoutesToConsider()[i];
+					DestinationRoute dr = p.getDestinationRoutesToConsider().get(i);
 					this.addDestinationRoute(playerID, dr);
 					output.remove(dr);
 				}
-				p.setDestinationRoutesToConsider(new DestinationRoute[3]);
+				p.setDestinationRoutesToConsider(null);
 			}
 			break;
 		}

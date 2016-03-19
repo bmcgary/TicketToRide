@@ -26,6 +26,6 @@ public class PrivatePlayerInfo {
         this.playerOrder = playerOrder;
         this.trains = player.getTrainCarCards().entrySet().parallelStream().map(TrainCardInfo::new).collect(Collectors.toList());
         this.destinationCards = player.getDestinationRoute().parallelStream().map(route -> new DestinationCardInfo(route, cities)).collect(Collectors.toList());
-        this.possibleDestinationCards = Arrays.stream(player.getDestinationRoutesToConsider()).map(route -> new DestinationCardInfo(route, cities)).collect(Collectors.toList());
+        this.possibleDestinationCards = player.getDestinationRoutesToConsider().parallelStream().map(route -> new DestinationCardInfo(route, cities)).collect(Collectors.toList());
     }
 }

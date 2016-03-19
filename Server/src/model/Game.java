@@ -111,7 +111,7 @@ public class Game {
 		}
 		
 		//player cannot be holding destination routes to consider
-		if(playerManager.getPlayer(playerID).getDestinationRoutesToConsider()[0] != null){
+		if(playerManager.getPlayer(playerID).getDestinationRoutesToConsider() != null){
 			return false;
 		}
 		
@@ -164,7 +164,7 @@ public class Game {
 		}
 		
 		//player cannot have destination cards under consideration
-		if(playerManager.getPlayer(playerID).getDestinationRoutesToConsider()[0]!=null){
+		if(playerManager.getPlayer(playerID).getDestinationRoutesToConsider()!=null){
 			return false;
 		}
 		
@@ -220,7 +220,7 @@ public class Game {
 		}
 		
 		//player cannot already have cards under consideration
-		if(playerManager.getPlayer(playerID).getDestinationRoutesToConsider()[0] != null){
+		if(playerManager.getPlayer(playerID).getDestinationRoutesToConsider() != null){
 			return false;
 		}
 		
@@ -233,7 +233,7 @@ public class Game {
 		List<DestinationRoute> cards = gameBoard.drawDestinationRoutes();
 		playerManager.addDestinationRoutesToConsider(playerID, cards);
 		assert(playerManager.isPlayersTurn(playerID)); //getting destinations shouldn't end the turn yet
-		assert(playerManager.getPlayers().get(playerID).getDestinationRoutesToConsider().length > 0);
+		assert(playerManager.getPlayers().get(playerID).getDestinationRoutesToConsider().size() > 0);
 		this.addHistoryMessage("Player " + playerID + " drew destination cards");
 	}
 
