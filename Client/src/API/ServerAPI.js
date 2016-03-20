@@ -13,16 +13,20 @@ app.factory('ServerAPI', function ($rootScope) {
                 case "Register": 
                 case "ForgotUserNameOrPassword": 
                 case "Logout": 
-                case "SendChat": 
-                case "GetLeaderboards": 
                 case "UpdateJoinableGames": 
                 case "UpdateUserGames": 
+                case "GetLeaderboards": 
+                case "UpdateGames": 
                 case "JoinGame": 
                 case "CreateGame": 
                 case "LeaveGame": 
                 case "StartGame": 
                 case "AddAI": 
                 case "SendClientModelInformation": 
+                case "PublicClientModelInformation":
+                case "PrivateClientModelInformation":
+                
+                case "SendChat": 
                 case "BuyRoute": 
                 case "DrawTrainCard": 
                 case "NotifyDestinationRouteCompleted": 

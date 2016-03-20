@@ -56,7 +56,7 @@ app.factory('ModelContainer', function () {
     };
 
     ModelContainer.prototype.getRoutesOwned = function() {
-        return Object.keys(this.model.board.tracksPurchased);
+        return Object.keys(this.model.board.routesPurchased);
     };
 
     ModelContainer.prototype.getPlayerColorByRouteId = function(routeId) {

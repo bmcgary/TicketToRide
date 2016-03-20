@@ -8,7 +8,9 @@ app.factory('LobbyPlayer', function () {
 
     //constructor 
     function LobbyPlayer (gameDataJSON) {
-
+        this.playerName = gameDataJSON.username;
+        this.playerColor = gameDataJSON.color;
+        this.playerId = gameDataJSON.playerOrder;
     }
 
     return LobbyPlayer;

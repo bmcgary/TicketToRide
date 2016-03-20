@@ -1,7 +1,8 @@
 var app = angular.module('ticketToRide');
 
-app.factory('ModelFacade', function ($rootScope, Game, ModelContainer, TrainCardColor, StaticTrackList) {
+app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby, ModelContainer, TrainCardColor, StaticTrackList) {
 	//store and access game models
+    var username = "";
 	var usersGames = {};
     var joinableGames = {};
 	var gameInView = -1;
@@ -10,40 +11,147 @@ app.factory('ModelFacade', function ($rootScope, Game, ModelContainer, TrainCard
 		return usersGames[gameInView];
 	};
 
-    var broadcast = function (gameId, command) {
-        if(gameId == gameInView) { 
-            //QUESTION: Does this mean only the game being played will be updated? not any other game thats going on behind the scenes?
-            //RESPONSE: No, it means that the controllers will only be notified about changes in the game being played. All changes will still be made here.
-            $rootScope.$broadcast('model:' + command, new ModelContainer(getModel()));
-        }
-    };
-
     //Lobby stuff=======================================================================================
-    $rootScope.$on('server:UpdateUserGames', function (event, parameters) {
-        //do logic
-
-        broadcast(parameters.gameId, 'UpdateUserGames');
+    $rootScope.$on('server:UpdateJoinableGames', function (event, parameters) {
+        if(parameters.description == "success") {
+            for(var index in parameters.games) {
+                joinableGames[parameters.games[index].gameId] = new GameDataForLobby(parameters.games[index]);
+            }    
+            $rootScope.$broadcast('model:UpdateJoinableGames', joinableGames);        
+        } else if(parameters.description == "server error") {
+            alert("Server Error");
+        } else {
+            alert("Unknown Server Response: UpdateJoinableGames-" + parameters.description);
+        }
     });
 
-    $rootScope.$on('server:UpdateJoinableGames', function (event, parameters) {
-        //do logic
+    $rootScope.$on('server:UpdateGame', function (event, parameters) {
+        if(parameters.description == "add" || parameters.description == "update") {
 
-        $rootScope.$broadcast('model:UpdateJoinableGames', joinableGames[parameters.gameId]);
+            joinableGames[parameters.gameId] = new GameDataForLobby(parameters.game);
+            $rootScope.$broadcast('model:UpdateJoinableGames', joinableGames);  
+        } else if(parameters.description == "delete") {
+            joinableGames[parameters.gameId] = {};
+            $rootScope.$broadcast('model:UpdateJoinableGames', joinableGames);  
+        } else {
+            alert("Unknown Server Response: UpdateGame-" + parameters.description);
+        }
+    });
+
+    $rootScope.$on('server:UpdateUserGames', function (event, parameters) {
+        if(parameters.description == "success") {
+            //Still have stuff to figure out/////////////////////
+            for(var index in parameters.games) {
+                var gameId = parameters.games[index].gameId;
+                if(!(gameId in usersGames))
+                {
+                    usersGames[gameId] = new Game(parameters.games[index].gameId);
+                }
+                usersGames[parameters.games[index].gameId].updateLobbyData(parameters.games[index], this.username);
+                $rootScope.$broadcast('model:UpdateUserGames', new ModelContainer(getModel()));
+            }            
+        } else if(parameters.description == "server error") {
+            alert("Server Error");
+        } else {
+            alert("Unknown Server Response: UpdateUserGames-" + parameters.description);
+        }
     });
 
 	$rootScope.$on('server:StartGame', function (event, parameters) {
-        //do logic
 
-    	broadcast(parameters.gameId, 'StartGame');
+        if(parameters.description == "success") {
+            //Do nothing
+        } else if(parameters.description == "unable to start game") {
+            alert("Unable to Start Game");
+        } else if(parameters.description == "server error") {
+            alert("Server Error");
+        } else {
+            alert("Unknown Server Response: StartGame-" + parameters.description);
+        }
+    });
+
+    $rootScope.$on('server:CreateGame', function (event, parameters) {
+        if(parameters.description == "success") {
+            //Do nothing
+        } else if(parameters.description == "server error") {
+            alert("Server Error");
+        } else {
+            alert("Unknown Server Response: CreateGame-" + parameters.description);
+        }
+    });
+
+    $rootScope.$on('server:JoinGame', function (event, parameters) {
+        if(parameters.description == "success") {
+            //Do nothing
+        } else if(parameters.description == "invalid input") {
+            alert("Invalid Input");
+        } else if(parameters.description == "server error") {
+            alert("Server Error");
+        } else {
+            alert("Unknown Server Response: JoinGame-" + parameters.description);
+        }
+    });
+
+    $rootScope.$on('server:SendClientModelInformation', function (event, parameters) {
+        if(parameters.description == "success") {
+            //Do nothing       
+        } else if(parameters.description == "not in game") {
+            alert("You cannot request that information");
+        } else if(parameters.description == "server error") {
+            alert("Server Error");
+        } else {
+            alert("Unknown Server Response: SendClientModelInformation-" + parameters.description);
+        }
+    });
+
+    $rootScope.$on('server:Logout', function (event, parameters) {
+        $state.go('login');
     });
 
     $rootScope.$on('server:LeaveGame', function (event, parameters) {
         //future
-        delete usersGames[parameters.gameId];
-        broadcast(parameters.gameId, 'LeaveGame');
+        /*delete usersGames[parameters.gameId];*/
     });
 
+
     //In Game===========================================================================================
+    var broadcast = function (gameId, command) {
+        if(gameId == gameInView) { 
+            $rootScope.$broadcast('model:' + command, new ModelContainer(getModel()));
+        }
+    };
+
+    $rootScope.$on('server:PrivateClientModelInformation', function (event, parameters) {
+        if(parameters.description == "success") { //Maybe remove description and need gameId
+            usersGames[parameters.gameId].player.setInGameData(parameters);
+            broadcast(parameters.gameId, 'PrivateClientModelInformation');
+
+            if("possibleDestinationCards" in parameters) {
+                $rootScope.$broadcast('model:GetDestinations', parameters.possibleDestinationCards);
+            }
+
+        } else if(parameters.description == "server error") {
+            alert("Server Error");
+        } else {
+            alert("Unknown Server Response: PrivateClientModelInformation-" + parameters.description);
+        }
+    });
+
+    $rootScope.$on('server:PublicClientModelInformation', function (event, parameters) {
+        if(parameters.description == "success") {
+            for(var index in parameters.players) {
+                var playerId = parameters.players[index].playerOrder;
+                usersGames[parameters.gameId].getPlayerById(playerId).trainsLeft = parameters[index].trainsLeft;
+                usersGames[parameters.gameId].board.setRoutesPurchased(players.routes, game.getPlayerById(playerId).playerColor);
+            }
+
+        } else if(parameters.description == "server error") {
+            alert("Server Error");
+        } else {
+            alert("Unknown Server Response: PublicClientModelInformation-" + parameters.description);
+        }
+    });
+
     $rootScope.$on('server:SendChat', function (event, parameters) {
         //future
 
@@ -52,9 +160,23 @@ app.factory('ModelFacade', function ($rootScope, Game, ModelContainer, TrainCard
 
 
     $rootScope.$on('server:BuyRoute', function (event, parameters) {
-        //do logic
+        if(parameters.description == "success") {
+            //do logic
 
-        broadcast(parameters.gameId, 'BuyRoute');
+            broadcast(parameters.gameId, 'BuyRoute');
+        } else if(parameters.description == "invalid route location") {
+            alert("Invalid Route Location");
+        } else if(parameters.description == "insuffcient trains") {
+            alert("Insuffcient Trains");
+        } else if(parameters.description == "invalid train color") {
+            alert("Invalid Train Color");
+        } else if(parameters.description == "not your turn") {
+            alert("It is not your turn!");
+        } else if(parameters.description == "server error") {
+            alert("Server Error");
+        } else {
+            alert("Unknown Server Response: BuyRoute-" + parameters.description);
+        }
     });
 
 
@@ -123,10 +245,18 @@ app.factory('ModelFacade', function ($rootScope, Game, ModelContainer, TrainCard
             }
     	},
 
-        //All in game controllers must listen for the "model:SwitchGame" command. This will give the controller a new model from the selected game
-    	switchGame: function (gameId) {
-            gameInView = gameId;
-            broadcast(gameInView, 'SwitchGame');
+        //All in game controllers must listen for the "model:SetGameInView" command. This will give the controller a new model from the selected game
+    	setGameInView: function (gameId) {
+            if(gameId in usersGames) {
+                gameInView = gameId;
+                broadcast(gameInView, 'SetGameInView');
+            } else {
+                alert("Invalid Game Id");
+            }
     	}
+
+        setUsername: function (username) {
+            this.username = username;
+        }
     };
 });
