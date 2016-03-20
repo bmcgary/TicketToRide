@@ -911,8 +911,9 @@ public class ServerFacade_Test {
 			assertFalse(facade.canGetDestinations(test1ID, game1ID));
 			facade.login("test1", "test1"); //ensure that logging back in worked
 
-			//TODO verify first round behavior with Trent
 			//working example
+			facade.selectDestinations(test1ID, game1ID, new int[]{0,1,2});
+			facade.selectDestinations(test2ID, game1ID, new int[]{0,1,2});
 			assertTrue(facade.canGetDestinations(test1ID, game1ID));
 			
 			//TODO test where already called getDestinations this turn
@@ -922,7 +923,11 @@ public class ServerFacade_Test {
 			{
 				facade.drawTrainCard(test1ID, game1ID, 5);
 				assertFalse(facade.canGetDestinations(test1ID, game1ID));
-				facade.drawTrainCard(test1ID, game1ID, 5);
+				
+				//set turn index to next player
+				TestPlayerManager manager = (TestPlayerManager)game1.getPlayerManager();
+				manager.drewAlreadyCurrentTurn = false;
+				manager.setCurrentTurnIndex(1);
 			}
 			else
 			{

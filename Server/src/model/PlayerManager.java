@@ -158,10 +158,10 @@ public class PlayerManager {
 				player = players.get(i);
 				
 			}
-			
-			player.getDestinationRoute().add(route);
-			assert(player.getDestinationRoute().contains(route));
 		}
+		assert(player != null);
+		player.getDestinationRoute().add(route);
+		assert(player.getDestinationRoute().contains(route));
 	}
 	
 	public void addDestinationRoutesToConsider(int playerID, List<DestinationRoute> routes){
@@ -401,8 +401,8 @@ public class PlayerManager {
 					output.remove(dr);
 				}
 				p.setDestinationRoutesToConsider(null);
+				break;
 			}
-			break;
 		}
 		return output;
 	}
