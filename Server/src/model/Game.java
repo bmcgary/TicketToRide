@@ -25,15 +25,16 @@ public class Game {
 	protected boolean started;
 	protected boolean isGameOver;
 	protected String name;
-	
-	public Game(String name){
-		this.constructHelper(name);
+
+	public Game() {
+		this(null);
 	}
-	
-	//default name will be Game{ID} where {ID} is the current ID number
-	public Game(){
-		String tName = "Game" + nextID;
-		this.constructHelper(tName);
+
+	public Game(String name){
+		if (name == null || name.equals("")) {
+			name = "Game" + nextID;
+		}
+		this.constructHelper(name);
 	}
 	
 	private void constructHelper(String name){
