@@ -75,12 +75,13 @@ app.controller('gameLobbyController', function($scope, $rootScope, ClientAPI, $u
 	function getAvailableGames() {
 		ClientAPI.updateJoinableGames();
 	}
-	//getAvailableGames();
+	getAvailableGames();
 	//getAvailableGames(); // maybe call the function to get the data
-	$rootScope.$on('server:updateJoinableGames', function(event, parameters) {
+	$rootScope.$on('server:UpdateJoinableGames', function(event, parameters) {
 		alert("Listener reached");
 		console.log(event);
 		console.log(parameters);
+		console.log("dantley")
 	});
 	//END GET AVAILABLE GAMES
 	//TODO do the same thing and get MYGAMES
