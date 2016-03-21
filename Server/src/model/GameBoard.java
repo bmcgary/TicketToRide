@@ -243,7 +243,7 @@ public class GameBoard {
 	}
 
 	public void initialize() throws InternalServerException {
-		//add 12 of each TrackColor to deck, 16 of locomotive
+		//add 12 of each TrackColor to deck, 14 of locomotive
 		for(TrackColor tc : TrackColor.values()){
 			int toAdd = 12;
 			if(tc == TrackColor.None){

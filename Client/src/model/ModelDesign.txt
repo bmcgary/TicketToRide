@@ -25,7 +25,7 @@ class ModelContainer {
     int getOpponentPlayerId(index);
 
     //Player Data
-    Strint getPlayerName();
+    String getPlayerName();
     TrainCardColor getPlayerColor(); 
     int getPlayerPoints();
     int getPlayerTrainsLeft(); 
@@ -80,7 +80,7 @@ class GameBoard {
     boolean deckHasTrains;
     boolean isFirstRound;
     boolean isLastRound;
-    Map <int, int> tracksPurchased = {}; //Map <routeIndex, playerId>
+    Map <int, int> tracksPurchased = {}; //Map <routeIndex, playerId> //Maybe change to playerColor
     TrainCardColor[] cardsVisible;
 };
 
@@ -123,7 +123,8 @@ class TrainRoute {
 
 enum TrainCardColor {};
 enum TrackColor {};
+enum PlayerColor {}; //add this
+//document
+//make a converter
 
-//I am thinking that I will add
-enum PlayerColor {};
 class Rect {};

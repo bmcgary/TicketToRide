@@ -11,13 +11,14 @@ app.factory('ModelFacade', function ($rootScope, Game, ModelContainer, TrainCard
 	};
 
     var broadcast = function (gameId, command) {
-        if(gameId == gameInView) { //QUESTION: Does this mean only the game being played will be updated? not any other game thats going on behind the scenes?
-            //RESPONSE: No, it means that the controllers will only be notified about changes in the game being played.
+        if(gameId == gameInView) { 
+            //QUESTION: Does this mean only the game being played will be updated? not any other game thats going on behind the scenes?
+            //RESPONSE: No, it means that the controllers will only be notified about changes in the game being played. All changes will still be made here.
             $rootScope.$broadcast('model:' + command, new ModelContainer(getModel()));
         }
     };
 
-    //Lobby stuff//////////////
+    //Lobby stuff=======================================================================================
     $rootScope.$on('server:UpdateUserGames', function (event, parameters) {
         //do logic
 
@@ -27,7 +28,7 @@ app.factory('ModelFacade', function ($rootScope, Game, ModelContainer, TrainCard
     $rootScope.$on('server:UpdateJoinableGames', function (event, parameters) {
         //do logic
 
-        broadcast(parameters.gameId, 'UpdateJoinableGames');
+        $rootScope.$broadcast('model:UpdateJoinableGames', joinableGames[parameters.gameId]);
     });
 
 	$rootScope.$on('server:StartGame', function (event, parameters) {
@@ -42,7 +43,7 @@ app.factory('ModelFacade', function ($rootScope, Game, ModelContainer, TrainCard
         broadcast(parameters.gameId, 'LeaveGame');
     });
 
-    //In Game/////////////////////
+    //In Game===========================================================================================
     $rootScope.$on('server:SendChat', function (event, parameters) {
         //future
 
@@ -79,6 +80,7 @@ app.factory('ModelFacade', function ($rootScope, Game, ModelContainer, TrainCard
 
     return {
 
+        //CanDo Methods=================================================================================
     	canBuyRoute: function (routeIndex, trainColor, numberOfWilds) {
             var model = getModel();
 
@@ -104,7 +106,7 @@ app.factory('ModelFacade', function ($rootScope, Game, ModelContainer, TrainCard
             }
     	},
 
-    	canDrawDestination: function (index) {
+    	canDrawDestination: function () {
     		var model = getModel();
 
     		return model.board.deckHasDestinations && !model.board.mustDrawAgain;
@@ -113,7 +115,7 @@ app.factory('ModelFacade', function ($rootScope, Game, ModelContainer, TrainCard
     	canSelectDestination: function (destinationsSelected) {
     		var model = getModel();
 
-            if(model.board.isFirstRound) {
+            if(model.board.isFirstRound) { //change to better constraints
                 return destinationsSelected.length >= 2;
             } else {
                 return destinationsSelected.length >= 1;
