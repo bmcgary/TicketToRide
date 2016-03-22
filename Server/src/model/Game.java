@@ -250,7 +250,7 @@ public class Game {
 			return false;
 		}
 		//if it's the first turn, at least two must be selected instead of the normal one
-		if(playerManager.getRoundNumber() == 1 && destinationsSelected.length < 2){
+		if(playerManager.getRoundNumber() == 0 && destinationsSelected.length < 2){
 			return false;
 		}
 		return playerManager.canSelectDestinations(playerID, destinationsSelected);

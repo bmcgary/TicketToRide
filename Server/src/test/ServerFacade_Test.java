@@ -1036,6 +1036,16 @@ public class ServerFacade_Test {
 			facade.addPlayerToGame(user2, game1ID, PlayerColor.Red);
 
 			facade.startGame(user1, game1ID);
+			
+			//test selecting only one destination on first round
+			try
+			{
+				facade.selectDestinations(user1, game1ID, new int[]{0});
+				fail("incorrectly allowed player to select 1 dest in first round");
+			}
+			catch (PreConditionException e){}
+			
+			
 			facade.selectDestinations(user1, game1ID, new int[]{0,1,2});
 			facade.selectDestinations(user2, game1ID, new int[]{0,1,2});
 
@@ -1060,41 +1070,47 @@ public class ServerFacade_Test {
 			assertFalse(facade.canSelectDestinations(user1, -1, destinations));
 			assertFalse(facade.canSelectDestinations(user1, game1ID, null));
 
+			TestPlayerManager manager = (TestPlayerManager)game1.getPlayerManager();
+
 			//valid usage
 			assertTrue(facade.canSelectDestinations(user1, game1ID, destinations));
+			int dests = manager.getPlayerByID(user1).getDestinationRoute().size();
 			facade.selectDestinations(user1, game1ID, destinations);
 			//test results
+			assertTrue(manager.getPlayerByID(user1).getDestinationRoute().size() == dests+3);
+			assertTrue(manager.getCurrentTurnIndex() == 1);
+			assertTrue(manager.getPlayerByID(user1).getDestinationRoutesToConsider() == null);
 
-			// TODO selecting destinations updates player's score
-			//update a player with routes such that they have a destination
-			//update destination deck such that that is the only destination available
-			//update so it is that player's turn
-			//getDestinations
-			//selectDestination
-			//verify score increased by desired amount
-
-			//TODO selecting destinations ends the game
-			//update current turn and finalTurnIndex such that this is final turn
-			//getDestinations
-			//verify game ended
-
-			//selecting destinations when already drawn train card
-			TestPlayerManager manager = (TestPlayerManager)game1.getPlayerManager();
+			//TODO verify a selected destination will correctly be marked as completed when necessary
+			
 			manager.setCurrentTurnIndex(1);
 			manager.getPlayerByID(user2).setDestinationRoutesToConsider(null);
+			
+			//selecting when haven't previously called getDestinations
+			assertFalse(facade.canSelectDestinations(user2, game1ID, new int[]{1}));
+			
+			
+			//selecting destinations when already drawn train card
 			if (facade.canDrawTrainCard(user2, game1ID, 0))
 			{
 				facade.drawTrainCard(user2, game1ID, 0);
 				assertFalse(facade.canSelectDestinations(user2, game1ID, destinations));
+				manager.setDrewAlreadyCurrentTurn(false);
+				manager.setCurrentTurnIndex(0);
+				
 			}
 			else
 			{
 				fail("Could not draw train card");
 			}
-
-			/*
-			 * 5(when destinations to consider is empty?), 7(not valid to test), 8(to do), 9(to do)
-			 */
+			
+			//selecting destinations ends the game
+			//update current turn and finalTurnIndex such that this is final turn
+			manager.setFinalTurnIndex(1);
+			facade.getDestinations(user1, game1ID);
+			facade.selectDestinations(user1,game1ID, new int[]{0});
+			//verify game ended
+			assertTrue(game1.isGameOver());
 		}
 		catch(AddUserException e)
 		{
