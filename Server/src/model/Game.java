@@ -25,15 +25,16 @@ public class Game {
 	protected boolean started;
 	protected boolean isGameOver;
 	protected String name;
-	
-	public Game(String name){
-		this.constructHelper(name);
+
+	public Game() {
+		this(null);
 	}
-	
-	//default name will be Game{ID} where {ID} is the current ID number
-	public Game(){
-		String tName = "Game" + nextID;
-		this.constructHelper(tName);
+
+	public Game(String name){
+		if (name == null || name.equals("")) {
+			name = "Game" + nextID;
+		}
+		this.constructHelper(name);
 	}
 	
 	private void constructHelper(String name){
@@ -249,7 +250,7 @@ public class Game {
 			return false;
 		}
 		//if it's the first turn, at least two must be selected instead of the normal one
-		if(playerManager.getRoundNumber() == 1 && destinationsSelected.length < 2){
+		if(playerManager.getRoundNumber() == 0 && destinationsSelected.length < 2){
 			return false;
 		}
 		return playerManager.canSelectDestinations(playerID, destinationsSelected);

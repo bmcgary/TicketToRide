@@ -663,8 +663,8 @@ public class ServerFacade_Test {
 
 
 			//create two games
-			Game game1 = new Game();
-			Game game2 = new Game();
+			TestGame game1 = new TestGame();
+			TestGame game2 = new TestGame();
 			int game1ID = game1.getGameID();
 			int game2ID = game2.getGameID();
 			facade.createGame(game1,test1ID,PlayerColor.Blue); //assume this game is started by test1 with Blue
@@ -705,7 +705,39 @@ public class ServerFacade_Test {
 			assertTrue(game1.isStarted());
 			assertFalse(game1.isGameOver());
 
-			//Perhaps check some more things on the game??
+			//more in-depth test
+			game1.getHistory();
+			TestGameBoard board = (TestGameBoard)game1.getGameBoard();
+			TestPlayerManager manager = (TestPlayerManager)game1.getPlayerManager();
+			
+			//12 * 8 = 96 regular train cards; + 14 wilds; -5 for visible cards -(4*2) for opening hands
+			assertTrue(board.getDeckTrainCarCards().size() == 97);
+			//30 destination routes; -(3*2) for player's hands
+			assertTrue(board.getDestinationRoutes().size() == 24);
+			assertTrue(board.getDiscardedTrainCarCards().size() == 0);
+			board.getCities();
+			board.getRoutes();
+			for (TrackColor c : board.getVisibleTrainCarCards())
+			{
+				assertTrue(c != null);
+			}
+			
+			assertFalse(manager.drewAlreadyCurrentTurn);
+			assertTrue(manager.getCurrentTurnIndex() == 0);
+			assertTrue(manager.getNumPlayers() == 2);
+			assertTrue(manager.getRound()==0);
+			Player player1 = manager.getPlayerByID(test1ID);
+			assertTrue(player1.getDestinationRoutesToConsider().size() == 3);
+			assertTrue(player1.getPlayerColor() == PlayerColor.Blue);
+			assertTrue(player1.getTrainsLeft() == 45);
+			assertFalse(player1.hasLongestRoute());
+			int totalTrainCards = 0;
+			for (Integer i : player1.getTrainCarCards().values())
+			{
+				totalTrainCards += i;
+			}
+			assertTrue(totalTrainCards == 4);
+			assertTrue(player1.getDestinationRoute().size() == 0);
 
 			//call canStartGame on game that has already been started
 			assertFalse(facade.canStartGame(test1ID, game1ID));
@@ -911,18 +943,21 @@ public class ServerFacade_Test {
 			assertFalse(facade.canGetDestinations(test1ID, game1ID));
 			facade.login("test1", "test1"); //ensure that logging back in worked
 
-			//TODO verify first round behavior with Trent
 			//working example
+			facade.selectDestinations(test1ID, game1ID, new int[]{0,1,2});
+			facade.selectDestinations(test2ID, game1ID, new int[]{0,1,2});
 			assertTrue(facade.canGetDestinations(test1ID, game1ID));
-			
-			//TODO test where already called getDestinations this turn
 
 			//call canGetDestinations on game when already called draw train car
 			if(facade.canDrawTrainCard(test1ID, game1ID, 0)) //try to ensure this test will happen
 			{
 				facade.drawTrainCard(test1ID, game1ID, 5);
 				assertFalse(facade.canGetDestinations(test1ID, game1ID));
-				facade.drawTrainCard(test1ID, game1ID, 5);
+				
+				//set turn index to next player
+				TestPlayerManager manager = (TestPlayerManager)game1.getPlayerManager();
+				manager.drewAlreadyCurrentTurn = false;
+				manager.setCurrentTurnIndex(1);
 			}
 			else
 			{
@@ -937,19 +972,19 @@ public class ServerFacade_Test {
 				TestPlayerManager manager = (TestPlayerManager)game1.getPlayerManager();
 				Player player1 = manager.getPlayerByID(test2ID);
 				assertTrue(player1.getDestinationRoutesToConsider().size() > 0);
+				assertFalse(facade.canGetDestinations(test2ID, game1ID));
+				facade.selectDestinations(test2ID, game1ID, new int[]{0,1,2});
 			}
 			else
 			{
 				fail("Something went wrong. Unable to run all tests");
 			}
-			/*
-		//call canGetDestinations on game when no destinations remain
-		 * TODO verify first round behavior before implementing this test
-		//figure out how to clear the list of destinations
-		TestGameBoard board = (TestGameBoard)game1.getGameBoard();
-		board.setDestinationRoutes(new List<DestinationRoute>());
-		assertFalse(facade.canGetDestinations(test1ID, game1ID));
-			 */
+			
+			//cannot get destinations when none remain
+			assertTrue(facade.canGetDestinations(test1ID, game1ID));
+			TestGameBoard board = (TestGameBoard)game1.getGameBoard();
+			board.setDestinationRoutes(new ArrayList<DestinationRoute>());
+			assertFalse(facade.canGetDestinations(test1ID, game1ID));
 		}
 		catch(AddUserException e) {
 			fail("Something went wrong trying to register users");
@@ -1001,6 +1036,16 @@ public class ServerFacade_Test {
 			facade.addPlayerToGame(user2, game1ID, PlayerColor.Red);
 
 			facade.startGame(user1, game1ID);
+			
+			//test selecting only one destination on first round
+			try
+			{
+				facade.selectDestinations(user1, game1ID, new int[]{0});
+				fail("incorrectly allowed player to select 1 dest in first round");
+			}
+			catch (PreConditionException e){}
+			
+			
 			facade.selectDestinations(user1, game1ID, new int[]{0,1,2});
 			facade.selectDestinations(user2, game1ID, new int[]{0,1,2});
 
@@ -1025,41 +1070,47 @@ public class ServerFacade_Test {
 			assertFalse(facade.canSelectDestinations(user1, -1, destinations));
 			assertFalse(facade.canSelectDestinations(user1, game1ID, null));
 
+			TestPlayerManager manager = (TestPlayerManager)game1.getPlayerManager();
+
 			//valid usage
 			assertTrue(facade.canSelectDestinations(user1, game1ID, destinations));
+			int dests = manager.getPlayerByID(user1).getDestinationRoute().size();
 			facade.selectDestinations(user1, game1ID, destinations);
 			//test results
+			assertTrue(manager.getPlayerByID(user1).getDestinationRoute().size() == dests+3);
+			assertTrue(manager.getCurrentTurnIndex() == 1);
+			assertTrue(manager.getPlayerByID(user1).getDestinationRoutesToConsider() == null);
 
-			// TODO selecting destinations updates player's score
-			//update a player with routes such that they have a destination
-			//update destination deck such that that is the only destination available
-			//update so it is that player's turn
-			//getDestinations
-			//selectDestination
-			//verify score increased by desired amount
-
-			//TODO selecting destinations ends the game
-			//update current turn and finalTurnIndex such that this is final turn
-			//getDestinations
-			//verify game ended
-
-			//selecting destinations when already drawn train card
-			TestPlayerManager manager = (TestPlayerManager)game1.getPlayerManager();
+			//TODO verify a selected destination will correctly be marked as completed when necessary
+			
 			manager.setCurrentTurnIndex(1);
 			manager.getPlayerByID(user2).setDestinationRoutesToConsider(null);
+			
+			//selecting when haven't previously called getDestinations
+			assertFalse(facade.canSelectDestinations(user2, game1ID, new int[]{1}));
+			
+			
+			//selecting destinations when already drawn train card
 			if (facade.canDrawTrainCard(user2, game1ID, 0))
 			{
 				facade.drawTrainCard(user2, game1ID, 0);
 				assertFalse(facade.canSelectDestinations(user2, game1ID, destinations));
+				manager.setDrewAlreadyCurrentTurn(false);
+				manager.setCurrentTurnIndex(0);
+				
 			}
 			else
 			{
 				fail("Could not draw train card");
 			}
-
-			/*
-			 * 5(when destinations to consider is empty?), 7(not valid to test), 8(to do), 9(to do)
-			 */
+			
+			//selecting destinations ends the game
+			//update current turn and finalTurnIndex such that this is final turn
+			manager.setFinalTurnIndex(1);
+			facade.getDestinations(user1, game1ID);
+			facade.selectDestinations(user1,game1ID, new int[]{0});
+			//verify game ended
+			assertTrue(game1.isGameOver());
 		}
 		catch(AddUserException e)
 		{

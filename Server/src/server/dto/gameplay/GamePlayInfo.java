@@ -31,14 +31,13 @@ public class GamePlayInfo extends GameInfo {
         this.gamePlayerInfos = new ArrayList<>();
         this.privatePlayerInfos = new HashMap<>();
         List<Player> players = game.getPlayerManager().getPlayers();
-        List<City> cities = game.getGameBoard().getCities();
         List<CityToCityRoute> routes = game.getGameBoard().getRoutes();
         for (int i = 0; i < players.size(); ++i) {
             List<CityToCityRoute> playerRoutes = game.getGameBoard().getCurrentRoutes().get(i);
             List<Integer> convertedRoutes = playerRoutes.parallelStream().map(routes::indexOf).collect(Collectors.toList());
             Player player = players.get(i);
             this.gamePlayerInfos.add(new GamePlayerInfo(player, i, convertedRoutes));
-            this.privatePlayerInfos.put(player.getPlayerID(), new PrivatePlayerInfo(player, i, cities));
+            this.privatePlayerInfos.put(player.getPlayerID(), new PrivatePlayerInfo(super.gameId, player, i));
         }
     }
 

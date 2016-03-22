@@ -32,11 +32,7 @@ public class CreateGameCommand extends Command {
         ResponseWrapper responseWrapper = new ResponseWrapper(userID, commandName);
         PlayerColor color = PlayerColor.getColor(colorName);
 
-        Game game;
-        if (gameName == null)
-            game = new Game();
-        else
-            game = new Game(gameName);
+        Game game = new Game(gameName);
 
         try {
             serverFacade.createGame(game, userID, color);
