@@ -659,6 +659,16 @@ public class ServerFacade {
 			throw new GameNotFoundException("could not find game " + gameID);
 	}
 
+	/**
+	 * Get a specified user
+	 * @param userID the id for the desired user
+	 * @return user requested
+     */
+	public User getUser(int userID) {
+		// TODO: implement
+		return null;
+	}
+
 	public static void firebomb()
 	{
 		serverFacade.games.clear();

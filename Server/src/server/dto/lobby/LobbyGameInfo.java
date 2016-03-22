@@ -21,11 +21,14 @@ public class LobbyGameInfo extends GameInfo {
     private String gameName;
     @SerializedName("players")
     private List<PlayerInfo> playerInfos;
+    @SerializedName("hasStarted")
+    private boolean hasStarted;
 
     public LobbyGameInfo(Game game) {
         super.gameId = game.getGameID();
         this.gameName = game.getName();
         this.playerInfos = game.getPlayerManager().getPlayers().parallelStream().map(PlayerInfo::new).collect(Collectors.toList());
+        this.hasStarted = game.isStarted();
     }
 
     @Override

@@ -13,16 +13,16 @@ import java.util.List;
  * Created by rodriggl on 3/13/2016.
  */
 public class DestinationCardInfo {
-    @SerializedName("cityIndex1")
-    private int cityIndex1;
-    @SerializedName("cityIndex2")
-    private int cityIndex2;
+    @SerializedName("city1")
+    private String city1;
+    @SerializedName("city2")
+    private String city2;
     @SerializedName("points")
     private int points;
 
-    public DestinationCardInfo(DestinationRoute destinationRoute, List<City> cityList) {
-        this.cityIndex1 = cityList.indexOf(destinationRoute.getStart());
-        this.cityIndex2 = cityList.indexOf(destinationRoute.getEnd());
+    public DestinationCardInfo(DestinationRoute destinationRoute) {
+        this.city1 = destinationRoute.getStart().getName();
+        this.city2 = destinationRoute.getEnd().getName();
         this.points = destinationRoute.getPointValue();
     }
 }
