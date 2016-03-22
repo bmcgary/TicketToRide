@@ -24,7 +24,7 @@ public class GamePlayerInfo extends PlayerInfo {
     public GamePlayerInfo(Player player, int playerOrder, List<Integer> routes) {
         super(player);
         // This is ugly
-        this.playerName = ServerFacade.getServerFacade().getAllUsers().parallelStream().filter(user -> player.getPlayerID() == user.getPlayerID()).findFirst().get().getUsername();
+        this.playerName = ServerFacade.getServerFacade().getUser(player.getPlayerID()).getUsername();
         this.playerOrder = playerOrder;
         this.routes = routes;
         this.trainsLeft = player.getTrainsLeft();

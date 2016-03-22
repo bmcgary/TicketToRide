@@ -24,7 +24,7 @@ public class PlayerInfo {
     private transient int playerId;
 
     public PlayerInfo(Player player) {
-        this.username = ServerFacade.getServerFacade().getAllUsers().parallelStream().filter(user -> player.getPlayerID() == user.getPlayerID()).findFirst().get().getUsername();
+        this.username = ServerFacade.getServerFacade().getUser(player.getPlayerID()).getUsername();
         this.colorName = player.getPlayerColor().toString();
         this.playerId = player.getPlayerID();
     }
