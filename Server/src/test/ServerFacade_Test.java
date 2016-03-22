@@ -663,8 +663,8 @@ public class ServerFacade_Test {
 
 
 			//create two games
-			Game game1 = new Game();
-			Game game2 = new Game();
+			TestGame game1 = new TestGame();
+			TestGame game2 = new TestGame();
 			int game1ID = game1.getGameID();
 			int game2ID = game2.getGameID();
 			facade.createGame(game1,test1ID,PlayerColor.Blue); //assume this game is started by test1 with Blue
@@ -705,7 +705,39 @@ public class ServerFacade_Test {
 			assertTrue(game1.isStarted());
 			assertFalse(game1.isGameOver());
 
-			//Perhaps check some more things on the game??
+			//more in-depth test
+			game1.getHistory();
+			TestGameBoard board = (TestGameBoard)game1.getGameBoard();
+			TestPlayerManager manager = (TestPlayerManager)game1.getPlayerManager();
+			
+			//12 * 8 = 96 regular train cards; + 14 wilds; -5 for visible cards -(4*2) for opening hands
+			assertTrue(board.getDeckTrainCarCards().size() == 97);
+			//30 destination routes; -(3*2) for player's hands
+			assertTrue(board.getDestinationRoutes().size() == 24);
+			assertTrue(board.getDiscardedTrainCarCards().size() == 0);
+			board.getCities();
+			board.getRoutes();
+			for (TrackColor c : board.getVisibleTrainCarCards())
+			{
+				assertTrue(c != null);
+			}
+			
+			assertFalse(manager.drewAlreadyCurrentTurn);
+			assertTrue(manager.getCurrentTurnIndex() == 0);
+			assertTrue(manager.getNumPlayers() == 2);
+			assertTrue(manager.getRound()==0);
+			Player player1 = manager.getPlayerByID(test1ID);
+			assertTrue(player1.getDestinationRoutesToConsider().size() == 3);
+			assertTrue(player1.getPlayerColor() == PlayerColor.Blue);
+			assertTrue(player1.getTrainsLeft() == 45);
+			assertFalse(player1.hasLongestRoute());
+			int totalTrainCards = 0;
+			for (Integer i : player1.getTrainCarCards().values())
+			{
+				totalTrainCards += i;
+			}
+			assertTrue(totalTrainCards == 4);
+			assertTrue(player1.getDestinationRoute().size() == 0);
 
 			//call canStartGame on game that has already been started
 			assertFalse(facade.canStartGame(test1ID, game1ID));
