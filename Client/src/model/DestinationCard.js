@@ -9,10 +9,14 @@ app.factory('DestinationCard', function () {
 
     //constructor 
     function DestinationCard (gameDataJSON) {
-        //this.cityName1 = Cities[gameDataJSON.cityIndex1];
-        //this.cityName2 = Cities[gameDataJSON.cityIndex2];
+        this.cityName1 = gameDataJSON.cityName1;
+        this.cityName2 = gameDataJSON.cityName2;
 
         this.points = gameDataJSON.points;
+    }
+
+    DestinationCard.prototype.equals = function (card) {
+        return this.cityName1 == card.cityName1 && this.cityName2 == card.cityName2 && this.points == card.points;
     }
 
     return DestinationCard;

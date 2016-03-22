@@ -1,6 +1,6 @@
 var app = angular.module('ticketToRide');
 
-app.controller('loginController', function ($rootScope, $scope, ClientAPI, ModelFacade) {
+app.controller('loginController', function ($rootScope, $scope, $state, ClientAPI, ModelFacade) {
     var username = "";
 
     $scope.submit = function () {

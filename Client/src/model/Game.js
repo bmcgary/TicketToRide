@@ -9,6 +9,7 @@ app.factory('Game', function (Opponent, Player, GameBoard) {
     Game.prototype.gameName = "";
     Game.prototype.gameHistory = [];
     Game.prototype.gameChat = [];
+    Game.prototype.turnIndex = -1;
 
     //constructor 
     function Game (gameId) {
@@ -20,6 +21,7 @@ app.factory('Game', function (Opponent, Player, GameBoard) {
         this.gameName = gameDataJSON.gameName;
         this.opponents = [];
         this.board = new GameBoard();
+        this.turnIndex = 0;
         //for gameDataJSON.opponents;
     }
 

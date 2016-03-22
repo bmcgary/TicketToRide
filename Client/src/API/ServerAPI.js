@@ -25,7 +25,6 @@ app.factory('ServerAPI', function ($rootScope) {
                 case "SendClientModelInformation": 
                 case "PublicClientModelInformation":
                 case "PrivateClientModelInformation":
-                
                 case "SendChat": 
                 case "BuyRoute": 
                 case "DrawTrainCard": 
@@ -35,10 +34,10 @@ app.factory('ServerAPI', function ($rootScope) {
                 case "GameEnded": 
 
                     $rootScope.$broadcast('server:'+response.command, response.parameters);
-					alert("A good command has come back! The server sent back something the client understoond! YIPPY!");
+					console.log("A good command has come back! The server sent back something the client understoond! YIPPY!");
                     break;
 
-                default: alert("Bad Server command");
+                default: alert("Bad Server command: " + response.command);
             }
         }
     };

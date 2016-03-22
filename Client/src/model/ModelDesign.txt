@@ -6,6 +6,7 @@ class ModelContainer {
     String getGameHistoryAtIndex(index);
     int getGameChatSize();
     String getGameChatAtIndex(index); 
+    int getTurnIndex();
     
     //Board data
     boolean deckHasDestinations();
@@ -31,6 +32,7 @@ class ModelContainer {
     int getPlayerTrainsLeft(); 
     int getPlayerId();
     int getTrainCardsByColor(trainCardColor);
+    DestinationCard[] getTemporaryStorageOfDestinationCardsToBeSelectedFrom();
 
     //DestinationCard Data
     int getPlayersDestinationSize();
@@ -39,6 +41,20 @@ class ModelContainer {
     boolean getPlayersDestinationIsComplete(index);
     int getPlayersDestinationPoints(index);
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -72,6 +88,7 @@ class Game {
     String gameName;
     String[] gameHistory;
     String[] gameChat;
+    int turnIndex;
 };
 
 class GameBoard {
@@ -102,6 +119,8 @@ class Player {
     Map<TrainCardColor, int> trainCards;
     DestinationCard[] destinationCards;
     int playerId;
+
+    DestinationCard[] temporaryStorageOfCardsToBeSelectedFrom;
 };
 
 class DestinationCard {

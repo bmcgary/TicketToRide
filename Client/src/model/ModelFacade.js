@@ -161,7 +161,10 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
 
     $rootScope.$on('server:BuyRoute', function (event, parameters) {
         if(parameters.description == "success") {
-            //do logic
+            var playerId = parameters.playerIndex;
+
+            usersGames[parameters.gameId].getPlayerById(playerId).trainsLeft = parameters.trainsLeft;
+            usersGames[parameters.gameId].board.addRoutePurchased(parameters.routeIndexPurchased, game.getPlayerById(playerId).playerColor);
 
             broadcast(parameters.gameId, 'BuyRoute');
         } else if(parameters.description == "invalid route location") {
@@ -181,23 +184,61 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
 
 
     $rootScope.$on('server:DrawTrainCard', function (event, parameters) {
-		//do logic
+		if(parameters.description == "success") {
+            var playerId = parameters.playerIndex;
+            if(playerId == usersGames[parameters.gameId].player.playerId) {
+                usersGames[parameters.gameId].player.trainCards[TrainCardColor.get(parameters.cardDrawn)] += 1;
+            }
+            usersGames[parameters.gameId].board.updateCardsVisible(parameters.availableTrainCards);
 
-        broadcast(parameters.gameId, 'DrawTrainCard');
+            broadcast(parameters.gameId, 'DrawTrainCard');        
+        } else {
+            alert("Server Response: DrawTrainCard-" + parameters.description);
+        }
     });
 
-
-    $rootScope.$on('server:GetDestinations', function (event, parameters) {
-		//do logic
-
-        broadcast(parameters.gameId, 'GetDestinations');
+    $rootScope.$on('server:NotifyDestinationRouteCompleted', function (event, parameters) {
+        var playerId = parameters.playerIndex;
+        if(playerId == usersGames[parameters.gameId].player.playerId) {
+            usersGames[parameters.gameId].player.setDestinationComplete(parameters.route);
+            broadcast(parameters.gameId, 'NotifyDestinationRouteCompleted');
+        }
     });
-
 
     $rootScope.$on('server:SelectDestinations', function (event, parameters) {
-		//do logic
+		if(parameters.description == "success") {
+            var playerId = parameters.playerIndex;
+            if(playerId == usersGames[parameters.gameId].player.playerId) {
+                usersGames[parameters.gameId].player.addDestinationCards(parameters.destinationCards);
+                broadcast(parameters.gameId, 'SelectDestinations');
+            }
+        } else {
+            alert("Server Response: SelectDestinations-" + parameters.description);
+        }
+    });
 
-        broadcast(parameters.gameId, 'SelectDestinations');
+    $rootScope.$on('server:GetDestinations', function (event, parameters) {
+        if(parameters.description == "success") {
+            var playerId = parameters.playerIndex;
+            if(playerId == usersGames[parameters.gameId].player.playerId) {
+                usersGames[parameters.gameId].player.temporaryStorageOfCardsToBeSelectedFrom = parameters.destinationCards;
+                broadcast(parameters.gameId, 'GetDestinations');
+            }
+        } else {
+            alert("Server Response: GetDestinations-" + parameters.description);
+        }
+    });
+
+    $rootScope.$on('server:TurnStartedNotification', function (event, parameters) {
+        if(usersGames[parameters.gameId].board.isFirstRound) {
+            usersGames[parameters.gameId].board.isFirstRound = false;
+        }
+        usersGames[parameters.gameId].board.isLastRound = parameters.lastRound;
+        usersGames[parameters.gameId].turnIndex = parameters.playerIndex;
+    });
+
+    $rootScope.$on('server:GameEnded', function (event, parameters) {
+        //TODO
     });
 
     return {
@@ -205,6 +246,10 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
         //CanDo Methods=================================================================================
     	canBuyRoute: function (routeIndex, trainColor, numberOfWilds) {
             var model = getModel();
+
+            if(model.player.playerId != model.turnIndex) { //not your turn!
+                return false;
+            }
 
             var type = typeof(model.board.tracksPurchased[routeIndex]);
             if(type != 'undefined' && type != 'null') { //route is owned
@@ -219,6 +264,10 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
     	canDrawCard: function (cardLocation) {
     		var model = getModel();
 
+            if(model.player.playerId != model.turnIndex) { //not your turn!
+                return false;
+            }
+
             if(cardLocation == 0) { //The player is drawing from the top of the deck
                 return model.board.deckHasTrains;
             } else if(model.board.mustDrawAgain) { //The player has already drawn one card, so the second cannot be a wild
@@ -231,12 +280,20 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
     	canDrawDestination: function () {
     		var model = getModel();
 
+            if(model.player.playerId != model.turnIndex) { //not your turn!
+                return false;
+            }
+
             //The player can draw destinations, as long as there are destinations to be drawn, and the player has not already drawn a train card
     		return model.board.deckHasDestinations && !model.board.mustDrawAgain;
     	},
 
     	canSelectDestination: function (destinationsSelected) {
     		var model = getModel();
+
+            if(model.player.playerId != model.turnIndex) { //not your turn!
+                return false;
+            }
 
             if(model.board.isFirstRound) { //During the first round, the player must select at least 2 destinations
                 return destinationsSelected.length >= 2;
@@ -253,7 +310,7 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
             } else {
                 alert("Invalid Game Id");
             }
-    	}
+    	},
 
         setUsername: function (username) {
             this.username = username;

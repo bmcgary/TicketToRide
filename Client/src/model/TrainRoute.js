@@ -20,6 +20,7 @@ app.factory('TrainRoute', function (TrainCardColor) {
         return "TrackId = " + trackId + " TrainsRequired = " + this.trainsRequired + " TrackColor = " + this.trackColor + "\n";
     };
 
+    
 
     return TrainRoute;
 });

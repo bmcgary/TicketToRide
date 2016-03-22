@@ -148,5 +148,9 @@ app.factory('ModelContainer', function () {
         return this.model.player.destinationCards[index].points;
     };
 
+    ModelContainer.prototype.getTemporaryStorageOfDestinationCardsToBeSelectedFrom = function() {
+        return this.model.player.temporaryStorageOfCardsToBeSelectedFrom;
+    };
+
     return ModelContainer;
 });

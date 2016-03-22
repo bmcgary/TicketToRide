@@ -13,18 +13,21 @@ app.factory('GameBoard', function (TrainCardColor, StaticTrackList) {
     //constructor 
     function GameBoard () {}
 
-    GameBoard.prototype.updateCardsVisible = function () {
-
-    }
-
-    GameBoard.prototype.updateRoutesPurchased = function (routes, color) {
-        for(var index in routes) {
-            this.addRoutePurchased(routes[index], color);
+    GameBoard.prototype.updateCardsVisible = function (availableTrainCards) {
+        for(var i = 0; i < 5; i++) {
+            cardsVisible[i] = availableTrainCards[i].color;
         }
     }
 
-    GameBoard.prototype.addRoutePurchased = function (routeIndex, color) {
-        routesPurchased[routeIndex] = color;
+    GameBoard.prototype.setRoutesPurchased = function (routes, trainColor) {
+        this.routesPurchased = {};
+        for(var index in routes) {
+            this.addRoutePurchased(routes[index], trainColor);
+        }
+    }
+
+    GameBoard.prototype.addRoutePurchased = function (routeIndex, trainColor) {
+        routesPurchased[routeIndex] = TrainCardColor.get(trainColor);
     }
 
     return GameBoard;
