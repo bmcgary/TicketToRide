@@ -54,8 +54,10 @@ public class SendClientModelInformationCommand extends Command {
                 playersNotInGame.add(playerId);
         });
 
-        ResponseWrapper notInGame = new ResponseWrapper(playersNotInGame, new Response("not in game"), commandName);
-        responses.add(notInGame);
+        if (!playersNotInGame.isEmpty()) {
+            ResponseWrapper notInGame = new ResponseWrapper(playersNotInGame, new Response("not in game"), commandName);
+            responses.add(notInGame);
+        }
 
         responseWrapper.setTargetIds(playersInGame).setResponse(Response.newSuccessResponse());
         responses.add(new ResponseWrapper(playersInGame, gamePlayInfo, "PublicClientModelInformation"));
