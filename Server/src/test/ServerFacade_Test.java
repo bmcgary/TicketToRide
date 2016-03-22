@@ -947,8 +947,6 @@ public class ServerFacade_Test {
 			facade.selectDestinations(test1ID, game1ID, new int[]{0,1,2});
 			facade.selectDestinations(test2ID, game1ID, new int[]{0,1,2});
 			assertTrue(facade.canGetDestinations(test1ID, game1ID));
-			
-			//TODO test where already called getDestinations this turn
 
 			//call canGetDestinations on game when already called draw train car
 			if(facade.canDrawTrainCard(test1ID, game1ID, 0)) //try to ensure this test will happen
@@ -974,19 +972,19 @@ public class ServerFacade_Test {
 				TestPlayerManager manager = (TestPlayerManager)game1.getPlayerManager();
 				Player player1 = manager.getPlayerByID(test2ID);
 				assertTrue(player1.getDestinationRoutesToConsider().size() > 0);
+				assertFalse(facade.canGetDestinations(test2ID, game1ID));
+				facade.selectDestinations(test2ID, game1ID, new int[]{0,1,2});
 			}
 			else
 			{
 				fail("Something went wrong. Unable to run all tests");
 			}
-			/*
-		//call canGetDestinations on game when no destinations remain
-		 * TODO verify first round behavior before implementing this test
-		//figure out how to clear the list of destinations
-		TestGameBoard board = (TestGameBoard)game1.getGameBoard();
-		board.setDestinationRoutes(new List<DestinationRoute>());
-		assertFalse(facade.canGetDestinations(test1ID, game1ID));
-			 */
+			
+			//cannot get destinations when none remain
+			assertTrue(facade.canGetDestinations(test1ID, game1ID));
+			TestGameBoard board = (TestGameBoard)game1.getGameBoard();
+			board.setDestinationRoutes(new ArrayList<DestinationRoute>());
+			assertFalse(facade.canGetDestinations(test1ID, game1ID));
 		}
 		catch(AddUserException e) {
 			fail("Something went wrong trying to register users");
