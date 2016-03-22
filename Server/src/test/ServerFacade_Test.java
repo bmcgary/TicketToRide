@@ -41,26 +41,6 @@ import server.exception.PreConditionException;
 
 public class ServerFacade_Test {
 
-
-	/*
-	 * 	private List<City> cities;
-	private List<CityToCityRoute> routes;
-	private Map<Integer, List<CityToCityRoute>> currentRoutes;
-	private List<DestinationRoute> destinationRoutes;
-	private List<TrackColor> deckTrainCarCards;
-	private TrackColor[] visibleTrainCarCards;
-	private List<TrackColor> discardedTrainCarCards;
-
-	public GameBoard(){
-		cities = new ArrayList<City>();
-		routes = new ArrayList<CityToCityRoute>();
-		currentRoutes = new HashMap<Integer, List<CityToCityRoute>>();
-		destinationRoutes = new ArrayList<DestinationRoute>();
-		visibleTrainCarCards = new TrackColor[5];
-		deckTrainCarCards = new ArrayList<TrackColor>();
-		discardedTrainCarCards = new ArrayList<TrackColor>();
-	}
-	 */
 	ServerFacade serverFacade;
 	Game game1; //version 1
 	GameBoard gameboard1;
@@ -71,7 +51,6 @@ public class ServerFacade_Test {
 	Game game3;//version3
 	GameBoard gameboard3;
 
-
 	/**
 	 * set up serverFacade
 	 * @throws Exception
@@ -79,108 +58,6 @@ public class ServerFacade_Test {
 	@Before
 	public void setUp() throws Exception {
 		serverFacade = ServerFacade.getServerFacade();
-
-
-	}
-	/*
-	 * does currentRoutes mean how many routes a player has? integer is his/her  player id?
-	 */
-	/**
-	 * set up a game for testing
-	 * @throws Exception
-	 */
-	@Before
-	public void buildGame_version1() throws Exception{
-	/*game1 = new Game();
-	gameboard1 = new GameBoard();
-	List<City> cities = new ArrayList<City>();
-	List<CityToCityRoute> routes = new ArrayList<CityToCityRoute>();
-	Map<Integer, List<CityToCityRoute>> currentRoutes = new HashMap<Integer,List<CityToCityRoute>>();
-	List<DestinationRoute> destinationRoutes = new ArrayList<DestinationRoute>();
-	List<TrackColor> deckTrainCarCards = new ArrayList<TrackColor>();
-	TrackColor[] visibleTrainCarCards= new TrackColor[256];
-	List<TrackColor> discardedTrainCarCards = new ArrayList<TrackColor>();
-	City city1 = new City(new Point(3,4),"LA");
-	City city2 = new City(new Point(4,5),"SA");
-	City city3 = new City(new Point(5,5),"GA");
-
-
-	cities.addAll(Arrays.asList(city1,city2,city3));
-	CityToCityRoute ctoc1 = new CityToCityRoute(city1,city2,3,TrackColor.Orange);
-	CityToCityRoute ctoc2 = new CityToCityRoute(city2,city3,3,TrackColor.White);
-	currentRoutes.put(1, new ArrayList<CityToCityRoute>());
-
-	routes.add(ctoc1);
-	routes.add(ctoc2);
-	DestinationRoute dr = new DestinationRoute(city1,city2,2);
-	destinationRoutes.add(dr);
-	deckTrainCarCards.add(TrackColor.Orange);
-	visibleTrainCarCards[0] = TrackColor.Black;
-	visibleTrainCarCards[1] = TrackColor.White;
-	visibleTrainCarCards[2] = TrackColor.Orange;
-	discardedTrainCarCards.add(TrackColor.Black);
-
-	*/
-	}
-
-	@Before
-	public void buildGame_version2() throws Exception{
-	/*List<City> cities = new ArrayList<City>();
-	List<CityToCityRoute> routes = new ArrayList<CityToCityRoute>();
-	Map<Integer, List<CityToCityRoute>> currentRoutes = new HashMap<Integer,List<CityToCityRoute>>();
-	List<DestinationRoute> destinationRoutes = new ArrayList<DestinationRoute>();
-	List<TrackColor> deckTrainCarCards = new ArrayList<TrackColor>();
-	TrackColor[] visibleTrainCarCards= new TrackColor[256];
-	List<TrackColor> discardedTrainCarCards = new ArrayList<TrackColor>();
-	City city1 = new City(new Point(0,1),"LA");
-	City city2 = new City(new Point(1,0),"SA");
-	City city3 = new City(new Point(1,0),"GA");
-
-	cities.addAll(Arrays.asList(city1,city2,city3));
-	CityToCityRoute ctoc1 = new CityToCityRoute(city1,city2,3,TrackColor.Orange);
-	CityToCityRoute ctoc2 = new CityToCityRoute(city2,city3,3,TrackColor.White);
-	currentRoutes.put(1, new ArrayList<CityToCityRoute>());
-
-	routes.add(ctoc1);
-	routes.add(ctoc2);
-	DestinationRoute dr = new DestinationRoute(city1,city2,2);
-	destinationRoutes.add(dr);
-	deckTrainCarCards.add(TrackColor.Orange);
-	visibleTrainCarCards[0] = TrackColor.Black;
-	visibleTrainCarCards[1] = TrackColor.White;
-	visibleTrainCarCards[2] = TrackColor.Orange;
-	discardedTrainCarCards.add(TrackColor.Black);
-	*/
-	}
-
-	@Before
-	public void buildGame_version3() throws Exception{
-	/*List<City> cities = new ArrayList<City>();
-	List<CityToCityRoute> routes = new ArrayList<CityToCityRoute>();
-	Map<Integer, List<CityToCityRoute>> currentRoutes = new HashMap<Integer,List<CityToCityRoute>>();
-	List<DestinationRoute> destinationRoutes = new ArrayList<DestinationRoute>();
-	List<TrackColor> deckTrainCarCards = new ArrayList<TrackColor>();
-	TrackColor[] visibleTrainCarCards= new TrackColor[256];
-	List<TrackColor> discardedTrainCarCards = new ArrayList<TrackColor>();
-	City city1 = new City(new Point(2,2),"LA");
-	City city2 = new City(new Point(3,3),"SA");
-	City city3 = new City(new Point(1,2),"GA");
-
-	cities.addAll(Arrays.asList(city1,city2,city3));
-	CityToCityRoute ctoc1 = new CityToCityRoute(city1,city2,3,TrackColor.Orange);
-	CityToCityRoute ctoc2 = new CityToCityRoute(city2,city3,3,TrackColor.White);
-	currentRoutes.put(1, new ArrayList<CityToCityRoute>());
-
-	routes.add(ctoc1);
-	routes.add(ctoc2);
-	DestinationRoute dr = new DestinationRoute(city1,city2,2);
-	destinationRoutes.add(dr);
-	deckTrainCarCards.add(TrackColor.Orange);
-	visibleTrainCarCards[0] = TrackColor.Black;
-	visibleTrainCarCards[1] = TrackColor.White;
-	visibleTrainCarCards[2] = TrackColor.Orange;
-	discardedTrainCarCards.add(TrackColor.Black);
-	*/
 	}
 
 	@After
@@ -192,7 +69,6 @@ public class ServerFacade_Test {
 		ServerFacade.firebomb();
 	}
 
-	//VALID
 	@Test
 	public void testGetServerFacade() {
 		assertNotEquals(ServerFacade.getServerFacade(),null);
@@ -200,12 +76,7 @@ public class ServerFacade_Test {
 	
 	//*********************************************************************************
 	//REGISTER TESTS
-
-	/* error:
-	 * not handle if a user name is empty not handle is username is larger than 25 char.
-	 * I can even enter a chinese character..this is a creepy test case.
-	 */
-	//VALID
+	
 	@Test
 	public void testRegisterInvalidInputs() throws AddUserException, InternalServerException
 	{
@@ -248,7 +119,6 @@ public class ServerFacade_Test {
 		} catch (InvalidCredentialsException e) {}
 	}
 
-	//VALID
 	@Test
 	public void testRegisterSuccessCase() throws InvalidCredentialsException
 	{
@@ -283,10 +153,6 @@ public class ServerFacade_Test {
 	//*********************************************************************************
 	//LOGIN TESTS
 	
-	/*
-	 * test login successful
-	 */
-	//VALID
 	@Test
 	public void testLoginSuccessful() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException, InternalServerException
 	{
@@ -309,10 +175,6 @@ public class ServerFacade_Test {
 		assertTrue(user.isLoggedIn());
 	}
 
-	/*
-	 * test login - wrong user name/password
-	 */
-	//VALID
 	@Test
 	public void testLoginWrongCredientials() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException
 	{
@@ -357,10 +219,6 @@ public class ServerFacade_Test {
 		assertFalse(user.isLoggedIn());
 	}
 
-	/*
-	 * test login - already logged in
-	 */
-	//VALID
 	@Test(expected=AlreadyLoggedInException.class)
 	public void testLoginAlreadyLoggedIn() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException
 	{
@@ -377,10 +235,6 @@ public class ServerFacade_Test {
 	//*********************************************************************************
 	//LOGOUT TESTS
 	
-	/*
-	 * can logout
-	 */
-	//VALID
 	@Test
 	public void testLogout() throws BadCredentialsException, AddUserException, AlreadyLoggedInException, InvalidCredentialsException, InternalServerException
 	{
@@ -400,8 +254,6 @@ public class ServerFacade_Test {
 		assertFalse(user.isLoggedIn());
 	}
 
-	//failed to log out
-	//VALID
 	@Test(expected=BadCredentialsException.class)
 	public void testLogoutFailed() throws BadCredentialsException
 	{
@@ -412,7 +264,6 @@ public class ServerFacade_Test {
 	//*********************************************************************************
 	//CREATE GAME TESTS
 	
-	//VALID
 	@Test
 	public void testCreateGame() throws AddUserException, InternalServerException, InvalidCredentialsException, BadCredentialsException, AlreadyLoggedInException, PreConditionException
 	{
@@ -471,9 +322,6 @@ public class ServerFacade_Test {
 	//*********************************************************************************
 	//ADD PLAYER TESTS
 
-	/*
-	 * VALID
-	 */
 	@Test
 	public void testAddPlayerSuccessCase() throws InvalidCredentialsException, AddUserException, InternalServerException, PreConditionException
 	{
@@ -508,9 +356,6 @@ public class ServerFacade_Test {
 		assertTrue(player.getPlayerColor() == PlayerColor.Yellow);		
 	}
 	
-	/*
-	 * VALID
-	 */
 	@Test
 	public void testAddPlayerFullGame() throws InvalidCredentialsException, AddUserException, InternalServerException, PreConditionException
 	{
@@ -538,7 +383,6 @@ public class ServerFacade_Test {
 		catch (PreConditionException e){}
 	}
 
-	//VALID
 	@Test
 	public void testAddPlayerGameAlreadyStarted() throws PreConditionException, InternalServerException, BadCredentialsException, AlreadyLoggedInException, AddUserException, InvalidCredentialsException
 	{
@@ -561,9 +405,6 @@ public class ServerFacade_Test {
 		assertFalse(serverFacade.canAddPlayerToGame(user5, game.getGameID(), PlayerColor.Yellow));
 	}
 	
-	/*
-	 * VALID
-	 */
 	@Test
 	public void testAddPlayerAlreadyJoinedGame() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException, InternalServerException, PreConditionException
 	{
@@ -576,9 +417,6 @@ public class ServerFacade_Test {
 		assertFalse(serverFacade.canAddPlayerToGame(userID, newGame.getGameID(), PlayerColor.Red));
 	}
 	
-	/*
-	 * VALID
-	 */
 	@Test(expected = PreConditionException.class)
 	public void testAddPlayerDuplicateColor() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException, InternalServerException, PreConditionException
 	{
@@ -591,7 +429,6 @@ public class ServerFacade_Test {
 		serverFacade.addPlayerToGame(id2, game.getGameID(), PlayerColor.Black);
 	}
 	
-	//VALID
 	@Test
 	public void testAddPlayerNotLoggedIn() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException, InternalServerException, PreConditionException
 	{
@@ -619,7 +456,6 @@ public class ServerFacade_Test {
 		assertTrue(serverFacade.canAddPlayerToGame(playerID, newGame.getGameID(), PlayerColor.Red));
 	}
 	
-	//VALID
 	@Test
 	public void testAddPlayerInvalidInputs() throws AddUserException, InternalServerException, InvalidCredentialsException, PreConditionException
 	{
@@ -643,7 +479,6 @@ public class ServerFacade_Test {
 	//*********************************************************************************
 	//START GAME TESTS
 	
-	//VALID
 	@Test
 	public void testStartGame() {
 
@@ -889,7 +724,6 @@ public class ServerFacade_Test {
 	//*********************************************************************************
 	//GET DESTINATIONS TESTS
 
-	//VALID
 	@Test
 	public void testGetDestinations() {
 
@@ -1016,7 +850,6 @@ public class ServerFacade_Test {
 	//*********************************************************************************
 	//SELECT DESTINATIONS TESTS
 
-	//Portions of this test may need to be rewritten
 	@Test
 	public void testSelectDestinations() {
 
@@ -1089,7 +922,6 @@ public class ServerFacade_Test {
 			//selecting when haven't previously called getDestinations
 			assertFalse(facade.canSelectDestinations(user2, game1ID, new int[]{1}));
 			
-			
 			//selecting destinations when already drawn train card
 			if (facade.canDrawTrainCard(user2, game1ID, 0))
 			{
@@ -1097,7 +929,6 @@ public class ServerFacade_Test {
 				assertFalse(facade.canSelectDestinations(user2, game1ID, destinations));
 				manager.setDrewAlreadyCurrentTurn(false);
 				manager.setCurrentTurnIndex(0);
-				
 			}
 			else
 			{
@@ -1137,8 +968,6 @@ public class ServerFacade_Test {
 		}
 	}
 
-
-
 	@Test
 	public void testSendClientModelInformation() {
 		fail("Not yet implemented");
@@ -1159,7 +988,6 @@ public class ServerFacade_Test {
 		fail("Not yet implemented");
 	}
 
-
 	public static void main(String[] args)
 	{
 		String[] testClasses = new String[]{
@@ -1169,8 +997,6 @@ public class ServerFacade_Test {
 		org.junit.runner.JUnitCore.main(testClasses);
 	}
 
-
-	//something not sure if we need to test
 	/**
 	 * 	
 	 @Test
