@@ -128,6 +128,11 @@ public class Game {
 			return false;
 		}
 		
+		//cards cannot be null
+		if(cards == null){
+			return false;
+		}
+		
 		//player must have the appropriate resources
 		if(playerManager.canBuyTrackWithCards(playerID, route.getNumTrains(), route.getTrackColor(), cards)){
 			return true;
