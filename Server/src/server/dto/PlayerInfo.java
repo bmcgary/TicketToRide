@@ -3,6 +3,7 @@ package server.dto;
 import com.google.gson.annotations.SerializedName;
 import model.Player;
 import server.ServerFacade;
+import server.exception.InvalidCredentialsException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +25,14 @@ public class PlayerInfo {
     private transient int playerId;
 
     public PlayerInfo(Player player) {
-        this.username = ServerFacade.getServerFacade().getUser(player.getPlayerID()).getUsername();
+
+        // TODO: more elegant error catching!
+        // right now, if a user doesn't exist, we will not have reached this point.
+        try {
+            this.username = ServerFacade.getServerFacade().getUser(player.getPlayerID()).getUsername();
+        } catch (InvalidCredentialsException e) {
+            this.username = null;
+        }
         this.colorName = player.getPlayerColor().toString();
         this.playerId = player.getPlayerID();
     }

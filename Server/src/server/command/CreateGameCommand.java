@@ -5,6 +5,7 @@ import model.Game;
 import model.PlayerColor;
 import server.User;
 import server.exception.InternalServerException;
+import server.exception.InvalidCredentialsException;
 import server.exception.PreConditionException;
 import server.responses.Response;
 import server.responses.ResponseWrapper;
@@ -46,7 +47,11 @@ public class CreateGameCommand extends Command {
         responseWrapper.setResponse(Response.newSuccessResponse());
         responses.add(responseWrapper);
 
-        responses.add(new ResponseWrapper(-1, new UpdateGameResponse(game, true), "UpdateGame"));
+        try {
+            responses.add(new ResponseWrapper(-1, new UpdateGameResponse(game, true), "UpdateGame"));
+        } catch (InvalidCredentialsException e) {
+            responses.add(new ResponseWrapper(-1, Response.newServerErrorResponse(), "UpdateGame"));
+        }
         responses.add(new ResponseWrapper(userID, new UpdateGameResponse(game.getGameID()), "UpdateGame"));
 
         responses.addAll(new UpdateUserGamesCommand().execute(userID));

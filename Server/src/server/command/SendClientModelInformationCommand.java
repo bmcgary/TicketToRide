@@ -3,6 +3,7 @@ package server.command;
 import com.google.gson.annotations.SerializedName;
 import server.dto.gameplay.GamePlayInfo;
 import server.exception.GameNotFoundException;
+import server.exception.InvalidCredentialsException;
 import server.responses.DataResponse;
 import server.responses.Response;
 import server.responses.ResponseWrapper;
@@ -39,7 +40,7 @@ public class SendClientModelInformationCommand extends Command {
         if (gamePlayInfo == null) {
             try {
                 gamePlayInfo = new GamePlayInfo(serverFacade.getGame(gameId));
-            } catch (GameNotFoundException e) {
+            } catch (GameNotFoundException | InvalidCredentialsException e) {
                 responseWrapper.setTargetIds(playerIds).setResponse(Response.newServerErrorResponse());
                 return responses;
             }

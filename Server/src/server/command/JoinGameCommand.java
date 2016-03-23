@@ -6,6 +6,7 @@ import model.PlayerColor;
 import server.CommandParser;
 import server.User;
 import server.exception.GameNotFoundException;
+import server.exception.InvalidCredentialsException;
 import server.exception.PreConditionException;
 import server.responses.Response;
 import server.responses.ResponseWrapper;
@@ -57,7 +58,11 @@ public class JoinGameCommand extends Command {
             // get game
 
             // update game responses
-            responses.add(new ResponseWrapper(-1, new UpdateGameResponse(thisGame, false), "UpdateGame"));
+            try {
+                responses.add(new ResponseWrapper(-1, new UpdateGameResponse(thisGame, false), "UpdateGame"));
+            } catch (InvalidCredentialsException e) {
+                responses.add(new ResponseWrapper(-1, Response.newServerErrorResponse(), "UpdateGame"));
+            }
 
             // update user games responses
             Command userGames = new UpdateUserGamesCommand();

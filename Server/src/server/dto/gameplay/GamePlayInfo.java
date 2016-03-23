@@ -5,8 +5,10 @@ import model.City;
 import model.CityToCityRoute;
 import model.Game;
 import model.Player;
+import server.ServerFacade;
 import server.dto.GameInfo;
 import server.dto.PlayerInfo;
+import server.exception.InvalidCredentialsException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,13 +28,14 @@ public class GamePlayInfo extends GameInfo {
 
     private transient Map<Integer, PrivatePlayerInfo> privatePlayerInfos;
 
-    public GamePlayInfo(Game game) {
+    public GamePlayInfo(Game game) throws InvalidCredentialsException {
         super.gameId = game.getGameID();
         this.gamePlayerInfos = new ArrayList<>();
         this.privatePlayerInfos = new HashMap<>();
         List<Player> players = game.getPlayerManager().getPlayers();
         List<CityToCityRoute> routes = game.getGameBoard().getRoutes();
         for (int i = 0; i < players.size(); ++i) {
+            // TODO: is this a bug? Or is player index used in routes?
             List<CityToCityRoute> playerRoutes = game.getGameBoard().getCurrentRoutes().get(i);
             List<Integer> convertedRoutes = playerRoutes.parallelStream().map(routes::indexOf).collect(Collectors.toList());
             Player player = players.get(i);

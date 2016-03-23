@@ -3,6 +3,7 @@ package server.responses;
 import com.google.gson.annotations.SerializedName;
 import model.Game;
 import server.dto.lobby.LobbyGameInfo;
+import server.exception.InvalidCredentialsException;
 
 /**
  *
@@ -14,7 +15,7 @@ public class UpdateGameResponse extends Response {
     @SerializedName("game")
     private LobbyGameInfo lobbyGameInfo;
 
-    public UpdateGameResponse(Game game, boolean isNew) {
+    public UpdateGameResponse(Game game, boolean isNew) throws InvalidCredentialsException {
         super("");
         this.gameId = game.getGameID();
         if (game.getPlayerManager().getPlayers().size() == 5) {
