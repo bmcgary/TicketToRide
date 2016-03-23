@@ -20,6 +20,7 @@ import model.Player;
 import model.PlayerColor;
 import model.TestGame;
 import model.TestGameBoard;
+import model.TestPlayer;
 import model.TestPlayerManager;
 import model.TrackColor;
 
@@ -771,11 +772,50 @@ public class ServerFacade_Test {
 	}
 	
 	@Test
-	public void testBuyRouteSuccessCases()
+	public void testBuyRouteSuccessCases() throws AddUserException, InternalServerException, InvalidCredentialsException, PreConditionException, OutOfBoundsException
 	{
+		int id1 = serverFacade.register("test1", "test1");
+		int id2 = serverFacade.register("test2", "test2");
+		
+		TestGame game = new TestGame();
+		serverFacade.createGame(game, id1, PlayerColor.Black);
+		serverFacade.addPlayerToGame(id2, game.getGameID(), PlayerColor.Blue);
+		serverFacade.startGame(id1, game.getGameID());
+		serverFacade.selectDestinations(id1, game.getGameID(), new int[] {0,1});
+		serverFacade.selectDestinations(id2, game.getGameID(), new int[] {0,1});
+		
+		//give everyone all da train cards
+		Map<TrackColor,Integer> tenCardsEach = new HashMap<TrackColor,Integer>();
+		for (TrackColor tc : TrackColor.values())
+		{
+			tenCardsEach.put(tc, 10);
+		}
+		game.getPlayerManager().addTrainCarCards(id1, tenCardsEach);
+		game.getPlayerManager().addTrainCarCards(id2, tenCardsEach);
+		
+		City start = new City("Portland");
+		City end = new City("San Francisco");
+		CityToCityRoute route = new CityToCityRoute(start, end, 5, TrackColor.Green);
+		Map<TrackColor,Integer> cards = new HashMap<TrackColor,Integer>();
+		cards.put(TrackColor.Green, 5);
+		
+		assertTrue(serverFacade.canBuyRoute(id1, game.getGameID(), route, cards));
+		serverFacade.buyRoute(id1, game.getGameID(), route, cards);
+		
 		//player gets route
+		Map<Integer,List<CityToCityRoute>> currentRoutes = game.getGameBoard().getCurrentRoutes();
+		assertTrue(currentRoutes.containsKey(id1));
+		assertTrue(currentRoutes.get(id1).size() == 1);
+		assertTrue(currentRoutes.get(id1).get(0).equals(route));
+		
 		//turn advances
+		TestPlayerManager manager = (TestPlayerManager)game.getPlayerManager();
+		assertTrue(manager.getCurrentTurnIndex() == 1);
+		
 		//trains go down
+		TestPlayer player1 = (TestPlayer)manager.getPlayerByID(id1);
+		assertTrue(player1.getNumTrainsLeft() == 40);
+		
 		//cards are discarded
 		//points update correctly
 		//can trigger final round
