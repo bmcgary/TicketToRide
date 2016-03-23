@@ -43,6 +43,8 @@ hr {
     border-radius: 8px;
 }
 .lobby-box {
+  margin-top: -50px;
+  margin-left: 75px;
   float:left;
 	background-color: white;
   position: relative;
@@ -54,6 +56,7 @@ hr {
 }
 
 .lobby-box .box-header {
+  color:white;
 	background-color: #665851;
 	margin-top: 0;
 	border-radius: 5px 5px 0 0;
@@ -150,7 +153,7 @@ hr {
   font-family: 'arial', 'sans-serif';
 }
 .button {
-    background-color: #4CAF50; /* Green */
+    background-color: #B42223; /* Brick Red */
     border: none;
     color: white;
     padding: 15px 32px;
@@ -161,31 +164,31 @@ hr {
     margin: 4px 2px;
     cursor: pointer;
     border-radius: 8px;
-}
+}/*, , yellow, , and */
 .buttonBlue {background-color: #008CBA;} /* Blue */
-.buttonRed {background-color: #f44336;} /* Red */
-.buttonGray {background-color: #e7e7e7; color: black;} /* Gray */
+.buttonGreen {background-color: #125612;} /* green */
+.buttonYellow {background-color: #ede94a;} /* yellow */
 .buttonBlack {background-color: #555555;} /* Black */
 /* mouse over link For buttons in Create New Game Modal*/
 .buttonGreen:hover {
 	background: rgba(0,0,0,0);
-	color: #4CAF50;
-	box-shadow: inset 0 0 0 3px #4CAF50;
+	color: #125612;
+	box-shadow: inset 0 0 0 3px #125612;
 }
 .buttonRed:hover {
 	background: rgba(0,0,0,0);
-	color: #f44336;
-	box-shadow: inset 0 0 0 3px #f44336;
+	color: #B42223;
+	box-shadow: inset 0 0 0 3px #B42223;
 }
 .buttonBlue:hover {
 	background: rgba(0,0,0,0);
 	color: #008CBA;
 	box-shadow: inset 0 0 0 3px #008CBA;
 }
-.buttonGray:hover {
+.buttonYellow:hover {
 	background: rgba(0,0,0,0);
-	color: #e7e7e7;
-	box-shadow: inset 0 0 0 3px #e7e7e7;
+	color: #ede94a;
+	box-shadow: inset 0 0 0 3px #ede94a;
 }
 .buttonBlack:hover {
 	background: rgba(0,0,0,0);

@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import model.Player;
 import server.ServerFacade;
 import server.dto.PlayerInfo;
+import server.exception.InvalidCredentialsException;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class GamePlayerInfo extends PlayerInfo {
     @SerializedName("trainsLeft")
     private int trainsLeft;
 
-    public GamePlayerInfo(Player player, int playerOrder, List<Integer> routes) {
+    public GamePlayerInfo(Player player, int playerOrder, List<Integer> routes) throws InvalidCredentialsException {
         super(player);
         // This is ugly
         this.playerName = ServerFacade.getServerFacade().getUser(player.getPlayerID()).getUsername();

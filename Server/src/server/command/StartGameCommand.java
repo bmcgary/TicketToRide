@@ -5,6 +5,7 @@ import model.Game;
 import server.dto.gameplay.GamePlayInfo;
 import server.exception.GameNotFoundException;
 import server.exception.InternalServerException;
+import server.exception.InvalidCredentialsException;
 import server.exception.PreConditionException;
 import server.responses.Response;
 import server.responses.ResponseWrapper;
@@ -32,18 +33,19 @@ public class StartGameCommand extends Command {
         responses.add(responseWrapper);
 
         Game game;
+        GamePlayInfo gamePlayInfo;
         try {
             serverFacade.startGame(userID, gameId);
             game = serverFacade.getGame(gameId);
+            gamePlayInfo = new GamePlayInfo(game);
         } catch (PreConditionException e) {
             responseWrapper.setResponse(new Response("unable to start game"));
             return responses;
-        } catch (InternalServerException | GameNotFoundException e) {
+        } catch (InternalServerException | GameNotFoundException | InvalidCredentialsException e) {
             responseWrapper.setResponse(Response.newServerErrorResponse());
             return responses;
         }
 
-        GamePlayInfo gamePlayInfo = new GamePlayInfo(game);
         List<Integer> playerIds = gamePlayInfo.getPlayerIds();
         responseWrapper.setTargetIds(playerIds).setResponse(Response.newSuccessResponse());
 

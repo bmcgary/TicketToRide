@@ -605,120 +605,173 @@ public class ServerFacade_Test {
 	//*********************************************************************************
 	//BUY ROUTE TESTS
 	//TODO verify/rewrite all these tests
-
-	//INVALID 
-	//This test needs to be rewritten
+	
 	@Test
-	public void testCanBuyRoute() throws InternalServerException {
-		/*City city1 = new City(new Point(2,2),"LA");
-		City city2 = new City(new Point(3,3),"SA");
-		CityToCityRoute ctoc1 = new CityToCityRoute(city1,city2,3,TrackColor.Orange);
-
-		serverFacade.canBuyRoute(1,1,ctoc1);*/
-	}
-
-	//Player can use wilds as part of a route purchase
-	//are you handling this case?
-	//INVALID 
-	//This test needs to be rewritten
-	public void testCanBuyRouteWithWrongResources()
+	public void testBuyRouteInvalidInputs() throws AddUserException, InternalServerException, InvalidCredentialsException, PreConditionException, OutOfBoundsException
 	{
-		/*
-		 * 		for(int i = 0; i < route.getNumTrains(); ++i){	//this allows us to check every combination of wild cards/route color
-			Map<TrackColor, Integer> trainCards = new HashMap<TrackColor, Integer>();
-			trainCards.put(route.getTrackColor(), route.getNumTrains()-i);
-			trainCards.put(TrackColor.None, i);
-			if(playerManager.canBuyTrackWithCards(playerID, route.getNumTrains(), route.getTrackColor(), trainCards)){
-				return true;
-			}
+		int id1 = serverFacade.register("test1", "test1");
+		int id2 = serverFacade.register("test2", "test2");
+		
+		TestGame game = new TestGame();
+		serverFacade.createGame(game, id1, PlayerColor.Black);
+		serverFacade.addPlayerToGame(id2, game.getGameID(), PlayerColor.Blue);
+		serverFacade.startGame(id1, game.getGameID());
+		serverFacade.selectDestinations(id1, game.getGameID(), new int[] {0,1});
+		serverFacade.selectDestinations(id2, game.getGameID(), new int[] {0,1});
+		
+		//give everyone all da train cards
+		Map<TrackColor,Integer> tenCardsEach = new HashMap<TrackColor,Integer>();
+		for (TrackColor tc : TrackColor.values())
+		{
+			tenCardsEach.put(tc, 10);
 		}
-		 */
-		//I do not understand how you check if a player has required cards
-		//Player cannot purchase a route with less than the required cards
-
-		//Player cannot purchase a route with more than the required cards
-		//Player cannot purchase a route with cards of the wrong color
-		//Player cannot purchase a route they do not have enough trains for
+		game.getPlayerManager().addTrainCarCards(id1, tenCardsEach);
+		game.getPlayerManager().addTrainCarCards(id2, tenCardsEach);
+		
+		City start = new City("Portland");
+		City end = new City("San Francisco");
+		CityToCityRoute route = new CityToCityRoute(start, end, 5, TrackColor.Green);
+		Map<TrackColor,Integer> cards = new HashMap<TrackColor,Integer>();
+		cards.put(TrackColor.Green, 5);
+		
+		//invalid or null inputs
+		assertFalse(serverFacade.canBuyRoute(-1, game.getGameID(), route, cards));
+		assertFalse(serverFacade.canBuyRoute(id1, -1, route, cards));
+		assertFalse(serverFacade.canBuyRoute(id1, game.getGameID(), null, cards));
+		assertFalse(serverFacade.canBuyRoute(id1, game.getGameID(), route, null));
+		
+		//nonexistant citytocityroute
+		City badStart = new City("Narnia");
+		City badEnd = new City("Hogwarts");
+		CityToCityRoute badRoute = new CityToCityRoute(badStart, badEnd, 5, TrackColor.Green);
+		assertFalse(serverFacade.canBuyRoute(id1, game.getGameID(), badRoute, cards));
+		
+		//wrong color
+		Map<TrackColor,Integer> reds = new HashMap<TrackColor,Integer>();
+		reds.put(TrackColor.Red, 5);
+		assertFalse(serverFacade.canBuyRoute(id1, game.getGameID(), route, reds));
 	}
-
-//	Player can cancel buying a route
-	//not handle or it should not be a function on the server side?
-
-//	Routes are populated with trains the color of the player who purchased them
-
-
-	//Player cannot buy adjacent route if less than 4 players in the game
-//	Player cannot draw a destination ticket after building
-//	Player cannot draw a train card after building
-//	Player's destination cards are updated when building the route completes the destination
-
+	
 	@Test
-	public void testBuyRoute() {
-		fail("Not yet implemented");
+	public void testBuyRouteInvalidPreconditions() throws AddUserException, InternalServerException, InvalidCredentialsException, PreConditionException, OutOfBoundsException, BadCredentialsException, AlreadyLoggedInException
+	{
+		int id1 = serverFacade.register("test1", "test1");
+		int id2 = serverFacade.register("test2", "test2");
+		
+		TestGame game = new TestGame();
+		serverFacade.createGame(game, id1, PlayerColor.Black);
+		serverFacade.addPlayerToGame(id2, game.getGameID(), PlayerColor.Blue);
+		
+		//game not started
+		assertFalse(serverFacade.canBuyRoute(id1, game.getGameID(), 
+				new CityToCityRoute(null, null, id2, null), 
+				new HashMap<TrackColor,Integer>()));
+		
+		serverFacade.startGame(id1, game.getGameID());
+		serverFacade.selectDestinations(id1, game.getGameID(), new int[] {0,1});
+		serverFacade.selectDestinations(id2, game.getGameID(), new int[] {0,1});
+		
+		//give everyone all da train cards
+		Map<TrackColor,Integer> tenCardsEach = new HashMap<TrackColor,Integer>();
+		for (TrackColor tc : TrackColor.values())
+		{
+			tenCardsEach.put(tc, 10);
+		}
+		game.getPlayerManager().addTrainCarCards(id1, tenCardsEach);
+		game.getPlayerManager().addTrainCarCards(id2, tenCardsEach);
+		
+		City start = new City("Portland");
+		City end = new City("San Francisco");
+		CityToCityRoute route = new CityToCityRoute(start, end, 5, TrackColor.Green);
+		Map<TrackColor,Integer> cards = new HashMap<TrackColor,Integer>();
+		cards.put(TrackColor.Green, 5);
+		
+		//not logged in
+		serverFacade.logout(id1);
+		assertFalse(serverFacade.canBuyRoute(id1, game.getGameID(), route, cards));
+		
+		//not correct turn
+		assertFalse(serverFacade.canBuyRoute(id2, game.getGameID(), route, cards));
+		
+		serverFacade.login("test1", "test1");
+		
+		//already drew train cards
+		game.getPlayerManager().drewAlreadyCurrentTurn = true;
+		assertFalse(serverFacade.canBuyRoute(id1, game.getGameID(), route, cards));
+		
+		game.getPlayerManager().drewAlreadyCurrentTurn = false;
+		
+		//game over
+		game.setGameOver(true);
+		assertFalse(serverFacade.canBuyRoute(id1, game.getGameID(), route, cards));
+		game.setGameOver(false);
+		
+		//already got destinations
+		serverFacade.getDestinations(id1, game.getGameID());
+		
+		assertFalse(serverFacade.canBuyRoute(id1, game.getGameID(), route, cards));
+		
+		serverFacade.selectDestinations(id1, game.getGameID(), new int[]{0});
+		
+		//route already claimed
+		game.getGameBoard().claimRoute(id1, route);
+		assertFalse(serverFacade.canBuyRoute(id2, game.getGameID(), route, cards));
+
+	}
+	
+	@Test
+	public void testBuyRouteInsufficientResources()
+	{
+		//insufficient train cars
+		//insufficient train cards
+		//what happens if they give more than enough cards?
+	}
+	
+	@Test
+	public void testBuyRouteSuccessCases()
+	{
+		//player gets route
+		//turn advances
+		//trains go down
+		//cards are discarded
+		//points update correctly
+		//can trigger final round
+		//can trigger game end
+		//can complete destination(s)
+		//can update longest road when appropriate
+		//can with combo of color and wilds
 	}
 	
 	//*********************************************************************************
 	//DRAW TRAIN CARD TESTS
 	//TODO verify/rewrite all these tests
 
-	//INVALID
-	//This test needs a bit of rewriting
-	@Test (expected=OutOfBoundsException.class)
-	public void testCanDrawTrainCardFailing() throws OutOfBoundsException, InternalServerException, AddUserException, InvalidCredentialsException, PreConditionException {
-		ServerFacade.firebomb();
-		ServerFacade sf = ServerFacade.getServerFacade();
-		int id1 = sf.register("test1", "test1");
-		sf.createGame(new Game(), id1, PlayerColor.Black);
-		sf.canDrawTrainCard(1, 1, 10);
-
-	}
-
-	//INVALID
 	@Test
-	public void testCanDrawTrainCard() throws OutOfBoundsException, InternalServerException {
-
-
-		//before checking if a player can draw train card I need to manipulate the playermanager class to meet the following contraint
-		//playerManager.drewAlreadyCurrentTurn && gameBoard.getVisibleTrainCarCards()[cardLocation] == TrackColor.None
-		//but currently, i can not manipulate the playermanager object using existing code
-
-
-
-		//Player can draw from the deck
-		serverFacade.canDrawTrainCard(1, 1, 1);
-
-		//Player can draw one from the visible cards and one from the deck
-		assertTrue(serverFacade.canDrawTrainCard(1, 1, 5));
-		assertTrue(serverFacade.canDrawTrainCard(1, 1, 3));
-
-		//Player can draw two from the visible cards
-		assertTrue(serverFacade.canDrawTrainCard(1, 1, 3));
-		assertTrue(serverFacade.canDrawTrainCard(1, 1, 2));
-
-		//	//Player can only draw one wild from the visible cards
-		//Visible cards are reset if there are more than two wilds
-
-		//how do you define wildcards?
-	}
-
-	//INVALID
-	@Test
-	public void testDrawTrainCardFailAfterVisible() throws OutOfBoundsException, InternalServerException
+	public void testDrawTrainCardInvalidInputs()
 	{
-		//Player cannot select wild card after drawing one from visible cards
-		assertTrue(serverFacade.canDrawTrainCard(1, 1, 3));
-		//Player cannot draw destination ticket after initial train draw until next turn
-		//Player cannot build route after intial train draw until next turn
-
-		//how do you handle those two cases??
-		// using playerManager.drewAlreadyCurrentTurn && gameBoard.getVisibleTrainCarCards()[cardLocation] == TrackColor.None????
+		//invalid or null inputs
+		//index out of range for visible
 	}
-
-	//INVALID
+	
 	@Test
-	public void testDrawTrainCard() throws PreConditionException, OutOfBoundsException, InternalServerException {
-
-		serverFacade.drawTrainCard(1,1,3);
+	public void testDrawTrainCardInvalidPreconditions()
+	{
+		//not logged in
+		//not correct turn
+		//no cards remaining
+	}
+	
+	@Test
+	public void testDrawTrainCardSuccessCases()
+	{
+		//the following cases should all advance the turn, add cards to player, etc...
+			//drawing 2 cards from the deck works
+			//drawing a single wild from visible works
+			//drawing 2 non-wilds from visible works
+			//drawing 1-and-1 works when visible is not wild
+		//can trigger end game
+		
+		
 	}
 
 	//*********************************************************************************
