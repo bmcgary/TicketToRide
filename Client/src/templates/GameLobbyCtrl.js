@@ -14,14 +14,24 @@ app.controller('gameLobbyController', function($scope, $rootScope, ClientAPI, $u
 		}
 	});
 	//END LOGOUT
+//Update games
+$rootScope.$on('server:UpdateGame', function(event, parameters) {
+	//alert("we are rejoining/joining");
+	console.log("********************");
+	console.log(parameters);
+	console.log("********************");
+	$scope.availableGames.push(parameters.game);
+	getAvailableColors($scope.availableGames);
 
+
+});
+//
 	//GET Joinable GAMES
 	function getJoinableGames() {
 		ClientAPI.updateJoinableGames();
 	}
 		getJoinableGames();
 		$rootScope.$on('server:UpdateJoinableGames', function(event, parameters) {
-			debugger;
 		getAvailableColors(parameters.games);
 		$scope.availableGames = parameters.games;
 	});
@@ -70,7 +80,6 @@ app.controller('gameLobbyController', function($scope, $rootScope, ClientAPI, $u
 	}
 	//END SHOW MORE DETAILS
 	$scope.joinGame = function(game,color) {
-		debugger;
 		ClientAPI.joinGame(game.gameID,color);
 	}
 	$rootScope.$on('server:JoinGame', function(event, parameters) {
