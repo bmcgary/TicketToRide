@@ -1,6 +1,6 @@
 var app = angular.module('ticketToRide');
 
-app.controller('gameLobbyController', function($scope, $rootScope, ClientAPI, $uibModal) {
+app.controller('gameLobbyController', function($scope, $rootScope, ClientAPI, $uibModal,$state) {
 	var myGames = [{
 		id: "10",
 		players: [
@@ -66,23 +66,48 @@ app.controller('gameLobbyController', function($scope, $rootScope, ClientAPI, $u
 	$scope.myGames = myGames;
 	$scope.availableGames = availableGames;
 	//end of dummy DATA
-	//Create GAMES
+	//LOGOUT
+	$scope.logOut =function(){
+		ClientAPI.logout();
+	}
+	$rootScope.$on('server:Logout', function(event, parameters) {
+		console.log("you are logging out");
+		if(parameters.description == "success") {
+			$state.go('login');
+		} else {
+			alert("Unexpected Server description: " + parameters.description);
+		}
+	});
+	//END LOGOUT
 
-	//GET AVAILABLE GAMES TODO
-	/*
-		i need to do something like this to hit the server but i cant get it to work
-	*/
-	function getAvailableGames() {
+	//GET Joinable GAMES
+	function getJoinableGames() {
 		ClientAPI.updateJoinableGames();
 	}
-	//getAvailableGames();
+	getJoinableGames();
 	//getAvailableGames(); // maybe call the function to get the data
-	$rootScope.$on('server:updateJoinableGames', function(event, parameters) {
-		alert("Listener reached");
+	$rootScope.$on('server:UpdateJoinableGames', function(event, parameters) {
+		alert("got joinable Games ");
 		console.log(event);
 		console.log(parameters);
+		console.log("*************")
 	});
-	//END GET AVAILABLE GAMES
+	//END GET Joinable GAMES
+	/////////////////////////
+	//GET User GAMES
+	function getUserGames() {
+		ClientAPI.updateUserGames();
+	}
+	getUserGames();
+	//getAvailableGames(); // maybe call the function to get the data
+	$rootScope.$on('server:UpdateUserGames', function(event, parameters) {
+		alert("got User Games ");
+		console.log(event);
+		console.log(parameters);
+		console.log("$$$$$$$$$$$$$")
+	});
+	//END GET User GAMES
+	////////////////////////
 	//TODO do the same thing and get MYGAMES
 
 	// SHOW MORE DETAILS FOR BOTH BOXES
@@ -122,7 +147,6 @@ app.controller('gameLobbyController', function($scope, $rootScope, ClientAPI, $u
 	$scope.newGameName ="";
 	$scope.createNewGame = function (color, name){
 		if(name.length >0){
-			console.log(color);
 			ClientAPI.createGame(name, color);
 		}else{
 			console.log('error');
@@ -130,11 +154,12 @@ app.controller('gameLobbyController', function($scope, $rootScope, ClientAPI, $u
 	}
 
 	$rootScope.$on('server:CreateGame', function (event, parameters) {
-		/*if(parameters.description == "success") {
-			$state.go('gameLobby');
-		}*/
 		alert("we did it");
 		console.log(parameters);
+		if(parameters.description == "success") {
+			$state.go('mainGame');
+		}
+
 	});
 
 });

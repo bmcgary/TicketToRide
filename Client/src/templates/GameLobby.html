@@ -11,16 +11,32 @@
 </div>
 or just a header or a bar -->
 <!--NAVBAR -->
-<nav class="navbar navbar-inverse">
+<div class="navbar navbar-inverse">
+		 <div class="container">
+
+			 <div class="navbar-header pull-left">
+				 <a class="navbar-brand">Ticket To Ride Game Lobby</a>
+			 </div>
+			 <div class="navbar-header pull-right">
+				 <p class="navbar-text">
+					 <b>possible put username here</b>
+					 <button ng-click="logOut()" class="navbar-link">Logout</button>&nbsp;
+				 </p>
+			 </div>
+	 </div>
+ </div>
+<!--
+<nav class="navbar navbar-inverse col-md-12">
 	<div class="container-fluid">
 		<div class="navbar-header">
-			<a class="navbar-brand" href="#">Ticket To Ride Game Lobby</a>
+			<div class="navbar-brand col-med-11">Ticket To Ride Game Lobby</div>
+			<div class="navbar-brand col-med-1" href="#">Logout</div>
 		</div>
 	</div>
-</nav>
+</nav>-->
 <!-- END NAVBAR-->
 <!--Create newGame BUTTON AND MODAL -->
-<div>
+<div class="text-center">
 	<button type="button" name="button" class="button" ng-click="toggleCreateNewGameModal()">Create New Game</button>
 	<modal-dialog show='modalShown' width='750px' height='60%'>
 		<div class="box-header">
@@ -34,34 +50,35 @@ or just a header or a bar -->
 			<button type="submit" ng-click="createNewGame('green',newGameName)"class="button buttonGreen">Green</button>
 			<button type="submit" ng-click="createNewGame('blue',newGameName)"class="button buttonBlue">Blue</button>
 			<button type="submit" ng-click="createNewGame('red',newGameName)"class="button buttonRed">Red</button>
-			<button type="submit" ng-click="createNewGame('gray',newGameName)"class="button buttonGray">Gray</button>
+			<button type="submit" ng-click="createNewGame('yellow',newGameName)"class="button buttonYellow">yellow</button>
 			<button type="submit" ng-click="createNewGame('black',newGameName)"class="button buttonBlack">Black</button></br>
 			<!-- end of list of buttons-->
     		<br/>
 	</modal-dialog>
 </div>
 <!--Create newGame BUTTON AND MODAL -->
-<div class="container .col-md-12">
+<!--<div class="container .col-md-12">-->
 	<!--AVAILABLE GAMES BOX -->
-	<div class="lobby-box animated fadeInUp col-md-6">
+	<div class="container">
+	<div class="lobby-box animated fadeInUp col-md-5">
 		<div class="box-header">
 			<h2>Available Games</h2>
 		</div>
 		<div class="row" ng-repeat-start="game in availableGames" ng-click="showDetailAvailableGames(game)" ng-class-odd="'alt'">
-			<label class="col-xs-3 cap">Game Name:{{game.id}}</label>
-			<label class="col-xs-2 strong">players in Game:{{game.players.length}}</label>
-			<div class="col-xs-2 text-right">
-				<a href="">
+			<label class="col-md-5 cap">Game Name:{{game.id}}</label>
+		<label class="col-md-5 strong">players in Game:{{game.players.length}}</label>
+		<div class="col-md-1 text-right">
+			<a href="">
 					<i ng-hide="activeAvailableGames==game.id" class="fa fa-plus"></i>
       		<i ng-show="activeAvailableGames==game.id" class="fa fa-minus"></i>
 				</a>
 			</div>
 		</div>
 		<div class="row" ng-repeat-end="" ng-show="activeAvailableGames==game.id" ng-class-odd="'alt'">
-			<div class="col-md-3 col-xs-6 small">
+			<div >
 				<div>
 					<label>Players: </label>
-					<span ng-repeat="players in game.players">{{players}}</span>
+					<span ng-repeat="players in game.players">{{players}}&nbsp</span>
 				</div>
 				<div>
 					<label>Colors: </label>
@@ -74,14 +91,15 @@ or just a header or a bar -->
 	</div>
 	<!--END AVAILABLE GAMES BOX -->
 	<!--YOUR GAMES BOX -->
-	<div class="lobby-box animated fadeInUp col-md-6">
+
+	<div class="lobby-box animated fadeInUp col-md-5">
 		<div class="box-header">
 			<h2>Your Games</h2>
 		</div>
 		<div class="row" ng-repeat-start="game in myGames" ng-click="showDetailMyGames(game)" ng-class-odd="'alt'">
-			<label class="col-xs-3 cap">Game Name:{{game.id}}</label>
-			<label class="col-xs-2 strong">players in Game:{{game.players.length}}</label>
-			<div class="col-xs-2 text-right">
+				<label class="col-md-5 cap">Game Name:{{game.id}}</label>
+			<label class="col-md-5 strong">players in Game:{{game.players.length}}</label>
+			<div class="col-md-1 text-right">
 				<a href="">
 					<i ng-hide="activeMyGames==game.id" class="fa fa-plus"></i>
         	<i ng-show="activeMyGames==game.id" class="fa fa-minus"></i>
@@ -89,10 +107,10 @@ or just a header or a bar -->
 			</div>
 		</div>
 		<div class="row" ng-repeat-end="" ng-show="activeMyGames==game.id" ng-class-odd="'alt'">
-			<div class="col-md-3 col-xs-6 small">
+			<div>
 				<div>
 					<label>Players: </label>
-					<span ng-repeat="players in game.players">{{players}}</span>
+					<span ng-repeat="players in game.players">{{players}}&nbsp</span>
 				</div>
 				<div>
 					<label>Your Color:{{game.yourColor}} </label>
@@ -101,5 +119,6 @@ or just a header or a bar -->
 			</div>
 		</div>
 	</div>
-	<!--END YOUR GAMES BOX -->
 </div>
+	<!--END YOUR GAMES BOX -->
+<!--</div>-->
