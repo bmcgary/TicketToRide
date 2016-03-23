@@ -1,71 +1,6 @@
 var app = angular.module('ticketToRide');
 
 app.controller('gameLobbyController', function($scope, $rootScope, ClientAPI, $uibModal,$state) {
-	var myGames = [{
-		id: "10",
-		players: [
-			"John",
-			"Ben",
-			"Kyle"
-		],
-		yourColor: "red"
-	}, {
-		id: "11",
-		players: [
-			"Josh",
-			"Tyler",
-			"Jared"
-		],
-		yourColor: "pink"
-	}, {
-		id: "12",
-		players: [
-			"Fred",
-			"Ron",
-			"Ben"
-		],
-		yourColor: "Blue"
-	}];
-	var availableGames = [{
-		id: "10",
-		players: [
-			"ted",
-			"blake",
-			"Ben"
-		],
-		colorAvailable: [
-			"blue",
-			"red",
-			"Orange"
-		]
-	}, {
-		id: "11",
-		players: [
-			"Fred",
-			"Ted",
-			"Mike"
-		],
-		colorAvailable: [
-			"blue",
-			"red",
-			"Orange"
-		]
-	}, {
-		id: "12",
-		players: [
-			"Kyle",
-			"Matt",
-			"Jared"
-		],
-		colorAvailable: [
-			"yellow",
-			"red",
-			"purple"
-		]
-	}];
-	$scope.myGames = myGames;
-	$scope.availableGames = availableGames;
-	//end of dummy DATA
 	//LOGOUT
 	$scope.logOut =function(){
 		ClientAPI.logout();
@@ -84,60 +19,69 @@ app.controller('gameLobbyController', function($scope, $rootScope, ClientAPI, $u
 	function getJoinableGames() {
 		ClientAPI.updateJoinableGames();
 	}
-	getJoinableGames();
-	//getAvailableGames(); // maybe call the function to get the data
-	$rootScope.$on('server:UpdateJoinableGames', function(event, parameters) {
-		alert("got joinable Games ");
-		console.log(event);
-		console.log(parameters);
-		console.log("*************")
+		getJoinableGames();
+		$rootScope.$on('server:UpdateJoinableGames', function(event, parameters) {
+			debugger;
+		getAvailableColors(parameters.games);
+		$scope.availableGames = parameters.games;
 	});
 	//END GET Joinable GAMES
-	/////////////////////////
 	//GET User GAMES
 	function getUserGames() {
 		ClientAPI.updateUserGames();
 	}
 	getUserGames();
-	//getAvailableGames(); // maybe call the function to get the data
 	$rootScope.$on('server:UpdateUserGames', function(event, parameters) {
-		alert("got User Games ");
-		console.log(event);
-		console.log(parameters);
-		console.log("$$$$$$$$$$$$$")
+		getAvailableColors(parameters.games);
+		$scope.myGames = parameters.games;
 	});
+	function getAvailableColors(games){
+		for(var i =0; i < games.length; i++ ){
+    			var availablecolors = ["red", "yellow", "blue","black","green"];//starts off full
+    			var takenColors = [];
+    			for(var k=0; k<games[i].players.length; k++){//First check to see what colors are taken
+    				takenColors.push(games[i].players[k].color);
+    			}
+    			for(var c =0; c<takenColors.length; c++){//loop through taken colors and remove them from availableColors
+            var index = availablecolors.indexOf(takenColors[i]);
+            availablecolors.splice(index, 1);
+    			}
+					games[i].availableColors= availablecolors;//attach availableColors to the game object
+    		}
+    }
 	//END GET User GAMES
-	////////////////////////
-	//TODO do the same thing and get MYGAMES
 
 	// SHOW MORE DETAILS FOR BOTH BOXES
 	$scope.activeAvailableGames = "";
 	$scope.showDetailAvailableGames = function(game) {
-		if ($scope.activeAvailableGames != game.id) {
-			$scope.activeAvailableGames = game.id;
+		if ($scope.activeAvailableGames != game.gameID) {
+			$scope.activeAvailableGames = game.gameID;
 		} else {
 			$scope.activeAvailableGames = null;
 		}
 	}
 	$scope.activeMyGames = "";
 	$scope.showDetailMyGames = function(game) {
-		if ($scope.activeMyGames != game.id) {
-			$scope.activeMyGames = game.id;
+		if ($scope.activeMyGames != game.gameID) {
+			$scope.activeMyGames = game.gameID;
 		} else {
 			$scope.activeMyGames = null;
 		}
 	}
 	//END SHOW MORE DETAILS
-
-	//THESE ARE THE FUNCTIONS TO CALL to JOIN/REJOIN GAMES
-	//TODO connect to backend
-	$scope.reJoinGame = function(game) {
-		console.log("you are rejoing: " + game.id);
-	}
 	$scope.joinGame = function(game,color) {
-		console.log("you are joing a new game: " + game.id);
-		console.log("as: "+color)
+		debugger;
+		ClientAPI.joinGame(game.gameID,color);
 	}
+	$rootScope.$on('server:JoinGame', function(event, parameters) {
+		//alert("we are rejoining/joining");
+		console.log("********************");
+		console.log(parameters);
+		console.log("********************");
+		if(parameters.description == "success") {
+			$state.go('mainGame');
+		}
+	});
 	//END JOIN/REJOIN FUNCTIONS
   // this Toggles the Create New game modal
   $scope.modalShown = false;
@@ -154,12 +98,9 @@ app.controller('gameLobbyController', function($scope, $rootScope, ClientAPI, $u
 	}
 
 	$rootScope.$on('server:CreateGame', function (event, parameters) {
-		alert("we did it");
-		console.log(parameters);
 		if(parameters.description == "success") {
 			$state.go('mainGame');
 		}
-
 	});
 
 });

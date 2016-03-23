@@ -1,19 +1,6 @@
-<!-- cant decide if i want an image at the top<nav class="navbar navbar-inverse">
-	<div class="container-fluid">
-		<div class="navbar-header">
-      <img src="../images/tickettoRideBanner.jpg" class ="gameLobbyBannerPicture"alt="" />
-		</div>
-	</div>
-</nav>
 
-<div >
-  <h1>Ticket To Ride Game Lobby</h1>
-</div>
-or just a header or a bar -->
-<!--NAVBAR -->
 <div class="navbar navbar-inverse">
 		 <div class="container">
-
 			 <div class="navbar-header pull-left">
 				 <a class="navbar-brand">Ticket To Ride Game Lobby</a>
 			 </div>
@@ -25,17 +12,6 @@ or just a header or a bar -->
 			 </div>
 	 </div>
  </div>
-<!--
-<nav class="navbar navbar-inverse col-md-12">
-	<div class="container-fluid">
-		<div class="navbar-header">
-			<div class="navbar-brand col-med-11">Ticket To Ride Game Lobby</div>
-			<div class="navbar-brand col-med-1" href="#">Logout</div>
-		</div>
-	</div>
-</nav>-->
-<!-- END NAVBAR-->
-<!--Create newGame BUTTON AND MODAL -->
 <div class="text-center">
 	<button type="button" name="button" class="button" ng-click="toggleCreateNewGameModal()">Create New Game</button>
 	<modal-dialog show='modalShown' width='750px' height='60%'>
@@ -65,16 +41,16 @@ or just a header or a bar -->
 			<h2>Available Games</h2>
 		</div>
 		<div class="row" ng-repeat-start="game in availableGames" ng-click="showDetailAvailableGames(game)" ng-class-odd="'alt'">
-			<label class="col-md-5 cap">Game Name:{{game.id}}</label>
+			<label class="col-md-5 cap">Game Name:{{game.gameName}}</label>
 		<label class="col-md-5 strong">players in Game:{{game.players.length}}</label>
 		<div class="col-md-1 text-right">
 			<a href="">
-					<i ng-hide="activeAvailableGames==game.id" class="fa fa-plus"></i>
-      		<i ng-show="activeAvailableGames==game.id" class="fa fa-minus"></i>
+					<i ng-hide="activeAvailableGames==game.gameID" class="fa fa-plus"></i>
+      		<i ng-show="activeAvailableGames==game.gameID" class="fa fa-minus"></i>
 				</a>
 			</div>
 		</div>
-		<div class="row" ng-repeat-end="" ng-show="activeAvailableGames==game.id" ng-class-odd="'alt'">
+		<div class="row" ng-repeat-end="" ng-show="activeAvailableGames==game.gameID" ng-class-odd="'alt'">
 			<div >
 				<div>
 					<label>Players: </label>
@@ -82,7 +58,7 @@ or just a header or a bar -->
 				</div>
 				<div>
 					<label>Colors: </label>
-					<span ng-repeat="color in game.colorAvailable">
+					<span ng-repeat="color in game.availableColors">
           	<button type="button" name="button" class="button" ng-click="joinGame(game,color)">{{color}}</button>
           </span>
 				</div>
@@ -97,24 +73,26 @@ or just a header or a bar -->
 			<h2>Your Games</h2>
 		</div>
 		<div class="row" ng-repeat-start="game in myGames" ng-click="showDetailMyGames(game)" ng-class-odd="'alt'">
-				<label class="col-md-5 cap">Game Name:{{game.id}}</label>
+				<label class="col-md-5 cap">Game Name:{{game.gameName}}</label>
 			<label class="col-md-5 strong">players in Game:{{game.players.length}}</label>
 			<div class="col-md-1 text-right">
 				<a href="">
-					<i ng-hide="activeMyGames==game.id" class="fa fa-plus"></i>
-        	<i ng-show="activeMyGames==game.id" class="fa fa-minus"></i>
+					<i ng-hide="activeMyGames==game.gameID" class="fa fa-plus"></i>
+        	<i ng-show="activeMyGames==game.gameID" class="fa fa-minus"></i>
 				</a>
 			</div>
-		</div>
-		<div class="row" ng-repeat-end="" ng-show="activeMyGames==game.id" ng-class-odd="'alt'">
+		 </div>
+		<div class="row" ng-repeat-end="" ng-show="activeMyGames==game.gameID" ng-class-odd="'alt'">
 			<div>
 				<div>
 					<label>Players: </label>
-					<span ng-repeat="players in game.players">{{players}}&nbsp</span>
+					<span ng-repeat="player in game.players">{{player.username}}&nbsp</span>
 				</div>
 				<div>
-					<label>Your Color:{{game.yourColor}} </label>
-					<button type="button" name="button" class="button" ng-click="reJoinGame(game)">Rejoin Game</button>
+					<label>Colors: </label>
+					<span ng-repeat="color in game.availableColors">
+          	<button type="button" name="button" class="button" ng-click="joinGame(game,color)">{{color}}</button>
+          </span>
 				</div>
 			</div>
 		</div>
