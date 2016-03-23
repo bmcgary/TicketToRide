@@ -34,6 +34,7 @@ import server.User;
 import server.exception.AddUserException;
 import server.exception.AlreadyLoggedInException;
 import server.exception.BadCredentialsException;
+import server.exception.GameOverException;
 import server.exception.InternalServerException;
 import server.exception.InvalidCredentialsException;
 import server.exception.OutOfBoundsException;
@@ -720,10 +721,52 @@ public class ServerFacade_Test {
 	}
 	
 	@Test
-	public void testBuyRouteInsufficientResources()
+	public void testBuyRouteInsufficientResources() throws AddUserException, InternalServerException, InvalidCredentialsException, PreConditionException, OutOfBoundsException, GameOverException
 	{
+		int id1 = serverFacade.register("test1", "test1");
+		int id2 = serverFacade.register("test2", "test2");
+		
+		TestGame game = new TestGame();
+		serverFacade.createGame(game, id1, PlayerColor.Black);
+		serverFacade.addPlayerToGame(id2, game.getGameID(), PlayerColor.Blue);
+		serverFacade.startGame(id1, game.getGameID());
+		serverFacade.selectDestinations(id1, game.getGameID(), new int[] {0,1});
+		serverFacade.selectDestinations(id2, game.getGameID(), new int[] {0,1});
+		
+		//give everyone all da train cards
+		Map<TrackColor,Integer> tenCardsEach = new HashMap<TrackColor,Integer>();
+		for (TrackColor tc : TrackColor.values())
+		{
+			tenCardsEach.put(tc, 10);
+		}
+		game.getPlayerManager().addTrainCarCards(id1, tenCardsEach);
+		game.getPlayerManager().addTrainCarCards(id2, tenCardsEach);
+		
+		City start = new City("Portland");
+		City end = new City("San Francisco");
+		CityToCityRoute route = new CityToCityRoute(start, end, 5, TrackColor.Green);
+		Map<TrackColor,Integer> cards = new HashMap<TrackColor,Integer>();
+		cards.put(TrackColor.Green, 5);
+		
 		//insufficient train cars
+		Player player1 = game.getPlayerByIndex(0);
+		player1.useTrains(41);
+		assertFalse(serverFacade.canBuyRoute(id1, game.getGameID(), route, cards));
+		game.getPlayerManager().advanceTurn();
+		
 		//insufficient train cards
+		Map<TrackColor,Integer> tooFew = new HashMap<TrackColor,Integer>();
+		tooFew.put(TrackColor.Green, 4);
+		assertFalse(serverFacade.canBuyRoute(id2, game.getGameID(), route, tooFew));
+		
+		TestPlayerManager manager = (TestPlayerManager)game.getPlayerManager();
+		Player player2 = manager.getPlayerByID(id2);
+		Map<TrackColor, Integer> playerCards = player2.getTrainCarCards();
+		playerCards.put(TrackColor.Green, 4);
+		playerCards.put(TrackColor.None, 0);
+		assertFalse(serverFacade.canBuyRoute(id2, game.getGameID(), route, cards));
+
+		
 		//what happens if they give more than enough cards?
 	}
 	
