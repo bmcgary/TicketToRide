@@ -16,7 +16,7 @@ app.factory('ServerAPI', function ($rootScope) {
                 case "UpdateJoinableGames": 
                 case "UpdateUserGames": 
                 case "GetLeaderboards": 
-                case "UpdateGames": 
+                case "UpdateGame":
                 case "JoinGame": 
                 case "CreateGame": 
                 case "LeaveGame": 
