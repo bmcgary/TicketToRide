@@ -10,8 +10,8 @@ app.factory('GameDataForLobby', function (LobbyPlayer) {
     function GameDataForLobby (gameDataJSON) {
         this.gameId = gameDataJSON.gameId;
         this.gameName = gameDataJSON.gameName;
-        for(var index in players) {
-            players.push(new LobbyPlayer(players[index]));
+        for(var index in gameDataJSON.players) {
+            this.players.push(new LobbyPlayer(gameDataJSON.players[index]));
         }
     }
 

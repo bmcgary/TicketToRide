@@ -105,6 +105,10 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
     });
 
     $rootScope.$on('server:Logout', function (event, parameters) {
+        var username = "";
+        var usersGames = {};
+        var joinableGames = {};
+        var gameInView = -1;
         $state.go('login');
     });
 
@@ -165,6 +169,8 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
 
             usersGames[parameters.gameId].getPlayerById(playerId).trainsLeft = parameters.trainsLeft;
             usersGames[parameters.gameId].board.addRoutePurchased(parameters.routeIndexPurchased, game.getPlayerById(playerId).playerColor);
+
+            //TODO: Update PointTotals!!!!
 
             broadcast(parameters.gameId, 'BuyRoute');
         } else if(parameters.description == "invalid route location") {
@@ -310,10 +316,6 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
             } else {
                 alert("Invalid Game Id");
             }
-    	},
-
-        setUsername: function (username) {
-            this.username = username;
-        }
+    	}
     };
 });
