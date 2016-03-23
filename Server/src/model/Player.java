@@ -159,4 +159,17 @@ public class Player {
 		return true;
 	}
 
+	public int getDestinationPoints() {
+		int output = 0;
+		for(DestinationRoute dr : destinationRoutes){
+			if(dr.isCompleted()){
+				output += dr.getPointValue();
+			}
+			else{
+				output -= dr.getPointValue();
+			}
+		}
+		return output;
+	}
+
 }

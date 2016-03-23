@@ -416,7 +416,21 @@ public class PlayerManager {
 	}
 	
 	public boolean isFinalRound(){
-		return (this.finalTurnIndex >= 0) ? true : false;
+		return this.finalTurnIndex >= 0;
+	}
+
+	public void calculateDestinationRoutePoints() {
+		for(Player p : players){
+			p.addPoints(p.getDestinationPoints());
+		}
+	}
+
+	public void giveLongestRoutePoints(int playerID) {
+		for(Player p : players){
+			if(p.getPlayerID() == playerID){
+				p.addPoints(10);
+			}
+		}
 	}
 }
 

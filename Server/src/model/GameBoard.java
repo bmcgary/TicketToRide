@@ -428,5 +428,9 @@ public class GameBoard {
 		}
 		return GameBoard.routeMapping;
 	}
+	public int getLongestRoutePlayer() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 	
 }

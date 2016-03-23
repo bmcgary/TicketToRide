@@ -25,6 +25,7 @@ public class Game {
 	protected boolean started;
 	protected boolean isGameOver;
 	protected String name;
+	protected boolean calculatedGameFinalPoints;
 
 	public Game() {
 		this(null);
@@ -44,6 +45,7 @@ public class Game {
 		playerManager = new PlayerManager();
 		gameID = nextID++;
 		isGameOver = false;
+		calculatedGameFinalPoints = false;
 		history = new ArrayList<String>();
 		history.add("Game created");
 	}
@@ -153,6 +155,7 @@ public class Game {
 			playerManager.advanceTurn();
 		} catch (GameOverException e) {
 			this.isGameOver = true;
+			this.calculateGameFinalPoints();
 		}
 		
 
@@ -209,6 +212,7 @@ public class Game {
 				playerManager.advanceTurn();
 			} catch (GameOverException e) {
 				this.isGameOver = true;
+				this.calculateGameFinalPoints();
 			}
 		}
 		else{
@@ -264,6 +268,7 @@ public class Game {
 			playerManager.advanceTurn();
 		} catch (GameOverException e) {
 			this.isGameOver = true;
+			this.calculateGameFinalPoints();
 			return;
 		}
 		assert(!playerManager.isPlayersTurn(playerID));
@@ -282,6 +287,28 @@ public class Game {
 	
 	public Player getPlayerByIndex(int index){
 		return playerManager.getPlayers().get(0);
+	}
+	
+	private void calculateGameFinalPoints(){
+		if(!calculatedGameFinalPoints){
+			//do a final DestinationRoute check
+			for(Player p : playerManager.getPlayers()){
+				for(DestinationRoute dr : p.getDestinationRoute()){
+					List<CityToCityRoute> playerRoutes = gameBoard.getCurrentRoutes().get(p.getPlayerID());
+					dr.calcCompleted(playerRoutes);
+				}
+			}
+			
+			//add points for completing destination cards
+			playerManager.calculateDestinationRoutePoints();
+			
+			//figure out who has longest route, award points
+			int longestRoutePlayerID = gameBoard.getLongestRoutePlayer();
+			playerManager.giveLongestRoutePoints(longestRoutePlayerID);
+			
+			//lock out later point calculations
+			calculatedGameFinalPoints = true;
+		}
 	}
 	
 	
