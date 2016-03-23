@@ -376,7 +376,7 @@ public class ServerFacade {
 	 * @param playerID the player buying the route
 	 * @param gameID the game for the purchase
 	 * @param route the route being bought
-	 * @param cards TODO
+	 * @param cards the cards used to purchase the route
 	 * @throws PreConditionException thrown if the player can't buy the route
 	 * @throws InternalServerException thrown if something horrible happens and Trent messed up
 	 * @throws OutOfBoundsException 
@@ -557,11 +557,6 @@ public class ServerFacade {
 		}
 	}
 	
-	public synchronized void sendClientModelInformation()
-	{
-		//TODO: this
-	}
-	
 	public Map<Integer, CityToCityRoute> getCityMapping()
 	{
 		return GameBoard.getRouteMapping();
@@ -663,10 +658,16 @@ public class ServerFacade {
 	 * Get a specified user
 	 * @param userID the id for the desired user
 	 * @return user requested
+	 * @throws InvalidCredentialsException 
      */
-	public User getUser(int userID) {
-		// TODO: implement
-		return null;
+	public User getUser(int userID) throws InvalidCredentialsException {
+		Optional<User> possibleUser = users.parallelStream().filter(user -> user.getPlayerID() == userID).findFirst();
+		if(possibleUser.isPresent()){
+			return possibleUser.get();
+		}
+		else{
+			throw new InvalidCredentialsException("No user exists with ID: " + userID);
+		}
 	}
 
 	public static void firebomb()
