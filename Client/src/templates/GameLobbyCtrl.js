@@ -16,14 +16,8 @@ app.controller('gameLobbyController', function($scope, $rootScope, ClientAPI, $u
 	//END LOGOUT
 //Update games
 $rootScope.$on('server:UpdateGame', function(event, parameters) {
-	//alert("we are rejoining/joining");
-	console.log("********************");
-	console.log(parameters);
-	console.log("********************");
 	$scope.availableGames.push(parameters.game);
 	getAvailableColors($scope.availableGames);
-
-
 });
 //
 	//GET Joinable GAMES
@@ -83,10 +77,6 @@ $rootScope.$on('server:UpdateGame', function(event, parameters) {
 		ClientAPI.joinGame(game.gameID,color);
 	}
 	$rootScope.$on('server:JoinGame', function(event, parameters) {
-		//alert("we are rejoining/joining");
-		console.log("********************");
-		console.log(parameters);
-		console.log("********************");
 		if(parameters.description == "success") {
 			$state.go('mainGame');
 		}
