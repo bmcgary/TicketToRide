@@ -151,6 +151,14 @@ public class Game {
 			}
 		}
 		gameBoard.discardTrainCards(toDiscard);
+		
+		//update DestinationRoute completion for this player
+		List<CityToCityRoute> playersRoutes = gameBoard.getCurrentRoutes().get(playerID);
+		for(DestinationRoute dr : playerManager.getPlayer(playerID).getDestinationRoute()){
+			dr.calcCompleted(playersRoutes);
+		}
+		
+		//attempt to advance turn
 		try {
 			playerManager.advanceTurn();
 		} catch (GameOverException e) {
