@@ -7,7 +7,7 @@ import java.awt.Point;
  * @author Trent
  *
  */
-public class City {
+public class City implements Comparable{
 	private String name;
 	public City(String name){
 		this.name = name;
@@ -33,6 +33,17 @@ public class City {
 		}
 		else{
 			return true;
+		}
+	}
+
+	@Override
+	public int compareTo(Object o) {
+		if(!o.getClass().equals(this.getClass())){
+			return -1;
+		}
+		else{
+			City other = (City) o;
+			return this.getName().compareTo(other.getName());
 		}
 	}
 	

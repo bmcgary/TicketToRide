@@ -557,7 +557,7 @@ public class ServerFacade {
 		}
 	}
 	
-	public Map<Integer, CityToCityRoute> getCityMapping()
+	public static Map<Integer, CityToCityRoute> getCityMapping()
 	{
 		return GameBoard.getRouteMapping();
 	}
@@ -694,8 +694,8 @@ public class ServerFacade {
 		if(sf.canBuyRoute(pid, 1, new CityToCityRoute(new City("Seattle"), new City("Portland"), 1, TrackColor.None), m)){
 			sf.buyRoute(pid, 1, new CityToCityRoute(new City("Seattle"), new City("Portland"), 1, TrackColor.None), m);
 		}
-		//sf.loadGameState();
-		//sf.selectDestinations(pid, 1, new int[]{0,1});
+		sf.loadGameState();
+		sf.selectDestinations(pid, 1, new int[]{0,1});
 		System.out.println("Success!");
 	}
 }
