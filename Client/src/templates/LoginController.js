@@ -14,7 +14,6 @@ app.controller('loginController', function ($rootScope, $scope, $state, ClientAP
     };
     $rootScope.$on('server:Login', function (event, parameters) {
     	if(parameters.description == "success") {
-            ModelFacade.setUsername(this.username);
     		$state.go('gameLobby');
     	} else if (parameters.description == "alreadyloggedin") {
     		alert("You are currently logged in already!");
