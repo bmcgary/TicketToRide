@@ -19,10 +19,13 @@ public class DestinationCardInfo {
     private String city2;
     @SerializedName("points")
     private int points;
+    @SerializedName("completed")
+    private boolean completed;
 
     public DestinationCardInfo(DestinationRoute destinationRoute) {
         this.city1 = destinationRoute.getStart().getName();
         this.city2 = destinationRoute.getEnd().getName();
         this.points = destinationRoute.getPointValue();
+        this.completed = destinationRoute.isCompleted();
     }
 }
