@@ -11,12 +11,8 @@ import java.util.List;
  * Created by rodriggl on 1/29/2016.
  */
 public abstract class Command {
-    protected transient ServerFacade serverFacade;
+    protected transient ServerFacade serverFacade = ServerFacade.getServerFacade();
     protected transient String commandName;
-
-    protected Command() {
-        serverFacade = ServerFacade.getServerFacade();
-    }
 
     /**
      * Execute this command
