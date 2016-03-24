@@ -854,7 +854,7 @@ public class ServerFacade_Test {
 		cards = new HashMap<TrackColor,Integer>();
 		cards.put(TrackColor.Blue, 2);
 		cards.put(TrackColor.None, 2);
-		
+
 		serverFacade.buyRoute(id2, game.getGameID(), route, cards);
 		assertTrue(manager.getFinalTurnIndex() == 1);
 		assertTrue(dest.isCompleted());
