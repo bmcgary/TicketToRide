@@ -110,29 +110,29 @@ public class Game {
 	public boolean canPlayerBuyRoute(int playerID, CityToCityRoute route, Map<TrackColor, Integer> cards) {
 		//must be player's current turn
 		if(getPlayerByIndex(playerManager.currentTurnIndex).getPlayerID() != playerID){
-			System.out.println("curIndex: " + playerManager.currentTurnIndex);return false;
+			return false;
 		}
 		
 		//player cannot be holding destination routes to consider
 		if(playerManager.getPlayer(playerID).getDestinationRoutesToConsider() != null){
-			System.out.println("2");return false;
+			return false;
 		}
 		
 		//player cannot have already drawn a card this turn
 		if(playerManager.drewAlreadyCurrentTurn){
-			System.out.println("3");return false;
+			return false;
 		}
 		
 		//route must be available
 		if(!gameBoard.isRouteAvailable(route)){
-			System.out.println("4");return false;
+			return false;
 		}
 		
 		//player must have the appropriate resources
 		if(playerManager.canBuyTrackWithCards(playerID, route.getNumTrains(), route.getTrackColor(), cards)){
 			return true;
 		}
-		System.out.println("5");return false;
+		return false;
 	}
 
 	public void buyRoute(int playerID, CityToCityRoute route, Map<TrackColor, Integer> cards) throws PreConditionException, OutOfBoundsException {
