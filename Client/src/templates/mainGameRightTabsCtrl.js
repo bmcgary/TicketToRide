@@ -29,12 +29,28 @@ app.controller('mainGameRightTabsCtrl', function ($scope, $rootScope, ClientAPI,
     $rootScope.$on('model:GetDestinations', function (event, parameters) 
 	{	
 		//TEMP For testing purposes
-		var imagesArray = [{selected:false, url:'ttr-route-boston-miami.jpg'},
+		/*var imagesArray = [{selected:false, url:'ttr-route-boston-miami.jpg'},
 					{selected:false, url:'ttr-route-calgary-phoenix.jpg'},
-					{selected:false, url:'ttr-route-calgary-saltLakeCity.jpg'}];
+					{selected:false, url:'ttr-route-calgary-saltLakeCity.jpg'}];*/
+		var imagesArray = [];
+		for(index in parameters)
+		{
+
+			imagesArray.push({selected:false, url:'ttr-route-' + camelize(parameters[index].city1) + 
+					'-' + camelize(parameters[index].city2) + '.jpg'});
+		}
+
 		var numberOfDestiantionsToPick = 1;
 		//-----------------------------------
 		states[$scope.currentTurn]['getDestinationCardsCallBack'](numberOfDestiantionsToPick, imagesArray);
+
+
+			function camelize(str) {//The server sends back city names with spaces but the files are camelcased. So a converstion is needed
+			  return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function(match, index) {
+				if (+match === 0) return ""; // or if (/\s+/.test(match)) for white spaces
+				return index == 0 ? match.toLowerCase() : match.toUpperCase();
+			  });
+			}
     });
 
 
@@ -151,7 +167,9 @@ app.controller('mainGameRightTabsCtrl', function ($scope, $rootScope, ClientAPI,
 		modalInstance.result.then(
 			function (selectedItems)  //they selected stuff
 			{
+				
 		  		console.log(selectedItems); //from here ship it out via the ClientAPI
+				ClientAPI.selectDestinations($scope.currentGameId,selectedItems)
 			});//dont need a function for canceling since that isn't allowed
 	}
 
@@ -173,7 +191,7 @@ app.controller('destinationModalCtrl', function ($scope, $uibModalInstance, amou
 	{
 		if($scope.availableDestsToPickFrom[index]['selected'])
 		{
-			selectedIndexes.push(index);
+			selectedIndexes.push(parseInt(index));
 		}
 	} 
 
