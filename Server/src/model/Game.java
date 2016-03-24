@@ -299,7 +299,7 @@ public class Game {
 	}
 	
 	public Player getPlayerByIndex(int index){
-		return playerManager.getPlayers().get(0);
+		return playerManager.getPlayers().get(index);
 	}
 	
 	private void calculateGameFinalPoints(){

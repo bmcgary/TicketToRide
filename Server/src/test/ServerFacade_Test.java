@@ -817,12 +817,59 @@ public class ServerFacade_Test {
 		assertTrue(player1.getNumTrainsLeft() == 40);
 		
 		//cards are discarded
+		List<TrackColor> discarded = game.getGameBoard().getDiscardedTrainCarCards();
+		assertTrue(discarded.size() == 5);
+		for (TrackColor tc : discarded)
+		{
+			assertTrue(tc == TrackColor.Green);
+		}
+		
 		//points update correctly
-		//can trigger final round
+		assertTrue(player1.getPointsScored() == 10);
+		
+		//can trigger final round && updates destinations
+		assertTrue(manager.getFinalTurnIndex() == -1);
+		TestPlayer player2 = (TestPlayer)manager.getPlayerByID(id2);
+		player2.setNumTrainsLeft(5);
+		
+		start = new City("Calgary");
+		end = new City("Salt Lake City");
+		DestinationRoute dest = new DestinationRoute(start, end, 7);
+		player2.getDestinationRoute().add(dest);
+		assertFalse(dest.isCompleted());
+	
+		start = new City("Helena");
+		end = new City("Salt Lake City");
+		route = new CityToCityRoute(start, end, 3, TrackColor.Purple);		
+		game.getGameBoard().claimRoute(id2, route);
+		
+		start = new City("Calgary");
+		end = new City("Winnipeg");
+		route = new CityToCityRoute(start, end, 6, TrackColor.White);
+		game.getGameBoard().claimRoute(id2, route);
+		
+		start = new City("Helena");
+		end = new City("Winnipeg");
+		route = new CityToCityRoute(start, end, 4, TrackColor.Blue);
+		cards = new HashMap<TrackColor,Integer>();
+		cards.put(TrackColor.Blue, 2);
+		cards.put(TrackColor.None, 2);
+
+		serverFacade.buyRoute(id2, game.getGameID(), route, cards);
+		assertTrue(manager.getFinalTurnIndex() == 1);
+		assertTrue(dest.isCompleted());
+		
 		//can trigger game end
-		//can complete destination(s)
-		//can update longest road when appropriate
-		//can with combo of color and wilds
+		start = new City("Vancouver");
+		end = new City("Seattle");
+		route = new CityToCityRoute(start, end, 1, TrackColor.None);
+		cards = new HashMap<TrackColor,Integer>();
+		cards.put(TrackColor.Yellow, 1);
+		
+		serverFacade.buyRoute(id1, game.getGameID(), route, cards);
+		assertTrue(game.isGameOver());
+		
+		//TODO can update longest road when appropriate
 	}
 	
 	//*********************************************************************************

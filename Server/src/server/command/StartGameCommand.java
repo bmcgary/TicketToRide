@@ -2,6 +2,7 @@ package server.command;
 
 import com.google.gson.annotations.SerializedName;
 import model.Game;
+import server.ServerFacade;
 import server.dto.gameplay.GamePlayInfo;
 import server.exception.GameNotFoundException;
 import server.exception.InternalServerException;
@@ -28,6 +29,7 @@ public class StartGameCommand extends Command {
 
     @Override
     public List<ResponseWrapper> execute(int userID) {
+        serverFacade = ServerFacade.getServerFacade();
         List<ResponseWrapper> responses = new ArrayList<>();
         ResponseWrapper responseWrapper = new ResponseWrapper(userID, commandName);
         responses.add(responseWrapper);
