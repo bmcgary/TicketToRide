@@ -1,6 +1,6 @@
 var app = angular.module('ticketToRide');
 
-app.controller('mainGameRightTabsCtrl', function ($scope, ClientAPI, $uibModal) {
+app.controller('mainGameRightTabsCtrl', function ($scope, $rootScope, ClientAPI, $uibModal) {
 
 	setUpHeight();
 		
@@ -26,11 +26,26 @@ app.controller('mainGameRightTabsCtrl', function ($scope, ClientAPI, $uibModal) 
 		return states[$scope.currentTurn]['disableCard'](input);
 	}
 
+    $rootScope.$on('model:GetDestinations', function (event, parameters) 
+	{	
+		//TEMP For testing purposes
+		var imagesArray = [{selected:false, url:'ttr-route-boston-miami.jpg'},
+					{selected:false, url:'ttr-route-calgary-phoenix.jpg'},
+					{selected:false, url:'ttr-route-calgary-saltLakeCity.jpg'}];
+		var numberOfDestiantionsToPick = 1;
+		//-----------------------------------
+		states[$scope.currentTurn]['getDestinationCardsCallBack'](numberOfDestiantionsToPick, imagesArray);
+    });
+
+
+
+
 	//---------------------------- States used ------------------------------------------
 	var notYourTurnState = 
 	{
 		'disableCard':function(input){return true;},
-		'cardSelected':function(input){return;}
+		'cardSelected':function(input){return;},
+		'getDestinationCardsCallBack':function(){return;}
 	}
 	var yourTurnState = 
 	{
@@ -56,17 +71,13 @@ app.controller('mainGameRightTabsCtrl', function ($scope, ClientAPI, $uibModal) 
 			{
 				case 'destination':
 					//pop up a modol showing the destination cards that could be selected
-					openDestinationModal(2);
-					break;
-				case 5:
-					console.log("Train deck card selected");
-					break;					
+					ClientAPI.getDestinations($scope.currentGameId);
+					break;				
 				default:
 					if(checkEligibility(input))
 					{
-						switch(input)
+						switch(input)//This is for debugging. once everything works this switch can be removed
 						{ 
-				
 							case 0:
 								console.log("Train deck 1st card selected");
 								break;
@@ -82,12 +93,26 @@ app.controller('mainGameRightTabsCtrl', function ($scope, ClientAPI, $uibModal) 
 							case 4:
 								console.log("Train deck 5th card selected");
 								break;
+							case 5:
+								console.log("Train deck card selected");
+								break;
 						}
+						ClientAPI.drawTrainCard($scope.currentGameId,input);
 					}
 					else
 						console.log("Card Disabled");
 			}
-		}
+		},
+		//what to do once the destination cards have come back from the server
+		'getDestinationCardsCallBack':function(numberOfCardsToSelect, imagesArray){
+				//imagesArray we are exepecting:
+				/*[{selected:false, url:'ttr-route-boston-miami.jpg'},
+					{selected:false, url:'ttr-route-calgary-phoenix.jpg'},
+					{selected:false, url:'ttr-route-calgary-saltLakeCity.jpg'}];*/
+				//fix the imagesArray to look like that in case is isn't already
+
+				openDestinationModal(numberOfCardsToSelect, imagesArray);
+			}
 	}
 
 	function checkEligibility(input)
@@ -100,8 +125,8 @@ app.controller('mainGameRightTabsCtrl', function ($scope, ClientAPI, $uibModal) 
 	var states = {'notYourTurn':notYourTurnState, 'yourTurn':yourTurnState};
 	var canDrawWild = false;
 
-    //Destination modal -------------------------------------------------------
-	function openDestinationModal(amountOfdestsToPick)
+//---------------------------Destination modal -------------------------------------------------------
+	function openDestinationModal(amountOfdestsToPick, imagesArray)
 	{
 		var modalInstance = $uibModal.open({
 			  animation: true,
@@ -115,7 +140,11 @@ app.controller('mainGameRightTabsCtrl', function ($scope, ClientAPI, $uibModal) 
 				   amountOfdestsToPick: function () 
  				   {
 				     return amountOfdestsToPick;
-				   }
+				   },
+				   availableDestsToPickFrom: function()
+				   {
+					 return imagesArray
+   				   }
 			  }
 			});
 
@@ -129,18 +158,13 @@ app.controller('mainGameRightTabsCtrl', function ($scope, ClientAPI, $uibModal) 
 });
 
 // Destination modal's controller ------------------------------------------------------------------------
-app.controller('destinationModalCtrl', function ($scope, $uibModalInstance, amountOfdestsToPick) {
+app.controller('destinationModalCtrl', function ($scope, $uibModalInstance, amountOfdestsToPick, availableDestsToPickFrom) {
 
   $scope.alert = {showAlert: false, message: "", type:""};	
   $scope.amountOfDestinationsToPick = amountOfdestsToPick;
 
-//TODO where do we get this info from? From the game model? from an ajax call??? is it passed in??
-  $scope.availableDestsToPickFrom = [{selected:false, url:'ttr-route-boston-miami.jpg'},{selected:false, url:'ttr-route-calgary-phoenix.jpg'},{selected:false, url:'ttr-route-calgary-saltLakeCity.jpg'}];
 
-  $scope.checkBoxSelected = function(index)
-  {
-	$scope.availableDestsToPickFrom[index]['selected'] = !$scope.availableDestsToPickFrom[index]['selected'];
-  }
+  $scope.availableDestsToPickFrom = availableDestsToPickFrom;
 
   $scope.ok = function () {
 	//check that they have chosen enough

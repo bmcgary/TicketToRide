@@ -32,7 +32,7 @@ app.factory('Game', function (Opponent, Player, GameBoard) {
         } else {
             for(var index in this.opponents) {
                 if(this.opponents[index].playerId == playerId) {
-                    return opponents[index];
+                    return this.opponents[index];
                 }
             }
         }

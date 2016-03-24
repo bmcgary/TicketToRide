@@ -13,10 +13,12 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
 		
 	$scope.toggleTurn = function()
 	{
-		if($scope.currentTurn === 'yourTurn')
+		/*if($scope.currentTurn === 'yourTurn')
 			$scope.currentTurn = 'notYourTurn';
 		else
-			$scope.currentTurn = 'yourTurn';
+			$scope.currentTurn = 'yourTurn';*/
+
+		ClientAPI.startGame(1);
 	}
 
 	$scope.changeGame = function(game)
@@ -24,10 +26,57 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
 		console.log("Change game to this game Id: " + game);
 	}
 
-	/*$rootScope.on('model:SwitchGame',function(event, params)
-	{
+//--------------------- Main game Broadcast listeners -----------------------------------
+// There are other listeners that are in specific controllers. EG: when clicking buy a destination 
+// it will fire off a call to the server from that click. The return broadcast will be listended for 
+// in the buy destination modol controller. The listed main game listeners are here.
+/*
+	"SendClientModelInformation": 
+    "BuyRoute": 
+    "DrawTrainCard": 
+    "NotifyDestinationRouteCompleted": 
+    "GetDestinations": 
+    "SelectDestinations": 
+    "GameEnded": 
+*/
+    $rootScope.$on('model:SendChat', function (event, parameters) {
+        //future
 
-	});*/
+    });
+
+
+    $rootScope.$on('model:BuyRoute', function (event, parameters) {
+        //do logic
+		
+    });
+
+
+    $rootScope.$on('model:DrawTrainCard', function (event, parameters) {
+		//do logic
+		alert("HERE");
+    });
+
+
+    $rootScope.$on('model:GetDestinations', function (event, parameters) {
+		console.log(parameters);
+		//This is mostly ceremonial having this here. 
+		//This is actually caught in the mainGameRightTabsCtrl and handled there
+    });
+
+
+    $rootScope.$on('model:SelectDestinations', function (event, parameters) {
+		//do logic
+
+    });
+
+
+	$rootScope.$on('TESTER',function(event, params)
+	{
+		alert("in ctrl");
+	});
+//--------------- Over all info thats helpful to have -------------------------
+$scope.currentGameId = 1; //ModelContainer.getGameId() //I assume ModelContainer is what i am passed in the broadcast???
+
 //----------------------- Main menu data --------------------------------------
 $scope.thisPlayer = {
 	playerName:'player 4',
