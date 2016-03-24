@@ -606,7 +606,6 @@ public class ServerFacade_Test {
 	
 	//*********************************************************************************
 	//BUY ROUTE TESTS
-	//TODO verify/rewrite all these tests
 	
 	@Test
 	public void testBuyRouteInvalidInputs() throws AddUserException, InternalServerException, InvalidCredentialsException, PreConditionException, OutOfBoundsException
@@ -877,18 +876,57 @@ public class ServerFacade_Test {
 	//TODO verify/rewrite all these tests
 
 	@Test
-	public void testDrawTrainCardInvalidInputs()
+	public void testDrawTrainCardInvalidInputs() throws AddUserException, InternalServerException, InvalidCredentialsException, PreConditionException, OutOfBoundsException
 	{
+		int id1 = serverFacade.register("test1", "test1");
+		int id2 = serverFacade.register("test2", "test2");
+		
+		TestGame game = new TestGame();
+		serverFacade.createGame(game, id1, PlayerColor.Black);
+		serverFacade.addPlayerToGame(id2, game.getGameID(), PlayerColor.Blue);
+		serverFacade.startGame(id1, game.getGameID());
+		serverFacade.selectDestinations(id1, game.getGameID(), new int[] {0,1});
+		serverFacade.selectDestinations(id2, game.getGameID(), new int[] {0,1});
+		
 		//invalid or null inputs
-		//index out of range for visible
+		assertFalse(serverFacade.canDrawTrainCard(-1, game.getGameID(), 0));
+		assertFalse(serverFacade.canDrawTrainCard(id1, -1, 0));
+		assertFalse(serverFacade.canDrawTrainCard(id1, game.getGameID(), -1));
+		assertFalse(serverFacade.canDrawTrainCard(id1, game.getGameID(), 6));
 	}
 	
 	@Test
-	public void testDrawTrainCardInvalidPreconditions()
+	public void testDrawTrainCardInvalidPreconditions() throws AddUserException, InternalServerException, InvalidCredentialsException, PreConditionException, OutOfBoundsException, BadCredentialsException, AlreadyLoggedInException
 	{
+		int id1 = serverFacade.register("test1", "test1");
+		int id2 = serverFacade.register("test2", "test2");
+		
+		TestGame game = new TestGame();
+		serverFacade.createGame(game, id1, PlayerColor.Black);
+		serverFacade.addPlayerToGame(id2, game.getGameID(), PlayerColor.Blue);
+		serverFacade.startGame(id1, game.getGameID());
+		serverFacade.selectDestinations(id1, game.getGameID(), new int[] {0,1});
+		serverFacade.selectDestinations(id2, game.getGameID(), new int[] {0,1});
+		
 		//not logged in
+		serverFacade.logout(id1);
+		assertFalse(serverFacade.canDrawTrainCard(id1, game.getGameID(), 0));
+		serverFacade.login("test1", "test1");
+		
 		//not correct turn
-		//no cards remaining
+		assertFalse(serverFacade.canDrawTrainCard(id2, game.getGameID(), 0));
+		
+		//no cards remaining in deck
+		game.getGameBoard().getDeckTrainCarCards().clear();
+		assertFalse(serverFacade.canDrawTrainCard(id2, game.getGameID(), 5));
+		
+		//empty space in visible
+		game.getGameBoard().getVisibleTrainCarCards()[3] = null;
+		assertFalse(serverFacade.canDrawTrainCard(id1, game.getGameID(), 3));
+		
+		//already got destinations this turn
+		serverFacade.getDestinations(id1, game.getGameID());
+		assertFalse(serverFacade.canDrawTrainCard(id1, game.getGameID(), 0));
 	}
 	
 	@Test
@@ -898,10 +936,7 @@ public class ServerFacade_Test {
 			//drawing 2 cards from the deck works
 			//drawing a single wild from visible works
 			//drawing 2 non-wilds from visible works
-			//drawing 1-and-1 works when visible is not wild
-		//can trigger end game
-		
-		
+			//drawing 1-and-1 works when visible is not will		
 	}
 
 	//*********************************************************************************
