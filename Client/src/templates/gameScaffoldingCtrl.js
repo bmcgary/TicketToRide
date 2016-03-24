@@ -18,7 +18,7 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
 		else
 			$scope.currentTurn = 'yourTurn';*/
 
-		ClientAPI.startGame(1);
+		ClientAPI.startGame($scope.currentGameId);
 	}
 
 	$scope.changeGame = function(game)
