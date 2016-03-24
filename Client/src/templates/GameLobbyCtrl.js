@@ -15,9 +15,12 @@ app.controller('gameLobbyController', function($scope, $rootScope, ClientAPI, $u
 	});
 	//END LOGOUT
 //Update games
+var isUserLeavingGameLobby = false;
 $rootScope.$on('server:UpdateGame', function(event, parameters) {
-	$scope.availableGames.push(parameters.game);
-	getAvailableColors($scope.availableGames);
+	if(!isUserLeavingGameLobby){
+		$scope.availableGames.push(parameters.game);
+		getAvailableColors($scope.availableGames);
+	}
 });
 //
 	//GET Joinable GAMES
@@ -90,6 +93,7 @@ $rootScope.$on('server:UpdateGame', function(event, parameters) {
 	$scope.newGameName ="";
 	$scope.createNewGame = function (color, name){
 		if(name.length >0){
+			isUserLeavingGameLobby = true;
 			ClientAPI.createGame(name, color);
 		}else{
 			console.log('error');

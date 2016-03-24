@@ -191,8 +191,8 @@ public class Game {
 		}
 		
 		//5 means top of the deck
-		if(cardLocation == 5 && gameBoard.canDrawDeckTrainCar()){
-			return true;
+		if(cardLocation == 5){
+			 return gameBoard.canDrawDeckTrainCar();
 		}
 		
 		//0-4 means visible cards

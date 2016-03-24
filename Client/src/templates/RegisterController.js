@@ -15,7 +15,6 @@ app.controller('registerController', function ($rootScope, $scope, $state, Clien
     };
     $rootScope.$on('server:Register', function (event, parameters) {
     	if(parameters.description == "success") {
-            ModelFacade.setUsername(this.username);
             $state.go('gameLobby');
     	} else if(parameters.description == "alreadyregistered") {
     		alert("You are already a member!");
