@@ -2,6 +2,7 @@ package server.dto.gameplay;
 
 import com.google.gson.annotations.SerializedName;
 import model.City;
+import model.DestinationRoute;
 import model.Player;
 
 import java.util.Arrays;
@@ -28,7 +29,9 @@ public class PrivatePlayerInfo {
         this.gameId = gameId;
         this.playerOrder = playerOrder;
         this.trains = player.getTrainCarCards().entrySet().parallelStream().map(TrainCardInfo::new).collect(Collectors.toList());
-        this.destinationCards = player.getDestinationRoute().parallelStream().map(DestinationCardInfo::new).collect(Collectors.toList());
-        this.possibleDestinationCards = player.getDestinationRoutesToConsider().parallelStream().map(DestinationCardInfo::new).collect(Collectors.toList());
+        List<DestinationRoute> destinationRoutes = player.getDestinationRoute();
+        this.destinationCards = destinationRoutes == null ? null : destinationRoutes.parallelStream().map(DestinationCardInfo::new).collect(Collectors.toList());
+        destinationRoutes = player.getDestinationRoutesToConsider();
+        this.possibleDestinationCards = destinationRoutes == null ? null : destinationRoutes.parallelStream().map(DestinationCardInfo::new).collect(Collectors.toList());
     }
 }
