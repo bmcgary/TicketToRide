@@ -23,18 +23,19 @@ app.factory('Game', function (Opponent, Player, GameBoard) {
         this.board = new GameBoard();
         this.turnIndex = 0;
         for(var index in gameDataJSON.players) {
-            opponents[gameDataJSON.players[index].playerOrder] = new Opponent(gameDataJSON.players[index]);
+            var player = gameDataJSON.players[index];
+            opponents[player.playerOrder] = new Opponent(player);
         }
     }
 
     Game.prototype.getPlayerById = function (playerId) {
-
         if(this.player.playerId == playerId) {
             return this.player;
         } else {
             for(var index in this.opponents) {
-                if(this.opponents[index].playerId == playerId) {
-                    return this.opponents[index];
+                var opponent = this.opponents[index];
+                if(opponent.playerId == playerId) {
+                    return opponent;
                 }
             }
         }
