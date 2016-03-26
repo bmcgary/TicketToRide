@@ -24,7 +24,7 @@ import server.responses.ResponseWrapper;
  *
  * Created by rodriggl on 1/29/2016.
  */
-public class BuyRouteCommand extends Command {
+public class BuyRouteCommand extends TurnStartedNotificationCommand {
 	@SerializedName("gameId")
 	private int gameID;
 	@SerializedName("routeIndex")
@@ -34,43 +34,40 @@ public class BuyRouteCommand extends Command {
 	@SerializedName("numberOfWilds")
 	private int numberOfWilds;
 
-    @Override
-    public List<ResponseWrapper> execute(int userID) {
-    	
-        List<ResponseWrapper> responses = new ArrayList<>();
-        ResponseWrapper responseWrapper = new ResponseWrapper(userID, commandName);
+	@Override
+	public List<ResponseWrapper> turnExecute(int userId) {
+		List<ResponseWrapper> responses = new ArrayList<>();
+		ResponseWrapper responseWrapper = new ResponseWrapper(userId, commandName);
 
-    	//get the route that the player is trying to buy
-    	CityToCityRoute route=getRoute();
+		//get the route that the player is trying to buy
+		CityToCityRoute route=getRoute();
 
-    	//create the map containing the cards and how many wilds the player wants to use
-    	Map<TrackColor, Integer> cards=new HashMap<TrackColor, Integer>();
-    	Integer number_of_cards = route.getNumTrains()-numberOfWilds;
-    	TrackColor trackcolor=TrackColor.valueOf(trainColor);
-    	cards.put(trackcolor, number_of_cards);
+		//create the map containing the cards and how many wilds the player wants to use
+		Map<TrackColor, Integer> cards=new HashMap<TrackColor, Integer>();
+		Integer number_of_cards = route.getNumTrains()-numberOfWilds;
+		TrackColor trackcolor=TrackColor.valueOf(trainColor);
+		cards.put(trackcolor, number_of_cards);
 
-    	try {
-    		
-			serverFacade.buyRoute(userID, gameID, route, cards);
-			
+		try {
+
+			serverFacade.buyRoute(userId, gameID, route, cards);
+
 		} catch (PreConditionException | InternalServerException| OutOfBoundsException e) {
-			
+
 			e.printStackTrace();
-			
+
 			responseWrapper.setResponse(Response.newServerErrorResponse());
 			responses.add(responseWrapper);
 			return responses;
 		}
-    	
-        responseWrapper.setResponse(Response.newSuccessResponse());
-        responses.add(responseWrapper);
-        
-        return responses;
-    	
-        
-    }
-    
-    private CityToCityRoute getRoute()
+
+		responseWrapper.setResponse(Response.newSuccessResponse());
+		responses.add(responseWrapper);
+
+		return responses;
+	}
+
+	private CityToCityRoute getRoute()
     {
     	List<Game> games=serverFacade.getAllGames();
     	Game game=null;
