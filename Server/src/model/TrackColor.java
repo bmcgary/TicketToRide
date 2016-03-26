@@ -1,15 +1,15 @@
 package model;
 
 public enum TrackColor {
-	Purple("purple"),
-	White("white"),
-	Blue("blue"),
-	Yellow("yellow"),
-	Orange("orange"),
-	Black("black"),
-	Red("red"),
-	Green("green"),
-	None("none");
+	Purple("Purple"),
+	White("White"),
+	Blue("Blue"),
+	Yellow("Yellow"),
+	Orange("Orange"),
+	Black("Black"),
+	Red("Red"),
+	Green("Green"),
+	None("None");
 
 	private String colorName;
 
