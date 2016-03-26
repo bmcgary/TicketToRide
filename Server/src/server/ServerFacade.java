@@ -417,7 +417,7 @@ public class ServerFacade {
 		return false;
 	}
 	
-	public synchronized  void drawTrainCard(int playerID, int gameID, int cardLocation) throws PreConditionException, OutOfBoundsException, InternalServerException
+	public synchronized TrackColor drawTrainCard(int playerID, int gameID, int cardLocation) throws PreConditionException, OutOfBoundsException, InternalServerException
 	{
 		//helper method
 		if(!this.canDrawTrainCard(playerID, gameID, cardLocation)){
@@ -426,9 +426,10 @@ public class ServerFacade {
 		
 		for(Game g : games){
 			if(g.getGameID() == gameID){
-				g.drawTrainCard(playerID, cardLocation);
+				return g.drawTrainCard(playerID, cardLocation);
 			}
 		}
+		throw new InternalServerException("Something messed up");
 	}
 	
 	public boolean canGetDestinations(int playerID, int gameID)

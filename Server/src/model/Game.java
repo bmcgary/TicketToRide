@@ -192,7 +192,7 @@ public class Game {
 		throw new InternalServerException("Trent messed up in Game::canPlayerDrawTrainCard");
 	}
 
-	public void drawTrainCard(int playerID, int cardLocation) throws PreConditionException, OutOfBoundsException, InternalServerException {
+	public TrackColor drawTrainCard(int playerID, int cardLocation) throws PreConditionException, OutOfBoundsException, InternalServerException {
 		TrackColor card = null;
 		//5 means top of deck
 		if(cardLocation == 5){
@@ -220,7 +220,7 @@ public class Game {
 		}
 		
 		this.addHistoryMessage("Player " + playerID + " drew a card");
-		
+		return card;
 	}
 
 	public boolean canPlayerGetDestinations(int playerID) {
