@@ -172,4 +172,7 @@ public class Player {
 		return output;
 	}
 
+	public int getPointsScored() {
+		return pointsScored;
+	}
 }
