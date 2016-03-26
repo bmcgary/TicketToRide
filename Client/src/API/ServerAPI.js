@@ -10,7 +10,15 @@ app.factory('ServerAPI', function ($rootScope) {
             switch(response.command)
             {
                 case "Login":
+					if(response.parameters)
+					{
+						$rootScope.loggedIn = true;
+					}
                 case "Register": 
+					if(response.parameters)
+					{
+						$rootScope.loggedIn = true;
+					}
                 case "ForgotUserNameOrPassword": 
                 case "Logout": 
                 case "UpdateJoinableGames": 
@@ -32,6 +40,7 @@ app.factory('ServerAPI', function ($rootScope) {
                 case "GetDestinations": 
                 case "SelectDestinations": 
                 case "GameEnded": 
+				case "UpdateGame":
 
                     $rootScope.$broadcast('server:'+response.command, response.parameters);
 					console.log("A good command has come back! The server sent back something the client understoond! YIPPY!");

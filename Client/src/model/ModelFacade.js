@@ -42,13 +42,20 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
         if(parameters.description == "success") {
             //Still have stuff to figure out/////////////////////
             for(var index in parameters.games) {
-                var gameId = parameters.games[index].gameId;
-                if(!(gameId in usersGames))
-                {
-                    usersGames[gameId] = new Game(parameters.games[index].gameId);
-                }
-                usersGames[parameters.games[index].gameId].updateLobbyData(parameters.games[index], this.username);
-                $rootScope.$broadcast('model:UpdateUserGames', new ModelContainer(getModel()));
+                var gameId = parameters.games[index].gameID;
+				if(typeof(gameId) != 'undefined')
+				{                
+					if(!(gameId in usersGames))
+		            {
+		                usersGames[gameId] = new Game(parameters.games[index].gameID);
+		            }
+		            usersGames[parameters.games[index].gameID].updateLobbyData(parameters.games[index], this.username);
+		            $rootScope.$broadcast('model:UpdateUserGames', new ModelContainer(getModel()));
+				}
+				else
+				{
+					alert("gameId was undefined. ModelFacade.js server:UpdateUsersGames");
+				}
             }            
         } else if(parameters.description == "server error") {
             alert("Server Error");
@@ -120,13 +127,14 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
 
     //In Game===========================================================================================
     var broadcast = function (gameId, command) {
-        if(gameId == gameInView) { 
+        if(gameId == gameInView ) { 
             $rootScope.$broadcast('model:' + command, new ModelContainer(getModel()));
         }
     };
 
     $rootScope.$on('server:PrivateClientModelInformation', function (event, parameters) {
-        if(parameters.description == "success") { //Maybe remove description and need gameId
+ //       if(parameters.description == "success") 
+		{ //Maybe remove description and need gameId
             usersGames[parameters.gameId].player.setInGameData(parameters);
             broadcast(parameters.gameId, 'PrivateClientModelInformation');
 
@@ -134,26 +142,27 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
                 $rootScope.$broadcast('model:GetDestinations', parameters.possibleDestinationCards);
             }
 
-        } else if(parameters.description == "server error") {
+        } /*else if(parameters.description == "server error") {
             alert("Server Error");
         } else {
             alert("Unknown Server Response: PrivateClientModelInformation-" + parameters.description);
-        }
+        }*/
     });
 
     $rootScope.$on('server:PublicClientModelInformation', function (event, parameters) {
-        if(parameters.description == "success") {
+       // if(parameters.description == "success") 
+		{
             for(var index in parameters.players) {
                 var playerId = parameters.players[index].playerOrder;
-                usersGames[parameters.gameId].getPlayerById(playerId).trainsLeft = parameters[index].trainsLeft;
-                usersGames[parameters.gameId].board.setRoutesPurchased(players.routes, game.getPlayerById(playerId).playerColor);
+                usersGames[parameters.gameID].getPlayerById(playerId).trainsLeft = parameters.players[index].trainsLeft;
+                usersGames[parameters.gameID].board.setRoutesPurchased(players.routes, game.getPlayerById(playerId).playerColor);
             }
 
-        } else if(parameters.description == "server error") {
+        } /*else if(parameters.description == "server error") {
             alert("Server Error");
         } else {
             alert("Unknown Server Response: PublicClientModelInformation-" + parameters.description);
-        }
+        }*/
     });
 
     $rootScope.$on('server:SendChat', function (event, parameters) {
@@ -245,6 +254,12 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
 
     $rootScope.$on('server:GameEnded', function (event, parameters) {
         //TODO
+    });
+
+    $rootScope.$on('server:SelectDestinations', function (event, parameters) {
+		//do logic
+
+        broadcast(parameters.gameId, 'SelectDestinations');
     });
 
     return {

@@ -22,7 +22,9 @@ app.factory('Game', function (Opponent, Player, GameBoard) {
         this.opponents = [];
         this.board = new GameBoard();
         this.turnIndex = 0;
-        //for gameDataJSON.opponents;
+        for(var index in gameDataJSON.players) {
+            opponents[gameDataJSON.players[index].playerOrder] = new Opponent(gameDataJSON.players[index]);
+        }
     }
 
     Game.prototype.getPlayerById = function (playerId) {
@@ -32,7 +34,7 @@ app.factory('Game', function (Opponent, Player, GameBoard) {
         } else {
             for(var index in this.opponents) {
                 if(this.opponents[index].playerId == playerId) {
-                    return opponents[index];
+                    return this.opponents[index];
                 }
             }
         }

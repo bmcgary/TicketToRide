@@ -8,13 +8,13 @@
 				//Check if the user is logged in, if they are do nothing,
 				//if they aren't switch state to login
 
-/*				if (toState.authenticate && true){ //TODO The "true" should be changed to check the model if the user is acutally logged in or not
+				if (toState.authenticate && !$rootScope.loggedIn){ //TODO The "true" should be changed to check the model if the user is acutally logged in or not
 				  // User isn’t authenticated
 				  $state.transitionTo("login");
 //Prob not needed but just incase ------> //$rootScope.redirTo = toState.name; //save this so once they log in we redirect to their first choice
 				  event.preventDefault(); 
 				}
-*/
+
 	        });
     	})
         .config( function ($stateProvider, $urlRouterProvider) {
@@ -40,7 +40,7 @@
 	            })
               .state('gameLobby', {
 	            	url: '/gameLobby',
-	            	templateUrl: 'templates/gameLobby.html',
+	            	templateUrl: 'templates/GameLobby.html',
 	            	controller: "gameLobbyController",
 					authenticate: true
 	            })
