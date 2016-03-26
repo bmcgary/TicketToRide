@@ -890,8 +890,16 @@ public class ServerFacade_Test {
 		//invalid or null inputs
 		assertFalse(serverFacade.canDrawTrainCard(-1, game.getGameID(), 0));
 		assertFalse(serverFacade.canDrawTrainCard(id1, -1, 0));
-		assertFalse(serverFacade.canDrawTrainCard(id1, game.getGameID(), -1));
-		assertFalse(serverFacade.canDrawTrainCard(id1, game.getGameID(), 6));
+		try{
+			serverFacade.canDrawTrainCard(id1, game.getGameID(), -1);
+			assert(false);
+		} catch(OutOfBoundsException e){
+		}
+		try{
+			serverFacade.canDrawTrainCard(id1, game.getGameID(), 6);
+			assert(false);
+		} catch(OutOfBoundsException e){
+		}
 	}
 	
 	@Test
