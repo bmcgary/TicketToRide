@@ -20,12 +20,16 @@ public class DestinationCardInfo {
     @SerializedName("points")
     private int points;
     @SerializedName("completed")
-    private boolean completed;
+    private Boolean completed;
 
     public DestinationCardInfo(DestinationRoute destinationRoute) {
+        this(destinationRoute, false);
+    }
+
+    public DestinationCardInfo(DestinationRoute destinationRoute, boolean isPossible) {
         this.city1 = destinationRoute.getStart().getName();
         this.city2 = destinationRoute.getEnd().getName();
         this.points = destinationRoute.getPointValue();
-        this.completed = destinationRoute.isCompleted();
+        this.completed = isPossible ? null : destinationRoute.isCompleted();
     }
 }
