@@ -12,15 +12,12 @@ import java.util.List;
  *
  * Created by rodriggl on 3/25/2016.
  */
-public class GameEndedResponse extends Response {
-    @SerializedName("gameId")
-    private int gameId;
+public class GameEndedResponse extends GamePlayResponse {
     @SerializedName("players")
     private List<GameEndPlayerInfo> players;
 
     public GameEndedResponse(Game game) {
-        super(null);
-        this.gameId = game.getGameID();
+        super(null, game.getGameID());
         players = new ArrayList<>();
         List<Player> gamePlayers = game.getPlayerManager().getPlayers();
         for (int i = 0; i < gamePlayers.size(); ++i) {

@@ -24,7 +24,7 @@ public abstract class TurnStartedNotificationCommand extends Command {
     @SerializedName("gameId")
     int gameId;
 
-    transient GamePlayInfo gamePlayInfo;
+    transient Game game;
     transient List<Integer> playerIds;
 
     @Override
@@ -35,9 +35,8 @@ public abstract class TurnStartedNotificationCommand extends Command {
         responses.add(responseWrapper);
         try {
             // get game info
-            Game game = serverFacade.getGame(gameId);
-            gamePlayInfo = new GamePlayInfo(game);
-            playerIds = gamePlayInfo.getPlayerIds();
+            game = serverFacade.getGame(gameId);
+            playerIds = new GamePlayInfo(game).getPlayerIds();
 
             // get base state
             int currentPlayerId = getCurrentPlayerId(game);
