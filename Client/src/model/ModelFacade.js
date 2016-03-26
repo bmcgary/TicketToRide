@@ -84,33 +84,25 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
 
 	$rootScope.$on('server:StartGame', function (event, parameters)
 	{
-        if(checkDescriptionIsSuccess(parameters.description, 'StartGame'))
-        {
+        checkDescriptionIsSuccess(parameters.description, 'StartGame')
             //Do nothing
-        }
     });
 
     $rootScope.$on('server:CreateGame', function (event, parameters)
     {
-        if(checkDescriptionIsSuccess(parameters.description, 'CreateGame'))
-        {
+        checkDescriptionIsSuccess(parameters.description, 'CreateGame')
             //Do nothing
-        }
     });
 
     $rootScope.$on('server:JoinGame', function (event, parameters)
     {
-        if(checkDescriptionIsSuccess(parameters.description, 'JoinGame'))
-        {
+        checkDescriptionIsSuccess(parameters.description, 'JoinGame')
             //Do nothing
-        }
     });
 
     $rootScope.$on('server:SendClientModelInformation', function (event, parameters) {
-        if(checkDescriptionIsSuccess(parameters.description, 'SendClientModelInformation'))
-        {
+        checkDescriptionIsSuccess(parameters.description, 'SendClientModelInformation')
             //Do nothing
-        }
     });
 
     $rootScope.$on('server:Logout', function (event, parameters)
@@ -125,9 +117,9 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
 
 
     //In Game===========================================================================================
-    var broadcast = function (gameId, command)
+    var broadcastIfInView = function (gameId, command)
     {
-        if(gameId == gameInView )
+        if(gameId == gameInView)
         {
             $rootScope.$broadcast('model:' + command, new ModelContainer(getModel()));
         }
@@ -135,14 +127,12 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
 
     $rootScope.$on('server:PrivateClientModelInformation', function (event, parameters)
     {
-            usersGames[parameters.gameId].player.setInGameData(parameters);
-            broadcast(parameters.gameId, 'PrivateClientModelInformation');
+        usersGames[parameters.gameId].player.setInGameData(parameters);
+        broadcastIfInView(parameters.gameId, 'PrivateClientModelInformation');
 
-            if("possibleDestinationCards" in parameters)
-            {
-                $rootScope.$broadcast('model:GetDestinations', parameters.possibleDestinationCards);
-            }
-
+        if("possibleDestinationCards" in parameters)
+        {
+            $rootScope.$broadcast('model:GetDestinations', parameters.possibleDestinationCards);
         }
     });
 
@@ -158,6 +148,7 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
             modelPlayer.trainsLeft = playersFromJSON[index].trainsLeft;
             game.board.setRoutesPurchased(playersFromJSON[index].routes, modelPlayer.playerColor);
         }
+        broadcastIfInView(parameters.gameId, 'PublicClientModelInformation');
     });
 
     $rootScope.$on('server:BuyRoute', function (event, parameters)
@@ -180,7 +171,7 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
                 game.getPlayerById(playerId).points = points;
             }
 
-            broadcast(parameters.gameId, 'BuyRoute');
+            broadcastIfInView(parameters.gameId, 'BuyRoute');
         }
     });
 
@@ -199,7 +190,7 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
             }
             game.board.updateCardsVisible(parameters.availableTrainCards);
 
-            broadcast(parameters.gameId, 'DrawTrainCard');        
+            broadcastIfInView(parameters.gameId, 'DrawTrainCard');
         }
     });
 
@@ -212,13 +203,13 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
         if(playerId == player.playerId)
         {
             player.setDestinationComplete(parameters.route);
-            broadcast(parameters.gameId, 'NotifyDestinationRouteCompleted');
+            broadcastIfInView(parameters.gameId, 'NotifyDestinationRouteCompleted');
         }
     });
 
     $rootScope.$on('server:SelectDestinations', function (event, parameters)
     {
-		if(checkDescriptionIsSuccess(parameters.description, 'SelectDestinations')
+		if(checkDescriptionIsSuccess(parameters.description, 'SelectDestinations'))
 		{
             var playerId = parameters.playerIndex;
             var game = usersGames[parameters.gameId];
@@ -227,14 +218,14 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
             if(playerId == player.playerId)
             {
                 player.addDestinationCards(parameters.destinationCards);
-                broadcast(parameters.gameId, 'SelectDestinations');
+                broadcastIfInView(parameters.gameId, 'SelectDestinations');
             }
         }
     });
 
     $rootScope.$on('server:GetDestinations', function (event, parameters)
     {
-        if(checkDescriptionIsSuccess(parameters.description, 'GetDestinations')
+        if(checkDescriptionIsSuccess(parameters.description, 'GetDestinations'))
         {
             var playerId = parameters.playerIndex;
             var game = usersGames[parameters.gameId];
@@ -243,7 +234,7 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
             if(playerId == player.playerId)
             {
                 player.temporaryStorageOfCardsToBeSelectedFrom = parameters.destinationCards;
-                broadcast(parameters.gameId, 'GetDestinations');
+                broadcastIfInView(parameters.gameId, 'GetDestinations');
             }
         }
     });
@@ -268,7 +259,7 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
     {
 		//TODO
 
-        broadcast(parameters.gameId, 'SelectDestinations');
+        broadcastIfInView(parameters.gameId, 'SelectDestinations');
     });
 
     return {
