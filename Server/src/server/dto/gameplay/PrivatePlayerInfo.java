@@ -34,4 +34,8 @@ public class PrivatePlayerInfo {
         destinationRoutes = player.getDestinationRoutesToConsider();
         this.possibleDestinationCards = destinationRoutes == null ? null : destinationRoutes.parallelStream().map(route -> new DestinationCardInfo(route, true)).collect(Collectors.toList());
     }
+
+    public List<DestinationCardInfo> getDestinationCards() {
+        return destinationCards;
+    }
 }

@@ -14,6 +14,7 @@ import server.responses.TurnStartedNotificationResponse;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  *
@@ -57,7 +58,7 @@ public abstract class TurnStartedNotificationCommand extends Command {
             }
         } catch (InvalidCredentialsException e) {
             responseWrapper.setResponse(Response.newInvalidInputResponse());
-        } catch (GameNotFoundException e) {
+        } catch (GameNotFoundException | NoSuchElementException e) {
             responseWrapper.setResponse(Response.newServerErrorResponse());
         }
         return responses;
