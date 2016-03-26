@@ -252,7 +252,21 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
 
     $rootScope.$on('server:GameEnded', function (event, parameters)
     {
-        //TODO
+        var game = usersGames[parameters.gameId];
+        for(var index in parameters.players)
+        {
+            var playerId = parameters.players[index].playerIndex;
+            var points = parameters.players[index].points;
+
+            if(parameters.players[index].longestRouteRecipient)
+            {
+                game.board.playerIdForTheLongestBonus = playerId;
+            }
+            game.getPlayerById(playerId).points = points;
+        }
+        game.gameOver = true;
+
+        broadcastIfInView(parameters.gameId, 'GameEnded');
     });
 
     $rootScope.$on('server:SelectDestinations', function (event, parameters)

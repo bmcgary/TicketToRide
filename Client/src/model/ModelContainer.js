@@ -34,6 +34,10 @@ app.factory('ModelContainer', function () {
         return this.model.gameChat[index];
     };
 
+    ModelContainer.prototype.isGameOver = function() {
+        return this.model.gameOver;
+    };
+
     //Gameboard Data
     ModelContainer.prototype.deckHasDestinations = function() {
         return this.model.board.deckHasDestinations;
@@ -70,6 +74,17 @@ app.factory('ModelContainer', function () {
                     return this.getOpponentColor(i);
                 }
             }
+        }
+    };
+
+    ModelContainer.prototype.getPlayerIdForTheLongestBonus = function() {
+        if(!this.model.gameOver)
+        {
+            alert("The longest bonus is awarded after the game is over");
+        }
+        else
+        {
+            return this.model.board.playerIdForTheLongestBonus;
         }
     };
 

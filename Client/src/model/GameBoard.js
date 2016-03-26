@@ -9,6 +9,7 @@ app.factory('GameBoard', function (TrainCardColor, StaticTrackList) {
     GameBoard.prototype.routesPurchased = {}; //Map <routeIndex, playerId> //Maybe change playerId to Color
     GameBoard.prototype.cardsVisible = []; //TrainCardColor[]
     GameBoard.prototype.mustDrawAgain = false;
+    GameBoard.prototype.playerIdForTheLongestBonus = -1;
 
     //constructor 
     function GameBoard () {}
