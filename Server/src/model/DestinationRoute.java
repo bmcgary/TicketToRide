@@ -36,7 +36,7 @@ public class DestinationRoute extends Route {
 	 * @param list the list of cities used to determine completion
 	 */
 	public void calcCompleted(List<CityToCityRoute> list) {
-		if(this.isCompleted()){
+		if(this.isCompleted() || list == null){
 			return;
 		}
 		

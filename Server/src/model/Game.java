@@ -128,6 +128,11 @@ public class Game {
 			return false;
 		}
 		
+		//cards cannot be null
+		if(cards == null){
+			return false;
+		}
+		
 		//player must have the appropriate resources
 		if(playerManager.canBuyTrackWithCards(playerID, route.getNumTrains(), route.getTrackColor(), cards)){
 			return true;
@@ -151,6 +156,14 @@ public class Game {
 			}
 		}
 		gameBoard.discardTrainCards(toDiscard);
+		
+		//update DestinationRoute completion for this player
+		List<CityToCityRoute> playersRoutes = gameBoard.getCurrentRoutes().get(playerID);
+		for(DestinationRoute dr : playerManager.getPlayer(playerID).getDestinationRoute()){
+			dr.calcCompleted(playersRoutes);
+		}
+		
+		//attempt to advance turn
 		try {
 			playerManager.advanceTurn();
 		} catch (GameOverException e) {
