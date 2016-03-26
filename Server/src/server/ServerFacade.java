@@ -409,6 +409,10 @@ public class ServerFacade {
 	 */
 	public boolean canDrawTrainCard(int playerID, int gameID, int cardLocation) throws OutOfBoundsException, InternalServerException
 	{
+		//Helper methods
+		if(!this.isPlayerLoggedIn(playerID) || !this.isPlayableGame(gameID)){
+			return false;
+		}
 		for(Game g : games){
 			if(g.getGameID() == gameID){
 				return g.canPlayerDrawTrainCard(playerID, cardLocation);
@@ -417,7 +421,7 @@ public class ServerFacade {
 		return false;
 	}
 	
-	public synchronized TrackColor drawTrainCard(int playerID, int gameID, int cardLocation) throws PreConditionException, OutOfBoundsException, InternalServerException
+	public synchronized  TrackColor drawTrainCard(int playerID, int gameID, int cardLocation) throws PreConditionException, OutOfBoundsException, InternalServerException
 	{
 		//helper method
 		if(!this.canDrawTrainCard(playerID, gameID, cardLocation)){
@@ -429,7 +433,8 @@ public class ServerFacade {
 				return g.drawTrainCard(playerID, cardLocation);
 			}
 		}
-		throw new InternalServerException("Something messed up");
+		
+		throw new InternalServerException("Trent messed up if you see this at ServerFacade::drawTrainCard.");
 	}
 	
 	public boolean canGetDestinations(int playerID, int gameID)
@@ -558,7 +563,7 @@ public class ServerFacade {
 		}
 	}
 	
-	public Map<Integer, CityToCityRoute> getCityMapping()
+	public static Map<Integer, CityToCityRoute> getCityMapping()
 	{
 		return GameBoard.getRouteMapping();
 	}
@@ -695,8 +700,8 @@ public class ServerFacade {
 		if(sf.canBuyRoute(pid, 1, new CityToCityRoute(new City("Seattle"), new City("Portland"), 1, TrackColor.None), m)){
 			sf.buyRoute(pid, 1, new CityToCityRoute(new City("Seattle"), new City("Portland"), 1, TrackColor.None), m);
 		}
-		//sf.loadGameState();
-		//sf.selectDestinations(pid, 1, new int[]{0,1});
+		sf.loadGameState();
+		sf.selectDestinations(pid, 1, new int[]{0,1});
 		System.out.println("Success!");
 	}
 }

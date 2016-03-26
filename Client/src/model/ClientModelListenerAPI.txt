@@ -14,7 +14,6 @@
     "GetLeaderboards", "AddAI", "LeaveGame", "SendChat":
         These commands are still not implemented.
 
-
 -Lobby Controller commands (Not currently being used)-
     "model:UpdateJoinableGames":
 
@@ -38,4 +37,7 @@
     "model:GameEnded":
         The modelFacade method for this command still needs to be implemented, but it also return a ModelContainer with
         a temp variable with the information to display that you can access.
+
+    "model:SetGameInView":
+        All the game controllers should listen to this. This is called when a player switches games.
 }

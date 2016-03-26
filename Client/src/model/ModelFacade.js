@@ -11,36 +11,58 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
 		return usersGames[gameInView];
 	};
 
+    var checkDescriptionIsSuccess = function (description, command)
+    {
+        if(description == "success")
+        {
+            return true;
+        }
+        else
+        {
+           alert("Failed! See ModelFacade-" + command + ": description='" + description + "'");
+           return false;
+        }
+    }
+
     //Lobby stuff=======================================================================================
-    $rootScope.$on('server:UpdateJoinableGames', function (event, parameters) {
-        if(parameters.description == "success") {
-            for(var index in parameters.games) {
-                joinableGames[parameters.games[index].gameId] = new GameDataForLobby(parameters.games[index]);
+    $rootScope.$on('server:UpdateJoinableGames', function (event, parameters)
+    {
+        if(checkDescriptionIsSuccess(parameters.description, 'UpdateJoinableGames'))
+        {
+            for(var index in parameters.games)
+            {
+                var game = parameters.games[index];
+                joinableGames[game.gameId] = new GameDataForLobby(game);
             }    
-            $rootScope.$broadcast('model:UpdateJoinableGames', joinableGames);        
-        } else if(parameters.description == "server error") {
-            alert("Server Error");
-        } else {
-            alert("Unknown Server Response: UpdateJoinableGames-" + parameters.description);
+            $rootScope.$broadcast('model:UpdateJoinableGames', joinableGames);
         }
     });
 
-    $rootScope.$on('server:UpdateGame', function (event, parameters) {
-        if(parameters.description == "add" || parameters.description == "update") {
+    $rootScope.$on('server:UpdateGame', function (event, parameters)
+    {
+        var description = parameters.description;
+        var gameId = parameters.gameId;
 
-            joinableGames[parameters.gameId] = new GameDataForLobby(parameters.game);
+        if(description == "add" || description == "update")
+        {
+            joinableGames[gameId] = new GameDataForLobby(parameters.game);
             $rootScope.$broadcast('model:UpdateJoinableGames', joinableGames);  
-        } else if(parameters.description == "delete") {
-            joinableGames[parameters.gameId] = {};
+        }
+        else if(description == "delete")
+        {
+            joinableGames[gameId] = {};
             $rootScope.$broadcast('model:UpdateJoinableGames', joinableGames);  
-        } else {
+        }
+        else
+        {
             alert("Unknown Server Response: UpdateGame-" + parameters.description);
         }
     });
 
-    $rootScope.$on('server:UpdateUserGames', function (event, parameters) {
-        if(parameters.description == "success") {
-            //Still have stuff to figure out/////////////////////
+    $rootScope.$on('server:UpdateUserGames', function (event, parameters)
+    {
+        if(checkDescriptionIsSuccess(parameters.description, 'UpdateUserGames'))
+        {
             for(var index in parameters.games) {
                 var gameId = parameters.games[index].gameID;
 				if(typeof(gameId) != 'undefined')
@@ -57,209 +79,208 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
 					alert("gameId was undefined. ModelFacade.js server:UpdateUsersGames");
 				}
             }            
-        } else if(parameters.description == "server error") {
-            alert("Server Error");
-        } else {
-            alert("Unknown Server Response: UpdateUserGames-" + parameters.description);
         }
     });
 
-	$rootScope.$on('server:StartGame', function (event, parameters) {
-
-        if(parameters.description == "success") {
+	$rootScope.$on('server:StartGame', function (event, parameters)
+	{
+        checkDescriptionIsSuccess(parameters.description, 'StartGame')
             //Do nothing
-        } else if(parameters.description == "unable to start game") {
-            alert("Unable to Start Game");
-        } else if(parameters.description == "server error") {
-            alert("Server Error");
-        } else {
-            alert("Unknown Server Response: StartGame-" + parameters.description);
-        }
     });
 
-    $rootScope.$on('server:CreateGame', function (event, parameters) {
-        if(parameters.description == "success") {
+    $rootScope.$on('server:CreateGame', function (event, parameters)
+    {
+        checkDescriptionIsSuccess(parameters.description, 'CreateGame')
             //Do nothing
-        } else if(parameters.description == "server error") {
-            alert("Server Error");
-        } else {
-            alert("Unknown Server Response: CreateGame-" + parameters.description);
-        }
     });
 
-    $rootScope.$on('server:JoinGame', function (event, parameters) {
-        if(parameters.description == "success") {
+    $rootScope.$on('server:JoinGame', function (event, parameters)
+    {
+        checkDescriptionIsSuccess(parameters.description, 'JoinGame')
             //Do nothing
-        } else if(parameters.description == "invalid input") {
-            alert("Invalid Input");
-        } else if(parameters.description == "server error") {
-            alert("Server Error");
-        } else {
-            alert("Unknown Server Response: JoinGame-" + parameters.description);
-        }
     });
 
     $rootScope.$on('server:SendClientModelInformation', function (event, parameters) {
-        if(parameters.description == "success") {
-            //Do nothing       
-        } else if(parameters.description == "not in game") {
-            alert("You cannot request that information");
-        } else if(parameters.description == "server error") {
-            alert("Server Error");
-        } else {
-            alert("Unknown Server Response: SendClientModelInformation-" + parameters.description);
-        }
+        checkDescriptionIsSuccess(parameters.description, 'SendClientModelInformation')
+            //Do nothing
     });
 
-    $rootScope.$on('server:Logout', function (event, parameters) {
-        var username = "";
-        var usersGames = {};
-        var joinableGames = {};
-        var gameInView = -1;
+    $rootScope.$on('server:Logout', function (event, parameters)
+    {
+        this.username = "";
+        this.usersGames = {};
+        this.joinableGames = {};
+        this.gameInView = -1;
+
         $state.go('login');
-    });
-
-    $rootScope.$on('server:LeaveGame', function (event, parameters) {
-        //future
-        /*delete usersGames[parameters.gameId];*/
     });
 
 
     //In Game===========================================================================================
-    var broadcast = function (gameId, command) {
-        if(gameId == gameInView ) { 
+    var broadcastIfInView = function (gameId, command)
+    {
+        if(gameId == gameInView)
+        {
             $rootScope.$broadcast('model:' + command, new ModelContainer(getModel()));
         }
     };
 
-    $rootScope.$on('server:PrivateClientModelInformation', function (event, parameters) {
- //       if(parameters.description == "success") 
-		{ //Maybe remove description and need gameId
-            usersGames[parameters.gameId].player.setInGameData(parameters);
-            broadcast(parameters.gameId, 'PrivateClientModelInformation');
+    $rootScope.$on('server:PrivateClientModelInformation', function (event, parameters)
+    {
+        usersGames[parameters.gameId].player.setInGameData(parameters);
+        broadcastIfInView(parameters.gameId, 'PrivateClientModelInformation');
 
-            if("possibleDestinationCards" in parameters) {
-                $rootScope.$broadcast('model:GetDestinations', parameters.possibleDestinationCards);
-            }
-
-        } /*else if(parameters.description == "server error") {
-            alert("Server Error");
-        } else {
-            alert("Unknown Server Response: PrivateClientModelInformation-" + parameters.description);
-        }*/
+        if("possibleDestinationCards" in parameters)
+        {
+            $rootScope.$broadcast('model:GetDestinations', parameters.possibleDestinationCards);
+        }
     });
 
-    $rootScope.$on('server:PublicClientModelInformation', function (event, parameters) {
-       // if(parameters.description == "success") 
+    $rootScope.$on('server:PublicClientModelInformation', function (event, parameters)
+    {
+        var game = usersGames[parameters.gameID];
+        var playersFromJSON = parameters.players;
+        for(var index in playersFromJSON)
+        {
+            var playerId = playersFromJSON[index].playerOrder;
+            var playerInModel = game.getPlayerById(playerId);
+
+            modelPlayer.trainsLeft = playersFromJSON[index].trainsLeft;
+            game.board.setRoutesPurchased(playersFromJSON[index].routes, modelPlayer.playerColor);
+        }
+        //get game history???
+
+        broadcastIfInView(parameters.gameId, 'PublicClientModelInformation');
+    });
+
+    $rootScope.$on('server:BuyRoute', function (event, parameters)
+    {
+        if(checkDescriptionIsSuccess(parameters.description, 'BuyRoute'))
+        {
+            var playerId = parameters.playerIndex;
+            var gameId = parameters.gameId;
+            var game = usersGames[parameters.gameId];
+            var player = game.getPlayerById(playerId);
+
+            player.trainsLeft = parameters.trainsLeft;
+            game.board.addRoutePurchased(parameters.routeIndexPurchased, player.playerColor);
+
+            for(var index in parameters.pointTotals)
+            {
+                var playerId = parameters.pointTotals[index].playerId;
+                var points = parameters.pointTotals[index].points;
+
+                game.getPlayerById(playerId).points = points;
+            }
+            game.gameHistory.push(player.playerName + " bought a route");
+
+            broadcastIfInView(parameters.gameId, 'BuyRoute');
+        }
+    });
+
+
+    $rootScope.$on('server:DrawTrainCard', function (event, parameters)
+    {
+		if(checkDescriptionIsSuccess(parameters.description, 'DrawTrainCard'))
 		{
-            for(var index in parameters.players) {
-                var playerId = parameters.players[index].playerOrder;
-                usersGames[parameters.gameID].getPlayerById(playerId).trainsLeft = parameters.players[index].trainsLeft;
-                usersGames[parameters.gameID].board.setRoutesPurchased(players.routes, game.getPlayerById(playerId).playerColor);
-            }
-
-        } /*else if(parameters.description == "server error") {
-            alert("Server Error");
-        } else {
-            alert("Unknown Server Response: PublicClientModelInformation-" + parameters.description);
-        }*/
-    });
-
-    $rootScope.$on('server:SendChat', function (event, parameters) {
-        //future
-
-        broadcast(parameters.gameId, 'SendChat');
-    });
-
-
-    $rootScope.$on('server:BuyRoute', function (event, parameters) {
-        if(parameters.description == "success") {
             var playerId = parameters.playerIndex;
+            var game = usersGames[parameters.gameId];
 
-            usersGames[parameters.gameId].getPlayerById(playerId).trainsLeft = parameters.trainsLeft;
-            usersGames[parameters.gameId].board.addRoutePurchased(parameters.routeIndexPurchased, game.getPlayerById(playerId).playerColor);
+            var player = game.player;
+            if(playerId == player.playerId)
+            {
+                player.trainCards[TrainCardColor.get(parameters.cardDrawn)] += 1;
+            }
+            game.board.updateCardsVisible(parameters.availableTrainCards);
+            game.gameHistory.push(player.playerName + " drew a train card");
 
-            //TODO: Update PointTotals!!!!
-
-            broadcast(parameters.gameId, 'BuyRoute');
-        } else if(parameters.description == "invalid route location") {
-            alert("Invalid Route Location");
-        } else if(parameters.description == "insuffcient trains") {
-            alert("Insuffcient Trains");
-        } else if(parameters.description == "invalid train color") {
-            alert("Invalid Train Color");
-        } else if(parameters.description == "not your turn") {
-            alert("It is not your turn!");
-        } else if(parameters.description == "server error") {
-            alert("Server Error");
-        } else {
-            alert("Unknown Server Response: BuyRoute-" + parameters.description);
+            broadcastIfInView(parameters.gameId, 'DrawTrainCard');
         }
     });
 
-
-    $rootScope.$on('server:DrawTrainCard', function (event, parameters) {
-		if(parameters.description == "success") {
-            var playerId = parameters.playerIndex;
-            if(playerId == usersGames[parameters.gameId].player.playerId) {
-                usersGames[parameters.gameId].player.trainCards[TrainCardColor.get(parameters.cardDrawn)] += 1;
-            }
-            usersGames[parameters.gameId].board.updateCardsVisible(parameters.availableTrainCards);
-
-            broadcast(parameters.gameId, 'DrawTrainCard');        
-        } else {
-            alert("Server Response: DrawTrainCard-" + parameters.description);
-        }
-    });
-
-    $rootScope.$on('server:NotifyDestinationRouteCompleted', function (event, parameters) {
+    $rootScope.$on('server:NotifyDestinationRouteCompleted', function (event, parameters)
+    {
         var playerId = parameters.playerIndex;
-        if(playerId == usersGames[parameters.gameId].player.playerId) {
-            usersGames[parameters.gameId].player.setDestinationComplete(parameters.route);
-            broadcast(parameters.gameId, 'NotifyDestinationRouteCompleted');
+        var game = usersGames[parameters.gameId];
+
+        var player = game.player;
+        if(playerId == player.playerId)
+        {
+            player.setDestinationComplete(parameters.route);
+            broadcastIfInView(parameters.gameId, 'NotifyDestinationRouteCompleted');
         }
     });
 
-    $rootScope.$on('server:SelectDestinations', function (event, parameters) {
-		if(parameters.description == "success") {
+    $rootScope.$on('server:SelectDestinations', function (event, parameters)
+    {
+		if(checkDescriptionIsSuccess(parameters.description, 'SelectDestinations'))
+		{
             var playerId = parameters.playerIndex;
-            if(playerId == usersGames[parameters.gameId].player.playerId) {
-                usersGames[parameters.gameId].player.addDestinationCards(parameters.destinationCards);
-                broadcast(parameters.gameId, 'SelectDestinations');
+            var game = usersGames[parameters.gameId];
+
+            var player = game.player;
+            if(playerId == player.playerId)
+            {
+                player.addDestinationCards(parameters.destinationCards);
             }
-        } else {
-            alert("Server Response: SelectDestinations-" + parameters.description);
+            game.gameHistory.push(player.playerName + " drew " + parameters.destinationCards.length + " new destinations");
+
+            broadcastIfInView(parameters.gameId, 'SelectDestinations');
         }
     });
 
-    $rootScope.$on('server:GetDestinations', function (event, parameters) {
-        if(parameters.description == "success") {
+    $rootScope.$on('server:GetDestinations', function (event, parameters)
+    {
+        if(checkDescriptionIsSuccess(parameters.description, 'GetDestinations'))
+        {
             var playerId = parameters.playerIndex;
-            if(playerId == usersGames[parameters.gameId].player.playerId) {
-                usersGames[parameters.gameId].player.temporaryStorageOfCardsToBeSelectedFrom = parameters.destinationCards;
-                broadcast(parameters.gameId, 'GetDestinations');
+            var game = usersGames[parameters.gameId];
+
+            var player = game.player;
+            if(playerId == player.playerId)
+            {
+                player.temporaryStorageOfCardsToBeSelectedFrom = parameters.destinationCards;
+                broadcastIfInView(parameters.gameId, 'GetDestinations');
             }
-        } else {
-            alert("Server Response: GetDestinations-" + parameters.description);
         }
     });
 
-    $rootScope.$on('server:TurnStartedNotification', function (event, parameters) {
-        if(usersGames[parameters.gameId].board.isFirstRound) {
-            usersGames[parameters.gameId].board.isFirstRound = false;
+    $rootScope.$on('server:TurnStartedNotification', function (event, parameters)
+    {
+        var game = usersGames[parameters.gameId];
+        var playerId = parameters.playerIndex;
+        var player = game.getPlayerById(playerId);
+
+        if(game.board.isFirstRound)
+        {
+            game.board.isFirstRound = false;
         }
-        usersGames[parameters.gameId].board.isLastRound = parameters.lastRound;
-        usersGames[parameters.gameId].turnIndex = parameters.playerIndex;
+        game.turnIndex = playerId;
+        game.board.isLastRound = parameters.lastRound;
+
+        if(game.board.isLastRound)
+        {
+            game.gameHistory.push(player.playerName + " begins the last round");
+        }
     });
 
-    $rootScope.$on('server:GameEnded', function (event, parameters) {
-        //TODO
-    });
+    $rootScope.$on('server:GameEnded', function (event, parameters)
+    {
+        var game = usersGames[parameters.gameId];
+        for(var index in parameters.players)
+        {
+            var playerId = parameters.players[index].playerIndex;
+            var points = parameters.players[index].points;
 
-    $rootScope.$on('server:SelectDestinations', function (event, parameters) {
-		//do logic
+            if(parameters.players[index].longestRouteRecipient)
+            {
+                game.board.playerIdForTheLongestBonus = playerId;
+            }
+            game.getPlayerById(playerId).points = points;
+        }
+        game.gameOver = true;
 
-        broadcast(parameters.gameId, 'SelectDestinations');
+        broadcastIfInView(parameters.gameId, 'GameEnded');
     });
 
     return {
@@ -324,11 +345,15 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
     	},
 
         //All in game controllers must listen for the "model:SetGameInView" command. This will give the controller a new model from the selected game
-    	setGameInView: function (gameId) {
-            if(gameId in usersGames) {
+    	setGameInView: function (gameId)
+    	{
+            if(gameId in usersGames)
+            {
                 gameInView = gameId;
                 broadcast(gameInView, 'SetGameInView');
-            } else {
+            }
+            else
+            {
                 alert("Invalid Game Id");
             }
     	}

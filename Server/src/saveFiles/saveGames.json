@@ -6,7 +6,7 @@
           "name": "Denver"
         },
         {
-          "name": "Pittsburg"
+          "name": "Pittsburgh"
         },
         {
           "name": "Chicago"
@@ -96,16 +96,10 @@
           "name": "Las Vegas"
         },
         {
-          "name": "Salt lake City"
-        },
-        {
           "name": "Omaha"
         },
         {
           "name": "Saint Louis"
-        },
-        {
-          "name": "Pittsburgh"
         },
         {
           "name": "Raleigh"
@@ -322,7 +316,7 @@
           "numTrains": 2,
           "trackColor": "Red",
           "start": {
-            "name": "Salt lake City"
+            "name": "Salt Lake City"
           },
           "end": {
             "name": "Denver"
@@ -1113,6 +1107,7 @@
       "destinationRoutes": [
         {
           "pointValue": 22,
+          "completed": false,
           "start": {
             "name": "Seattle"
           },
@@ -1122,6 +1117,7 @@
         },
         {
           "pointValue": 5,
+          "completed": false,
           "start": {
             "name": "Kansas City"
           },
@@ -1131,6 +1127,7 @@
         },
         {
           "pointValue": 4,
+          "completed": false,
           "start": {
             "name": "Denver"
           },
@@ -1140,6 +1137,7 @@
         },
         {
           "pointValue": 13,
+          "completed": false,
           "start": {
             "name": "Calgary"
           },
@@ -1149,6 +1147,7 @@
         },
         {
           "pointValue": 7,
+          "completed": false,
           "start": {
             "name": "Chicago"
           },
@@ -1158,6 +1157,7 @@
         },
         {
           "pointValue": 10,
+          "completed": false,
           "start": {
             "name": "Toronto"
           },
@@ -1167,6 +1167,7 @@
         },
         {
           "pointValue": 11,
+          "completed": false,
           "start": {
             "name": "Dallas"
           },
@@ -1176,6 +1177,7 @@
         },
         {
           "pointValue": 12,
+          "completed": false,
           "start": {
             "name": "Boston"
           },
@@ -1185,6 +1187,7 @@
         },
         {
           "pointValue": 17,
+          "completed": false,
           "start": {
             "name": "Portland"
           },
@@ -1194,6 +1197,7 @@
         },
         {
           "pointValue": 11,
+          "completed": false,
           "start": {
             "name": "Winnipeg"
           },
@@ -1203,6 +1207,7 @@
         },
         {
           "pointValue": 8,
+          "completed": false,
           "start": {
             "name": "Helena"
           },
@@ -1212,6 +1217,7 @@
         },
         {
           "pointValue": 13,
+          "completed": false,
           "start": {
             "name": "Montreal"
           },
@@ -1221,6 +1227,7 @@
         },
         {
           "pointValue": 17,
+          "completed": false,
           "start": {
             "name": "San Francisco"
           },
@@ -1230,6 +1237,7 @@
         },
         {
           "pointValue": 9,
+          "completed": false,
           "start": {
             "name": "Seattle"
           },
@@ -1239,6 +1247,7 @@
         },
         {
           "pointValue": 21,
+          "completed": false,
           "start": {
             "name": "Los Angeles"
           },
@@ -1248,6 +1257,7 @@
         },
         {
           "pointValue": 9,
+          "completed": false,
           "start": {
             "name": "Montreal"
           },
@@ -1257,6 +1267,7 @@
         },
         {
           "pointValue": 9,
+          "completed": false,
           "start": {
             "name": "Sault Ste. Marie"
           },
@@ -1266,6 +1277,7 @@
         },
         {
           "pointValue": 8,
+          "completed": false,
           "start": {
             "name": "Sault Ste. Marie"
           },
@@ -1275,6 +1287,7 @@
         },
         {
           "pointValue": 7,
+          "completed": false,
           "start": {
             "name": "Calgary"
           },
@@ -1284,6 +1297,7 @@
         },
         {
           "pointValue": 12,
+          "completed": false,
           "start": {
             "name": "Winnipeg"
           },
@@ -1293,6 +1307,7 @@
         },
         {
           "pointValue": 20,
+          "completed": false,
           "start": {
             "name": "Vancouver"
           },
@@ -1302,6 +1317,7 @@
         },
         {
           "pointValue": 20,
+          "completed": false,
           "start": {
             "name": "Los Angeles"
           },
@@ -1311,6 +1327,7 @@
         },
         {
           "pointValue": 8,
+          "completed": false,
           "start": {
             "name": "Duluth"
           },
@@ -1320,6 +1337,7 @@
         },
         {
           "pointValue": 10,
+          "completed": false,
           "start": {
             "name": "Duluth"
           },
@@ -1329,110 +1347,110 @@
         }
       ],
       "deckTrainCarCards": [
-        "Purple",
-        "Green",
-        "Blue",
-        "Blue",
-        "None",
-        "White",
-        "Red",
-        "None",
-        "White",
-        "Yellow",
-        "Black",
-        "Red",
-        "Purple",
-        "None",
-        "Orange",
-        "Yellow",
-        "Yellow",
-        "Blue",
-        "None",
-        "Green",
-        "Yellow",
-        "White",
-        "Orange",
-        "None",
-        "Black",
-        "Purple",
-        "Purple",
-        "Red",
-        "Orange",
-        "Purple",
-        "Orange",
-        "Green",
-        "Black",
-        "White",
-        "White",
-        "None",
-        "Black",
-        "Yellow",
         "Black",
         "None",
-        "Red",
-        "Blue",
-        "Yellow",
+        "Purple",
+        "White",
+        "Purple",
+        "Black",
         "Black",
         "Orange",
-        "Red",
-        "Red",
-        "Green",
+        "Blue",
+        "Blue",
+        "Black",
+        "Black",
+        "Orange",
+        "Black",
+        "Blue",
         "Purple",
-        "Purple",
-        "Blue",
-        "Green",
-        "Blue",
-        "Blue",
-        "Green",
-        "Green",
         "None",
-        "Red",
         "White",
+        "Yellow",
+        "Yellow",
+        "White",
+        "Black",
+        "Yellow",
+        "Black",
+        "Blue",
+        "Blue",
+        "Purple",
+        "Green",
+        "Purple",
+        "Red",
         "Green",
         "White",
         "Orange",
-        "Orange",
-        "Red",
+        "Black",
         "Purple",
         "White",
+        "Blue",
+        "Green",
+        "Blue",
+        "Purple",
         "Yellow",
-        "Black",
-        "White",
-        "White",
-        "Black",
-        "Purple",
-        "Purple",
-        "Red",
-        "Orange",
-        "Purple",
-        "Orange",
-        "Blue",
-        "Blue",
-        "None",
-        "Red",
-        "Yellow",
-        "Black",
-        "Black",
-        "Orange",
-        "Purple",
-        "White",
-        "Orange",
-        "Red",
-        "Blue",
-        "Red",
-        "None",
         "Yellow",
         "None",
-        "Black",
+        "Red",
+        "Blue",
         "None",
-        "Yellow"
+        "None",
+        "Yellow",
+        "Black",
+        "Blue",
+        "Purple",
+        "Orange",
+        "Green",
+        "Red",
+        "Red",
+        "None",
+        "Red",
+        "Orange",
+        "White",
+        "None",
+        "Yellow",
+        "Red",
+        "Yellow",
+        "Yellow",
+        "None",
+        "Red",
+        "Yellow",
+        "Orange",
+        "Red",
+        "Blue",
+        "White",
+        "Red",
+        "Purple",
+        "Orange",
+        "Black",
+        "Yellow",
+        "Green",
+        "White",
+        "None",
+        "White",
+        "White",
+        "Green",
+        "Yellow",
+        "None",
+        "Blue",
+        "Orange",
+        "None",
+        "Red",
+        "Orange",
+        "Purple",
+        "Green",
+        "None",
+        "None",
+        "Blue",
+        "Purple",
+        "Green",
+        "Red"
       ],
       "visibleTrainCarCards": [
-        "Blue",
         "Green",
+        "Orange",
         "Green",
         "Black",
-        "Yellow"
+        "White"
       ],
       "discardedTrainCarCards": []
     },
@@ -1445,15 +1463,17 @@
           "destinationRoutesToConsider": [
             {
               "pointValue": 11,
+              "completed": false,
               "start": {
                 "name": "Denver"
               },
               "end": {
-                "name": "Pittsburg"
+                "name": "Pittsburgh"
               }
             },
             {
               "pointValue": 9,
+              "completed": false,
               "start": {
                 "name": "Chicago"
               },
@@ -1463,6 +1483,7 @@
             },
             {
               "pointValue": 6,
+              "completed": false,
               "start": {
                 "name": "New York"
               },
@@ -1472,9 +1493,8 @@
             }
           ],
           "trainCarCards": {
-            "blue": 1,
-            "none": 1,
-            "yellow": 1,
+            "green": 2,
+            "orange": 1,
             "white": 1
           },
           "color": "Black",
@@ -1488,6 +1508,7 @@
           "destinationRoutesToConsider": [
             {
               "pointValue": 16,
+              "completed": false,
               "start": {
                 "name": "Los Angeles"
               },
@@ -1497,6 +1518,7 @@
             },
             {
               "pointValue": 13,
+              "completed": false,
               "start": {
                 "name": "Vancouver"
               },
@@ -1506,6 +1528,7 @@
             },
             {
               "pointValue": 11,
+              "completed": false,
               "start": {
                 "name": "Portland"
               },
@@ -1516,8 +1539,9 @@
           ],
           "trainCarCards": {
             "none": 1,
-            "green": 2,
-            "orange": 1
+            "purple": 1,
+            "orange": 1,
+            "red": 1
           },
           "color": "Green",
           "pointsScored": 0,
@@ -1531,14 +1555,15 @@
     },
     "gameID": 1,
     "history": [
-      "Game initialized",
+      "Game created",
       "Player 1 added to game.",
       "Player 2 added to game.",
-      "Game initialized"
+      "Game started, good luck!"
     ],
     "started": true,
     "isGameOver": false,
-    "name": "Game1"
+    "name": "Game1",
+    "calculatedGameFinalPoints": false
   },
   {
     "gameBoard": {
@@ -1562,11 +1587,6 @@
           "ID": 1,
           "numTrainsLeft": 45,
           "destinationRoutes": [],
-          "destinationRoutesToConsider": [
-            null,
-            null,
-            null
-          ],
           "trainCarCards": {},
           "color": "Black",
           "pointsScored": 0,
@@ -1580,11 +1600,12 @@
     },
     "gameID": 2,
     "history": [
-      "Game initialized",
+      "Game created",
       "Player 1 added to game."
     ],
     "started": false,
     "isGameOver": false,
-    "name": "Game2"
+    "name": "Game2",
+    "calculatedGameFinalPoints": false
   }
 ]

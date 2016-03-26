@@ -2,6 +2,7 @@ package server;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import server.exception.InvalidCredentialsException;
 
@@ -26,10 +27,9 @@ public class User {
 					throw new InvalidCredentialsException("Username contains invalid characters");
 				}
 			}
-			for(char c : password.toCharArray()){
-				if(!Character.isLetterOrDigit(c)){
-					throw new InvalidCredentialsException("Username contains invalid characters");
-				}
+			Pattern p = Pattern.compile("[^a-zA-Z0-9]");
+			if(p.matcher(password).find()){
+				throw new InvalidCredentialsException("Password contains invalid characters");
 			}
 		}
 		playerID = nextID++;
