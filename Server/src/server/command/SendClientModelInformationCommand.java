@@ -23,6 +23,7 @@ public class SendClientModelInformationCommand extends Command {
     private int gameId;
 
     private transient GamePlayInfo gamePlayInfo;
+    private transient boolean sendPublic = false;
 
     public SendClientModelInformationCommand(int gameId) {
         this.gameId = gameId;
@@ -60,7 +61,7 @@ public class SendClientModelInformationCommand extends Command {
             responses.add(notInGame);
         }
 
-        responseWrapper.setTargetIds(playersInGame).setResponse(Response.newSuccessResponse());
+        responseWrapper.setTargetIds(sendPublic ? gamePlayInfoPlayerIds : playersInGame).setResponse(Response.newSuccessResponse());
         responses.add(new ResponseWrapper(playersInGame, gamePlayInfo, "PublicClientModelInformation"));
 
         playersInGame.parallelStream().forEach(playerId -> {
@@ -73,5 +74,10 @@ public class SendClientModelInformationCommand extends Command {
 
     public void setGamePlayInfo(GamePlayInfo gamePlayInfo) {
         this.gamePlayInfo = gamePlayInfo;
+    }
+
+    public SendClientModelInformationCommand setSendPublic(boolean sendPublic) {
+        this.sendPublic = sendPublic;
+        return this;
     }
 }

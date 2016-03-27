@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Arrays;
+
 public enum TrackColor {
 	Purple("Purple"),
 	White("White"),
@@ -23,13 +25,7 @@ public enum TrackColor {
 	}
 
 	public static TrackColor getColor(String colorName) {
-		for (TrackColor trackColor : TrackColor.values()) {
-			if (trackColor.colorName.equalsIgnoreCase(colorName)) {
-				return trackColor;
-			}
-		}
-
-		return null;
+		return Arrays.stream(TrackColor.values()).filter(trackColor -> trackColor.colorName.equalsIgnoreCase(colorName)).findFirst().get();
 	}
 
 }

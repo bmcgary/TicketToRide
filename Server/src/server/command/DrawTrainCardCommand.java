@@ -10,7 +10,6 @@ import server.responses.Response;
 import server.responses.ResponseWrapper;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
