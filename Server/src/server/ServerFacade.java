@@ -599,6 +599,15 @@ public class ServerFacade {
 		}
 		return false;
 	}
+	
+	protected boolean isJoinableGame(int gameID){
+		for(Game g : games){
+			if(g.getGameID() == gameID){
+				return !g.isGameOver();
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * Queries for all joinable games. Joinable games are defined as games not containing the user that still have at
@@ -609,7 +618,7 @@ public class ServerFacade {
 	public List<Game> getJoinableGames(int userID) {
 		List<Game> output = new ArrayList<Game>();
 		for(Game g : games){
-			if(isPlayableGame(g.getGameID()) && !g.containsPlayer(userID)){
+			if(isJoinableGame(g.getGameID()) && !g.containsPlayer(userID)){
 				output.add(g);
 			}
 		}
