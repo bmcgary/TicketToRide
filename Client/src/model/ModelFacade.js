@@ -148,6 +148,8 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
             modelPlayer.trainsLeft = playersFromJSON[index].trainsLeft;
             game.board.setRoutesPurchased(playersFromJSON[index].routes, modelPlayer.playerColor);
         }
+        //get game history???
+
         broadcastIfInView(parameters.gameId, 'PublicClientModelInformation');
     });
 
@@ -170,6 +172,7 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
 
                 game.getPlayerById(playerId).points = points;
             }
+            game.gameHistory.push(player.playerName + " bought a route");
 
             broadcastIfInView(parameters.gameId, 'BuyRoute');
         }
@@ -189,6 +192,7 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
                 player.trainCards[TrainCardColor.get(parameters.cardDrawn)] += 1;
             }
             game.board.updateCardsVisible(parameters.availableTrainCards);
+            game.gameHistory.push(player.playerName + " drew a train card");
 
             broadcastIfInView(parameters.gameId, 'DrawTrainCard');
         }
@@ -218,8 +222,10 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
             if(playerId == player.playerId)
             {
                 player.addDestinationCards(parameters.destinationCards);
-                broadcastIfInView(parameters.gameId, 'SelectDestinations');
             }
+            game.gameHistory.push(player.playerName + " drew " + parameters.destinationCards.length + " new destinations");
+
+            broadcastIfInView(parameters.gameId, 'SelectDestinations');
         }
     });
 
@@ -242,12 +248,20 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
     $rootScope.$on('server:TurnStartedNotification', function (event, parameters)
     {
         var game = usersGames[parameters.gameId];
+        var playerId = parameters.playerIndex;
+        var player = game.getPlayerById(playerId);
+
         if(game.board.isFirstRound)
         {
             game.board.isFirstRound = false;
         }
+        game.turnIndex = playerId;
         game.board.isLastRound = parameters.lastRound;
-        game.turnIndex = parameters.playerIndex;
+
+        if(game.board.isLastRound)
+        {
+            game.gameHistory.push(player.playerName + " begins the last round");
+        }
     });
 
     $rootScope.$on('server:GameEnded', function (event, parameters)
@@ -267,13 +281,6 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
         game.gameOver = true;
 
         broadcastIfInView(parameters.gameId, 'GameEnded');
-    });
-
-    $rootScope.$on('server:SelectDestinations', function (event, parameters)
-    {
-		//TODO
-
-        broadcastIfInView(parameters.gameId, 'SelectDestinations');
     });
 
     return {

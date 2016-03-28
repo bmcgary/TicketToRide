@@ -19,7 +19,6 @@ public class LoadGameStateCommand extends Command {
     @Override
     public List<ResponseWrapper> execute(int userID) {
         ResponseWrapper responseWrapper = new ResponseWrapper(userID, commandName);
-        // TODO change this once server facade is correct
         serverFacade.loadGameState();
         return Collections.singletonList(responseWrapper.setResponse(Response.newSuccessResponse()));
     }
