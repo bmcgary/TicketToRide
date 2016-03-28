@@ -71,7 +71,7 @@
 							controller:'mainGameBottomTabsCtrl'
 						}
 					},
-					authenticate: true
+					//authenticate: true
 				})
 	            .state('mainGame2', {
 	            	url: '/game2',
