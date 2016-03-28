@@ -603,7 +603,7 @@ public class ServerFacade {
 	protected boolean isJoinableGame(int gameID){
 		for(Game g : games){
 			if(g.getGameID() == gameID){
-				return !g.isGameOver();
+				return (!g.isStarted() && !g.isGameOver());
 			}
 		}
 		return false;
