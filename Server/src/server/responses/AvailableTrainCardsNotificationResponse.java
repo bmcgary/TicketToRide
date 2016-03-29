@@ -3,6 +3,7 @@ package server.responses;
 import com.google.gson.annotations.SerializedName;
 import model.TrackColor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,6 +15,7 @@ public class AvailableTrainCardsNotificationResponse extends GamePlayResponse {
     private List<AvailableTrainCardInfo> cards;
     public AvailableTrainCardsNotificationResponse(int gameId, TrackColor[] availableTrackCards) {
         super(null, gameId);
+        cards = new ArrayList<>();
         for (int i = 0; i < availableTrackCards.length; ++i) {
             cards.add(new AvailableTrainCardInfo(i, availableTrackCards[i]));
         }
