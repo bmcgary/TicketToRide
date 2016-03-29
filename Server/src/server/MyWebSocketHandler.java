@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
@@ -17,6 +18,7 @@ import server.command.Command;
 import server.exception.CommandNotFoundException;
 import server.responses.Response;
 import server.command.LoginCommand;
+import server.command.LogoutCommand;
 import server.command.RegisterCommand;
 import server.responses.ResponseWrapper;
 
@@ -32,6 +34,10 @@ public class MyWebSocketHandler {
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
         System.out.println("Close: statusCode=" + statusCode + ", reason=" + reason);
+        
+        Command command=new LogoutCommand();
+        List<ResponseWrapper> responseWrappers = command.execute(personal_id);
+        //sendMessages(responseWrappers);
     }
 
     @OnWebSocketError
@@ -48,11 +54,11 @@ public class MyWebSocketHandler {
 
     @OnWebSocketMessage
     public void onMessage(String message) {
+
         System.out.println("Message: " + message);
+
 		try {
             Command command = CommandFactory.makeCommand(message);
-            // TODO: to stop errors
-            //ResponseWrapper responseWrapper = command.execute(personal_id).get(0);
             List<ResponseWrapper> responseWrappers = command.execute(personal_id);
 
 	        if(command instanceof LoginCommand || command instanceof RegisterCommand)
@@ -63,6 +69,7 @@ public class MyWebSocketHandler {
 	        		//there should only be one id in the idlist
                     personal_id = responseWrappers.get(0).getTargetIds().get(0);
 	        		sessions.put(personal_id, personal_session);
+	     
 	        	}
 	        	else
 	        	{
@@ -72,7 +79,6 @@ public class MyWebSocketHandler {
 	        }
 
 	        //a message will be sent back regardless of whether request was successful or not
-			//sendMessage(responseWrapper.getTargetIds().iterator(), responseWrapper.getResponse());
 	        sendMessages(responseWrappers);
 		}
 

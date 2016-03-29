@@ -23,6 +23,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 public class ServerMain {
 	
@@ -121,6 +122,7 @@ public class ServerMain {
                 @Override
                 public void configure(WebSocketServletFactory factory)
                 {
+                	factory.getPolicy().setIdleTimeout(TimeUnit.HOURS.toMillis(10));
                     factory.register(MyWebSocketHandler.class);
                 }
             };
