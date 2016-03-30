@@ -72,7 +72,7 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
 		                usersGames[gameId] = new Game(parameters.games[index].gameID);
 		            }
 		            usersGames[parameters.games[index].gameID].updateLobbyData(parameters.games[index], this.username);
-		            $rootScope.$broadcast('model:UpdateUserGames', new ModelContainer(getModel()));
+		            broadcastIfInView(gameId, 'UpdateUserGames');
 				}
 				else
 				{
@@ -132,7 +132,7 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
 
         if("possibleDestinationCards" in parameters)
         {
-            $rootScope.$broadcast('model:GetDestinations', parameters.possibleDestinationCards);
+            broadcastIfInView(parameters.gameId, 'PrivateClientModelInformation');
         }
     });
 
@@ -145,8 +145,8 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
             var playerId = playersFromJSON[index].playerOrder;
             var playerInModel = game.getPlayerById(playerId);
 
-            modelPlayer.trainsLeft = playersFromJSON[index].trainsLeft;
-            game.board.setRoutesPurchased(playersFromJSON[index].routes, modelPlayer.playerColor);
+            playerInModel.trainsLeft = playersFromJSON[index].trainsLeft;
+            game.board.setRoutesPurchased(playersFromJSON[index].routes, playerInModel.playerColor);
         }
         //get game history???
 
