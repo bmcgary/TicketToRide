@@ -33,7 +33,7 @@ app.factory('Player', function (TrainCardColor, DestinationCard) {
         }
 
         if("possibleDestinationCards" in gameDataJSON) {
-            temporaryStorageOfCardsToBeSelectedFrom = parameters.possibleDestinationCards;
+            temporaryStorageOfCardsToBeSelectedFrom = gameDataJSON.possibleDestinationCards;
         }
     }
 
