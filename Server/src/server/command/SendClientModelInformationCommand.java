@@ -61,13 +61,13 @@ public class SendClientModelInformationCommand extends Command {
             responses.add(notInGame);
         }
 
-        responseWrapper.setTargetIds(sendPublic ? gamePlayInfoPlayerIds : playersInGame).setResponse(Response.newSuccessResponse());
-        responses.add(new ResponseWrapper(playersInGame, gamePlayInfo, "PublicClientModelInformation"));
-
         playersInGame.parallelStream().forEach(playerId -> {
             ResponseWrapper privateResponseWrapper = new ResponseWrapper(playerId, "PrivateClientModelInformation");
             responses.add(privateResponseWrapper.setResponse(gamePlayInfo.getPrivateInfo(playerId)));
         });
+
+        responseWrapper.setTargetIds(sendPublic ? gamePlayInfoPlayerIds : playersInGame).setResponse(Response.newSuccessResponse());
+        responses.add(new ResponseWrapper(playersInGame, gamePlayInfo, "PublicClientModelInformation"));
 
         return responses;
     }
