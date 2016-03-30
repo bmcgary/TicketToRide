@@ -1,4 +1,4 @@
-Blue, Red, Green, Yellow and Black
+//Blue, Red, Green, Yellow and Black
 
 var app = angular.module('ticketToRide');
 

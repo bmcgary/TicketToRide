@@ -1,6 +1,6 @@
 var app = angular.module('ticketToRide');
 
-app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $spMenu) {
+app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $spMenu, $uibModal) {
 /*	$scope.showMenu = false;
     $scope.toggleMenu = function(){
         $scope.showMenu = !$scope.showMenu;
@@ -8,6 +8,7 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
     }
 	*/
 
+	var modalInstance;
 	
 	$scope.currentTurn = 'yourTurn';
 		
@@ -39,6 +40,23 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
     "SelectDestinations": 
     "GameEnded": 
 */
+
+    $rootScope.$on('model:UpdateUserGames', function (event, parameters) {
+		//TODO how to do i know if the game has already started?? 
+		var ppl = [];
+		for (var index = 0; index < parameters.getOpponentsSize(); index++)
+		{
+			ppl.push({'name': parameters.getOpponentName(index), 'color': parameters.getOpponentColor(index)})
+		}
+		
+		waitingToStartModalModal(ppl, true);
+    });
+
+    $rootScope.$on('model:StartGame', function (event, parameters) {
+        //future
+		waitingToStartModalModal(ppl, false);
+    });
+
     $rootScope.$on('model:SendChat', function (event, parameters) {
         //future
 
@@ -66,6 +84,14 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
 
     $rootScope.$on('model:SelectDestinations', function (event, parameters) {
 		//do logic
+
+    });
+
+    $rootScope.$on('model:TurnStartedNotification', function (event, parameters) {
+		//check if it is this players turn. if so set 
+		/*	$scope.currentTurn === 'yourTurn'
+		ELSE
+			$scope.currentTurn = 'yourTurn';*/
 
     });
 
@@ -174,4 +200,69 @@ $scope.games = [
 	gameId: 4,
 	action:$scope.changeGame
   }];
+
+//---------------------------------- Waiting to start Modal
+	function waitingToStartModalModal(ppl, open)
+	{
+		if(open)
+		{
+			modalInstance = $uibModal.open({
+				  animation: true,
+				  templateUrl: 'waitingToStartGameModal.html',
+				  controller: 'waitingToStartModalCtrl',
+				  backdrop : 'static',
+				  keyboard: false,
+				  //size: size,
+				  resolve: 
+				  {
+					   ppl: function () 
+	 				   {
+						 return ppl;
+					   }
+				  }
+				});
+
+			modalInstance.result.then(
+				function ()  //they selected stuff
+				{
+					modalInstance.dismiss('ok');
+			  		//console.log(selectedItems); //from here ship it out via the ClientAPI
+					ClientAPI.startGame($scope.currentGameId);
+				});//dont need a function for canceling since that isn't allowed
+		}
+		else
+		{
+			modalInstance.dismiss('ok');
+		}
+	}
+
 });
+
+// Waiting To Start Game modal's controller ------------------------------------------------------------------------
+app.controller('waitingToStartModalCtrl', function ($scope, $uibModalInstance, ppl) {
+
+  $scope.alert = {showAlert: false, message: "", type:""};	
+  $scope.ppl = ppl;
+
+/*
+		parameters.model.player.playerName / playerColor
+		parameters.model.opponents[i].playerName / playerColor
+*/
+  $scope.ok = function () {
+
+	if($scope.ppl.length > 1)
+    	$uibModalInstance.close();
+	else
+		showAlert("You need at least two players before you can begin", 'danger');
+  };
+
+
+	function showAlert(message, type)
+	{
+		$scope.alert.showAlert = true;
+		$scope.alert.message = message;
+		$scope.alert.type = type;
+	}
+
+});
+

@@ -1,6 +1,6 @@
 var app = angular.module('ticketToRide');
 
-app.controller('gameLobbyController', function($scope, $rootScope, ClientAPI, $uibModal,$state) {
+app.controller('gameLobbyController', function($scope, $rootScope, ClientAPI, $uibModal,$state, ModelFacade) {
 	//LOGOUT
 	$scope.logOut =function(){
 		ClientAPI.logout();
@@ -81,6 +81,7 @@ $rootScope.$on('server:UpdateGame', function(event, parameters) {
 	}
 	$rootScope.$on('server:JoinGame', function(event, parameters) {
 		if(parameters.description == "success") {
+			ModelFacade.setGameInView(parameters.gameID);
 			$state.go('mainGame');
 		}
 	});
@@ -102,6 +103,7 @@ $rootScope.$on('server:UpdateGame', function(event, parameters) {
 
 	$rootScope.$on('server:CreateGame', function (event, parameters) {
 		if(parameters.description == "success") {
+			ModelFacade.setGameInView(parameters.gameID);
 			$state.go('mainGame');
 		}
 	});

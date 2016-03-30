@@ -5,7 +5,7 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
     var username = "";
 	var usersGames = {};
     var joinableGames = {};
-	var gameInView = -1;
+	var gameInView = 1;
 
 	var getModel = function () {
 		return usersGames[gameInView];
@@ -13,7 +13,7 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
 
     var checkDescriptionIsSuccess = function (description, command)
     {
-        if(description == "success")
+        if(description.toLowerCase() == "success")
         {
             return true;
         }
@@ -72,7 +72,7 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
 		                usersGames[gameId] = new Game(parameters.games[index].gameID);
 		            }
 		            usersGames[parameters.games[index].gameID].updateLobbyData(parameters.games[index], this.username);
-		            $rootScope.$broadcast('model:UpdateUserGames', new ModelContainer(getModel()));
+		            broadcastIfInView(gameId, 'UpdateUserGames');
 				}
 				else
 				{
@@ -84,7 +84,11 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
 
 	$rootScope.$on('server:StartGame', function (event, parameters)
 	{
-        checkDescriptionIsSuccess(parameters.description, 'StartGame')
+        if(checkDescriptionIsSuccess(parameters.description, 'StartGame'))
+		{
+			broadcastIfInView(parameters.gameId, 'StartGame');
+		}
+		
             //Do nothing
     });
 
@@ -132,7 +136,10 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
 
         if("possibleDestinationCards" in parameters)
         {
-            $rootScope.$broadcast('model:GetDestinations', parameters.possibleDestinationCards);
+            broadcastIfInView(parameters.gameId, 'PrivateClientModelInformation');
+//=======
+//           broadcastIfInView(parameters.gameId, 'GetDestinations');
+//>>>>>>> Stashed changes
         }
     });
 
@@ -145,12 +152,13 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
             var playerId = playersFromJSON[index].playerOrder;
             var playerInModel = game.getPlayerById(playerId);
 
-            modelPlayer.trainsLeft = playersFromJSON[index].trainsLeft;
-            game.board.setRoutesPurchased(playersFromJSON[index].routes, modelPlayer.playerColor);
+            playerInModel.trainsLeft = playersFromJSON[index].trainsLeft;
+            game.board.setRoutesPurchased(playersFromJSON[index].routes, playerInModel.playerColor);
+
         }
         //get game history???
 
-        broadcastIfInView(parameters.gameId, 'PublicClientModelInformation');
+        broadcastIfInView(game.gameId, 'PublicClientModelInformation');
     });
 
     $rootScope.$on('server:BuyRoute', function (event, parameters)

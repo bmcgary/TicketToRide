@@ -25,7 +25,7 @@ app.factory('Game', function (Opponent, Player, GameBoard) {
         this.turnIndex = 0;
         for(var index in gameDataJSON.players) {
             var player = gameDataJSON.players[index];
-            this.opponents[player.playerOrder] = new Opponent(player);
+            this.opponents[index] = new Opponent(player);
         }
     }
 

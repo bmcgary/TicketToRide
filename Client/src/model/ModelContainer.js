@@ -90,7 +90,7 @@ app.factory('ModelContainer', function () {
 
     //Opponent Data
     ModelContainer.prototype.getOpponentsSize = function() {
-        return this.model.gameChat.length;
+        return this.model.opponents.length;
     };
 
     ModelContainer.prototype.getOpponentName = function(index) {
