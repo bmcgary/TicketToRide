@@ -33,6 +33,7 @@ app.controller('mainGameRightTabsCtrl', function ($scope, $rootScope, ClientAPI,
 					{selected:false, url:'ttr-route-calgary-phoenix.jpg'},
 					{selected:false, url:'ttr-route-calgary-saltLakeCity.jpg'}];*/
 		var imagesArray = [];
+		parameters = parameters.getTemporaryStorageOfDestinationCardsToBeSelectedFrom();
 		for(index in parameters)
 		{
 

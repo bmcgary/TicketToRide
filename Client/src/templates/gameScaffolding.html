@@ -1,3 +1,19 @@
+<script type="text/ng-template" id="waitingToStartGameModal.html">
+	<div class="modal-header">
+		<h3 class="modal-title">Waiting to start the game</h3>
+	</div>
+	<div class="modal-body">
+		<ul>
+		    <li ng-repeat="player in ppl">
+				{{ player.name }} , {{ player.color }}
+		    </li>
+		</ul>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-success" type="button" ng-click="ok()">Start</button>
+	<center><uib-alert ng-show="alert.showAlert" type="{{ alert.type }}">{{ alert.message }} </uib-alert></center>
+	</div>
+</script>
 
 <!-- This is the scaffolding for the main game -->
 <div class="gameScaffolding">

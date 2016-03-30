@@ -26,6 +26,7 @@
 	<path id="server.classpath">
 		<fileset dir="${server.lib.dir}">
 			<include name="**/*.jar" />
+			<include name="**/websocket/*.jar" />
 		</fileset>
 	</path>
 
