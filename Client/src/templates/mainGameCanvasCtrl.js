@@ -1,6 +1,6 @@
 var app = angular.module('ticketToRide');
 
-app.controller('mainGameCanvasCtrl', function ($scope, ClientAPI, StaticTrackList, ModelContainer, TrainCardColor) {
+app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, StaticTrackList, PlayerColor) {
 
     var canvas = document.getElementById('canvas');
     var context = canvas.getContext('2d');
@@ -29,25 +29,12 @@ app.controller('mainGameCanvasCtrl', function ($scope, ClientAPI, StaticTrackLis
     };
     */
 	//addEvent(window, 'resize', setUpCanvas);
+
+	var gameIsReady = false;
     trackTransforms(context);
 	
     var trainImage   = new Image();
     trainImage.src   = '/images/pieces/ttr-piece-black-sq.jpg';
-    /*switch(ModelContainer.prototype.getPlayerColor())
-    {
-        case TrainCardColor.BLACK:
-            trainImage.src   = '/images/pieces/ttr-piece-black-sq.jpg';
-        case TrainCardColor.BLUE:
-            trainImage.src   = '/images/pieces/ttr-piece-blue-sq.jpg';
-        case TrainCardColor.GREEN:
-            trainImage.src   = '/images/pieces/ttr-piece-green-sq.jpg';
-        case TrainCardColor.RED:
-            trainImage.src   = '/images/pieces/ttr-piece-red-sq.jpg';
-        case TrainCardColor.YELLOW:
-            trainImage.src   = '/images/pieces/ttr-piece-yellow-sq.jpg';
-        default:
-            trainImage.src   = '/images/pieces/ttr-piece-blue-sq.jpg';
-    }*/
     var trainImageWidth = 28;
     var trainImageHeight = 8;
 
@@ -58,6 +45,34 @@ app.controller('mainGameCanvasCtrl', function ($scope, ClientAPI, StaticTrackLis
         initializeTrains();
         redraw();
 
+    }
+
+    $rootScope.$on('model:PublicClientModelInformation', function (event, modelContainer)
+    {
+        gameIsReady = true;
+        setTrainImage();
+        
+    });
+
+
+
+    function setTrainImage()
+    {
+     switch(ModelContainer.prototype.getPlayerColor())
+        {
+            case PlayerColor.BLACK:
+                trainImage.src   = '/images/pieces/ttr-piece-black-sq.jpg';
+            case PlayerColor.BLUE:
+                trainImage.src   = '/images/pieces/ttr-piece-blue-sq.jpg';
+            case PlayerColor.GREEN:
+                trainImage.src   = '/images/pieces/ttr-piece-green-sq.jpg';
+            case PlayerColor.RED:
+                trainImage.src   = '/images/pieces/ttr-piece-red-sq.jpg';
+            case PlayerColor.YELLOW:
+                trainImage.src   = '/images/pieces/ttr-piece-yellow-sq.jpg';
+            default:
+                trainImage.src   = '/images/pieces/ttr-piece-blue-sq.jpg';
+        }
     }
 
 
@@ -270,12 +285,15 @@ app.controller('mainGameCanvasCtrl', function ($scope, ClientAPI, StaticTrackLis
         printX = mouseLocation.x.toFixed(0);
         printY = mouseLocation.y.toFixed(0);
 
-         if(checkIfMouseInTrain(mouseLocation.x, mouseLocation.y) == true)
+         if(gameIsReady == true)
          {
-            if(routeToHighlight != -1)
-            {
-                highlightRoute(routeToHighlight);
-            }
+             if(checkIfMouseInTrain(mouseLocation.x, mouseLocation.y) == true)
+             {
+                if(routeToHighlight != -1)
+                {
+                    highlightRoute(routeToHighlight);
+                }
+             }
          }
          else
          {
