@@ -63,6 +63,7 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
 			$scope.allPlayers.push({'name': parameters.getOpponentName(index), 'color': parameters.getOpponentColor(index)})
 		}
 		
+		$scope.currentGameId = parameters.getGameId();
 		waitingToStartModalModal();
     });
 

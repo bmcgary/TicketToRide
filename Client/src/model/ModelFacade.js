@@ -50,7 +50,7 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
         }
         else if(description == "delete")
         {
-            joinableGames[gameId] = {};
+            delete joinableGames[gameId];
             $rootScope.$broadcast('model:UpdateJoinableGames', joinableGames);  
         }
         else
