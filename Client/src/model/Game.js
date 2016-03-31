@@ -34,10 +34,10 @@ app.factory('Game', function (Opponent, Player, GameBoard) {
         for(var index in this.opponents) {
             var opponent = this.opponents[index];
             if(opponent.playerId == playerId) {
-                delete opponents[index];
+                delete this.opponents[index];
             }
         }
-        player.setInGameData(parameters);
+        this.player.setInGameData(parameters);
     }
 
     Game.prototype.getPlayerById = function (playerId) {

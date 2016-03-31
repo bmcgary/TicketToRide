@@ -50,15 +50,15 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
     $rootScope.$on('model:PublicClientModelInformation', function (event, modelContainer)
     {
         gameIsReady = true;
-        setTrainImage();
+        setTrainImage(modelContainer);
         
     });
 
 
 
-    function setTrainImage()
+    function setTrainImage(modelContainer)
     {
-     switch(ModelContainer.prototype.getPlayerColor())
+     switch(modelContainer.getPlayerColor())
         {
             case PlayerColor.BLACK:
                 trainImage.src   = '/images/pieces/ttr-piece-black-sq.jpg';
