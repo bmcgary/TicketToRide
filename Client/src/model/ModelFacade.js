@@ -131,13 +131,10 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
 
     $rootScope.$on('server:PrivateClientModelInformation', function (event, parameters)
     {
-        usersGames[parameters.gameId].player.setInGameData(parameters);
+
+        usersGames[parameters.gameId].setPrivateInfo(parameters);
         broadcastIfInView(parameters.gameId, 'PrivateClientModelInformation');
 
-        if("possibleDestinationCards" in parameters)
-        {
-            broadcastIfInView(parameters.gameId, 'PrivateClientModelInformation');
-        }
     });
 
     $rootScope.$on('server:PublicClientModelInformation', function (event, parameters)
