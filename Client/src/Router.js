@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('ticketToRide', ['ui.router', 'ngWebSocket','shoppinpal.mobile-menu','ui.navbar','ui.bootstrap','smart-table'])
+        .module('ticketToRide', ['ui.router', 'ngWebSocket','shoppinpal.mobile-menu','ui.navbar','ui.bootstrap','smart-table', 'ui.bootstrap.modal'])
         .run( function ($rootScope, $state) {
 	        $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
 				//Check if the user is logged in, if they are do nothing,

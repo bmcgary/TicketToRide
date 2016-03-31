@@ -17,10 +17,10 @@ app.controller('gameLobbyController', function($scope, $rootScope, ClientAPI, $u
 //Update games
 var isUserLeavingGameLobby = false;
 $rootScope.$on('server:UpdateGame', function(event, parameters) {
-	if(!isUserLeavingGameLobby){
+	/*if(!isUserLeavingGameLobby){
 		$scope.availableGames.push(parameters.game);
 		getAvailableColors($scope.availableGames);
-	}
+	}*/
 });
 //
 	//GET Joinable GAMES
@@ -28,9 +28,9 @@ $rootScope.$on('server:UpdateGame', function(event, parameters) {
 		ClientAPI.updateJoinableGames();
 	}
 		getJoinableGames();
-		$rootScope.$on('server:UpdateJoinableGames', function(event, parameters) {
-		getAvailableColors(parameters.games);
-		$scope.availableGames = parameters.games;
+		$rootScope.$on('model:UpdateJoinableGames', function(event, games) {
+		getAvailableColors(games);
+		$scope.availableGames = games;
 	});
 	//END GET Joinable GAMES
 	//GET User GAMES
@@ -43,17 +43,19 @@ $rootScope.$on('server:UpdateGame', function(event, parameters) {
 		$scope.myGames = parameters.games;
 	});
 	function getAvailableColors(games){
-		for(var i =0; i < games.length; i++ ){
+		var keys = Object.keys(games);
+
+		for(var i =0; i < keys.length; i++ ){
     			var availablecolors = ["red", "yellow", "blue","black","green"];//starts off full
     			var takenColors = [];
-    			for(var k=0; k<games[i].players.length; k++){//First check to see what colors are taken
-    				takenColors.push(games[i].players[k].color);
+    			for(var k=0; k<games[keys[i]].players.length; k++){//First check to see what colors are taken
+    				takenColors.push(games[keys[i]].players[k].playerColor);
     			}
     			for(var c =0; c<takenColors.length; c++){//loop through taken colors and remove them from availableColors
             var index = availablecolors.indexOf(takenColors[i]);
             availablecolors.splice(index, 1);
     			}
-					games[i].availableColors= availablecolors;//attach availableColors to the game object
+					games[keys[i]].availableColors= availablecolors;//attach availableColors to the game object
     		}
     }
 	//END GET User GAMES
@@ -61,27 +63,28 @@ $rootScope.$on('server:UpdateGame', function(event, parameters) {
 	// SHOW MORE DETAILS FOR BOTH BOXES
 	$scope.activeAvailableGames = "";
 	$scope.showDetailAvailableGames = function(game) {
-		if ($scope.activeAvailableGames != game.gameID) {
-			$scope.activeAvailableGames = game.gameID;
+		if ($scope.activeAvailableGames != game.gameId) {
+			$scope.activeAvailableGames = game.gameId;
 		} else {
 			$scope.activeAvailableGames = null;
 		}
 	}
 	$scope.activeMyGames = "";
 	$scope.showDetailMyGames = function(game) {
-		if ($scope.activeMyGames != game.gameID) {
-			$scope.activeMyGames = game.gameID;
+		if ($scope.activeMyGames != game.gameId) {
+			$scope.activeMyGames = game.gameId;
 		} else {
 			$scope.activeMyGames = null;
 		}
 	}
 	//END SHOW MORE DETAILS
 	$scope.joinGame = function(game,color) {
-		ClientAPI.joinGame(game.gameID,color);
+		ClientAPI.joinGame(game.gameId,color);
 	}
+
 	$rootScope.$on('server:JoinGame', function(event, parameters) {
 		if(parameters.description == "success") {
-			ModelFacade.setGameInView(parameters.gameID);
+			ModelFacade.setGameInView(parameters.gameId);
 			$state.go('mainGame');
 		}
 	});
@@ -97,13 +100,14 @@ $rootScope.$on('server:UpdateGame', function(event, parameters) {
 			isUserLeavingGameLobby = true;
 			ClientAPI.createGame(name, color);
 		}else{
+		    alert("Game Name cannot be empty");
 			console.log('error');
 		}
 	}
 
 	$rootScope.$on('server:CreateGame', function (event, parameters) {
 		if(parameters.description == "success") {
-			ModelFacade.setGameInView(parameters.gameID);
+			ModelFacade.setGameInView(parameters.gameId);
 			$state.go('mainGame');
 		}
 	});

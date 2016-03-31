@@ -7,6 +7,7 @@ import server.User;
 import server.exception.InternalServerException;
 import server.exception.InvalidCredentialsException;
 import server.exception.PreConditionException;
+import server.responses.GamePlayResponse;
 import server.responses.Response;
 import server.responses.ResponseWrapper;
 import server.responses.UpdateGameResponse;
@@ -44,7 +45,7 @@ public class CreateGameCommand extends Command {
             return responses;
         }
 
-        responseWrapper.setResponse(Response.newSuccessResponse());
+        responseWrapper.setResponse(new GamePlayResponse(Response.getSuccessString(), game.getGameID()));
         responses.add(responseWrapper);
 
         try {

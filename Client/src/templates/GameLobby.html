@@ -45,12 +45,12 @@
 		<label class="col-md-5 strong">players in Game:{{game.players.length}}</label>
 		<div class="col-md-1 text-right">
 			<a href="">
-					<i ng-hide="activeAvailableGames==game.gameID" class="fa fa-plus"></i>
-      		<i ng-show="activeAvailableGames==game.gameID" class="fa fa-minus"></i>
+					<i ng-hide="activeAvailableGames==game.gameId" class="fa fa-plus"></i>
+      		<i ng-show="activeAvailableGames==game.gameId" class="fa fa-minus"></i>
 				</a>
 			</div>
 		</div>
-		<div class="row" ng-repeat-end="" ng-show="activeAvailableGames==game.gameID" ng-class-odd="'alt'">
+		<div class="row" ng-repeat-end="" ng-show="activeAvailableGames==game.gameId" ng-class-odd="'alt'">
 			<div >
 				<div>
 					<label>Players: </label>
@@ -77,12 +77,12 @@
 			<label class="col-md-5 strong">players in Game:{{game.players.length}}</label>
 			<div class="col-md-1 text-right">
 				<a href="">
-					<i ng-hide="activeMyGames==game.gameID" class="fa fa-plus"></i>
-        	<i ng-show="activeMyGames==game.gameID" class="fa fa-minus"></i>
+					<i ng-hide="activeMyGames==game.gameId" class="fa fa-plus"></i>
+        	<i ng-show="activeMyGames==game.gameId" class="fa fa-minus"></i>
 				</a>
 			</div>
 		 </div>
-		<div class="row" ng-repeat-end="" ng-show="activeMyGames==game.gameID" ng-class-odd="'alt'">
+		<div class="row" ng-repeat-end="" ng-show="activeMyGames==game.gameId" ng-class-odd="'alt'">
 			<div>
 				<div>
 					<label>Players: </label>

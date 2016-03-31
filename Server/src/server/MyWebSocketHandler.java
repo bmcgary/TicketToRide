@@ -35,13 +35,15 @@ public class MyWebSocketHandler {
     public void onClose(int statusCode, String reason) {
         System.out.println("Close: statusCode=" + statusCode + ", reason=" + reason);
         
-        Command command=new LogoutCommand();
-        List<ResponseWrapper> responseWrappers = command.execute(personal_id);
+        Command command = new LogoutCommand();
+        command.execute(personal_id);
         //sendMessages(responseWrappers);
     }
 
     @OnWebSocketError
     public void onError(Throwable t) {
+        Command command = new LogoutCommand();
+        command.execute(personal_id);
         System.out.println("Error: " + t.getMessage());
     }
 

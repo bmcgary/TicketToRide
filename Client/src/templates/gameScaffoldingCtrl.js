@@ -1,6 +1,6 @@
 var app = angular.module('ticketToRide');
 
-app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $spMenu, $uibModal) {
+app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $spMenu, $uibModal, $uibModalStack) {
 /*	$scope.showMenu = false;
     $scope.toggleMenu = function(){
         $scope.showMenu = !$scope.showMenu;
@@ -8,9 +8,9 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
     }
 	*/
 
-	var modalInstance;
 	
 	$scope.currentTurn = 'yourTurn';
+	$scope.allPlayers = [];
 		
 	$scope.toggleTurn = function()
 	{
@@ -41,20 +41,45 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
     "GameEnded": 
 */
 
-    $rootScope.$on('model:UpdateUserGames', function (event, parameters) {
-		//TODO how to do i know if the game has already started?? 
-		var ppl = [];
+    $rootScope.$on('model:PrivateClientModelInformation', function (event, parameters) {
+
+//------------ check what state the model is in and act acordingly. Show modals, disable and enable stuff etc
+
+		/*var ppl = [];
 		for (var index = 0; index < parameters.getOpponentsSize(); index++)
 		{
 			ppl.push({'name': parameters.getOpponentName(index), 'color': parameters.getOpponentColor(index)})
 		}
+		*/
+		if(parameters.isFirstRound())
+		{
+			$rootScope.$broadcast('model:GetDestinations',parameters);
+			//$rootScope.emit('model:GetDestinations',parameters);
+		}
+		/*waitingToStartModalModal();*/console.log(parameters);
+    });
+
+
+    $rootScope.$on('model:UpdateUserGames', function (event, parameters) {
+		//TODO how to do i know if the game has already started?? 
+		$scope.allPlayers.length = 0;
+		for (var index = 0; index < parameters.getOpponentsSize(); index++)
+		{
+			$scope.allPlayers.push({'name': parameters.getOpponentName(index), 'color': parameters.getOpponentColor(index)})
+		}
 		
-		waitingToStartModalModal(ppl, true);
+		$scope.currentGameId = parameters.getGameId();
+		waitingToStartModalModal();
     });
 
     $rootScope.$on('model:StartGame', function (event, parameters) {
         //future
-		waitingToStartModalModal(ppl, false);
+		//////waitingToStartModalModal(true);
+    });
+
+    $rootScope.$on('model:SetGameInView', function (event, parameters) {
+		//parameters is the entire model container
+        $scope.currentGameId = parameters.getGameId();
     });
 
     $rootScope.$on('model:SendChat', function (event, parameters) {
@@ -101,7 +126,7 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
 		alert("in ctrl");
 	});
 //--------------- Over all info thats helpful to have -------------------------
-$scope.currentGameId = 1; //ModelContainer.getGameId() //I assume ModelContainer is what i am passed in the broadcast???
+$scope.currentGameId = -1; //ModelContainer.getGameId() //I assume ModelContainer is what i am passed in the broadcast???
 
 //----------------------- Main menu data --------------------------------------
 $scope.thisPlayer = {
@@ -202,11 +227,11 @@ $scope.games = [
   }];
 
 //---------------------------------- Waiting to start Modal
-	function waitingToStartModalModal(ppl, open)
+	function waitingToStartModalModal()
 	{
-		if(open)
+		if(!$uibModalStack.getTop())
 		{
-			modalInstance = $uibModal.open({
+			var modalInstance = $uibModal.open({
 				  animation: true,
 				  templateUrl: 'waitingToStartGameModal.html',
 				  controller: 'waitingToStartModalCtrl',
@@ -217,7 +242,7 @@ $scope.games = [
 				  {
 					   ppl: function () 
 	 				   {
-						 return ppl;
+						 return $scope.allPlayers;
 					   }
 				  }
 				});
@@ -225,14 +250,9 @@ $scope.games = [
 			modalInstance.result.then(
 				function ()  //they selected stuff
 				{
-					modalInstance.dismiss('ok');
 			  		//console.log(selectedItems); //from here ship it out via the ClientAPI
 					ClientAPI.startGame($scope.currentGameId);
 				});//dont need a function for canceling since that isn't allowed
-		}
-		else
-		{
-			modalInstance.dismiss('ok');
 		}
 	}
 
