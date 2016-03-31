@@ -53,9 +53,6 @@ public class StartGameCommand extends Command {
         command.setGamePlayInfo(gamePlayInfo);
         responses.addAll(command.execute(playerIds));
 
-        AvailableTrainCardsNotificationResponse response = new AvailableTrainCardsNotificationResponse(gameId, game.getGameBoard().getVisibleTrainCarCards());
-        responses.add(new ResponseWrapper(playerIds, response, AvailableTrainCardsNotificationResponse.getName()));
-
         int currentTurn = TurnStartedNotificationCommand.getCurrentPlayerIndex(playerIds, game);
 
         responses.add(new ResponseWrapper(playerIds, new TurnStartedNotificationResponse(gameId, currentTurn, false),TurnStartedNotificationResponse.getName()));

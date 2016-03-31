@@ -1,9 +1,11 @@
 package server.command;
 
 import com.google.gson.annotations.SerializedName;
+import model.Game;
 import server.dto.gameplay.GamePlayInfo;
 import server.exception.GameNotFoundException;
 import server.exception.InvalidCredentialsException;
+import server.responses.AvailableTrainCardsNotificationResponse;
 import server.responses.DataResponse;
 import server.responses.Response;
 import server.responses.ResponseWrapper;
@@ -38,13 +40,15 @@ public class SendClientModelInformationCommand extends Command {
         List<ResponseWrapper> responses = new ArrayList<>();
         ResponseWrapper responseWrapper = new ResponseWrapper(getName());
         responses.add(responseWrapper);
-        if (gamePlayInfo == null) {
-            try {
-                gamePlayInfo = new GamePlayInfo(serverFacade.getGame(gameId));
-            } catch (GameNotFoundException | InvalidCredentialsException e) {
-                responseWrapper.setTargetIds(playerIds).setResponse(Response.newServerErrorResponse());
-                return responses;
+        Game game;
+        try {
+            game = serverFacade.getGame(gameId);
+            if (gamePlayInfo == null) {
+                gamePlayInfo = new GamePlayInfo(game);
             }
+        } catch (GameNotFoundException | InvalidCredentialsException e) {
+            responseWrapper.setTargetIds(playerIds).setResponse(Response.newServerErrorResponse());
+            return responses;
         }
         List<Integer> gamePlayInfoPlayerIds = gamePlayInfo.getPlayerIds();
         List<Integer> playersNotInGame = new ArrayList<>();
@@ -68,6 +72,9 @@ public class SendClientModelInformationCommand extends Command {
 
         responseWrapper.setTargetIds(sendPublic ? gamePlayInfoPlayerIds : playersInGame).setResponse(Response.newSuccessResponse());
         responses.add(new ResponseWrapper(playersInGame, gamePlayInfo, "PublicClientModelInformation"));
+
+        AvailableTrainCardsNotificationResponse response = new AvailableTrainCardsNotificationResponse(gameId, game.getGameBoard().getVisibleTrainCarCards());
+        responses.add(new ResponseWrapper(playersInGame, response, AvailableTrainCardsNotificationResponse.getName()));
 
         return responses;
     }
