@@ -8,10 +8,7 @@ import server.exception.GameNotFoundException;
 import server.exception.InternalServerException;
 import server.exception.InvalidCredentialsException;
 import server.exception.PreConditionException;
-import server.responses.GamePlayResponse;
-import server.responses.Response;
-import server.responses.ResponseWrapper;
-import server.responses.TurnStartedNotificationResponse;
+import server.responses.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +52,9 @@ public class StartGameCommand extends Command {
         SendClientModelInformationCommand command = new SendClientModelInformationCommand(gameId);
         command.setGamePlayInfo(gamePlayInfo);
         responses.addAll(command.execute(playerIds));
+
+        AvailableTrainCardsNotificationResponse response = new AvailableTrainCardsNotificationResponse(gameId, game.getGameBoard().getVisibleTrainCarCards());
+        responses.add(new ResponseWrapper(playerIds, response, AvailableTrainCardsNotificationResponse.getName()));
 
         int currentTurn = TurnStartedNotificationCommand.getCurrentPlayerIndex(playerIds, game);
 
