@@ -36,6 +36,7 @@ app.controller('loginController', function ($rootScope, $scope, $state, ClientAP
     $rootScope.$on('server:Login', function (event, parameters) {
     	if(parameters.description == "success")
     	{
+			$rootScope.userName = $scope.username;
     		$state.go('gameLobby');
     	}
     	else if (parameters.description == "alreadyloggedin") {
