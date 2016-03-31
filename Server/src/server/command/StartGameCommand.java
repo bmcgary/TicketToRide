@@ -11,6 +11,7 @@ import server.exception.PreConditionException;
 import server.responses.GamePlayResponse;
 import server.responses.Response;
 import server.responses.ResponseWrapper;
+import server.responses.TurnStartedNotificationResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +56,10 @@ public class StartGameCommand extends Command {
         SendClientModelInformationCommand command = new SendClientModelInformationCommand(gameId);
         command.setGamePlayInfo(gamePlayInfo);
         responses.addAll(command.execute(playerIds));
+
+        int currentTurn = playerIds.parallelStream().filter(game.getPlayerManager()::isPlayersTurn).findFirst().get();
+
+        responses.add(new ResponseWrapper(playerIds, new TurnStartedNotificationResponse(gameId, currentTurn, false),TurnStartedNotificationResponse.getName()));
 
         return responses;
     }
