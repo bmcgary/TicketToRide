@@ -160,23 +160,6 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
     {
         if(checkDescriptionIsSuccess(parameters.description, 'BuyRoute'))
         {
-            var playerId = parameters.playerIndex;
-            var gameId = parameters.gameId;
-            var game = usersGames[parameters.gameId];
-            var player = game.getPlayerById(playerId);
-
-            player.trainsLeft = parameters.trainsLeft;
-            game.board.addRoutePurchased(parameters.routeIndexPurchased, player.playerColor);
-
-            for(var index in parameters.pointTotals)
-            {
-                var playerId = parameters.pointTotals[index].playerId;
-                var points = parameters.pointTotals[index].points;
-
-                game.getPlayerById(playerId).points = points;
-            }
-            game.gameHistory.push(player.playerName + " bought a route");
-
             broadcastIfInView(parameters.gameId, 'BuyRoute');
         }
     });
