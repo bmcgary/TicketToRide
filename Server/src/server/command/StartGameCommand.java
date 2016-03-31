@@ -33,7 +33,7 @@ public class StartGameCommand extends Command {
     public List<ResponseWrapper> execute(int userID) {
         serverFacade = ServerFacade.getServerFacade();
         List<ResponseWrapper> responses = new ArrayList<>();
-        ResponseWrapper responseWrapper = new ResponseWrapper(userID, commandName);
+        ResponseWrapper responseWrapper = new ResponseWrapper(userID, getName());
         responses.add(responseWrapper);
 
         Game game;
@@ -62,5 +62,9 @@ public class StartGameCommand extends Command {
         responses.add(new ResponseWrapper(playerIds, new TurnStartedNotificationResponse(gameId, currentTurn, false),TurnStartedNotificationResponse.getName()));
 
         return responses;
+    }
+
+    public static String getName() {
+        return "StartGame";
     }
 }
