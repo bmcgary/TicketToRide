@@ -51,11 +51,8 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
 			ppl.push({'name': parameters.getOpponentName(index), 'color': parameters.getOpponentColor(index)})
 		}
 		*/
-		if(parameters.isFirstRound())
-		{
-			$rootScope.$broadcast('model:GetDestinations',parameters);
-			//$rootScope.emit('model:GetDestinations',parameters);
-		}
+		console.log(parameters.turnIndex);
+		
 		/*waitingToStartModalModal();*/console.log(parameters);
     });
 
@@ -69,12 +66,13 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
 		}
 		
 		$scope.currentGameId = parameters.getGameId();
-		waitingToStartModalModal();
+		//TODO check if the game has started. if not show this, else nothing
+			waitingToStartModalModal();
     });
 
     $rootScope.$on('model:StartGame', function (event, parameters) {
-        //future
-		//////waitingToStartModalModal(true);
+		//close the waitingToStartModal
+		$uibModalStack.dismissAll();
     });
 
     $rootScope.$on('model:SetGameInView', function (event, parameters) {
@@ -117,6 +115,19 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
 		/*	$scope.currentTurn === 'yourTurn'
 		ELSE
 			$scope.currentTurn = 'yourTurn';*/
+		if(parameters.getTurnIndex() == parameters.getPlayerId())
+		{
+			$scope.currentTurn = 'yourTurn';
+			if(parameters.isFirstRound())
+			{
+				$rootScope.$broadcast('model:GetDestinations',parameters);
+				//$rootScope.emit('model:GetDestinations',parameters);
+			}
+		}
+		else
+		{
+			$scope.currentTurn = 'notYourTurn';
+		}
 
     });
 
@@ -229,7 +240,7 @@ $scope.games = [
 //---------------------------------- Waiting to start Modal
 	function waitingToStartModalModal()
 	{
-		if(!$uibModalStack.getTop())
+		if(!$uibModalStack.getTop()) //only show if the modal doenst already exist
 		{
 			var modalInstance = $uibModal.open({
 				  animation: true,
