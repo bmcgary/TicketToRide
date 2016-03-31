@@ -7,10 +7,10 @@
         -o-transform: rotate(90deg);
         -ms-transform: rotate(90deg);
         transform: rotate(90deg);
-        height:30%;
-        width:80%;
-        margin-top:10%;
-        margin-left:-20%;
+        height:170px;
+        width:260px;
+        margin-top:20px;
+        margin-left:-70px;
         }
 
 
@@ -47,7 +47,7 @@
                         Train Color <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="btn-append-to-single-button">
-                        <li ng-repeat="color in colors" role="menuitem">
+                        <li ng-repeat="color in colors" role="menuitem" ng-click="select(color)">
                             <a>{{color}}</a>
                         </li>
 
@@ -70,12 +70,15 @@
                         Wild Trains To Spend <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="btn-append-to-single-button">
-                        <li ng-repeat="number in numbers" role="menuitem">
+                        <li ng-repeat="number in numbers" role="menuitem" >
                             <a>{{number}}</a>
                         </li>
 
                     </ul>
                 </div>
+
+
+
             </div>
         </div>
     </div>

@@ -503,6 +503,11 @@ app.controller('buyRouteCtrl', function ($scope, $uibModalInstance, StaticTrackL
 
   };
 
+  $scope.select = function(color)
+  {
+    alert(color);
+  }
+
   $scope.cancel = function(){
     $uibModalInstance.dismiss('cancel');
   }
