@@ -50,6 +50,7 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
 //GAME AND PLAYER VARIABLES////////////////////////////////////////////////////////////////////////////////// 
     var gameID = 0;
     var currentGameModel;
+    var gameStarted = false;
     var playerHand = {
         wildTrainCards:0,
         blackTrainCards:0,
@@ -114,9 +115,9 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
                     
 //MODEL LISTENERS/////////////////////////////////////////////////////////////////////////////////////////////
 
-    $rootScope.$on('model:UpdateUserGames', function (event, modelContainer)
+    $rootScope.$on('model:StartGame', function (event, modelContainer)
     {
-        setTrainImage(modelContainer);
+        gameStarted = true;
     });
 
     $rootScope.$on('model:SetGameInView', function (event, modelContainer)
@@ -145,7 +146,11 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         context.clearRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
         //Draw the map
         context.drawImage(mapImage,0,0,890,460);
+        if(gameStarted)
+        {
         //Draw existing routes
+        }
+
     }
 
 
@@ -352,12 +357,18 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         printX = mouseLocation.x.toFixed(0);
         printY = mouseLocation.y.toFixed(0);
 
-
-         if(checkIfMouseInTrain(mouseLocation.x, mouseLocation.y) == true)
+         if(gameStarted)
          {
-            if(routeToHighlight != -1)
+             if(checkIfMouseInTrain(mouseLocation.x, mouseLocation.y) == true)
+             {
+                if(routeToHighlight != -1)
+                {
+                    highlightRoute(routeToHighlight);
+                }
+             }
+            else
             {
-                highlightRoute(routeToHighlight);
+             redraw();
             }
          }
          else
@@ -381,7 +392,8 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         var mouseLocation = context.transformedPoint(lastX, lastY);
 
         dragStart = null;
-
+        if(gameStarted)
+        {
             if(checkIfMouseInTrain(mouseLocation.x, mouseLocation.y) == true)
             {
                 if(routeToHighlight != -1)
@@ -391,7 +403,7 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
 
                 }
             }
-
+        }
 
 
         if (!dragged) checkIfMouseInTrain(mouseClickPosition.x,mouseClickPosition.y);
