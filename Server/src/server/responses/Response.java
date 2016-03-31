@@ -10,9 +10,16 @@ import com.google.gson.annotations.SerializedName;
 public class Response {
     @SerializedName("description")
     String description;
+    @SerializedName("message")
+    String message = null;
 
     public Response(String description) {
         this.description = description;
+    }
+
+    public Response setMessage(String message) {
+        this.message = message;
+        return this;
     }
 
     public static Response newSuccessResponse() {
