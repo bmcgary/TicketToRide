@@ -79,9 +79,10 @@ $rootScope.$on('server:UpdateGame', function(event, parameters) {
 	$scope.joinGame = function(game,color) {
 		ClientAPI.joinGame(game.gameID,color);
 	}
+
 	$rootScope.$on('server:JoinGame', function(event, parameters) {
 		if(parameters.description == "success") {
-			ModelFacade.setGameInView(parameters.gameID);
+			ModelFacade.setGameInView(parameters.gameID, false);
 			$state.go('mainGame');
 		}
 	});
@@ -103,7 +104,7 @@ $rootScope.$on('server:UpdateGame', function(event, parameters) {
 
 	$rootScope.$on('server:CreateGame', function (event, parameters) {
 		if(parameters.description == "success") {
-			ModelFacade.setGameInView(parameters.gameID);
+			ModelFacade.setGameInView(parameters.gameID, true);
 			$state.go('mainGame');
 		}
 	});

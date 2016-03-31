@@ -43,7 +43,7 @@ public class StartGameCommand extends Command {
             game = serverFacade.getGame(gameId);
             gamePlayInfo = new GamePlayInfo(game);
         } catch (PreConditionException e) {
-            responseWrapper.setResponse(new Response("unable to start game"));
+            responseWrapper.setResponse(new Response("unable to start game").setMessage(e.getMessage()));
             return responses;
         } catch (InternalServerException | GameNotFoundException | InvalidCredentialsException e) {
             responseWrapper.setResponse(Response.newServerErrorResponse());
