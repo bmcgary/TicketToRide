@@ -15,7 +15,7 @@ app.factory('Game', function (Opponent, Player, GameBoard) {
     //constructor 
     function Game (gameId) {
         this.gameId = gameId;
-        this.player = new Player();
+        Game.prototype.player = new Player();
     }
 
     Game.prototype.updateLobbyData = function (gameDataJSON) {
@@ -34,6 +34,8 @@ app.factory('Game', function (Opponent, Player, GameBoard) {
         for(var index in this.opponents) {
             var opponent = this.opponents[index];
             if(opponent.playerId == playerId) {
+                this.player.playerColor = this.opponents[index].playerColor;
+                this.player.playerName = this.opponents[index].playerName;
                 delete this.opponents[index];
             }
         }
