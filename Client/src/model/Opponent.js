@@ -9,10 +9,10 @@ app.factory('Opponent', function () {
     Opponent.prototype.playerId = -1;
 
     //constructor 
-    function Opponent (gameDataJSON) {
+    function Opponent (gameDataJSON, index) {
         this.playerName = gameDataJSON.username;
         this.playerColor = gameDataJSON.color;
-        this.playerId = gameDataJSON.playerOrder;
+        this.playerId = index;
     }
 
     return Opponent;

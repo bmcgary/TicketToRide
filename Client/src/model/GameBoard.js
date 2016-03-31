@@ -16,7 +16,7 @@ app.factory('GameBoard', function (TrainCardColor, StaticTrackList) {
 
     GameBoard.prototype.updateCardsVisible = function (availableTrainCards) {
         for(var i = 0; i < 5; i++) {
-            cardsVisible[i] = availableTrainCards[i].color;
+            this.cardsVisible[i] = availableTrainCards[i].color;
         }
     }
 
@@ -28,7 +28,7 @@ app.factory('GameBoard', function (TrainCardColor, StaticTrackList) {
     }
 
     GameBoard.prototype.addRoutePurchased = function (routeIndex, trainColor) {
-        routesPurchased[routeIndex] = TrainCardColor.get(trainColor);
+        this.routesPurchased[routeIndex] = TrainCardColor.get(trainColor);
     }
 
     return GameBoard;

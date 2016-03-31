@@ -50,8 +50,13 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
 		{
 			ppl.push({'name': parameters.getOpponentName(index), 'color': parameters.getOpponentColor(index)})
 		}
-		
-		waitingToStartModalModal();*/console.log(parameters);
+		*/
+		if(parameters.isFirstRound())
+		{
+			$rootScope.$broadcast('model:GetDestinations',parameters);
+			//$rootScope.emit('model:GetDestinations',parameters);
+		}
+		/*waitingToStartModalModal();*/console.log(parameters);
     });
 
 
@@ -63,6 +68,7 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
 			$scope.allPlayers.push({'name': parameters.getOpponentName(index), 'color': parameters.getOpponentColor(index)})
 		}
 		
+		$scope.currentGameId = parameters.getGameId();
 		waitingToStartModalModal();
     });
 

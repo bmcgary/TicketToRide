@@ -25,8 +25,19 @@ app.factory('Game', function (Opponent, Player, GameBoard) {
         this.turnIndex = 0;
         for(var index in gameDataJSON.players) {
             var player = gameDataJSON.players[index];
-            this.opponents[index] = new Opponent(player);
+            this.opponents[index] = new Opponent(player, index);
         }
+    }
+
+    Game.prototype.setPrivateInfo = function (parameters) {
+        var playerId = parameters.playerOrder;
+        for(var index in this.opponents) {
+            var opponent = this.opponents[index];
+            if(opponent.playerId == playerId) {
+                delete this.opponents[index];
+            }
+        }
+        this.player.setInGameData(parameters);
     }
 
     Game.prototype.getPlayerById = function (playerId) {

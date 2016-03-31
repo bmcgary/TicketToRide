@@ -33,14 +33,14 @@ app.factory('Player', function (TrainCardColor, DestinationCard) {
         }
 
         if("possibleDestinationCards" in gameDataJSON) {
-            temporaryStorageOfCardsToBeSelectedFrom = gameDataJSON.possibleDestinationCards;
+            this.temporaryStorageOfCardsToBeSelectedFrom = gameDataJSON.possibleDestinationCards;
         }
     }
 
     Player.prototype.setDestinationComplete = function (destinationCompleted) {
-        for(var index in destinationCards) {
-            if(destinationCards[index].equals(destinationCompleted)) {
-                destinationCards[index].isComplete = true;
+        for(var index in this.destinationCards) {
+            if(this.destinationCards[index].equals(this.destinationCompleted)) {
+                this.destinationCards[index].isComplete = true;
                 break;
             }
         }
@@ -48,7 +48,7 @@ app.factory('Player', function (TrainCardColor, DestinationCard) {
 
     Player.prototype.addDestinationCards = function (destinations) {
         for(var index in destinations) {
-            destinationCards.push(new DestinationCard(destinations[index]));
+            this.destinationCards.push(new DestinationCard(destinations[index]));
         }
     }
 

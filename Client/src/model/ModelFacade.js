@@ -50,7 +50,7 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
         }
         else if(description == "delete")
         {
-            joinableGames[gameId] = {};
+            delete joinableGames[gameId];
             $rootScope.$broadcast('model:UpdateJoinableGames', joinableGames);  
         }
         else
@@ -131,13 +131,10 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
 
     $rootScope.$on('server:PrivateClientModelInformation', function (event, parameters)
     {
-        usersGames[parameters.gameId].player.setInGameData(parameters);
+
+        usersGames[parameters.gameId].setPrivateInfo(parameters);
         broadcastIfInView(parameters.gameId, 'PrivateClientModelInformation');
 
-        if("possibleDestinationCards" in parameters)
-        {
-            broadcastIfInView(parameters.gameId, 'PrivateClientModelInformation');
-        }
     });
 
     $rootScope.$on('server:PublicClientModelInformation', function (event, parameters)
@@ -350,22 +347,16 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
     	},
 
         //All in game controllers must listen for the "model:SetGameInView" command. This will give the controller a new model from the selected game
-    	setGameInView: function (gameId, isCreate)
+    	setGameInView: function (gameId)
     	{
-    	    if(isCreate)
-    	    {
-    	        usersGames[gameId] = new Game(gameId);
-    	    }
+            if(!(gameId in usersGames))
+            {
+                //alert("Failed! See ModelFacade-SetGameInView: description='Invalid GameId'");
+                usersGames[gameId] = new Game(gameId);
+            }
 
-            if(gameId in usersGames)
-            {
-                gameInView = gameId;
-                broadcast(gameInView, 'SetGameInView');
-            }
-            else
-            {
-                alert("Failed! See ModelFacade-SetGameInView: description='Invalid GameId'");
-            }
+            gameInView = gameId;
+            broadcastIfInView(gameInView, 'SetGameInView');
     	}
     };
 });
