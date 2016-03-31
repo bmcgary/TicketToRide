@@ -357,11 +357,9 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
                 //alert("Failed! See ModelFacade-SetGameInView: description='Invalid GameId'");
                 usersGames[gameId] = new Game(gameId);
             }
-            else
-            {
-                gameInView = gameId;
-                broadcast(gameInView, 'SetGameInView');
-            }
+
+            gameInView = gameId;
+            broadcast(gameInView, 'SetGameInView');
     	}
     };
 });

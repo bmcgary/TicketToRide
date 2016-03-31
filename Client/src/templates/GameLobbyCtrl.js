@@ -61,16 +61,16 @@ $rootScope.$on('server:UpdateGame', function(event, parameters) {
 	// SHOW MORE DETAILS FOR BOTH BOXES
 	$scope.activeAvailableGames = "";
 	$scope.showDetailAvailableGames = function(game) {
-		if ($scope.activeAvailableGames != game.gameID) {
-			$scope.activeAvailableGames = game.gameID;
+		if ($scope.activeAvailableGames != game.gameId) {
+			$scope.activeAvailableGames = game.gameId;
 		} else {
 			$scope.activeAvailableGames = null;
 		}
 	}
 	$scope.activeMyGames = "";
 	$scope.showDetailMyGames = function(game) {
-		if ($scope.activeMyGames != game.gameID) {
-			$scope.activeMyGames = game.gameID;
+		if ($scope.activeMyGames != game.gameId) {
+			$scope.activeMyGames = game.gameId;
 		} else {
 			$scope.activeMyGames = null;
 		}
@@ -82,7 +82,11 @@ $rootScope.$on('server:UpdateGame', function(event, parameters) {
 
 	$rootScope.$on('server:JoinGame', function(event, parameters) {
 		if(parameters.description == "success") {
+<<<<<<< HEAD
 			ModelFacade.setGameInView(parameters.gameID);
+=======
+			ModelFacade.setGameInView(parameters.gameId, false);
+>>>>>>> 1afa27dcdb6bdd66b02381180e3fcd6077a2c22a
 			$state.go('mainGame');
 		}
 	});
