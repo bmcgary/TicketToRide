@@ -360,7 +360,7 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
             if(gameId in usersGames)
             {
                 gameInView = gameId;
-                broadcast(gameInView, 'SetGameInView');
+                broadcastIfInView(gameInView, 'SetGameInView');
             }
             else
             {
