@@ -147,7 +147,7 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
             var playerInModel = game.getPlayerById(playerId);
 
             playerInModel.trainsLeft = playersFromJSON[index].trainsLeft;
-            //playerInModel.points = playersFromJSON[index].points;
+            playerInModel.points = playersFromJSON[index].points;
             game.board.setRoutesPurchased(playersFromJSON[index].routes, playerInModel.playerColor);
 
         }
@@ -184,33 +184,31 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
         }
     });
 
+    $rootScope.$on('server:AvailableTrainCardsNotification', function (event, parameters)
+    {
+            var game = usersGames[parameters.gameId];
+            game.board.updateCardsVisible(parameters.availableTrainCards);
+
+            broadcastIfInView(parameters.gameId, 'DrawTrainCard');
+    });
+
     $rootScope.$on('server:NotifyDestinationRouteCompleted', function (event, parameters)
     {
-        var playerId = parameters.playerIndex;
         var game = usersGames[parameters.gameId];
-
         var player = game.player;
-        if(playerId == player.playerId)
-        {
-            player.setDestinationComplete(parameters.route);
-            broadcastIfInView(parameters.gameId, 'NotifyDestinationRouteCompleted');
-        }
+        player.setDestinationComplete(parameters.route);
+
+        broadcastIfInView(parameters.gameId, 'NotifyDestinationRouteCompleted');
     });
 
     $rootScope.$on('server:SelectDestinations', function (event, parameters)
     {
 		if(checkDescriptionIsSuccess(parameters.description, 'SelectDestinations'))
 		{
-            var playerId = parameters.playerIndex;
             var game = usersGames[parameters.gameId];
-
             var player = game.player;
-            if(playerId == player.playerId)
-            {
-                player.addDestinationCards(parameters.destinationCards);
-            }
-            game.gameHistory.push(player.playerName + " drew " + parameters.destinationCards.length + " new destinations");
 
+            player.addDestinationCards(parameters.destinationCards);
             broadcastIfInView(parameters.gameId, 'SelectDestinations');
         }
     });
@@ -219,15 +217,11 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
     {
         if(checkDescriptionIsSuccess(parameters.description, 'GetDestinations'))
         {
-            var playerId = parameters.playerIndex;
             var game = usersGames[parameters.gameId];
-
             var player = game.player;
-            if(playerId == player.playerId)
-            {
-                player.temporaryStorageOfCardsToBeSelectedFrom = parameters.destinationCards;
-                broadcastIfInView(parameters.gameId, 'GetDestinations');
-            }
+
+            player.temporaryStorageOfCardsToBeSelectedFrom = parameters.destinationCards;
+            broadcastIfInView(parameters.gameId, 'GetDestinations');
         }
     });
 
@@ -347,5 +341,10 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
             gameInView = gameId;
             broadcastIfInView(gameInView, 'SetGameInView');
     	}
+
+        getGameInView: function ()
+        {
+            broadcastIfInView(gameInView, 'SetGameInView');
+        }
     };
 });
