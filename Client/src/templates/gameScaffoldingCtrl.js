@@ -71,6 +71,11 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
 		//////waitingToStartModalModal(true);
     });
 
+    $rootScope.$on('model:SetGameInView', function (event, parameters) {
+		//parameters is the entire model container
+        $scope.currentGameId = parameters.getGameId();
+    });
+
     $rootScope.$on('model:SendChat', function (event, parameters) {
         //future
 
@@ -115,7 +120,7 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
 		alert("in ctrl");
 	});
 //--------------- Over all info thats helpful to have -------------------------
-$scope.currentGameId = 1; //ModelContainer.getGameId() //I assume ModelContainer is what i am passed in the broadcast???
+$scope.currentGameId = -1; //ModelContainer.getGameId() //I assume ModelContainer is what i am passed in the broadcast???
 
 //----------------------- Main menu data --------------------------------------
 $scope.thisPlayer = {
