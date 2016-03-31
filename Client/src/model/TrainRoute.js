@@ -16,7 +16,7 @@ app.factory('TrainRoute', function (TrainCardColor) {
     }
 
     TrainRoute.prototype.toString = function() {
-        return "TrackId = " + trackId + " TrainsRequired = " + this.trainsRequired + " TrackColor = " + this.trackColor + "\n";
+        return "TrackId = " + this.trackId + " TrainsRequired = " + this.trainsRequired + " TrackColor = " + this.trackColor + "\n";
     };
 
     
