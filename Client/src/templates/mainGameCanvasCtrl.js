@@ -1,6 +1,6 @@
 var app = angular.module('ticketToRide');
 
-app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, StaticTrackList, PlayerColor, $uibModal, ModelFacade) {
+app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, StaticTrackList, PlayerColor, $uibModal, ModelFacade, TrainCardColor) {
 
 
     var canvas = document.getElementById('canvas');
@@ -31,7 +31,6 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
     */
 	//addEvent(window, 'resize', setUpCanvas);
 
-	var gameIsReady = true;
     trackTransforms(context);
 	
     var trainImage   = new Image();
@@ -47,38 +46,96 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         redraw();
 
     }
+   
+//GAME AND PLAYER VARIABLES////////////////////////////////////////////////////////////////////////////////// 
+    var gameID = 0;
+    var currentGameModel;
+    var playerHand = {
+        wildTrainCards:0,
+        blackTrainCards:0,
+        whiteTrainCards:0,
+        redTrainCards:0,
+        yellowTrainCards:0,
+        greenTrainCards:0,
+        blueTrainCards:0,
+        purpleTrainCards:0,
+        orangeTrainCards:0
+    };
 
-    $rootScope.$on('model:UpdateUserGames', function (event, modelContainer)
+    function updateGameInformation(modelContainer)
     {
-        gameIsReady = true;
+        currentGameModel = modelContainer
+        gameID = modelContainer.getGameId();
+        updatePlayerHand(modelContainer);
         setTrainImage(modelContainer);
-        
-    });
 
+    }
+
+    function updatePlayerHand(modelContainer)
+       {
+            playerHand.wildTrainCards = modelContainer.getTrainCardsByColor(TrainCardColor.WILD);
+            playerHand.blackTrainCards = modelContainer.getTrainCardsByColor(TrainCardColor.BLACK);
+            playerHand.whiteTrainCards = modelContainer.getTrainCardsByColor(TrainCardColor.WHITE);
+            playerHand.redTrainCards = modelContainer.getTrainCardsByColor(TrainCardColor.RED);
+            playerHand.yellowTrainCards = modelContainer.getTrainCardsByColor(TrainCardColor.YELLOW);
+            playerHand.greenTrainCards = modelContainer.getTrainCardsByColor(TrainCardColor.GREEN);
+            playerHand.blueTrainCards = modelContainer.getTrainCardsByColor(TrainCardColor.BLUE);
+            playerHand.purpleTrainCards = modelContainer.getTrainCardsByColor(TrainCardColor.PURPLE);
+            playerHand.orangeTrainCards = modelContainer.getTrainCardsByColor(TrainCardColor.ORANGE);
+       }
 
     function setTrainImage(modelContainer)
     {
-     switch(modelContainer.getPlayerColor())
-        {
-            case PlayerColor.BLACK:
-                trainImage.src   = '/images/pieces/ttr-piece-black-sq.jpg';
-                break;
-            case PlayerColor.BLUE:
-                trainImage.src   = '/images/pieces/ttr-piece-blue-sq.jpg';
-                break;
-            case PlayerColor.GREEN:
-                trainImage.src   = '/images/pieces/ttr-piece-green-sq.jpg';
-                break;
-            case PlayerColor.RED:
-                trainImage.src   = '/images/pieces/ttr-piece-red-sq.jpg';
-                break;
-            case PlayerColor.YELLOW:
-                trainImage.src   = '/images/pieces/ttr-piece-yellow-sq.jpg';
-                break;
-            default:
-                trainImage.src   = '/images/pieces/ttr-piece-blue-sq.jpg';
-        }
+        switch(modelContainer.getPlayerColor())
+           {
+               case PlayerColor.BLACK:
+                   trainImage.src   = '/images/pieces/ttr-piece-black-sq.jpg';
+                   break;
+               case PlayerColor.BLUE:
+                   trainImage.src   = '/images/pieces/ttr-piece-blue-sq.jpg';
+                   break;
+               case PlayerColor.GREEN:
+                   trainImage.src   = '/images/pieces/ttr-piece-green-sq.jpg';
+                   break;
+               case PlayerColor.RED:
+                   trainImage.src   = '/images/pieces/ttr-piece-red-sq.jpg';
+                   break;
+               case PlayerColor.YELLOW:
+                   trainImage.src   = '/images/pieces/ttr-piece-yellow-sq.jpg';
+                   break;
+               default:
+                   trainImage.src   = '/images/pieces/ttr-piece-blue-sq.jpg';
+           }
     }
+
+
+                    
+                    
+                    
+//MODEL LISTENERS/////////////////////////////////////////////////////////////////////////////////////////////
+
+    $rootScope.$on('model:UpdateUserGames', function (event, modelContainer)
+    {
+        setTrainImage(modelContainer);
+    });
+
+    $rootScope.$on('model:SetGameInView', function (event, modelContainer)
+    {
+        currentGameModel = modelContainer;
+        gameID = modelContainer.getGameId();
+    });
+        
+    $rootScope.$on('model:PrivateClientModelData', function (event, modelContainer)
+    {
+       updateGameInformation(modelContainer);
+    });
+
+    $rootScope.$on('model:PublicClientModelData', function (event, modelContainer)
+    {
+        updateGameInformation(modelContainer);
+    });
+    
+//BOARD METHODS////////////////////////////////////////
 
 
     function redraw(){
@@ -86,9 +143,12 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
          var p1 = context.transformedPoint(0,0);
          var p2 = context.transformedPoint(canvas.width,canvas.height);
         context.clearRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
-
+        //Draw the map
         context.drawImage(mapImage,0,0,890,460);
+        //Draw existing routes
     }
+
+
     redraw();
 
     function initializeTrains()
@@ -138,14 +198,14 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
 
     };
 
-    function drawTrains(){
-        for(var routeId in StaticTrackList)
+
+
+
+    function drawRoute(routeId){
+        var route = StaticTrackList[routeId].tracks;
+        for(var train in route )
         {
-            var route = StaticTrackList[routeId].tracks;
-            for(var train in route )
-            {
-                drawTrain(route[train].topLeft, route[train].topRight, route[train].angle);
-            }
+            drawTrain(route[train].topLeft, route[train].topRight, route[train].angle);
         }
 
     };
@@ -155,15 +215,16 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         context.save();
 
         context.translate(topLeft.x, topLeft.y);
-        // var deltaX = topLeft.x - topRight.x;
-        // var deltaY = topLeft.y - topRight.y;
-        // var radians = Math.atan2(deltaY, deltaX);
+
         context.rotate(angle);
 
         context.drawImage(trainImage, 0,0, trainImageWidth, trainImageHeight);
 
         context.restore();
     };
+
+
+
 
 
     function checkIfMouseInTrain(xPosition, yPosition)
