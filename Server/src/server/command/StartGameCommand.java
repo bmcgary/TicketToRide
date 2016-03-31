@@ -34,7 +34,6 @@ public class StartGameCommand extends Command {
         serverFacade = ServerFacade.getServerFacade();
         List<ResponseWrapper> responses = new ArrayList<>();
         ResponseWrapper responseWrapper = new ResponseWrapper(userID, getName());
-        responses.add(responseWrapper);
 
         Game game;
         GamePlayInfo gamePlayInfo;
@@ -61,6 +60,7 @@ public class StartGameCommand extends Command {
 
         responses.add(new ResponseWrapper(playerIds, new TurnStartedNotificationResponse(gameId, currentTurn, false),TurnStartedNotificationResponse.getName()));
 
+        responses.add(responseWrapper);
         return responses;
     }
 

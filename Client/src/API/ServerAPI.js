@@ -41,6 +41,7 @@ app.factory('ServerAPI', function ($rootScope) {
                 case "SelectDestinations": 
                 case "GameEnded": 
 				case "UpdateGame":
+                case "AvailableTrainCardsNotification":
 				case "TurnStartedNotification":
 
                     $rootScope.$broadcast('server:'+response.command, response.parameters);

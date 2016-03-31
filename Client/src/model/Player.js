@@ -15,10 +15,6 @@ app.factory('Player', function (TrainCardColor, DestinationCard) {
     //constructor 
     function Player () {}
 
-    Player.prototype.updateLobbyData = function (gameDataJSON) {
-
-    }
-
     Player.prototype.setInGameData = function (gameDataJSON) {
         this.playerId = gameDataJSON.playerOrder;
         this.trainCards = {};
@@ -29,7 +25,7 @@ app.factory('Player', function (TrainCardColor, DestinationCard) {
         }
 
         for(var index in gameDataJSON.destinationCards) {
-            this.destinationCards[index] = new DestinationCard(gameDataJSON.destinationCards[index]);
+            Player.prototype.destinationCards[index] = new DestinationCard(gameDataJSON.destinationCards[index]);
         }
 
         if("possibleDestinationCards" in gameDataJSON) {
@@ -48,7 +44,7 @@ app.factory('Player', function (TrainCardColor, DestinationCard) {
 
     Player.prototype.addDestinationCards = function (destinations) {
         for(var index in destinations) {
-            this.destinationCards.push(new DestinationCard(destinations[index]));
+            Player.prototype.destinationCards.push(new DestinationCard(destinations[index]));
         }
     }
 

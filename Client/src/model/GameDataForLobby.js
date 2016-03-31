@@ -11,7 +11,7 @@ app.factory('GameDataForLobby', function (LobbyPlayer) {
         GameDataForLobby.prototype.gameId = gameDataJSON.gameID;
         GameDataForLobby.prototype.gameName = gameDataJSON.gameName;
         for(var index in gameDataJSON.players) {
-            GameDataForLobby.prototype.players[index] = (new LobbyPlayer(gameDataJSON.players[index]));
+            GameDataForLobby.prototype.players[index] = new LobbyPlayer(gameDataJSON.players[index]);
         }
     }
 

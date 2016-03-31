@@ -134,6 +134,10 @@ app.factory('ModelContainer', function () {
         return this.model.player.playerId;
     };
 
+    ModelContainer.prototype.getTurnIndex = function() {
+        return this.model.turnIndex;
+    };
+
     ModelContainer.prototype.getTrainCardsByColor = function(trainCardColor) {
         var count = this.model.player.trainCards[trainCardColor];
         if(typeof(count) === 'undefined' || typeof(count) === 'null') {

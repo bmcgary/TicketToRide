@@ -147,6 +147,7 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
             var playerInModel = game.getPlayerById(playerId);
 
             playerInModel.trainsLeft = playersFromJSON[index].trainsLeft;
+            playerInModel.points = playersFromJSON[index].points;
             game.board.setRoutesPurchased(playersFromJSON[index].routes, playerInModel.playerColor);
 
         }
@@ -159,23 +160,6 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
     {
         if(checkDescriptionIsSuccess(parameters.description, 'BuyRoute'))
         {
-            var playerId = parameters.playerIndex;
-            var gameId = parameters.gameId;
-            var game = usersGames[parameters.gameId];
-            var player = game.getPlayerById(playerId);
-
-            player.trainsLeft = parameters.trainsLeft;
-            game.board.addRoutePurchased(parameters.routeIndexPurchased, player.playerColor);
-
-            for(var index in parameters.pointTotals)
-            {
-                var playerId = parameters.pointTotals[index].playerId;
-                var points = parameters.pointTotals[index].points;
-
-                game.getPlayerById(playerId).points = points;
-            }
-            game.gameHistory.push(player.playerName + " bought a route");
-
             broadcastIfInView(parameters.gameId, 'BuyRoute');
         }
     });
@@ -200,33 +184,31 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
         }
     });
 
+    $rootScope.$on('server:AvailableTrainCardsNotification', function (event, parameters)
+    {
+            var game = usersGames[parameters.gameId];
+            game.board.updateCardsVisible(parameters.availableTrainCards);
+
+            broadcastIfInView(parameters.gameId, 'DrawTrainCard');
+    });
+
     $rootScope.$on('server:NotifyDestinationRouteCompleted', function (event, parameters)
     {
-        var playerId = parameters.playerIndex;
         var game = usersGames[parameters.gameId];
-
         var player = game.player;
-        if(playerId == player.playerId)
-        {
-            player.setDestinationComplete(parameters.route);
-            broadcastIfInView(parameters.gameId, 'NotifyDestinationRouteCompleted');
-        }
+        player.setDestinationComplete(parameters.route);
+
+        broadcastIfInView(parameters.gameId, 'NotifyDestinationRouteCompleted');
     });
 
     $rootScope.$on('server:SelectDestinations', function (event, parameters)
     {
 		if(checkDescriptionIsSuccess(parameters.description, 'SelectDestinations'))
 		{
-            var playerId = parameters.playerIndex;
             var game = usersGames[parameters.gameId];
-
             var player = game.player;
-            if(playerId == player.playerId)
-            {
-                player.addDestinationCards(parameters.destinationCards);
-            }
-            game.gameHistory.push(player.playerName + " drew " + parameters.destinationCards.length + " new destinations");
 
+            player.addDestinationCards(parameters.destinationCards);
             broadcastIfInView(parameters.gameId, 'SelectDestinations');
         }
     });
@@ -235,15 +217,11 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
     {
         if(checkDescriptionIsSuccess(parameters.description, 'GetDestinations'))
         {
-            var playerId = parameters.playerIndex;
             var game = usersGames[parameters.gameId];
-
             var player = game.player;
-            if(playerId == player.playerId)
-            {
-                player.temporaryStorageOfCardsToBeSelectedFrom = parameters.destinationCards;
-                broadcastIfInView(parameters.gameId, 'GetDestinations');
-            }
+
+            player.temporaryStorageOfCardsToBeSelectedFrom = parameters.destinationCards;
+            broadcastIfInView(parameters.gameId, 'GetDestinations');
         }
     });
 
@@ -253,10 +231,6 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
         var playerId = parameters.playerIndex;
         var player = game.getPlayerById(playerId);
 
-        if(game.board.isFirstRound)
-        {
-            game.board.isFirstRound = false;
-        }
         game.turnIndex = playerId;
         game.board.isLastRound = parameters.lastRound;
 
@@ -264,6 +238,15 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
         {
             game.gameHistory.push(player.playerName + " begins the last round");
         }
+			
+		//the gameScaffoldingCtrl listens to this to show the select destinations
+		broadcastIfInView(parameters.gameId, 'TurnStartedNotification');
+
+        if(game.board.isFirstRound && playerId == game.player.playerId)
+        {
+            game.board.isFirstRound = false;
+        }
+
     });
 
     $rootScope.$on('server:GameEnded', function (event, parameters)
@@ -358,5 +341,10 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
             gameInView = gameId;
             broadcastIfInView(gameInView, 'SetGameInView');
     	}
+
+        getGameInView: function ()
+        {
+            broadcastIfInView(gameInView, 'SetGameInView');
+        }
     };
 });
