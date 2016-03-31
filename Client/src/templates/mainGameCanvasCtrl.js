@@ -1,6 +1,7 @@
 var app = angular.module('ticketToRide');
 
-app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, StaticTrackList, PlayerColor) {
+app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, StaticTrackList, PlayerColor, $uibModal, ModelFacade) {
+
 
     var canvas = document.getElementById('canvas');
     var context = canvas.getContext('2d');
@@ -30,7 +31,7 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
     */
 	//addEvent(window, 'resize', setUpCanvas);
 
-	var gameIsReady = false;
+	var gameIsReady = true;
     trackTransforms(context);
 	
     var trainImage   = new Image();
@@ -47,13 +48,12 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
 
     }
 
-    $rootScope.$on('model:PublicClientModelInformation', function (event, modelContainer)
+    $rootScope.$on('model:UpdateUserGames', function (event, modelContainer)
     {
         gameIsReady = true;
         setTrainImage(modelContainer);
         
     });
-
 
 
     function setTrainImage(modelContainer)
@@ -62,19 +62,23 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         {
             case PlayerColor.BLACK:
                 trainImage.src   = '/images/pieces/ttr-piece-black-sq.jpg';
+                break;
             case PlayerColor.BLUE:
                 trainImage.src   = '/images/pieces/ttr-piece-blue-sq.jpg';
+                break;
             case PlayerColor.GREEN:
                 trainImage.src   = '/images/pieces/ttr-piece-green-sq.jpg';
+                break;
             case PlayerColor.RED:
                 trainImage.src   = '/images/pieces/ttr-piece-red-sq.jpg';
+                break;
             case PlayerColor.YELLOW:
                 trainImage.src   = '/images/pieces/ttr-piece-yellow-sq.jpg';
+                break;
             default:
                 trainImage.src   = '/images/pieces/ttr-piece-blue-sq.jpg';
         }
     }
-
 
 
     function redraw(){
@@ -84,7 +88,7 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         context.clearRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
 
         context.drawImage(mapImage,0,0,890,460);
-    };
+    }
     redraw();
 
     function initializeTrains()
@@ -255,6 +259,8 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
     var lastX=canvas.width/2, lastY=canvas.height/2;
     var dragStart,dragged;
 
+
+
     var mouseClickPosition = 0;
     canvas.addEventListener('mousedown',function(evt){
         document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
@@ -285,15 +291,13 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         printX = mouseLocation.x.toFixed(0);
         printY = mouseLocation.y.toFixed(0);
 
-         if(gameIsReady == true)
+
+         if(checkIfMouseInTrain(mouseLocation.x, mouseLocation.y) == true)
          {
-             if(checkIfMouseInTrain(mouseLocation.x, mouseLocation.y) == true)
-             {
-                if(routeToHighlight != -1)
-                {
-                    highlightRoute(routeToHighlight);
-                }
-             }
+            if(routeToHighlight != -1)
+            {
+                highlightRoute(routeToHighlight);
+            }
          }
          else
          {
@@ -308,10 +312,32 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         }
     },false);
 
+
     canvas.addEventListener('mouseup',function(evt){
+
+        lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft);
+        lastY = evt.offsetY || (evt.pageY - canvas.offsetTop);
+        var mouseLocation = context.transformedPoint(lastX, lastY);
+
         dragStart = null;
+
+            if(checkIfMouseInTrain(mouseLocation.x, mouseLocation.y) == true)
+            {
+                if(routeToHighlight != -1)
+                {
+                    highlightRoute(routeToHighlight);
+                    openBuyRouteModal(1);
+
+                }
+            }
+
+
+
         if (!dragged) checkIfMouseInTrain(mouseClickPosition.x,mouseClickPosition.y);
     },false);
+
+
+
 
 
     var firstLine = true;
@@ -443,4 +469,108 @@ function trackTransforms(context){
 
 
     };
+
+
+//---------------------------Buy Route modal -------------------------------------------------------
+	function openBuyRouteModal(routeIndex)
+	{
+
+		var modalInstance = $uibModal.open({
+			  animation: true,
+			  templateUrl: 'buyRoute.html',
+			  controller: 'buyRouteCtrl',
+
+			  resolve:
+			  {
+			        routeIndex: function()
+			        {
+			            return routeIndex;
+			        }
+			  }
+			});
+
+            modalInstance.result.then(function (selectedItem) {
+                  $scope.selected = selectedItem;
+                }, function () {
+
+                });
+
+    }
+
 });
+
+// Destination modal's controller ------------------------------------------------------------------------
+app.controller('buyRouteCtrl', function ($scope, $uibModalInstance, StaticTrackList) {
+
+
+      $scope.alert = {showAlert: false, message: "", type:""};
+
+      $scope.routeInfo = StaticTrackList[$scope.routeIndex];
+      $scope.colors = ["blue", "red", "green"];
+      $scope.numbers = [1,2,3,4,5,6,7,8,9];
+      $scope.trainCardPath = "/images/trainCards/ttr-train-black.jpg";
+      $scope.trainCost = "0";
+      $scope.wildCost = "0";
+      $scope.trainColor = "black";
+
+      $scope.ok = function () {
+
+
+
+      };
+
+      $scope.selectColor = function(color)
+      {
+        switch(color)
+        {
+            case "blue":
+            $scope.trainCardPath = "/images/trainCards/ttr-train-blue.jpg";
+            $scope.trainColor = "blue";
+            break;
+            case "red":
+            $scope.trainCardPath = "/images/trainCards/ttr-train-red.jpg";
+            $scope.trainColor = "red";
+            break;
+            case "green":
+            $scope.trainCardPath = "/images/trainCards/ttr-train-green.jpg";
+            $scope.trainColor = "green";
+            break;
+            default:
+            $scope.trainCardPath = "/images/trainCards/ttr-train-black.jpg";
+            $scope.trainColor = "black";
+
+
+        }
+
+        //alert(color);
+      }
+
+      $scope.selectTrainCost = function(cost)
+      {
+        $scope.trainCost = cost;
+      }
+
+      $scope.selectWildCost = function(cost)
+      {
+        $scope.wildCost = cost;
+      }
+
+
+
+      $scope.cancel = function(){
+        $uibModalInstance.dismiss('cancel');
+      }
+
+
+        function showAlert(message, type)
+        {
+            $scope.alert.showAlert = true;
+            $scope.alert.message = message;
+            $scope.alert.type = type;
+        }
+
+
+
+
+});
+
