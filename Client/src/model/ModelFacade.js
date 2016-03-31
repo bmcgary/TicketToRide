@@ -254,10 +254,6 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
         var playerId = parameters.playerIndex;
         var player = game.getPlayerById(playerId);
 
-        if(game.board.isFirstRound)
-        {
-            game.board.isFirstRound = false;
-        }
         game.turnIndex = playerId;
         game.board.isLastRound = parameters.lastRound;
 
@@ -265,6 +261,15 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
         {
             game.gameHistory.push(player.playerName + " begins the last round");
         }
+			
+		//the gameScaffoldingCtrl listens to this to show the select destinations
+		broadcastIfInView(parameters.gameId, 'TurnStartedNotification');
+
+        if(game.board.isFirstRound && playerId == game.player.playerId)
+        {
+            game.board.isFirstRound = false;
+        }
+
     });
 
     $rootScope.$on('server:GameEnded', function (event, parameters)
