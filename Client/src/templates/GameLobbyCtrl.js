@@ -98,6 +98,7 @@ $rootScope.$on('server:UpdateGame', function(event, parameters) {
 			isUserLeavingGameLobby = true;
 			ClientAPI.createGame(name, color);
 		}else{
+		    alert("Game Name cannot be empty");
 			console.log('error');
 		}
 	}
