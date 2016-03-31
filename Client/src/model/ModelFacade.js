@@ -350,21 +350,17 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
     	},
 
         //All in game controllers must listen for the "model:SetGameInView" command. This will give the controller a new model from the selected game
-    	setGameInView: function (gameId, isCreate)
+    	setGameInView: function (gameId)
     	{
-    	    if(isCreate)
-    	    {
-    	        usersGames[gameId] = new Game(gameId);
-    	    }
-
-            if(gameId in usersGames)
+            if(!(gameId in usersGames))
             {
-                gameInView = gameId;
-                broadcast(gameInView, 'SetGameInView');
+                //alert("Failed! See ModelFacade-SetGameInView: description='Invalid GameId'");
+                usersGames[gameId] = new Game(gameId);
             }
             else
             {
-                alert("Failed! See ModelFacade-SetGameInView: description='Invalid GameId'");
+                gameInView = gameId;
+                broadcast(gameInView, 'SetGameInView');
             }
     	}
     };
