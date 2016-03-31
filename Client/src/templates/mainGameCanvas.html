@@ -1,3 +1,36 @@
+<script type="text/ng-template" id="buyRoute.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Select Cards Complete Purchase</h3>
+    </div>
+    <div class="modal-body" style="height: 400px;">
+
+        <div class="btn-group" uib-dropdown>
+            <button id="btn-append-to-single-button" type="button" class="btn btn-primary" uib-dropdown-toggle>
+                Inline Dropdown <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="btn-append-to-single-button">
+                <li ng-repeat="color in colors" role="menuitem">
+                    <a>{{color}}</a>
+                </li>
+
+            </ul>
+        </div>
+
+
+
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-danger" type="button" ng-click="cancel()">Cancel</button>
+        <center><uib-alert ng-show="alert.showAlert" type="{{ alert.type }}">{{ alert.message }} </uib-alert></center>
+    </div>
+
+
+
+</script>
+
+
 <div class="fill">
     <div ng-controller="mainGameCanvasCtrl">
         <canvas id="canvas" style="float: left;"></canvas>

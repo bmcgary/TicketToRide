@@ -1,6 +1,6 @@
 var app = angular.module('ticketToRide');
 
-app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, StaticTrackList, PlayerColor) {
+app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, StaticTrackList, PlayerColor, $uibModal) {
 
     var canvas = document.getElementById('canvas');
     var context = canvas.getContext('2d');
@@ -30,7 +30,7 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
     */
 	//addEvent(window, 'resize', setUpCanvas);
 
-	var gameIsReady = false;
+	var gameIsReady = true;
     trackTransforms(context);
 	
     var trainImage   = new Image();
@@ -47,13 +47,12 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
 
     }
 
-    $rootScope.$on('model:PublicClientModelInformation', function (event, modelContainer)
+    $rootScope.$on('model:UpdateUserGames', function (event, modelContainer)
     {
         gameIsReady = true;
         setTrainImage();
         
     });
-
 
 
     function setTrainImage()
@@ -76,7 +75,6 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
     }
 
 
-
     function redraw(){
          //Clear the entire canvas
          var p1 = context.transformedPoint(0,0);
@@ -84,7 +82,7 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         context.clearRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
 
         context.drawImage(mapImage,0,0,890,460);
-    };
+    }
     redraw();
 
     function initializeTrains()
@@ -285,15 +283,13 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         printX = mouseLocation.x.toFixed(0);
         printY = mouseLocation.y.toFixed(0);
 
-         if(gameIsReady == true)
+
+         if(checkIfMouseInTrain(mouseLocation.x, mouseLocation.y) == true)
          {
-             if(checkIfMouseInTrain(mouseLocation.x, mouseLocation.y) == true)
-             {
-                if(routeToHighlight != -1)
-                {
-                    highlightRoute(routeToHighlight);
-                }
-             }
+            if(routeToHighlight != -1)
+            {
+                highlightRoute(routeToHighlight);
+            }
          }
          else
          {
@@ -308,8 +304,24 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         }
     },false);
 
+    var modalOpen = false;
+    var clicked = false;
     canvas.addEventListener('mouseup',function(evt){
+        lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft);
+        lastY = evt.offsetY || (evt.pageY - canvas.offsetTop);
+        var mouseLocation = context.transformedPoint(lastX, lastY);
+
         dragStart = null;
+         if(checkIfMouseInTrain(mouseLocation.x, mouseLocation.y) == true)
+         {
+            if(routeToHighlight != -1)
+            {
+                highlightRoute(routeToHighlight);
+                openBuyRouteModal(1);
+
+            }
+         }
+
         if (!dragged) checkIfMouseInTrain(mouseClickPosition.x,mouseClickPosition.y);
     },false);
 
@@ -443,4 +455,63 @@ function trackTransforms(context){
 
 
     };
+
+
+//---------------------------Buy Route modal -------------------------------------------------------
+	function openBuyRouteModal(routeIndex)
+	{
+	    if(modalOpen == false)
+	    {
+		var modalInstance = $uibModal.open({
+			  animation: true,
+			  templateUrl: 'buyRoute.html',
+			  controller: 'buyRouteCtrl',
+
+			  resolve:
+			  {
+			        routeIndex: function()
+			        {
+			            return routeIndex;
+			        }
+			  }
+			});
+
+            modalInstance.result.then(function (selectedItem) {
+                  $scope.selected = selectedItem;
+                }, function () {
+                    modalOpen = false;
+                });
+        }
+
+    }
+
 });
+
+// Destination modal's controller ------------------------------------------------------------------------
+app.controller('buyRouteCtrl', function ($scope, $uibModalInstance, StaticTrackList) {
+
+  $scope.alert = {showAlert: false, message: "", type:""};
+
+  $scope.routeInfo = StaticTrackList[$scope.routeIndex];
+  $scope.colors = ["blue", "red", "green"];
+
+  $scope.ok = function () {
+
+
+
+  };
+
+  $scope.cancel = function(){
+    $uibModalInstance.dismiss('cancel');
+  }
+
+
+	function showAlert(message, type)
+	{
+		$scope.alert.showAlert = true;
+		$scope.alert.message = message;
+		$scope.alert.type = type;
+	}
+
+});
+
