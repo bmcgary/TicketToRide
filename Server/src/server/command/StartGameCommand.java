@@ -8,6 +8,7 @@ import server.exception.GameNotFoundException;
 import server.exception.InternalServerException;
 import server.exception.InvalidCredentialsException;
 import server.exception.PreConditionException;
+import server.responses.GamePlayResponse;
 import server.responses.Response;
 import server.responses.ResponseWrapper;
 
@@ -49,7 +50,7 @@ public class StartGameCommand extends Command {
         }
 
         List<Integer> playerIds = gamePlayInfo.getPlayerIds();
-        responseWrapper.setTargetIds(playerIds).setResponse(Response.newSuccessResponse());
+        responseWrapper.setTargetIds(playerIds).setResponse(new GamePlayResponse(Response.getSuccessString(), gameId));
 
         SendClientModelInformationCommand command = new SendClientModelInformationCommand(gameId);
         command.setGamePlayInfo(gamePlayInfo);
