@@ -2,7 +2,6 @@ package server.command;
 
 import com.google.gson.annotations.SerializedName;
 import model.Game;
-import server.ServerFacade;
 import server.dto.gameplay.GamePlayInfo;
 import server.exception.GameNotFoundException;
 import server.exception.InvalidCredentialsException;
@@ -12,7 +11,6 @@ import server.responses.ResponseWrapper;
 import server.responses.TurnStartedNotificationResponse;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -40,7 +38,7 @@ public abstract class TurnStartedNotificationCommand extends Command {
             playerIds = new GamePlayInfo(game).getPlayerIds();
 
             // get base state
-            int currentPlayerId = getCurrentPlayerId(game);
+            int currentPlayerIndex = getCurrentPlayerIndex(game);
 
             // perform action
             responses.addAll(turnExecute(userID));
@@ -49,11 +47,11 @@ public abstract class TurnStartedNotificationCommand extends Command {
             if (game.isGameOver()) {
                 // send game over response
                 responses.add(new ResponseWrapper(playerIds, new GameEndedResponse(game), GameEndedResponse.getName()));
-            } else if (currentPlayerId != getCurrentPlayerId(game)) {
+            } else if (currentPlayerIndex != getCurrentPlayerIndex(game)) {
                 // send new turn notification
                 responses.add(new ResponseWrapper(
                         playerIds,
-                        new TurnStartedNotificationResponse(gameId, currentPlayerId, game.getPlayerManager().isFinalRound()),
+                        new TurnStartedNotificationResponse(gameId, getCurrentPlayerIndex(game), game.getPlayerManager().isFinalRound()),
                         TurnStartedNotificationResponse.getName()));
             }
         } catch (InvalidCredentialsException e) {
@@ -66,7 +64,12 @@ public abstract class TurnStartedNotificationCommand extends Command {
 
     public abstract List<ResponseWrapper> turnExecute(int userId);
 
-    private int getCurrentPlayerId(Game game) {
-        return playerIds.parallelStream().filter(game.getPlayerManager()::isPlayersTurn).findFirst().get();
+    private int getCurrentPlayerIndex(Game game) {
+        for (int i = 0; i < playerIds.size(); ++i) {
+            if (game.getPlayerManager().isPlayersTurn(playerIds.get(i))) {
+                return i;
+            }
+        }
+        return -1;
     }
 }
