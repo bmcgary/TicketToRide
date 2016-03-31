@@ -359,7 +359,7 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
             }
 
             gameInView = gameId;
-            broadcast(gameInView, 'SetGameInView');
+            broadcastIfInView(gameInView, 'SetGameInView');
     	}
     };
 });
