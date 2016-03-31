@@ -38,7 +38,7 @@ public abstract class TurnStartedNotificationCommand extends Command {
             playerIds = new GamePlayInfo(game).getPlayerIds();
 
             // get base state
-            int currentPlayerIndex = getCurrentPlayerIndex(game);
+            int currentPlayerIndex = getCurrentPlayerIndex(playerIds, game);
 
             // perform action
             responses.addAll(turnExecute(userID));
@@ -47,11 +47,11 @@ public abstract class TurnStartedNotificationCommand extends Command {
             if (game.isGameOver()) {
                 // send game over response
                 responses.add(new ResponseWrapper(playerIds, new GameEndedResponse(game), GameEndedResponse.getName()));
-            } else if (currentPlayerIndex != getCurrentPlayerIndex(game)) {
+            } else if (currentPlayerIndex != getCurrentPlayerIndex(playerIds, game)) {
                 // send new turn notification
                 responses.add(new ResponseWrapper(
                         playerIds,
-                        new TurnStartedNotificationResponse(gameId, getCurrentPlayerIndex(game), game.getPlayerManager().isFinalRound()),
+                        new TurnStartedNotificationResponse(gameId, getCurrentPlayerIndex(playerIds, game), game.getPlayerManager().isFinalRound()),
                         TurnStartedNotificationResponse.getName()));
             }
         } catch (InvalidCredentialsException e) {
@@ -64,9 +64,9 @@ public abstract class TurnStartedNotificationCommand extends Command {
 
     public abstract List<ResponseWrapper> turnExecute(int userId);
 
-    private int getCurrentPlayerIndex(Game game) {
-        for (int i = 0; i < playerIds.size(); ++i) {
-            if (game.getPlayerManager().isPlayersTurn(playerIds.get(i))) {
+    public static int getCurrentPlayerIndex(List<Integer> ids, Game game) {
+        for (int i = 0; i < ids.size(); ++i) {
+            if (game.getPlayerManager().isPlayersTurn(ids.get(i))) {
                 return i;
             }
         }

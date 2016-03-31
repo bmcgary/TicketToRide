@@ -56,7 +56,7 @@ public class StartGameCommand extends Command {
         command.setGamePlayInfo(gamePlayInfo);
         responses.addAll(command.execute(playerIds));
 
-        int currentTurn = playerIds.parallelStream().filter(game.getPlayerManager()::isPlayersTurn).findFirst().get();
+        int currentTurn = TurnStartedNotificationCommand.getCurrentPlayerIndex(playerIds, game);
 
         responses.add(new ResponseWrapper(playerIds, new TurnStartedNotificationResponse(gameId, currentTurn, false),TurnStartedNotificationResponse.getName()));
 
