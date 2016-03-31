@@ -1,16 +1,37 @@
 var app = angular.module('ticketToRide');
 
-app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $spMenu, $uibModal, $uibModalStack) {
+app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $spMenu, $uibModal, $uibModalStack, ModelFacade) {
 /*	$scope.showMenu = false;
     $scope.toggleMenu = function(){
         $scope.showMenu = !$scope.showMenu;
 		$spMenu.toggle();
     }
 	*/
-
-	
 	$scope.currentTurn = 'yourTurn';
 	$scope.allPlayers = [];
+
+	var tempModel = ModelFacade.getGameInView();
+	if(tempModel.getOpponentsSize() > 0)
+	{
+		if(tempModel.isFirstRound())
+		{
+			if(tempModel.getTemporaryStorageOfDestinationCardsToBeSelectedFrom().length == 0)
+			{
+				//were are waiting to start
+				waitingToStartModalSetUp(tempModel);
+			}
+			else if(tempModel.getTurnIndex() == tempModel.getPlayerId())
+			{
+				//its my turn. show selectdest modal
+				console.log("show selectdestmodal");
+			}
+		}
+	}
+	else
+	{
+		console.log("Attempted to load model but it wasnt there")
+	}
+	
 		
 	$scope.toggleTurn = function()
 	{
@@ -51,23 +72,15 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
 			ppl.push({'name': parameters.getOpponentName(index), 'color': parameters.getOpponentColor(index)})
 		}
 		*/
-		console.log(parameters.turnIndex);
+		console.log("gameScaffolding PrivateClientModelInformation"	);
 		
 		/*waitingToStartModalModal();*/console.log(parameters);
     });
 
 
     $rootScope.$on('model:UpdateUserGames', function (event, parameters) {
-		//TODO how to do i know if the game has already started?? 
-		$scope.allPlayers.length = 0;
-		for (var index = 0; index < parameters.getOpponentsSize(); index++)
-		{
-			$scope.allPlayers.push({'name': parameters.getOpponentName(index), 'color': parameters.getOpponentColor(index)})
-		}
-		
-		$scope.currentGameId = parameters.getGameId();
-		//TODO check if the game has started. if not show this, else nothing
-			waitingToStartModalModal();
+		console.log("In gameScaffolding updateUserGames");
+		waitingToStartModalSetUp(parameters);
     });
 
     $rootScope.$on('model:StartGame', function (event, parameters) {
@@ -136,6 +149,22 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
 	{
 		alert("in ctrl");
 	});
+
+	function waitingToStartModalSetUp(parameters)
+	{
+		var iAmTheCreator = false;
+		$scope.allPlayers.length = 0;
+		for (var index = 0; index < parameters.getOpponentsSize(); index++)
+		{
+			if(index == 0 && $rootScope.userName == parameters.getOpponentName(index))
+				iAmTheCreator = true;
+			$scope.allPlayers.push({'name': parameters.getOpponentName(index), 'color': parameters.getOpponentColor(index)})
+		}
+		
+		$scope.currentGameId = parameters.getGameId();
+		//TODO check if the game has started. if not show this, else nothing
+			waitingToStartModalModal(iAmTheCreator);
+	}
 //--------------- Over all info thats helpful to have -------------------------
 $scope.currentGameId = -1; //ModelContainer.getGameId() //I assume ModelContainer is what i am passed in the broadcast???
 
@@ -238,7 +267,7 @@ $scope.games = [
   }];
 
 //---------------------------------- Waiting to start Modal
-	function waitingToStartModalModal()
+	function waitingToStartModalModal(iAmTheCreator)
 	{
 		if(!$uibModalStack.getTop()) //only show if the modal doenst already exist
 		{
@@ -254,7 +283,11 @@ $scope.games = [
 					   ppl: function () 
 	 				   {
 						 return $scope.allPlayers;
-					   }
+					   },
+					   iAmTheCreator : function()
+					   {
+						 return iAmTheCreator;
+   					   }
 				  }
 				});
 
@@ -270,11 +303,11 @@ $scope.games = [
 });
 
 // Waiting To Start Game modal's controller ------------------------------------------------------------------------
-app.controller('waitingToStartModalCtrl', function ($scope, $uibModalInstance, ppl) {
+app.controller('waitingToStartModalCtrl', function ($scope, $uibModalInstance, ppl, iAmTheCreator) {
 
   $scope.alert = {showAlert: false, message: "", type:""};	
   $scope.ppl = ppl;
-
+  $scope.showStart = iAmTheCreator;
 /*
 		parameters.model.player.playerName / playerColor
 		parameters.model.opponents[i].playerName / playerColor

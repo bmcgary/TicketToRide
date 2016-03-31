@@ -123,6 +123,7 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
     //In Game===========================================================================================
     var broadcastIfInView = function (gameId, command)
     {
+		console.log("broadCastIfinView " + gameId + " " + gameInView);
         if(gameId == gameInView)
         {
             $rootScope.$broadcast('model:' + command, new ModelContainer(getModel()));
@@ -340,11 +341,11 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
 
             gameInView = gameId;
             broadcastIfInView(gameInView, 'SetGameInView');
-    	}
+    	},
 
         getGameInView: function ()
         {
-            broadcastIfInView(gameInView, 'SetGameInView');
+            return new ModelContainer(getModel());//broadcastIfInView(gameInView, 'SetGameInView');
         }
     };
 });

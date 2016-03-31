@@ -41,6 +41,7 @@ app.controller('registerController', function ($rootScope, $scope, $state, Clien
     $rootScope.$on('server:Register', function (event, parameters) {
     	if(parameters.description == "success")
     	{
+			$rootScope.userName = $scope.username;
             $state.go('gameLobby');
     	}
     	else if(parameters.description == "alreadyregistered") {

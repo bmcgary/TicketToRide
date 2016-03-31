@@ -10,7 +10,7 @@
 		</ul>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-success" type="button" ng-click="ok()">Start</button>
+		<button ng-if="showStart" class="btn btn-success" type="button" ng-click="ok()">Start</button>
 	<center><uib-alert ng-show="alert.showAlert" type="{{ alert.type }}">{{ alert.message }} </uib-alert></center>
 	</div>
 </script>
