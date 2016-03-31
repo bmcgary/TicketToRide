@@ -36,7 +36,7 @@ public class SendClientModelInformationCommand extends Command {
 
     public List<ResponseWrapper> execute(List<Integer> playerIds) {
         List<ResponseWrapper> responses = new ArrayList<>();
-        ResponseWrapper responseWrapper = new ResponseWrapper(commandName);
+        ResponseWrapper responseWrapper = new ResponseWrapper(getName());
         responses.add(responseWrapper);
         if (gamePlayInfo == null) {
             try {
@@ -57,7 +57,7 @@ public class SendClientModelInformationCommand extends Command {
         });
 
         if (!playersNotInGame.isEmpty()) {
-            ResponseWrapper notInGame = new ResponseWrapper(playersNotInGame, new Response("not in game"), commandName);
+            ResponseWrapper notInGame = new ResponseWrapper(playersNotInGame, new Response("not in game"), getName());
             responses.add(notInGame);
         }
 
@@ -79,5 +79,9 @@ public class SendClientModelInformationCommand extends Command {
     public SendClientModelInformationCommand setSendPublic(boolean sendPublic) {
         this.sendPublic = sendPublic;
         return this;
+    }
+
+    public static String getName() {
+        return "SendClientModelInformation";
     }
 }
