@@ -137,9 +137,6 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
         if("possibleDestinationCards" in parameters)
         {
             broadcastIfInView(parameters.gameId, 'PrivateClientModelInformation');
-//=======
-//           broadcastIfInView(parameters.gameId, 'GetDestinations');
-//>>>>>>> Stashed changes
         }
     });
 

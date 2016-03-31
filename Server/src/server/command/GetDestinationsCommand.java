@@ -1,6 +1,11 @@
 package server.command;
 
+import server.dto.gameplay.GamePlayInfo;
+import server.exception.GameNotFoundException;
+import server.exception.InvalidCredentialsException;
 import server.exception.PreConditionException;
+import server.responses.GamePlayResponse;
+import server.responses.GetDestinationsResponse;
 import server.responses.Response;
 import server.responses.ResponseWrapper;
 
@@ -21,27 +26,19 @@ public class GetDestinationsCommand extends Command {
 	
     @Override
     public List<ResponseWrapper> execute(int userID) {
-    	
         List<ResponseWrapper> responses = new ArrayList<>();
         ResponseWrapper responseWrapper = new ResponseWrapper(userID, commandName);
-        
-        try {
-        	
-			serverFacade.getDestinations(userID, gameId);
-			
-		} catch (PreConditionException e) {
-
-			e.printStackTrace();
-			
-			responseWrapper.setResponse(Response.newServerErrorResponse());
-			responses.add(responseWrapper);
-			return responses;
-			
-		}
-        
-        responseWrapper.setResponse(Response.newSuccessResponse());
         responses.add(responseWrapper);
-        
+        try {
+			serverFacade.getDestinations(userID, gameId);
+			GamePlayInfo gamePlayInfo = new GamePlayInfo(serverFacade.getGame(gameId));
+            responseWrapper.setResponse(new GetDestinationsResponse(gameId, gamePlayInfo.getPrivateInfo(userID).getPossibleDestinationCards()));
+		} catch (PreConditionException e) {
+            responseWrapper.setResponse(Response.newInvalidInputResponse().setMessage(e.getMessage()));
+		} catch (InvalidCredentialsException | GameNotFoundException e) {
+            responseWrapper.setResponse(Response.newServerErrorResponse().setMessage(e.getMessage()));
+        }
+
         return responses;
         
     }

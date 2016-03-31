@@ -38,4 +38,8 @@ public class PrivatePlayerInfo {
     public List<DestinationCardInfo> getDestinationCards() {
         return destinationCards;
     }
+
+    public List<DestinationCardInfo> getPossibleDestinationCards() {
+        return possibleDestinationCards;
+    }
 }

@@ -8,6 +8,7 @@ import server.User;
 import server.exception.GameNotFoundException;
 import server.exception.InvalidCredentialsException;
 import server.exception.PreConditionException;
+import server.responses.GamePlayResponse;
 import server.responses.Response;
 import server.responses.ResponseWrapper;
 import server.responses.UpdateGameResponse;
@@ -53,7 +54,7 @@ public class JoinGameCommand extends Command {
                 responses.add(responseWrapper.setResponse(Response.newServerErrorResponse()));
                 return responses;
             }
-            responses.add(responseWrapper.setResponse(Response.newSuccessResponse()));
+            responses.add(responseWrapper.setResponse(new GamePlayResponse(Response.getSuccessString(), gameId)));
 
             // get game
 
