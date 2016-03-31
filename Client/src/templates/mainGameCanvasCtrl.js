@@ -125,12 +125,12 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         gameID = modelContainer.getGameId();
     });
         
-    $rootScope.$on('model:PrivateClientModelData', function (event, modelContainer)
+    $rootScope.$on('model:PrivateClientModelInformation', function (event, modelContainer)
     {
        updateGameInformation(modelContainer);
     });
 
-    $rootScope.$on('model:PublicClientModelData', function (event, modelContainer)
+    $rootScope.$on('model:PublicClientModelInformation', function (event, modelContainer)
     {
         updateGameInformation(modelContainer);
     });
