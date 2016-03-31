@@ -32,8 +32,8 @@ app.factory('Player', function (TrainCardColor, DestinationCard) {
             this.destinationCards[index] = new DestinationCard(gameDataJSON.destinationCards[index]);
         }
 
-        if("possibleDestinationCards" in parameters) {
-            temporaryStorageOfCardsToBeSelectedFrom = parameters.possibleDestinationCards;
+        if("possibleDestinationCards" in gameDataJSON) {
+            temporaryStorageOfCardsToBeSelectedFrom = gameDataJSON.possibleDestinationCards;
         }
     }
 
