@@ -13,7 +13,7 @@ import java.util.List;
  * Created by rodriggl on 3/15/2016.
  */
 public class GamePlayerInfo extends PlayerInfo {
-    @SerializedName("playerNam")
+    @SerializedName("playerName")
     private String playerName;
     @SerializedName("playerOrder")
     private int playerOrder;
@@ -21,6 +21,8 @@ public class GamePlayerInfo extends PlayerInfo {
     private List<Integer> routes;
     @SerializedName("trainsLeft")
     private int trainsLeft;
+    @SerializedName("points")
+    private int points;
 
     public GamePlayerInfo(Player player, int playerOrder, List<Integer> routes) throws InvalidCredentialsException {
         super(player);
@@ -29,5 +31,6 @@ public class GamePlayerInfo extends PlayerInfo {
         this.playerOrder = playerOrder;
         this.routes = routes;
         this.trainsLeft = player.getTrainsLeft();
+        this.points = player.getPointsScored();
     }
 }
