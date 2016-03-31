@@ -494,6 +494,8 @@ app.controller('buyRouteCtrl', function ($scope, $uibModalInstance, StaticTrackL
 
   $scope.routeInfo = StaticTrackList[$scope.routeIndex];
   $scope.colors = ["blue", "red", "green"];
+  $scope.numbers = [1,2,3,4,5,6,7,8,9];
+
 
   $scope.ok = function () {
 
