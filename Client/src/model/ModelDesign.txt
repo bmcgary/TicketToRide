@@ -36,6 +36,8 @@ class ModelContainer {
     int getTrainCardsByColor(trainCardColor);
     DestinationCard[] getTemporaryStorageOfDestinationCardsToBeSelectedFrom();
 
+    String getNameByPlayerId(playerId);
+
     //DestinationCard Data
     int getPlayersDestinationSize();
     String getPlayersDestinationCityName1(index);
