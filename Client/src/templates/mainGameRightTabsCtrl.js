@@ -26,6 +26,11 @@ app.controller('mainGameRightTabsCtrl', function ($scope, $rootScope, ClientAPI,
 		return states[$scope.currentTurn]['disableCard'](input);
 	}
 
+    $rootScope.$on('model:SetGameInView', function (event, parameters) {
+		//parameters is the entire model container
+        $scope.currentGameId = parameters.getGameId();
+    });
+
     $rootScope.$on('model:GetDestinations', function (event, parameters) 
 	{	
 		//TEMP For testing purposes

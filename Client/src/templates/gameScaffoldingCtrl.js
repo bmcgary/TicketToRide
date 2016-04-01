@@ -9,6 +9,7 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
 	*/
 	$scope.currentTurn = 'yourTurn';
 	$scope.allPlayers = [];
+	var waitingModalInstance;
 
 	var tempModel = ModelFacade.getGameInView();
 	if(tempModel.getOpponentsSize() > 0)
@@ -85,7 +86,8 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
 
     $rootScope.$on('model:StartGame', function (event, parameters) {
 		//close the waitingToStartModal
-		$uibModalStack.dismissAll();
+//		$uibModalStack.dismissAll();
+		waitingModalInstance.dismiss("cancel");
     });
 
     $rootScope.$on('model:SetGameInView', function (event, parameters) {
@@ -128,6 +130,7 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
 		/*	$scope.currentTurn === 'yourTurn'
 		ELSE
 			$scope.currentTurn = 'yourTurn';*/
+		$scope.currentGameId = parameters.getGameId();
 		if(parameters.getTurnIndex() == parameters.getPlayerId())
 		{
 			$scope.currentTurn = 'yourTurn';
@@ -163,7 +166,7 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
 		
 		$scope.currentGameId = parameters.getGameId();
 		//TODO check if the game has started. if not show this, else nothing
-			waitingToStartModalModal(iAmTheCreator);
+			waitingModalInstance = waitingToStartModalModal(iAmTheCreator);
 	}
 //--------------- Over all info thats helpful to have -------------------------
 $scope.currentGameId = -1; //ModelContainer.getGameId() //I assume ModelContainer is what i am passed in the broadcast???
@@ -297,6 +300,8 @@ $scope.games = [
 			  		//console.log(selectedItems); //from here ship it out via the ClientAPI
 					ClientAPI.startGame($scope.currentGameId);
 				});//dont need a function for canceling since that isn't allowed
+
+			return modalInstance;
 		}
 	}
 
