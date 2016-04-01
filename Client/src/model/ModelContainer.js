@@ -146,7 +146,7 @@ app.factory('ModelContainer', function () {
         return count;
     };
 
-    ModelContainer.prototype.getNameByPlayerId = function(playerId) {
+    ModelContainer.prototype.getPlayerNameById = function(playerId) {
         return this.model.getPlayerById(playerId).playerName;
     };
 
