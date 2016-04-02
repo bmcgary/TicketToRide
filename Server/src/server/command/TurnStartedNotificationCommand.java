@@ -31,7 +31,6 @@ public abstract class TurnStartedNotificationCommand extends Command {
         // Setup responses
         List<ResponseWrapper> responses = new ArrayList<>();
         ResponseWrapper responseWrapper = new ResponseWrapper(userID, commandName);
-        responses.add(responseWrapper);
         try {
             // get game info
             game = serverFacade.getGame(gameId);
@@ -56,8 +55,10 @@ public abstract class TurnStartedNotificationCommand extends Command {
             }
         } catch (InvalidCredentialsException e) {
             responseWrapper.setResponse(Response.newInvalidInputResponse());
+            responses.add(responseWrapper);
         } catch (GameNotFoundException | NoSuchElementException e) {
             responseWrapper.setResponse(Response.newServerErrorResponse());
+            responses.add(responseWrapper);
         }
         return responses;
     }
