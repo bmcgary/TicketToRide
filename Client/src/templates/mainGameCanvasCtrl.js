@@ -50,7 +50,7 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
 //GAME AND PLAYER VARIABLES////////////////////////////////////////////////////////////////////////////////// 
     var gameID = 0;
     var currentGameModel;
-    var gameStarted = false;
+    var gameStarted = true;
     var playerHand = {
         wildTrainCards:0,
         blackTrainCards:0,
@@ -548,6 +548,8 @@ function trackTransforms(context){
 	function openBuyRouteModal(routeIndex)
 	{
 
+        var routeInfo = StaticTrackList[routeIndex];
+
 		var modalInstance = $uibModal.open({
 			  animation: true,
 			  templateUrl: 'buyRoute.html',
@@ -555,9 +557,14 @@ function trackTransforms(context){
 
 			  resolve:
 			  {
-			        routeIndex: function()
+			        routeInfo: function()
 			        {
-			            return routeIndex;
+			            return routeInfo;
+			        },
+
+			        playerHand: function()
+			        {
+			            return playerHand;
 			        }
 			  }
 			});
@@ -573,13 +580,21 @@ function trackTransforms(context){
 });
 
 // Destination modal's controller ------------------------------------------------------------------------
-app.controller('buyRouteCtrl', function ($scope, $uibModalInstance, StaticTrackList) {
+app.controller('buyRouteCtrl', function ($scope, $uibModalInstance, routeInfo, playerHand) {
 
 
       $scope.alert = {showAlert: false, message: "", type:""};
 
-      $scope.routeInfo = StaticTrackList[$scope.routeIndex];
-      $scope.colors = ["blue", "red", "green"];
+
+      $scope.colors = [];
+      if($scope.playerHand[wildTrainCards] == 0)
+      {
+            $scope.colors = ['wild'];
+      }
+
+
+
+
       $scope.numbers = [1,2,3,4,5,6,7,8,9];
       $scope.trainCardPath = "/images/trainCards/ttr-train-black.jpg";
       $scope.trainCost = "0";
@@ -606,6 +621,10 @@ app.controller('buyRouteCtrl', function ($scope, $uibModalInstance, StaticTrackL
             break;
             case "green":
             $scope.trainCardPath = "/images/trainCards/ttr-train-green.jpg";
+            $scope.trainColor = "green";
+            break;
+            case "wild":
+            $scope.trainCardPath = "/images/trainCards/ttr-train-wild.jpg";
             $scope.trainColor = "green";
             break;
             default:
