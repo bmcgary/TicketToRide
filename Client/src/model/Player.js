@@ -20,8 +20,9 @@ app.factory('Player', function (TrainCardColor, DestinationCard) {
         this.trainCards = {};
         this.destinationCards = [];
 
-        for(var trainColor in gameDataJSON.trainCards) {
-            this.trainCards[TrainCardColor.get(trainColor)] = gameDataJSON.trainCards[trainColor];
+        for(var index in gameDataJSON.trainCards) {
+            var pair = gameDataJSON.trainCards[index];
+            this.trainCards[TrainCardColor.get(pair.color)] = pair.amount; 
         }
 
         for(var index in gameDataJSON.destinationCards) {
@@ -43,6 +44,7 @@ app.factory('Player', function (TrainCardColor, DestinationCard) {
     }
 
     Player.prototype.addDestinationCards = function (destinations) {
+        this.destinations = [];
         for(var index in destinations) {
             this.destinationCards.push(new DestinationCard(destinations[index]));
         }

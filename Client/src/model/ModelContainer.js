@@ -146,6 +146,10 @@ app.factory('ModelContainer', function () {
         return count;
     };
 
+    ModelContainer.prototype.getPlayerNameById = function(playerId) {
+        return this.model.getPlayerById(playerId).playerName;
+    };
+
     //DestinationCard Data
     ModelContainer.prototype.getPlayersDestinationSize = function() {
         return this.model.player.destinationCards.length;
