@@ -10,12 +10,12 @@ import model.TrackColor;
 public class DrawTrainCardResponse extends GamePlayResponse{
     @SerializedName("cardDrawn")
     private String cardColor;
-    @SerializedName("canDrawWild")
-    private boolean candDrawWild;
+    @SerializedName("canDrawAgain")
+    private boolean canDrawAgain;
 
-    public DrawTrainCardResponse(int gameId, TrackColor color, boolean canDrawWild) {
+    public DrawTrainCardResponse(int gameId, TrackColor color, boolean canDrawAgain) {
         super("Success", gameId);
         this.cardColor = color.toString();
-        this.candDrawWild = canDrawWild;
+        this.canDrawAgain = canDrawAgain;
     }
 }
