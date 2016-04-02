@@ -44,7 +44,7 @@ app.factory('Player', function (TrainCardColor, DestinationCard) {
 
     Player.prototype.addDestinationCards = function (destinations) {
         for(var index in destinations) {
-            Player.prototype.destinationCards.push(new DestinationCard(destinations[index]));
+            this.destinationCards.push(new DestinationCard(destinations[index]));
         }
     }
 
