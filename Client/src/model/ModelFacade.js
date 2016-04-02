@@ -173,7 +173,10 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
             var playerId = parameters.playerIndex;
             var game = usersGames[parameters.gameId];
 
-            player.trainCards[TrainCardColor.get(parameters.cardDrawn)] += 1;
+			if(parameters.cardDrawn in game.player.trainCards)
+	            game.player.trainCards[parameters.cardDrawn] += 1;
+			else
+				game.player.trainCards[parameters.cardDrawn] = 1;
             broadcastIfInView(parameters.gameId, 'DrawTrainCard');
         }
     });
