@@ -28,7 +28,7 @@
 </div>
 <div class="col-xs-6">
 	<h5> Destinations in your hand</h5>
-	<table st-table="destinations" class="table table-striped" >
+	<table st-table="destinationsToShow" st-safe-src="destinations" class="table table-striped" >
 		<thead>
 		<tr>
 			<th >City</th>
@@ -38,7 +38,7 @@
 		</tr>
 		</thead>
 		<tbody>
-		<tr ng-repeat="dest in destinations" st-safe-src="destinations">
+		<tr ng-repeat="dest in destinationsToShow" >
 			<td>{{ dest.cityName1 }}</td>
 			<td>{{ dest.cityName2 }}</td>
 			<td><i ng-class="{'fa fa-check': (dest.isComplete == true), 'fa fa-times': (dest.isComplete != true) }"

@@ -173,14 +173,7 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
             var playerId = parameters.playerIndex;
             var game = usersGames[parameters.gameId];
 
-            var player = game.player;
-            if(playerId == player.playerId)
-            {
-                player.trainCards[TrainCardColor.get(parameters.cardDrawn)] += 1;
-            }
-            game.board.updateCardsVisible(parameters.availableTrainCards);
-            game.gameHistory.push(player.playerName + " drew a train card");
-
+            player.trainCards[TrainCardColor.get(parameters.cardDrawn)] += 1;
             broadcastIfInView(parameters.gameId, 'DrawTrainCard');
         }
     });

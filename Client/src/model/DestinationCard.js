@@ -9,8 +9,8 @@ app.factory('DestinationCard', function () {
 
     //constructor 
     function DestinationCard (gameDataJSON) {
-        this.cityName1 = gameDataJSON.cityName1;
-        this.cityName2 = gameDataJSON.cityName2;
+        this.cityName1 = gameDataJSON.city1;
+        this.cityName2 = gameDataJSON.city2;
 
         this.points = gameDataJSON.points;
     }
