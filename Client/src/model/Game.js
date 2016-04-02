@@ -36,7 +36,7 @@ app.factory('Game', function (Opponent, Player, GameBoard) {
             if(opponent.playerId == playerId) {
                 this.player.playerColor = this.opponents[index].playerColor;
                 this.player.playerName = this.opponents[index].playerName;
-                delete this.opponents[index];
+                this.opponents.splice(index,1);
             }
         }
         this.player.setInGameData(parameters);
