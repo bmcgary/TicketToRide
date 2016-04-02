@@ -88,6 +88,10 @@ app.factory('ModelContainer', function () {
         }
     };
 
+    ModelContainer.prototype.playerMustDrawAgain = function() {
+        return this.model.board.mustDrawAgain;
+    };
+
     //Opponent Data
     ModelContainer.prototype.getOpponentsSize = function() {
         return this.model.opponents.length;

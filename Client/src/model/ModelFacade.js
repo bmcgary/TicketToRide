@@ -177,6 +177,8 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
 	            game.player.trainCards[parameters.cardDrawn] += 1;
 			else
 				game.player.trainCards[parameters.cardDrawn] = 1;
+
+			game.board.mustDrawAgain = parameters.canDrawAgain;
             broadcastIfInView(parameters.gameId, 'DrawTrainCard');
         }
     });
