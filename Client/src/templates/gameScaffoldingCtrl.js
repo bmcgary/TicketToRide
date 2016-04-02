@@ -250,7 +250,7 @@ $scope.games = [
 	//----------------------- Load view from model------------------------------------
 	var fillViewFromModel = function (modelContainer)
 	{
-		console.log(modelContainer);
+		
 	
 		$scope.topNavMessage = "Waiting for " + modelContainer.getPlayerNameById(modelContainer.getTurnIndex()) + "to take their turn";
 
