@@ -288,7 +288,7 @@ $scope.games = [
 			playerId:modelContainer.getPlayerId()
 		};
 
-/*		$scope.opponents.length = 0;
+		$scope.opponents.length = 0;
 		for(var i = 0; i < modelContainer.getOpponentsSize(); i++)
 		{
 			var obj = {
@@ -300,7 +300,7 @@ $scope.games = [
 			}
 			$scope.opponents.push(obj);
 		}
-*/
+
 	}
 
 	$rootScope.$on('TESTER',function(event, params)
