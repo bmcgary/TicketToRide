@@ -277,6 +277,13 @@ public class Game {
 	public void selectDestinations(int playerID, int[] destinationsSelected) {
 		List<DestinationRoute> routes = playerManager.selectDestinations(playerID, destinationsSelected);
 		gameBoard.returnDestinationRoutes(routes);
+
+		//update DestinationRoute completion for this player
+		List<CityToCityRoute> playersRoutes = gameBoard.getCurrentRoutes().get(playerID);
+		for(DestinationRoute dr : playerManager.getPlayer(playerID).getDestinationRoute()){
+			dr.calcCompleted(playersRoutes);
+		}
+
 		assert(playerManager.isPlayersTurn(playerID));
 		try {
 			playerManager.advanceTurn();
