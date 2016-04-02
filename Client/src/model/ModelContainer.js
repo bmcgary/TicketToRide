@@ -139,11 +139,16 @@ app.factory('ModelContainer', function () {
     };
 
     ModelContainer.prototype.getTrainCardsByColor = function(trainCardColor) {
-        var count = this.model.player.trainCards[trainCardColor];
+		var convertedColor = (trainCardColor.charAt(0).toUpperCase() + trainCardColor.slice(1));
+        var count = this.model.player.trainCards[convertedColor];
         if(typeof(count) === 'undefined' || typeof(count) === 'null') {
             count = 0;
         }
         return count;
+    };
+
+    ModelContainer.prototype.getPlayerNameById = function(playerId) {
+        return this.model.getPlayerById(playerId).playerName;
     };
 
     //DestinationCard Data

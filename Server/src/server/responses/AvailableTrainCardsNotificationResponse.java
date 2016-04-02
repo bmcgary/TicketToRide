@@ -21,6 +21,10 @@ public class AvailableTrainCardsNotificationResponse extends GamePlayResponse {
         }
     }
 
+    public static String getName() {
+        return "AvailableTrainCardsNotification";
+    }
+
     private class AvailableTrainCardInfo {
         @SerializedName("index")
         private int index;

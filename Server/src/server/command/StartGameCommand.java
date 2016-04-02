@@ -8,10 +8,7 @@ import server.exception.GameNotFoundException;
 import server.exception.InternalServerException;
 import server.exception.InvalidCredentialsException;
 import server.exception.PreConditionException;
-import server.responses.GamePlayResponse;
-import server.responses.Response;
-import server.responses.ResponseWrapper;
-import server.responses.TurnStartedNotificationResponse;
+import server.responses.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +53,7 @@ public class StartGameCommand extends Command {
         command.setGamePlayInfo(gamePlayInfo);
         responses.addAll(command.execute(playerIds));
 
-        int currentTurn = playerIds.parallelStream().filter(game.getPlayerManager()::isPlayersTurn).findFirst().get();
+        int currentTurn = TurnStartedNotificationCommand.getCurrentPlayerIndex(playerIds, game);
 
         responses.add(new ResponseWrapper(playerIds, new TurnStartedNotificationResponse(gameId, currentTurn, false),TurnStartedNotificationResponse.getName()));
 

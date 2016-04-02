@@ -33,7 +33,7 @@ public class DrawTrainCardCommand extends TurnStartedNotificationCommand {
 			TrackColor color = super.serverFacade.drawTrainCard(userId, super.gameId, cardLocation);
 			responseWrapper.setResponse(new DrawTrainCardResponse(super.gameId, color, !super.game.getPlayerManager().drewAlreadyCurrentTurn));
 			AvailableTrainCardsNotificationResponse response = new AvailableTrainCardsNotificationResponse(super.gameId, game.getGameBoard().getVisibleTrainCarCards());
-			responses.add(new ResponseWrapper(super.playerIds, response, super.commandName));
+			responses.add(new ResponseWrapper(super.playerIds, response, AvailableTrainCardsNotificationResponse.getName()));
 		} catch (PreConditionException | OutOfBoundsException | InternalServerException e) {
 			responseWrapper.setResponse(Response.newServerErrorResponse());
 		}
