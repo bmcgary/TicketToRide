@@ -122,7 +122,7 @@ public class PlayerManager {
 	{
 		//detects whether final round has been triggered
 		Player currentPlayer = players.get(currentTurnIndex);
-		if(currentPlayer.getTrainsLeft() < 3){
+		if(finalTurnIndex == -1 && currentPlayer.getTrainsLeft() < 3){
 			this.finalTurnIndex = currentTurnIndex;
 		}
 		
