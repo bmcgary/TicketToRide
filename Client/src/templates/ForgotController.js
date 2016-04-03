@@ -4,16 +4,4 @@ app.controller('forgotController', function ($rootScope, $scope, ClientAPI, Mode
     $scope.submit = function () {
         ClientAPI.forgotUserNameOrPassword();
     };
-
-
-    /*
-    //Example of listener
-	$rootScope.$on('model:CreateGame', function (event, model) {
-		alert("Created game id: " + model.getGameId());
-	});
-
-	$rootScope.$on('model:SwitchGame', function (event, model) {
-		alert("Current game id: " + model.getGameId());
-	});
-    */
 });

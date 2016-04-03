@@ -10,6 +10,14 @@ app.factory('TrainCardColor', function () {
 		GREEN: "green",
 		BLUE: "blue",
 		PURPLE: "purple",
-		ORANGE: "orange"
+		ORANGE: "orange",
+
+		get: function (colorName) {
+			if(colorName == "none") {
+				return this.WILD;
+			} else {
+				return colorName;
+			}
+		}
 	};
 });

@@ -10,31 +10,45 @@ app.factory('ServerAPI', function ($rootScope) {
             switch(response.command)
             {
                 case "Login":
+					if(response.parameters)
+					{
+						$rootScope.loggedIn = true;
+					}
                 case "Register": 
+					if(response.parameters)
+					{
+						$rootScope.loggedIn = true;
+					}
                 case "ForgotUserNameOrPassword": 
                 case "Logout": 
-                case "SendChat": 
-                case "GetLeaderboards": 
                 case "UpdateJoinableGames": 
                 case "UpdateUserGames": 
+                case "GetLeaderboards": 
+                case "UpdateGame":
                 case "JoinGame": 
                 case "CreateGame": 
                 case "LeaveGame": 
                 case "StartGame": 
                 case "AddAI": 
                 case "SendClientModelInformation": 
+                case "PublicClientModelInformation":
+                case "PrivateClientModelInformation":
+                case "SendChat": 
                 case "BuyRoute": 
                 case "DrawTrainCard": 
                 case "NotifyDestinationRouteCompleted": 
                 case "GetDestinations": 
                 case "SelectDestinations": 
                 case "GameEnded": 
+				case "UpdateGame":
+                case "AvailableTrainCardsNotification":
+				case "TurnStartedNotification":
 
                     $rootScope.$broadcast('server:'+response.command, response.parameters);
-					alert("A good command has come back! The server sent back something the client understoond! YIPPY!");
+					//console.log("A good command has come back! The server sent back something the client understoond! YIPPY!");
                     break;
 
-                default: alert("Bad Server command");
+                default: alert("Bad Server command: " + response.command);
             }
         }
     };

@@ -4,6 +4,9 @@ import com.google.gson.annotations.SerializedName;
 import server.responses.Response;
 import server.responses.ResponseWrapper;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  *
  *
@@ -14,10 +17,9 @@ public class LoadGameStateCommand extends Command {
     private String path;
 
     @Override
-    public ResponseWrapper execute(int userID) {
+    public List<ResponseWrapper> execute(int userID) {
         ResponseWrapper responseWrapper = new ResponseWrapper(userID, commandName);
-        // TODO change this once server facade is correct
         serverFacade.loadGameState();
-        return responseWrapper.setResponse(Response.newSuccessResponse());
+        return Collections.singletonList(responseWrapper.setResponse(Response.newSuccessResponse()));
     }
 }

@@ -9,10 +9,50 @@ app.factory('Game', function (Opponent, Player, GameBoard) {
     Game.prototype.gameName = "";
     Game.prototype.gameHistory = [];
     Game.prototype.gameChat = [];
+    Game.prototype.turnIndex = -1;
+    Game.prototype.gameOver = false;
 
     //constructor 
-    function Game (gameDataJSON) {
-        
+    function Game (gameId) {
+        this.gameId = gameId;
+        Game.prototype.player = new Player();
+    }
+
+    Game.prototype.updateLobbyData = function (gameDataJSON) {
+        this.gameName = gameDataJSON.gameName;
+        this.opponents = [];
+        this.board = new GameBoard();
+        this.turnIndex = 0;
+        for(var index in gameDataJSON.players) {
+            var player = gameDataJSON.players[index];
+            this.opponents[index] = new Opponent(player, index);
+        }
+    }
+
+    Game.prototype.setPrivateInfo = function (parameters) {
+        var playerId = parameters.playerOrder;
+        for(var index in this.opponents) {
+            var opponent = this.opponents[index];
+            if(opponent.playerId == playerId) {
+                this.player.playerColor = this.opponents[index].playerColor;
+                this.player.playerName = this.opponents[index].playerName;
+                this.opponents.splice(index,1);
+            }
+        }
+        this.player.setInGameData(parameters);
+    }
+
+    Game.prototype.getPlayerById = function (playerId) {
+        if(this.player.playerId == playerId) {
+            return this.player;
+        } else {
+            for(var index in this.opponents) {
+                var opponent = this.opponents[index];
+                if(opponent.playerId == playerId) {
+                    return opponent;
+                }
+            }
+        }
     }
 
     return Game;

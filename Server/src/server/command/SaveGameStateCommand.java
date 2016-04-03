@@ -3,6 +3,9 @@ package server.command;
 import server.responses.Response;
 import server.responses.ResponseWrapper;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  *
  *
@@ -10,9 +13,9 @@ import server.responses.ResponseWrapper;
  */
 public class SaveGameStateCommand extends Command {
     @Override
-    public ResponseWrapper execute(int userID) {
+    public List<ResponseWrapper> execute(int userID) {
         ResponseWrapper responseWrapper = new ResponseWrapper(userID, commandName);
         serverFacade.saveGameState();
-        return responseWrapper.setResponse(Response.newSuccessResponse());
+        return Collections.singletonList(responseWrapper.setResponse(Response.newSuccessResponse()));
     }
 }

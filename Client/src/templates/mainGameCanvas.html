@@ -1,5 +1,101 @@
+<script type="text/ng-template" id="buyRoute.html">
+
+    <style>
+        .rotate90 {
+        -webkit-transform: rotate(90deg);
+        -moz-transform: rotate(90deg);
+        -o-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        transform: rotate(90deg);
+        height:170px;
+        width:260px;
+        margin-top:40px;
+        margin-left:-70px;
+        }
+
+
+    </style>
+    <div class="modal-header">
+        <h3 class="modal-title">Select Cards Complete Purchase</h3>
+    </div>
+    <div class="modal-body" style="height: 400px;">
+
+        <div class="container">
+
+            <div class="col-md-3">
+
+                <div >
+                    <img class="rotate90"  src="{{trainCardPath}}" >
+                </div>
+                <div>
+                    <div class="btn-group" uib-dropdown style="margin-top:50px; margin-left:-15px;">
+                        <button id="btn-append-to-single-button" type="button" class="btn btn-primary" uib-dropdown-toggle>
+                            {{trainCost}} <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="btn-append-to-single-button">
+                            <li ng-repeat="number in numbers" role="menuitem" ng-click="selectTrainCost(number)">
+                                <a>{{number}}</a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+
+
+                <div class="btn-group" uib-dropdown style="margin-top:50px; margin-left:-15px;">
+                    <button id="btn-append-to-single-button" type="button" class="btn btn-primary" uib-dropdown-toggle>
+                        {{trainColor}} <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="btn-append-to-single-button">
+                        <li ng-repeat="color in colors" role="menuitem" ng-click="selectColor(color)">
+                            <a>{{color}}</a>
+                        </li>
+
+                    </ul>
+                </div>
+
+
+            </div>
+
+
+            <div class="col-md-3">
+
+
+                <div >
+                    <img class="rotate90" src="/images/trainCards/ttr-train-wild.jpg" style="">
+                </div>
+
+                <div class="btn-group" uib-dropdown style="margin-top:50px; margin-left:-15px;">
+                    <button id="btn-append-to-single-button" type="button" class="btn btn-primary" uib-dropdown-toggle>
+                        {{wildCost}} <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="btn-append-to-single-button">
+                        <li ng-repeat="number in numbers" role="menuitem" ng-click="selectWildCost(number)">
+                            <a>{{number}}</a>
+                        </li>
+
+                    </ul>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-danger" type="button" ng-click="cancel()">Cancel</button>
+        <center><uib-alert ng-show="alert.showAlert" type="{{ alert.type }}">{{ alert.message }} </uib-alert></center>
+    </div>
+
+
+
+</script>
+
+
 <div class="fill">
-    <div ng-controller="mainGameCanvasCtrl">
+    <div>
         <canvas id="canvas" style="float: left;"></canvas>
     </div>
 
