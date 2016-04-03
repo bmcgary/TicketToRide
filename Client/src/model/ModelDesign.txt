@@ -26,6 +26,7 @@ class ModelContainer {
     int getOpponentTrainsLeft(index);
     int getOpponentPlayerId(index);
     int getPlayerIdForTheLongestBonus();
+    boolean playerMustDrawAgain();
 
     //Player Data
     String getPlayerName();

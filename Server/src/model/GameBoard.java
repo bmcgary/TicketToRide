@@ -299,6 +299,8 @@ public class GameBoard {
 		//use DestinationCards.txt to load in cities, destinationRoutes
 		this.loadDestinationRoutes();
 		
+		Collections.shuffle(destinationRoutes);
+		
 		//use CityToCityRoutes.txt to load in additional cities, routes list
 		this.loadCityToCityRoutes();
 		

@@ -12,7 +12,8 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
 	var waitingModalInstance;
 
 //--------------- Over all info thats helpful to have -------------------------
-$scope.currentGameId = -1; //ModelContainer.getGameId() //I assume ModelContainer is what i am passed in the broadcast???
+$scope.currentGameId = -1; 
+$scope.topNavMessage = "Waiting to Start the Game";
 
 //----------------------- Main menu data --------------------------------------
 $scope.thisPlayer = {
@@ -165,8 +166,12 @@ $scope.games = [
 		console.log("gameScaffolding PrivateClientModelInformation"	);
 		
 		/*waitingToStartModalModal();*/console.log(parameters);
+		fillViewFromModel(parameters);
     });
 
+    $rootScope.$on('model:PublicClientModelInformation', function (event, parameters) {
+		fillViewFromModel(parameters);
+    });
 
     $rootScope.$on('model:UpdateUserGames', function (event, parameters) {
 		console.log("In gameScaffolding updateUserGames");
@@ -176,7 +181,8 @@ $scope.games = [
     $rootScope.$on('model:StartGame', function (event, parameters) {
 		//close the waitingToStartModal
 //		$uibModalStack.dismissAll();
-		waitingModalInstance.dismiss("cancel");
+		if(typeof(waitingModalInstance) !== 'undefined')
+			waitingModalInstance.dismiss("cancel");
     });
 
     $rootScope.$on('model:SetGameInView', function (event, parameters) {
@@ -197,8 +203,11 @@ $scope.games = [
 
 
     $rootScope.$on('model:DrawTrainCard', function (event, parameters) {
-		//do logic
-//		alert("HERE");
+		fillViewFromModel(parameters); 
+    });
+
+    $rootScope.$on('model:AvailableTrainCardsNotification', function (event, parameters) {
+		fillViewFromModel(parameters); 
     });
 
 
@@ -234,8 +243,65 @@ $scope.games = [
 			$scope.currentTurn = 'notYourTurn';
 		}
 
+		fillViewFromModel(parameters);
+
     });
 
+	//----------------------- Load view from model------------------------------------
+	var fillViewFromModel = function (modelContainer)
+	{
+		$scope.secondTrainCardRound = modelContainer.playerMustDrawAgain();
+	
+		$scope.topNavMessage = "Waiting for " + modelContainer.getPlayerNameById(modelContainer.getTurnIndex()) + " to take their turn";
+
+		//------------- Destinations in your hand
+		$scope.destinations.length = 0;
+		for(var i = 0; i < modelContainer.getPlayersDestinationSize(); i++)
+		{
+			var obj = {cityName1: modelContainer.getPlayersDestinationCityName1(i),
+					   cityName2: modelContainer.getPlayersDestinationCityName2(i),
+					   isComplete: modelContainer.getPlayersDestinationIsComplete(i),
+					   points: modelContainer.getPlayersDestinationPoints(i)};
+			$scope.destinations.push(obj);
+		}
+
+		//-------------- Color train cards in your hand
+		for (color in $scope.playersTrainCards)
+		{
+			$scope.playersTrainCards[color] = modelContainer.getTrainCardsByColor(color);
+		}
+
+		//------------- Color train cards to draw from
+		$scope.cardsVisible.length = 0;
+		for(var i = 0; i < 5; i++)
+		{
+			var color = modelContainer.getCardVisibleAt(i).toLowerCase();
+			$scope.cardsVisible.push(color == 'none' ? 'wild' : color); 
+		}
+
+		//-------------- Players section on the left
+		$scope.thisPlayer = {
+			playerName:modelContainer.getPlayerName(),
+			playerColor:modelContainer.getPlayerColor().toLowerCase(),
+			points:modelContainer.getPlayerPoints(),
+			trainsLeft:modelContainer.getPlayerTrainsLeft(),
+			playerId:modelContainer.getPlayerId()
+		};
+
+		$scope.opponents.length = 0;
+		for(var i = 0; i < modelContainer.getOpponentsSize(); i++)
+		{
+			var obj = {
+				playerName:modelContainer.getOpponentName(i),
+				playerColor:modelContainer.getOpponentColor(i),
+				points:modelContainer.getOpponentPoints(i),
+				trainsLeft:modelContainer.getOpponentTrainsLeft(i),
+				playerId:modelContainer.getOpponentPlayerId(i)
+			}
+			$scope.opponents.push(obj);
+		}
+
+	}
 
 	$rootScope.$on('TESTER',function(event, params)
 	{
@@ -257,29 +323,6 @@ $scope.games = [
 		//TODO check if the game has started. if not show this, else nothing
 			waitingModalInstance = waitingToStartModalModal(iAmTheCreator);
 	}
-//----------------------- Load view from model------------------------------------
-var fillViewFromModel = function (modelContainer)
-{
-	console.log(modelContainer);
-	
-	$scope.destinations.length = 0;
-	for(var i = 0; i < modelContainer.getPlayersDestinationSize(); i++)
-	{
-		var obj = {cityName1: modelContainer.getPlayersDestinationCityName1(i),
-				   cityName2: modelContainer.getPlayersDestinationCityName2(i),
-				   isComplete: modelContainer.getPlayersDestinationIsComplete(i),
-				   points: modelContainer.getPlayersDestinationPoints(i)};
-		$scope.destinations.push(obj);
-	}
-
-
-	for (color in $scope.playersTrainCards)
-	{
-		$scope.playersTrainCards[color] = modelContainer.getTrainCardsByColor(color);
-	}
-
-
-}
 
 //---------------------------------- Waiting to start Modal
 	function waitingToStartModalModal(iAmTheCreator)
