@@ -46,12 +46,5 @@ public class TestPlayerManager extends PlayerManager
 		return null;
 	}
 	
-	@Override
-	public void addPlayer(int playerID, PlayerColor color)
-	{
-		Player newPlayer = new TestPlayer(playerID,color);
-		players.add(newPlayer);
-		
-	}
 	
 }

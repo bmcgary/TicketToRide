@@ -3,9 +3,6 @@ package server.command;
 import server.responses.Response;
 import server.responses.ResponseWrapper;
 
-import java.util.Collections;
-import java.util.List;
-
 /**
  *
  *
@@ -13,7 +10,7 @@ import java.util.List;
  */
 public class LeaveGameCommand extends Command {
     @Override
-    public List<ResponseWrapper> execute(int userID) {
-        return Collections.singletonList(new ResponseWrapper(userID, Response.newServerErrorResponse(), commandName));
+    public ResponseWrapper execute(int userID) {
+        return new ResponseWrapper(userID, Response.newServerErrorResponse(), commandName);
     }
 }

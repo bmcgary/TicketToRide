@@ -23,7 +23,6 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 
 public class ServerMain {
 	
@@ -69,6 +68,9 @@ public class ServerMain {
             URI command=exchange.getRequestURI();
             String theCommand=command.toString();
             theCommand = deparameterize(theCommand, paramMap);
+            //.
+
+            //theCommand = theCommand.split("\?")[0];
             
             System.out.println("    Command received: " + theCommand);
             String[] params=theCommand.split("/",2);
@@ -88,7 +90,7 @@ public class ServerMain {
                 path = params[1];
                 String[] extArr = theCommand.split("\\.");
                 String ext = extArr[extArr.length - 1];
-                if(ext.equals("img") || ext.equals("jpg"))
+                if(ext.equals("img"))
                 {
                     head.set("Content-Type", "image/png");
                 }
@@ -122,7 +124,6 @@ public class ServerMain {
                 @Override
                 public void configure(WebSocketServletFactory factory)
                 {
-                	factory.getPolicy().setIdleTimeout(TimeUnit.HOURS.toMillis(10));
                     factory.register(MyWebSocketHandler.class);
                 }
             };

@@ -9,34 +9,21 @@ import com.google.gson.annotations.SerializedName;
  */
 public class Response {
     @SerializedName("description")
-    String description;
-    @SerializedName("message")
-    String message = null;
+    private String description;
 
     public Response(String description) {
         this.description = description;
     }
 
-    public Response setMessage(String message) {
-        this.message = message;
-        return this;
-    }
-
     public static Response newSuccessResponse() {
-        return new Response(getSuccessString());
+        return new Response("success");
     }
 
     public static Response newInvalidInputResponse() {
-        return new Response(getInvalidInputString());
+        return new Response("invalid input");
     }
 
     public static Response newServerErrorResponse() {
-        return new Response(getServerErrorResponse());
+        return new Response("server error");
     }
-
-    public static String getSuccessString() { return "success"; }
-
-    public static String getInvalidInputString() { return "invalid input"; }
-
-    public static String getServerErrorResponse() { return "server error"; }
 }

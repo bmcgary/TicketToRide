@@ -1,25 +1,16 @@
 package server;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import model.City;
 import model.CityToCityRoute;
@@ -31,7 +22,6 @@ import model.TrackColor;
 import server.exception.AddUserException;
 import server.exception.AlreadyLoggedInException;
 import server.exception.BadCredentialsException;
-import server.exception.GameNotFoundException;
 import server.exception.InternalServerException;
 import server.exception.InvalidCredentialsException;
 import server.exception.OutOfBoundsException;
@@ -55,24 +45,19 @@ public class ServerFacade {
 		users = new ArrayList<>();
 	}
 
-	public synchronized void createGame(Game newGame, int playerID, PlayerColor color) throws InternalServerException, PreConditionException
+	public synchronized void createGame(Game newGame, int playerID, PlayerColor color) throws InternalServerException
 	{
 		//check to make sure game was instantiated properly
 		if(newGame == null || newGame.getGameBoard() == null){
-			throw new PreConditionException("Game/GameBoard improperly instantiated");
+			assert(false);
+			return;
 		}
 		else if(newGame.getPlayerManager() == null){
-			throw new PreConditionException("PlayerManager was not properly instantiated");
-		}
-		else if(color == null){
-			throw new PreConditionException("PlayerColor was null");
+			assert(false);
+			return;
 		}
 		else{
 			assert(newGame.getPlayerManager().getNumPlayers() == 0);
-		}
-		
-		if(!this.isPlayerLoggedIn(playerID)){
-			throw new PreConditionException("Creating player either doesn't exist or isn't logged in");
 		}
 		
 		//add game
@@ -183,6 +168,13 @@ public class ServerFacade {
 				game.addHistoryMessage("Player " + playerID + " added to game.");
 			}
 		}
+		
+		//update User's current games
+		for(User user : users){
+			if(user.getPlayerID() == playerID){
+				user.joinGame(gameID);
+			}
+		}
 	}
 	
 	/**
@@ -193,11 +185,21 @@ public class ServerFacade {
 	 */
 	public boolean canStartGame(int playerID, int gameID)
 	{
+		User user = null;
 		Game game = null;
 		 //player must exist and be logged in
-		if(!this.isPlayerLoggedIn(playerID)){
-			return false;
-		}
+		for(User u : this.users){
+			if(u.getPlayerID() == playerID){
+			 	user = u;
+			 	if(!user.isLoggedIn()){
+			 		return false;
+			 	}
+			 	break;
+			 }
+		 }
+		 if(user == null){	//guarantees user was found
+		 	return false;
+		 }
 		 
 		 //game must exist
 		 for (Game g : this.games){
@@ -221,7 +223,7 @@ public class ServerFacade {
 		 }
 		 
 		 //player starting game must be 0th slot in game's list
-		 if(game.getPlayerByIndex(0).getPlayerID() != playerID){
+		 if(game.getPlayerManager().getPlayers().get(0).getPlayerID() != playerID){	//can anyone say Demeter's law?
 			 return false;
 		 }
 		 
@@ -376,7 +378,7 @@ public class ServerFacade {
 	 * @param playerID the player buying the route
 	 * @param gameID the game for the purchase
 	 * @param route the route being bought
-	 * @param cards the cards used to purchase the route
+	 * @param cards TODO
 	 * @throws PreConditionException thrown if the player can't buy the route
 	 * @throws InternalServerException thrown if something horrible happens and Trent messed up
 	 * @throws OutOfBoundsException 
@@ -409,10 +411,6 @@ public class ServerFacade {
 	 */
 	public boolean canDrawTrainCard(int playerID, int gameID, int cardLocation) throws OutOfBoundsException, InternalServerException
 	{
-		//Helper methods
-		if(!this.isPlayerLoggedIn(playerID) || !this.isPlayableGame(gameID)){
-			return false;
-		}
 		for(Game g : games){
 			if(g.getGameID() == gameID){
 				return g.canPlayerDrawTrainCard(playerID, cardLocation);
@@ -421,7 +419,7 @@ public class ServerFacade {
 		return false;
 	}
 	
-	public synchronized  TrackColor drawTrainCard(int playerID, int gameID, int cardLocation) throws PreConditionException, OutOfBoundsException, InternalServerException
+	public synchronized  void drawTrainCard(int playerID, int gameID, int cardLocation) throws PreConditionException, OutOfBoundsException, InternalServerException
 	{
 		//helper method
 		if(!this.canDrawTrainCard(playerID, gameID, cardLocation)){
@@ -430,11 +428,9 @@ public class ServerFacade {
 		
 		for(Game g : games){
 			if(g.getGameID() == gameID){
-				return g.drawTrainCard(playerID, cardLocation);
+				g.drawTrainCard(playerID, cardLocation);
 			}
 		}
-		
-		throw new InternalServerException("Trent messed up if you see this at ServerFacade::drawTrainCard.");
 	}
 	
 	public boolean canGetDestinations(int playerID, int gameID)
@@ -478,11 +474,6 @@ public class ServerFacade {
 			return false;
 		}
 		
-		//checks that destinationsSelected isn't null
-		if(destinationsSelected == null){
-			return false;
-		}
-		
 		//checks boundaries for indices
 		for(int i : destinationsSelected){
 			if(i > 2 || i < 0){
@@ -515,55 +506,33 @@ public class ServerFacade {
 	
 	public synchronized void loadGameState()
 	{
-		Gson gson = new Gson();
-		String relativePath = new File("").getAbsolutePath() + "/Server/src/saveFiles/";
-		String file = relativePath + "saveUsers.json";
-		
-		//first load users
-		try{
-			BufferedReader br = new BufferedReader(new FileReader(file));
-			User[] usersArray = gson.fromJson(br, User[].class);
-			users = Arrays.asList(usersArray);
-		} catch (IOException e){
-			e.printStackTrace();
-		}
-		
-		//then load games
-		file = relativePath + "saveGames.json";
-		try{
-			BufferedReader br = new BufferedReader(new FileReader(file));
-			Game[] gamesArray = gson.fromJson(br, Game[].class);
-			games = Arrays.asList(gamesArray);
-		} catch (IOException e){
-			e.printStackTrace();
-		}
+		//TODO: loading stuff
 	}
 	
 	public synchronized void saveGameState()
 	{
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		String relativePath = new File("").getAbsolutePath() + "/Server/src/saveFiles/";	
-		
-		//first do users
+		Gson gson = new Gson();
+		String relativePath = new File("").getAbsolutePath() + "/Server/src/saveFiles/";
+		String output = "";
+		for(Game g : games){
+			output += gson.toJson(g) + "\n";
+		}
 		try {
-			PrintWriter writer = new PrintWriter(relativePath + "saveUsers.json", "UTF-8");
-			writer.println(gson.toJson(users));
+			PrintWriter writer = new PrintWriter(relativePath + "save.txt", "UTF-8");
+			writer.println(output);
 			writer.close();
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		
-		//then do games
-		try {
-			PrintWriter writer = new PrintWriter(relativePath + "saveGames.json", "UTF-8");
-			writer.println(gson.toJson(games));
-			writer.close();
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
+		//TODO: the rest
 	}
 	
-	public static Map<Integer, CityToCityRoute> getCityMapping()
+	public synchronized void sendClientModelInformation()
+	{
+		//TODO: this
+	}
+	
+	public Map<Integer, CityToCityRoute> getCityMapping()
 	{
 		return GameBoard.getRouteMapping();
 	}
@@ -599,15 +568,6 @@ public class ServerFacade {
 		}
 		return false;
 	}
-	
-	protected boolean isJoinableGame(int gameID){
-		for(Game g : games){
-			if(g.getGameID() == gameID){
-				return (!g.isStarted() && !g.isGameOver());
-			}
-		}
-		return false;
-	}
 
 	/**
 	 * Queries for all joinable games. Joinable games are defined as games not containing the user that still have at
@@ -618,7 +578,7 @@ public class ServerFacade {
 	public List<Game> getJoinableGames(int userID) {
 		List<Game> output = new ArrayList<Game>();
 		for(Game g : games){
-			if(isJoinableGame(g.getGameID()) && !g.containsPlayer(userID)){
+			if(isPlayableGame(g.getGameID()) && !g.containsPlayer(userID)){
 				output.add(g);
 			}
 		}
@@ -655,40 +615,10 @@ public class ServerFacade {
 	public List<User> getAllUsers(){
 		return Collections.unmodifiableList(users);
 	}
-
-	/**
-	 * Get a specified game
-	 * @param gameID the id for the desired game
-	 * @return game requested
-     */
-	public Game getGame(int gameID) throws GameNotFoundException {
-		Optional<Game> possibleGame = games.parallelStream().filter(game -> game.getGameID() == gameID).findFirst();
-		if (possibleGame.isPresent())
-			return possibleGame.get();
-		else
-			throw new GameNotFoundException("could not find game " + gameID);
-	}
-
-	/**
-	 * Get a specified user
-	 * @param userID the id for the desired user
-	 * @return user requested
-	 * @throws InvalidCredentialsException 
-     */
-	public User getUser(int userID) throws InvalidCredentialsException {
-		Optional<User> possibleUser = users.parallelStream().filter(user -> user.getPlayerID() == userID).findFirst();
-		if(possibleUser.isPresent()){
-			return possibleUser.get();
-		}
-		else{
-			throw new InvalidCredentialsException("No user exists with ID: " + userID);
-		}
-	}
-
+	
 	public static void firebomb()
 	{
-		serverFacade.games.clear();
-		serverFacade.users.clear();
+		serverFacade = null;
 	}
 	
 	public static void main(String args[]) throws AddUserException, InternalServerException, PreConditionException, InvalidCredentialsException, OutOfBoundsException{
@@ -703,14 +633,9 @@ public class ServerFacade {
 		sf.startGame(pid, 1);
 		Map<TrackColor, Integer> m = new HashMap<TrackColor, Integer>();
 		m.put(TrackColor.Red, 1);
+		System.out.println(sf.getCityMapping());
 		sf.saveGameState();
-		sf.selectDestinations(pid, 1, new int[]{0,1});
-		sf.selectDestinations(pid2, 1, new int[]{0,1});
-		if(sf.canBuyRoute(pid, 1, new CityToCityRoute(new City("Seattle"), new City("Portland"), 1, TrackColor.None), m)){
-			sf.buyRoute(pid, 1, new CityToCityRoute(new City("Seattle"), new City("Portland"), 1, TrackColor.None), m);
-		}
-		sf.loadGameState();
-		sf.selectDestinations(pid, 1, new int[]{0,1});
+		sf.buyRoute(pid, 1, new CityToCityRoute(new City("Seattle"), new City("Portland"), 1, TrackColor.None), m);
 		System.out.println("Success!");
 	}
 }

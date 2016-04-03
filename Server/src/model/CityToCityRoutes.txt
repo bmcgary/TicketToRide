@@ -22,10 +22,10 @@ Seattle
 Portland
 None
 1
-Portland
+Porland
 San Francisco
 Purple
-5
+8
 Vancouver
 Calgary
 None
@@ -78,7 +78,7 @@ Helena
 Salt Lake City
 Purple
 3
-Salt Lake City
+Salt lake City
 Denver
 Red
 2

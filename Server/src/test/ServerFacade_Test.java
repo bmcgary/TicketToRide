@@ -20,7 +20,6 @@ import model.Player;
 import model.PlayerColor;
 import model.TestGame;
 import model.TestGameBoard;
-import model.TestPlayer;
 import model.TestPlayerManager;
 import model.TrackColor;
 
@@ -35,23 +34,43 @@ import server.User;
 import server.exception.AddUserException;
 import server.exception.AlreadyLoggedInException;
 import server.exception.BadCredentialsException;
-import server.exception.GameOverException;
 import server.exception.InternalServerException;
 import server.exception.InvalidCredentialsException;
 import server.exception.OutOfBoundsException;
 import server.exception.PreConditionException;
 
 public class ServerFacade_Test {
-
+	
+	
+	/*
+	 * 	private List<City> cities;
+	private List<CityToCityRoute> routes;
+	private Map<Integer, List<CityToCityRoute>> currentRoutes;
+	private List<DestinationRoute> destinationRoutes;
+	private List<TrackColor> deckTrainCarCards;
+	private TrackColor[] visibleTrainCarCards;
+	private List<TrackColor> discardedTrainCarCards;
+	
+	public GameBoard(){
+		cities = new ArrayList<City>();
+		routes = new ArrayList<CityToCityRoute>();
+		currentRoutes = new HashMap<Integer, List<CityToCityRoute>>();
+		destinationRoutes = new ArrayList<DestinationRoute>();
+		visibleTrainCarCards = new TrackColor[5];
+		deckTrainCarCards = new ArrayList<TrackColor>();
+		discardedTrainCarCards = new ArrayList<TrackColor>();
+	}
+	 */
 	ServerFacade serverFacade;
 	Game game1; //version 1
 	GameBoard gameboard1;
-
+	
 	Game game2;//version2
 	GameBoard gameboard2;
-
+	
 	Game game3;//version3
 	GameBoard gameboard3;
+	
 
 	/**
 	 * set up serverFacade
@@ -60,12 +79,113 @@ public class ServerFacade_Test {
 	@Before
 	public void setUp() throws Exception {
 		serverFacade = ServerFacade.getServerFacade();
+		
+		
+	}
+	/*
+	 * does currentRoutes mean how many routes a player has? integer is his/her  player id?
+	 */
+	/**
+	 * set up a game for testing
+	 * @throws Exception
+	 */
+	@Before
+	public void buildGame_version1() throws Exception{
+	/*game1 = new Game();
+	gameboard1 = new GameBoard();
+	List<City> cities = new ArrayList<City>();
+	List<CityToCityRoute> routes = new ArrayList<CityToCityRoute>();
+	Map<Integer, List<CityToCityRoute>> currentRoutes = new HashMap<Integer,List<CityToCityRoute>>();
+	List<DestinationRoute> destinationRoutes = new ArrayList<DestinationRoute>();
+	List<TrackColor> deckTrainCarCards = new ArrayList<TrackColor>();
+	TrackColor[] visibleTrainCarCards= new TrackColor[256];
+	List<TrackColor> discardedTrainCarCards = new ArrayList<TrackColor>();
+	City city1 = new City(new Point(3,4),"LA");
+	City city2 = new City(new Point(4,5),"SA");
+	City city3 = new City(new Point(5,5),"GA");
+	
+	
+	cities.addAll(Arrays.asList(city1,city2,city3));
+	CityToCityRoute ctoc1 = new CityToCityRoute(city1,city2,3,TrackColor.Orange);
+	CityToCityRoute ctoc2 = new CityToCityRoute(city2,city3,3,TrackColor.White);
+	currentRoutes.put(1, new ArrayList<CityToCityRoute>());
+
+	routes.add(ctoc1);
+	routes.add(ctoc2);
+	DestinationRoute dr = new DestinationRoute(city1,city2,2);
+	destinationRoutes.add(dr);
+	deckTrainCarCards.add(TrackColor.Orange);
+	visibleTrainCarCards[0] = TrackColor.Black;
+	visibleTrainCarCards[1] = TrackColor.White;
+	visibleTrainCarCards[2] = TrackColor.Orange;
+	discardedTrainCarCards.add(TrackColor.Black);
+	
+	*/
 	}
 
+	@Before
+	public void buildGame_version2() throws Exception{
+	/*List<City> cities = new ArrayList<City>();
+	List<CityToCityRoute> routes = new ArrayList<CityToCityRoute>();
+	Map<Integer, List<CityToCityRoute>> currentRoutes = new HashMap<Integer,List<CityToCityRoute>>();
+	List<DestinationRoute> destinationRoutes = new ArrayList<DestinationRoute>();
+	List<TrackColor> deckTrainCarCards = new ArrayList<TrackColor>();
+	TrackColor[] visibleTrainCarCards= new TrackColor[256];
+	List<TrackColor> discardedTrainCarCards = new ArrayList<TrackColor>();
+	City city1 = new City(new Point(0,1),"LA");
+	City city2 = new City(new Point(1,0),"SA");
+	City city3 = new City(new Point(1,0),"GA");
+	
+	cities.addAll(Arrays.asList(city1,city2,city3));
+	CityToCityRoute ctoc1 = new CityToCityRoute(city1,city2,3,TrackColor.Orange);
+	CityToCityRoute ctoc2 = new CityToCityRoute(city2,city3,3,TrackColor.White);
+	currentRoutes.put(1, new ArrayList<CityToCityRoute>());
+
+	routes.add(ctoc1);
+	routes.add(ctoc2);
+	DestinationRoute dr = new DestinationRoute(city1,city2,2);
+	destinationRoutes.add(dr);
+	deckTrainCarCards.add(TrackColor.Orange);
+	visibleTrainCarCards[0] = TrackColor.Black;
+	visibleTrainCarCards[1] = TrackColor.White;
+	visibleTrainCarCards[2] = TrackColor.Orange;
+	discardedTrainCarCards.add(TrackColor.Black);
+	*/
+	}
+	
+	@Before
+	public void buildGame_version3() throws Exception{
+	/*List<City> cities = new ArrayList<City>();
+	List<CityToCityRoute> routes = new ArrayList<CityToCityRoute>();
+	Map<Integer, List<CityToCityRoute>> currentRoutes = new HashMap<Integer,List<CityToCityRoute>>();
+	List<DestinationRoute> destinationRoutes = new ArrayList<DestinationRoute>();
+	List<TrackColor> deckTrainCarCards = new ArrayList<TrackColor>();
+	TrackColor[] visibleTrainCarCards= new TrackColor[256];
+	List<TrackColor> discardedTrainCarCards = new ArrayList<TrackColor>();
+	City city1 = new City(new Point(2,2),"LA");
+	City city2 = new City(new Point(3,3),"SA");
+	City city3 = new City(new Point(1,2),"GA");
+	
+	cities.addAll(Arrays.asList(city1,city2,city3));
+	CityToCityRoute ctoc1 = new CityToCityRoute(city1,city2,3,TrackColor.Orange);
+	CityToCityRoute ctoc2 = new CityToCityRoute(city2,city3,3,TrackColor.White);
+	currentRoutes.put(1, new ArrayList<CityToCityRoute>());
+
+	routes.add(ctoc1);
+	routes.add(ctoc2);
+	DestinationRoute dr = new DestinationRoute(city1,city2,2);
+	destinationRoutes.add(dr);
+	deckTrainCarCards.add(TrackColor.Orange);
+	visibleTrainCarCards[0] = TrackColor.Black;
+	visibleTrainCarCards[1] = TrackColor.White;
+	visibleTrainCarCards[2] = TrackColor.Orange;
+	discardedTrainCarCards.add(TrackColor.Black);
+	*/
+	}
+	
 	@After
 	public void firebombServerFacade()
 	{
-		//TODO should this actually be @Before?
 		//Call firebomb on ServerFacade after each test
 		//ensure each test starts fresh
 		ServerFacade.firebomb();
@@ -120,115 +240,182 @@ public class ServerFacade_Test {
 	
 	}
 
-
 	@Test
 	public void testGetServerFacade() {
-		assertNotEquals(ServerFacade.getServerFacade(),null);
+		assertNotEquals(serverFacade.getServerFacade(),null);
 	}
 	
-	//*********************************************************************************
-	//REGISTER TESTS
-	
+	/* error:
+	 * not handle if a user name is empty not handle is username is larger than 25 char.
+	 * I can even enter a chinese character..this is a creepy test case. 
+	 */
 	@Test
-	public void testRegisterInvalidInputs() throws AddUserException, InternalServerException
+	public void registered() throws AddUserException, InternalServerException
 	{
-		//too short username
 		try {
 			serverFacade.register("", "password");
-			fail("should have thrown exception blank username");
+			fail("should have thrown exception");
 		} catch (InvalidCredentialsException e) {}
-		
-		//invalid characters
 		try {
 			serverFacade.register("test1", "passdasdsad啦啦啦啦啦ada啦dasdasdasdasdaasdasd");
-			fail("should have thrown exception invalid characters");
+			fail("should have thrown exception");
 		} catch (InvalidCredentialsException e) {}
-		
-		//too short password
-		try {
-			serverFacade.register("name", "abc");
-			fail("should have thrown exception too small password");
-		} catch (InvalidCredentialsException e) {}
-		
-		//null inputs
-		try {
-			serverFacade.register(null, null);
-			fail("should have thrown exception null inputs");
-		} catch (InvalidCredentialsException e) {}
-		
-		//this one should work
-		try {
-			serverFacade.register("name", "password");
-		} catch (InvalidCredentialsException e) {
-			e.printStackTrace();
-			fail("threw exception on valid inputs");
-		}
-		
-		//user already exists
-		try {
-			serverFacade.register("name", "password2");
-			fail("should have thrown exception duplicate user");
-		} catch (InvalidCredentialsException e) {}
-	}
-
-	@Test
-	public void testRegisterSuccessCase() throws InvalidCredentialsException
-	{
-		ServerFacade sf = ServerFacade.getServerFacade();
-		
-		try {
-			sf.register("name", "pass");
-		} catch (InternalServerException e) {
-			e.printStackTrace();
-			fail("something went wrong registering valid user");
-		} catch (AddUserException e) {
-			e.printStackTrace();
-			fail("Something went wrong registering valid user");
-		} catch (InvalidCredentialsException e) {
-			e.printStackTrace();
-			fail("invalid credentials when registering");
-		}
-		
-		List<User> users = sf.getAllUsers();
-		User user = null;
-		for (User u : users)
-		{
-			if (u.getUsername().equals("name") && u.getPassword().equals("pass"))
-			{
-				user = u;
-			}
-		}
-		assertFalse(user == null);
-		assertTrue(user.isLoggedIn());
 	}
 	
-	//*********************************************************************************
-	//LOGIN TESTS
+	/*
+	 * successful case
+	 */
+	@Test
+	public void registeredSuccess() throws AddUserException, InvalidCredentialsException
+	{
+		User user = new User("name","pass");
+		//serverFacade.addNewUser(user);	
+	}
+	/*
+	 * existing object
+	 */
+	@Test(expected = AddUserException.class)
+	public void registeredUserNameexistobject() throws AddUserException, InvalidCredentialsException
+	{
+		User user = new User("name","pass");
+		//serverFacade.addNewUser(user);	
+		//serverFacade.addNewUser(user);	
+
+	}
+	
+	/*
+	 * we add a new user to the game identified by his PASSWORD????? and username
+	 * we are passing in the password as a parameter into the user object.. ?
+	 * 
+	 * 
+	 */
+	@Test (expected=AddUserException.class)
+	public void testAddNewUserWithExistingUserName() throws AddUserException, InvalidCredentialsException {
+		User user  = new User("user","password");
+		User user1  = new User("user","password");
+		//serverFacade.addNewUser(user);
+		//serverFacade.addNewUser(user1);	
+	}
+	/*
+	 * create game // how do we identify a game? by name, ID, or something else
+	 * It seems we can create a game with empty input
+	 * I personally think that currently the serverfacade is the one creating the game not the user.
+	 * is that a problem??
+	 */
+	@Test
+	public void createGame()
+	{
+		TestGame game = new TestGame();
+		//User user = new User("testUser","password");
+		//user.
+		//serverFacade.createGame(game);
+	}
+	
+	
+	/*
+	 * INVALID TEST CASE
+	 */
 	
 	@Test
-	public void testLoginSuccessful() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException, InternalServerException
+	public void addPlayer() throws InvalidCredentialsException
 	{
-		int userID = serverFacade.register("myname11", "mypassword");
-		serverFacade.logout(userID);
-		int userIDTest = serverFacade.login("myname11", "mypassword");
+		TestGame game = new TestGame();
+		User user = new User("testUser","password");
+		//System.out.println(user.loggedIn);
+		user.joinGame(game.getGameID());
 		
-		assertEquals(userID,userIDTest);
-
-		List<User> users = serverFacade.getAllUsers();
-		User user = null;
-		for (User u : users)
-		{
-			if (u.getUsername().equals("myname11") && u.getPassword().equals("mypassword"))
-			{
-				user = u;
-			}
-		}
-		assertFalse(user == null);
-		assertTrue(user.isLoggedIn());
 	}
-
+	/*
+	 * INVALID TEST CASE
+	 */
 	@Test
-	public void testLoginWrongCredientials() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException
+	public void addPlayerFullPlayers() throws InvalidCredentialsException
+	{
+		TestGame game = new TestGame();
+		User user1 = new User("user1","password");
+		User user2 = new User("user2","password");
+		User user3 = new User("user3","password");
+		User user4 = new User("user4","password");
+		User user5 = new User("user5","password");
+		User user6 = new User("user6","password");
+		user1.joinGame(game.getGameID());
+		user2.joinGame(game.getGameID());
+		user3.joinGame(game.getGameID());
+		user4.joinGame(game.getGameID());
+		user5.joinGame(game.getGameID());
+		user6.joinGame(game.getGameID());
+	}
+	
+	/*
+	 * player can join a game when it has started already
+	 * It seems we can not start a game???
+	 */
+	@Test
+	public void addPlayerGameAlreadyStarted() throws PreConditionException, InternalServerException, BadCredentialsException, AlreadyLoggedInException, AddUserException, InvalidCredentialsException
+	{
+		TestGame game = new TestGame();
+		User user1 = new User("user111","password");
+		User user2 = new User("user222","password");
+		User user3 = new User("user333","password");
+		User user4 = new User("user444","password");
+		User user5 = new User("user555","password");
+		//serverFacade.addNewUser(user1);
+		//serverFacade.addNewUser(user2);
+		//serverFacade.addNewUser(user3);
+		//serverFacade.addNewUser(user4);
+		//serverFacade.addNewUser(user5);
+
+		serverFacade.login("user111","password");
+		serverFacade.login("user222","password");
+		serverFacade.login("user333","password");
+		serverFacade.login("user444","password");
+		serverFacade.login("user555","password");
+
+		//serverFacade.createGame(game);
+		serverFacade.addPlayerToGame(user1.getPlayerID(), game.getGameID(), PlayerColor.Black);
+		serverFacade.addPlayerToGame(user2.getPlayerID(), game.getGameID(), PlayerColor.Blue);
+		serverFacade.addPlayerToGame(user3.getPlayerID(), game.getGameID(), PlayerColor.Green);
+		serverFacade.addPlayerToGame(user4.getPlayerID(), game.getGameID(), PlayerColor.Red);
+
+
+		user1.joinGame(game.getGameID());
+		user2.joinGame(game.getGameID());
+		user3.joinGame(game.getGameID());
+		user4.joinGame(game.getGameID());
+		//user5.joinGame(game.getGameID());
+		//serverFacade.startGame(user1.playerID, game.getGameID());
+	}
+	
+	/*
+	 * play can not start a game when there is only a player
+	 */
+	@Test(expected=PreConditionException.class)
+	public void addPlayerOnlyOnePlayer() throws PreConditionException, InternalServerException, InvalidCredentialsException
+	{
+		TestGame game = new TestGame();
+		User user1 = new User("user111","password");
+		//serverFacade.startGame(user1.playerID, game.getGameID());
+	}
+	
+	/*
+	 * test login successful
+	 */
+	@Test 
+	public void loginSuccessful() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException
+	{
+		User user = new User("myname11","mypassword");
+		//serverFacade.addNewUser(user);
+		serverFacade.login("myname11", "mypassword");
+		
+		
+	}
+	
+	/*
+	 * test login - wrong user name/password
+	 * GOOD
+	 */
+	@Test
+	public void loginWrongCredientials() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException
 	{
 		int id = 0;
 		try {
@@ -238,7 +425,7 @@ public class ServerFacade_Test {
 			fail("Unable to register");
 		}
 		serverFacade.logout(id);
-
+		
 		try
 		{
 			serverFacade.login("myname23", "mypassword");
@@ -250,29 +437,15 @@ public class ServerFacade_Test {
 			serverFacade.login("myname22", "mypassWord");
 			fail("should have thrown exception");
 		}
-		catch(BadCredentialsException e){}
-		try
-		{
-			serverFacade.login(null, null);
-			fail("should have thrown exception");
-		}
-		catch(BadCredentialsException e){}
-		
-		List<User> users = serverFacade.getAllUsers();
-		User user = null;
-		for (User u : users)
-		{
-			if (u.getUsername().equals("myname22") && u.getPassword().equals("mypassword"))
-			{
-				user = u;
-			}
-		}
-		assertFalse(user == null);
-		assertFalse(user.isLoggedIn());
+		catch(BadCredentialsException e){}			
 	}
-
+	
+	/*
+	 * test login - already logged in
+	 * GOOD
+	 */
 	@Test(expected=AlreadyLoggedInException.class)
-	public void testLoginAlreadyLoggedIn() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException
+	public void loginAlreadyLoggedIn() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException
 	{
 		//registering also logs in
 		try {
@@ -281,196 +454,53 @@ public class ServerFacade_Test {
 			e.printStackTrace();
 			fail("Unable to register");
 		}
-		serverFacade.login("mynameL", "mypassword");
+		serverFacade.login("mynameL", "mypassword");			
 	}
-
-	//*********************************************************************************
-	//LOGOUT TESTS
 	
+	/*
+	 * can logout
+	 */
 	@Test
-	public void testLogout() throws BadCredentialsException, AddUserException, AlreadyLoggedInException, InvalidCredentialsException, InternalServerException
+	public void logout() throws BadCredentialsException, AddUserException, AlreadyLoggedInException, InvalidCredentialsException
 	{
-		int userID = serverFacade.register("myname11", "mypassword");
-		serverFacade.logout(userID);
-		
-		List<User> users = serverFacade.getAllUsers();
-		User user = null;
-		for (User u : users)
-		{
-			if (u.getUsername().equals("myname11") && u.getPassword().equals("mypassword"))
-			{
-				user = u;
-			}
-		}
-		assertFalse(user == null);
-		assertFalse(user.isLoggedIn());
+		User user = new User("mynamelogout","mypassword");
+		//serverFacade.addNewUser(user);
+		serverFacade.login("mynamelogout", "mypassword");
+		//serverFacade.logout(user.playerID);
 	}
-
+	
+	//failed to log out
 	@Test(expected=BadCredentialsException.class)
-	public void testLogoutFailed() throws BadCredentialsException
+	public void logoutFailed() throws BadCredentialsException
 	{
+		
 		serverFacade.logout(2);
 		serverFacade.logout(19999);
-	}
-	
-	//*********************************************************************************
-	//CREATE GAME TESTS
-	
-	@Test
-	public void testCreateGame() throws AddUserException, InternalServerException, InvalidCredentialsException, BadCredentialsException, AlreadyLoggedInException, PreConditionException
-	{
-		int userID = serverFacade.register("test1", "test1");
-		TestGame game = new TestGame();
-		
-		//null color
-		try{
-		serverFacade.createGame(game, userID, null);
-		fail("should have thrown exception, null color");
-		}
-		catch (PreConditionException e) {}
-		
-		//null game
-		try{
-		serverFacade.createGame(null, userID, PlayerColor.Black);
-		fail("should have thrown exception, null game");
-		}
-		catch (PreConditionException e) {}
-		
-		//nonexistant player
-		try{
-		serverFacade.createGame(game, -1, PlayerColor.Blue);
-		fail("should have thrown exception, nonexistant player");
-		}
-		catch (PreConditionException e) {}
-		
-		//logged out
-		serverFacade.logout(userID);
-		try{
-		serverFacade.createGame(game, userID, PlayerColor.Blue);
-		fail("should have thrown exception, not logged in");
-		} 
-		catch (PreConditionException e) {}
-		serverFacade.login("test1", "test1");
-		
-		//success case
-		serverFacade.createGame(game, userID, PlayerColor.Blue);
-		//verify created correctly and user is in first index
-		
-		TestGame test = null;
-		List<Game> games = serverFacade.getAllGames();
-		for (Game g : games)
-		{
-			if (g.getGameID() == game.getGameID())
-			{
-				test = (TestGame) g;
-			}
-		}
-		assertFalse(test == null);
-		assertTrue(test.containsPlayer(userID));
-		assertFalse(test.isStarted());
-		assertFalse(test.isGameOver());
-	}
 
-	//*********************************************************************************
-	//ADD PLAYER TESTS
-
+	}	
+	
+	
+	/*
+	 * INVALID TEST CASE
+	 */
 	@Test
-	public void testAddPlayerSuccessCase() throws InvalidCredentialsException, AddUserException, InternalServerException, PreConditionException
+	public void joinAlreadyJoinedGame() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException
 	{
 		TestGame game = new TestGame();
-		int id1 = serverFacade.register("test1", "test1");
-		int id2 = serverFacade.register("test2", "test2");
-		
-		serverFacade.createGame(game, id1, PlayerColor.Red);
-		try{
-			serverFacade.addPlayerToGame(id2, game.getGameID(), PlayerColor.Yellow);
-		}
-		catch (PreConditionException e)
-		{
-			fail("adding player to game should have worked");
-		}
-		
-		List<Game> games = serverFacade.getAllGames();
-		TestGame test = null;
-		for (Game g : games)
-		{
-			if (g.getGameID() == game.getGameID())
-			{
-				test = (TestGame) g;
-				break;
-			}
-		}
-		assertFalse(test == null);
-		TestPlayerManager manager = (TestPlayerManager) test.getPlayerManager();
-		assertTrue(manager.getNumPlayers() == 2);
-		assertFalse(manager.getPlayerByID(id2) == null);
-		Player player = manager.getPlayerByID(id2);
-		assertTrue(player.getPlayerColor() == PlayerColor.Yellow);		
+		User user1 = new User("already","password");
+
+		//serverFacade.addNewUser(user1);
+		serverFacade.login("already","password");
+		user1.joinGame(game.getGameID());
+		user1.joinGame(game.getGameID());
+
 	}
 	
-	@Test
-	public void testAddPlayerFullGame() throws InvalidCredentialsException, AddUserException, InternalServerException, PreConditionException
-	{
-		TestGame game = new TestGame();
-		List<Integer> ids = new ArrayList<Integer>();
-		for (int i = 0; i < 6; i++)
-		{
-			String userString = "test" + Integer.toString(i);
-			ids.add(serverFacade.register(userString, userString));
-		}
-		
-		serverFacade.createGame(game, ids.get(0), PlayerColor.Black);
-		
-		serverFacade.addPlayerToGame(ids.get(1), game.getGameID(), PlayerColor.Blue);
-		serverFacade.addPlayerToGame(ids.get(2), game.getGameID(), PlayerColor.Green);
-		serverFacade.addPlayerToGame(ids.get(3), game.getGameID(), PlayerColor.Red);
-		serverFacade.addPlayerToGame(ids.get(4), game.getGameID(), PlayerColor.Yellow);
-		
-		assertTrue(game.getPlayerManager().getNumPlayers() == 5);
-
-		try{
-			serverFacade.addPlayerToGame(ids.get(5), game.getGameID(), PlayerColor.Yellow);
-			fail("game should have been considered full already");
-		}
-		catch (PreConditionException e){}
-	}
-
-	@Test
-	public void testAddPlayerGameAlreadyStarted() throws PreConditionException, InternalServerException, BadCredentialsException, AlreadyLoggedInException, AddUserException, InvalidCredentialsException
-	{
-		Game game = new Game();
-
-		int user1 = serverFacade.register("user111","password");
-		int user2 = serverFacade.register("user222","password");
-		int user3 = serverFacade.register("user333","password");
-		int user4 = serverFacade.register("user444","password");
-		int user5 = serverFacade.register("user555","password");
-
-		//serverFacade.createGame(game);
-		serverFacade.createGame(game, user1, PlayerColor.Black);
-		serverFacade.addPlayerToGame(user2, game.getGameID(), PlayerColor.Blue);
-		serverFacade.addPlayerToGame(user3, game.getGameID(), PlayerColor.Green);
-		serverFacade.addPlayerToGame(user4, game.getGameID(), PlayerColor.Red);
-
-		serverFacade.startGame(user1, game.getGameID());
-		assertTrue(game.isStarted());
-		assertFalse(serverFacade.canAddPlayerToGame(user5, game.getGameID(), PlayerColor.Yellow));
-	}
-	
-	@Test
-	public void testAddPlayerAlreadyJoinedGame() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException, InternalServerException, PreConditionException
-	{
-		int userID = serverFacade.register("joinAlready", "joinedGame");
-		Game newGame = new Game();
-		serverFacade.createGame(newGame, userID, PlayerColor.Black);
-		
-		//Try as the same color and as a new color
-		assertFalse(serverFacade.canAddPlayerToGame(userID, newGame.getGameID(), PlayerColor.Black));
-		assertFalse(serverFacade.canAddPlayerToGame(userID, newGame.getGameID(), PlayerColor.Red));
-	}
-	
+	/*
+	 * GOOD
+	 */
 	@Test(expected = PreConditionException.class)
-	public void testAddPlayerDuplicateColor() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException, InternalServerException, PreConditionException
+	public void duplicateColor() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException, InternalServerException, PreConditionException
 	{
 		TestGame game = new TestGame();
 
@@ -481,55 +511,38 @@ public class ServerFacade_Test {
 		serverFacade.addPlayerToGame(id2, game.getGameID(), PlayerColor.Black);
 	}
 	
+	/*
+	 * user can join a game when he is not logged in
+	 */
 	@Test
-	public void testAddPlayerNotLoggedIn() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException, InternalServerException, PreConditionException
+	public void canJoinAgamewhenNotLogin() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, InvalidCredentialsException
 	{
-		int playerID = serverFacade.register("canJoin", "notLoggedIn");
-		Game newGame = new Game();
-		int gameCreatorID = serverFacade.register("game", "creator");
-		serverFacade.createGame(newGame, gameCreatorID, PlayerColor.Blue);
-		
-		//log 1st player out, try to log in with a variety of tactics
-		serverFacade.logout(playerID);
-		assertFalse(serverFacade.canAddPlayerToGame(playerID, newGame.getGameID(), PlayerColor.Red));
-		assertFalse(serverFacade.canAddPlayerToGame(playerID, newGame.getGameID(), PlayerColor.Blue));
-		assertFalse(serverFacade.canAddPlayerToGame(playerID, newGame.getGameID()-1, PlayerColor.Red));
-		assertFalse(serverFacade.canAddPlayerToGame(playerID, 0, PlayerColor.Yellow));
-		
-		//log out gameCreator, try similar things
-		serverFacade.logout(gameCreatorID);
-		assertFalse(serverFacade.canAddPlayerToGame(gameCreatorID, newGame.getGameID(), PlayerColor.Red));
-		assertFalse(serverFacade.canAddPlayerToGame(gameCreatorID, newGame.getGameID(), PlayerColor.Blue));
-		assertFalse(serverFacade.canAddPlayerToGame(gameCreatorID, 0, PlayerColor.Red));
-		
-		//log 1st player back in, ensure he can join now
-		playerID = serverFacade.login("canJoin", "notLoggedIn");
-		assertFalse(serverFacade.canAddPlayerToGame(playerID, newGame.getGameID(), PlayerColor.Blue));
-		assertTrue(serverFacade.canAddPlayerToGame(playerID, newGame.getGameID(), PlayerColor.Red));
+		TestGame game = new TestGame();
+		User user1 = new User("notLogIn","password");
+		//serverFacade.addNewUser(user1);
+		//serverFacade.createGame(game);
+		user1.joinGame(game.getGameID());
 	}
 	
+	/*
+	 * we could throw different exceptions if the game is null, or gameboard is null, or playermanager..
+	 * I think the createGame function has logic problem.  Even if we have nothing inside the playermanager,
+	 * it still passes junit tests
+	 */
 	@Test
-	public void testAddPlayerInvalidInputs() throws AddUserException, InternalServerException, InvalidCredentialsException, PreConditionException
-	{
-		int id1 = serverFacade.register("test1", "test1");
-		int id2 = serverFacade.register("test2", "test2");
-		
-		TestGame game = new TestGame();
-		
-		serverFacade.createGame(game, id1, PlayerColor.Black);
-		
-		assertFalse(serverFacade.canAddPlayerToGame(-1, game.getGameID(), PlayerColor.Blue));
-		assertFalse(serverFacade.canAddPlayerToGame(id2, -1, PlayerColor.Blue));
-		assertFalse(serverFacade.canAddPlayerToGame(id1, game.getGameID(), null));
-		
-		try{
-			serverFacade.addPlayerToGame(id1, game.getGameID(), null);
-			fail("should have thrown exception, null color");
-		} catch (PreConditionException e){}
+	public void testCreateGame() {
+		//serverFacade.createGame(game1);
 	}
 
-	//*********************************************************************************
-	//START GAME TESTS
+
+	@Test
+	public void testAddPlayerToGame() {
+		assertFalse(serverFacade.canAddPlayerToGame(1,2,PlayerColor.Blue));//no game id
+		
+		assertFalse(serverFacade.canAddPlayerToGame(1,1,PlayerColor.Red));//wrong color
+		
+		assertFalse(serverFacade.canAddPlayerToGame(1,10,PlayerColor.Red));//no game
+	}
 	
 	@Test
 	public void testStartGame() {
@@ -550,8 +563,8 @@ public class ServerFacade_Test {
 
 
 			//create two games
-			TestGame game1 = new TestGame();
-			TestGame game2 = new TestGame();
+			Game game1 = new Game();
+			Game game2 = new Game();
 			int game1ID = game1.getGameID();
 			int game2ID = game2.getGameID();
 			facade.createGame(game1,test1ID,PlayerColor.Blue); //assume this game is started by test1 with Blue
@@ -592,39 +605,7 @@ public class ServerFacade_Test {
 			assertTrue(game1.isStarted());
 			assertFalse(game1.isGameOver());
 
-			//more in-depth test
-			game1.getHistory();
-			TestGameBoard board = (TestGameBoard)game1.getGameBoard();
-			TestPlayerManager manager = (TestPlayerManager)game1.getPlayerManager();
-			
-			//12 * 8 = 96 regular train cards; + 14 wilds; -5 for visible cards -(4*2) for opening hands
-			assertTrue(board.getDeckTrainCarCards().size() == 97);
-			//30 destination routes; -(3*2) for player's hands
-			assertTrue(board.getDestinationRoutes().size() == 24);
-			assertTrue(board.getDiscardedTrainCarCards().size() == 0);
-			board.getCities();
-			board.getRoutes();
-			for (TrackColor c : board.getVisibleTrainCarCards())
-			{
-				assertTrue(c != null);
-			}
-			
-			assertFalse(manager.drewAlreadyCurrentTurn);
-			assertTrue(manager.getCurrentTurnIndex() == 0);
-			assertTrue(manager.getNumPlayers() == 2);
-			assertTrue(manager.getRound()==0);
-			Player player1 = manager.getPlayerByID(test1ID);
-			assertTrue(player1.getDestinationRoutesToConsider().size() == 3);
-			assertTrue(player1.getPlayerColor() == PlayerColor.Blue);
-			assertTrue(player1.getTrainsLeft() == 45);
-			assertFalse(player1.hasLongestRoute());
-			int totalTrainCards = 0;
-			for (Integer i : player1.getTrainCarCards().values())
-			{
-				totalTrainCards += i;
-			}
-			assertTrue(totalTrainCards == 4);
-			assertTrue(player1.getDestinationRoute().size() == 0);
+			//Perhaps check some more things on the game??
 
 			//call canStartGame on game that has already been started
 			assertFalse(facade.canStartGame(test1ID, game1ID));
@@ -632,7 +613,7 @@ public class ServerFacade_Test {
 		catch(AddUserException e)
 		{
 			fail("Something went wrong trying to register users");
-		}
+		}	
 		catch(InternalServerException e)
 		{
 			fail("Something went wrong trying to register users");
@@ -645,415 +626,116 @@ public class ServerFacade_Test {
 		}
 	}
 
-	//*********************************************************************************
-	//LEAVE GAME TESTS
-	
+	/**
+	 * Player can select a route on the map to purchase
+
+
+
+	 */
 	@Test
-	public void testLeaveGame()
-	{
-		fail("Not yet implemented in ServerFacade");
+	public void testCanBuyRoute() throws InternalServerException {
+		/*City city1 = new City(new Point(2,2),"LA");
+		City city2 = new City(new Point(3,3),"SA");
+		CityToCityRoute ctoc1 = new CityToCityRoute(city1,city2,3,TrackColor.Orange);
+
+		serverFacade.canBuyRoute(1,1,ctoc1);*/
 	}
 	
-	//*********************************************************************************
-	//BUY ROUTE TESTS
-	
-	@Test
-	public void testBuyRouteInvalidInputs() throws AddUserException, InternalServerException, InvalidCredentialsException, PreConditionException, OutOfBoundsException
+	//Player can use wilds as part of a route purchase
+	//are you handling this case?
+	public void testCanBuyRouteWithWrongResources()
 	{
-		int id1 = serverFacade.register("test1", "test1");
-		int id2 = serverFacade.register("test2", "test2");
-		
-		TestGame game = new TestGame();
-		serverFacade.createGame(game, id1, PlayerColor.Black);
-		serverFacade.addPlayerToGame(id2, game.getGameID(), PlayerColor.Blue);
-		serverFacade.startGame(id1, game.getGameID());
-		serverFacade.selectDestinations(id1, game.getGameID(), new int[] {0,1});
-		serverFacade.selectDestinations(id2, game.getGameID(), new int[] {0,1});
-		
-		//give everyone all da train cards
-		Map<TrackColor,Integer> tenCardsEach = new HashMap<TrackColor,Integer>();
-		for (TrackColor tc : TrackColor.values())
-		{
-			tenCardsEach.put(tc, 10);
+		/*
+		 * 		for(int i = 0; i < route.getNumTrains(); ++i){	//this allows us to check every combination of wild cards/route color
+			Map<TrackColor, Integer> trainCards = new HashMap<TrackColor, Integer>();
+			trainCards.put(route.getTrackColor(), route.getNumTrains()-i);
+			trainCards.put(TrackColor.None, i);
+			if(playerManager.canBuyTrackWithCards(playerID, route.getNumTrains(), route.getTrackColor(), trainCards)){
+				return true;
+			}
 		}
-		game.getPlayerManager().addTrainCarCards(id1, tenCardsEach);
-		game.getPlayerManager().addTrainCarCards(id2, tenCardsEach);
+		 */
+		//I do not understand how you check if a player has required cards
+		//Player cannot purchase a route with less than the required cards
 		
-		City start = new City("Portland");
-		City end = new City("San Francisco");
-		CityToCityRoute route = new CityToCityRoute(start, end, 5, TrackColor.Green);
-		Map<TrackColor,Integer> cards = new HashMap<TrackColor,Integer>();
-		cards.put(TrackColor.Green, 5);
-		
-		//invalid or null inputs
-		assertFalse(serverFacade.canBuyRoute(-1, game.getGameID(), route, cards));
-		assertFalse(serverFacade.canBuyRoute(id1, -1, route, cards));
-		assertFalse(serverFacade.canBuyRoute(id1, game.getGameID(), null, cards));
-		assertFalse(serverFacade.canBuyRoute(id1, game.getGameID(), route, null));
-		
-		//nonexistant citytocityroute
-		City badStart = new City("Narnia");
-		City badEnd = new City("Hogwarts");
-		CityToCityRoute badRoute = new CityToCityRoute(badStart, badEnd, 5, TrackColor.Green);
-		assertFalse(serverFacade.canBuyRoute(id1, game.getGameID(), badRoute, cards));
-		
-		//wrong color
-		Map<TrackColor,Integer> reds = new HashMap<TrackColor,Integer>();
-		reds.put(TrackColor.Red, 5);
-		assertFalse(serverFacade.canBuyRoute(id1, game.getGameID(), route, reds));
+		//Player cannot purchase a route with more than the required cards
+		//Player cannot purchase a route with cards of the wrong color
+		//Player cannot purchase a route they do not have enough trains for
 	}
 	
+//	Player can cancel buying a route 
+	//not handle or it should not be a function on the server side?
+	
+//	Routes are populated with trains the color of the player who purchased them
+
+	
+	//Player cannot buy adjacent route if less than 4 players in the game
+//	Player cannot draw a destination ticket after building
+//	Player cannot draw a train card after building
+//	Player's destination cards are updated when building the route completes the destination
+
 	@Test
-	public void testBuyRouteInvalidPreconditions() throws AddUserException, InternalServerException, InvalidCredentialsException, PreConditionException, OutOfBoundsException, BadCredentialsException, AlreadyLoggedInException
-	{
-		int id1 = serverFacade.register("test1", "test1");
-		int id2 = serverFacade.register("test2", "test2");
-		
-		TestGame game = new TestGame();
-		serverFacade.createGame(game, id1, PlayerColor.Black);
-		serverFacade.addPlayerToGame(id2, game.getGameID(), PlayerColor.Blue);
-		
-		//game not started
-		assertFalse(serverFacade.canBuyRoute(id1, game.getGameID(), 
-				new CityToCityRoute(null, null, id2, null), 
-				new HashMap<TrackColor,Integer>()));
-		
-		serverFacade.startGame(id1, game.getGameID());
-		serverFacade.selectDestinations(id1, game.getGameID(), new int[] {0,1});
-		serverFacade.selectDestinations(id2, game.getGameID(), new int[] {0,1});
-		
-		//give everyone all da train cards
-		Map<TrackColor,Integer> tenCardsEach = new HashMap<TrackColor,Integer>();
-		for (TrackColor tc : TrackColor.values())
-		{
-			tenCardsEach.put(tc, 10);
-		}
-		game.getPlayerManager().addTrainCarCards(id1, tenCardsEach);
-		game.getPlayerManager().addTrainCarCards(id2, tenCardsEach);
-		
-		City start = new City("Portland");
-		City end = new City("San Francisco");
-		CityToCityRoute route = new CityToCityRoute(start, end, 5, TrackColor.Green);
-		Map<TrackColor,Integer> cards = new HashMap<TrackColor,Integer>();
-		cards.put(TrackColor.Green, 5);
-		
-		//not logged in
-		serverFacade.logout(id1);
-		assertFalse(serverFacade.canBuyRoute(id1, game.getGameID(), route, cards));
-		
-		//not correct turn
-		assertFalse(serverFacade.canBuyRoute(id2, game.getGameID(), route, cards));
-		
-		serverFacade.login("test1", "test1");
-		
-		//already drew train cards
-		game.getPlayerManager().drewAlreadyCurrentTurn = true;
-		assertFalse(serverFacade.canBuyRoute(id1, game.getGameID(), route, cards));
-		
-		game.getPlayerManager().drewAlreadyCurrentTurn = false;
-		
-		//game over
-		game.setGameOver(true);
-		assertFalse(serverFacade.canBuyRoute(id1, game.getGameID(), route, cards));
-		game.setGameOver(false);
-		
-		//already got destinations
-		serverFacade.getDestinations(id1, game.getGameID());
-		
-		assertFalse(serverFacade.canBuyRoute(id1, game.getGameID(), route, cards));
-		
-		serverFacade.selectDestinations(id1, game.getGameID(), new int[]{0});
-		
-		//route already claimed
-		game.getGameBoard().claimRoute(id1, route);
-		assertFalse(serverFacade.canBuyRoute(id2, game.getGameID(), route, cards));
+	public void testBuyRoute() {
+		fail("Not yet implemented");
+	}
+	
+	@Test (expected=OutOfBoundsException.class)
+	public void testCanDrawTrainCardFailling() throws OutOfBoundsException, InternalServerException {
+		serverFacade.canDrawTrainCard(1, 1, 10);
 
 	}
 	
-	@Test
-	public void testBuyRouteInsufficientResources() throws AddUserException, InternalServerException, InvalidCredentialsException, PreConditionException, OutOfBoundsException, GameOverException
-	{
-		int id1 = serverFacade.register("test1", "test1");
-		int id2 = serverFacade.register("test2", "test2");
+	@Test 
+	public void testCanDrawTrainCard() throws OutOfBoundsException, InternalServerException {
 		
-		TestGame game = new TestGame();
-		serverFacade.createGame(game, id1, PlayerColor.Black);
-		serverFacade.addPlayerToGame(id2, game.getGameID(), PlayerColor.Blue);
-		serverFacade.startGame(id1, game.getGameID());
-		serverFacade.selectDestinations(id1, game.getGameID(), new int[] {0,1});
-		serverFacade.selectDestinations(id2, game.getGameID(), new int[] {0,1});
 		
-		//give everyone all da train cards
-		Map<TrackColor,Integer> tenCardsEach = new HashMap<TrackColor,Integer>();
-		for (TrackColor tc : TrackColor.values())
-		{
-			tenCardsEach.put(tc, 10);
-		}
-		game.getPlayerManager().addTrainCarCards(id1, tenCardsEach);
-		game.getPlayerManager().addTrainCarCards(id2, tenCardsEach);
+		//before checking if a player can draw train card I need to manipulate the playermanager class to meet the following contraint
+		//playerManager.drewAlreadyCurrentTurn && gameBoard.getVisibleTrainCarCards()[cardLocation] == TrackColor.None
+		//but currently, i can not manipulate the playermanager object using existing code
 		
-		City start = new City("Portland");
-		City end = new City("San Francisco");
-		CityToCityRoute route = new CityToCityRoute(start, end, 5, TrackColor.Green);
-		Map<TrackColor,Integer> cards = new HashMap<TrackColor,Integer>();
-		cards.put(TrackColor.Green, 5);
 		
-		//insufficient train cars
-		Player player1 = game.getPlayerByIndex(0);
-		player1.useTrains(41);
-		assertFalse(serverFacade.canBuyRoute(id1, game.getGameID(), route, cards));
-		game.getPlayerManager().advanceTurn();
 		
-		//insufficient train cards
-		Map<TrackColor,Integer> tooFew = new HashMap<TrackColor,Integer>();
-		tooFew.put(TrackColor.Green, 4);
-		assertFalse(serverFacade.canBuyRoute(id2, game.getGameID(), route, tooFew));
+		//Player can draw from the deck
+		serverFacade.canDrawTrainCard(1, 1, 1);
 		
-		TestPlayerManager manager = (TestPlayerManager)game.getPlayerManager();
-		Player player2 = manager.getPlayerByID(id2);
-		Map<TrackColor, Integer> playerCards = player2.getTrainCarCards();
-		playerCards.put(TrackColor.Green, 4);
-		playerCards.put(TrackColor.None, 0);
-		assertFalse(serverFacade.canBuyRoute(id2, game.getGameID(), route, cards));
-
+		//Player can draw one from the visible cards and one from the deck
+		assertTrue(serverFacade.canDrawTrainCard(1, 1, 5));
+		assertTrue(serverFacade.canDrawTrainCard(1, 1, 3));
 		
-		//what happens if they give more than enough cards?
-	}
-	
-	@Test
-	public void testBuyRouteSuccessCases() throws AddUserException, InternalServerException, InvalidCredentialsException, PreConditionException, OutOfBoundsException
-	{
-		int id1 = serverFacade.register("test1", "test1");
-		int id2 = serverFacade.register("test2", "test2");
+		//Player can draw two from the visible cards
+		assertTrue(serverFacade.canDrawTrainCard(1, 1, 3));
+		assertTrue(serverFacade.canDrawTrainCard(1, 1, 2));
 		
-		TestGame game = new TestGame();
-		serverFacade.createGame(game, id1, PlayerColor.Black);
-		serverFacade.addPlayerToGame(id2, game.getGameID(), PlayerColor.Blue);
-		serverFacade.startGame(id1, game.getGameID());
-		serverFacade.selectDestinations(id1, game.getGameID(), new int[] {0,1});
-		serverFacade.selectDestinations(id2, game.getGameID(), new int[] {0,1});
+		//	//Player can only draw one wild from the visible cards
+		//Visible cards are reset if there are more than two wilds
 		
-		//give everyone all da train cards
-		Map<TrackColor,Integer> tenCardsEach = new HashMap<TrackColor,Integer>();
-		for (TrackColor tc : TrackColor.values())
-		{
-			tenCardsEach.put(tc, 10);
-		}
-		game.getPlayerManager().addTrainCarCards(id1, tenCardsEach);
-		game.getPlayerManager().addTrainCarCards(id2, tenCardsEach);
-		
-		City start = new City("Portland");
-		City end = new City("San Francisco");
-		CityToCityRoute route = new CityToCityRoute(start, end, 5, TrackColor.Green);
-		Map<TrackColor,Integer> cards = new HashMap<TrackColor,Integer>();
-		cards.put(TrackColor.Green, 5);
-		
-		assertTrue(serverFacade.canBuyRoute(id1, game.getGameID(), route, cards));
-		serverFacade.buyRoute(id1, game.getGameID(), route, cards);
-		
-		//player gets route
-		Map<Integer,List<CityToCityRoute>> currentRoutes = game.getGameBoard().getCurrentRoutes();
-		assertTrue(currentRoutes.containsKey(id1));
-		assertTrue(currentRoutes.get(id1).size() == 1);
-		assertTrue(currentRoutes.get(id1).get(0).equals(route));
-		
-		//turn advances
-		TestPlayerManager manager = (TestPlayerManager)game.getPlayerManager();
-		assertTrue(manager.getCurrentTurnIndex() == 1);
-		
-		//trains go down
-		TestPlayer player1 = (TestPlayer)manager.getPlayerByID(id1);
-		assertTrue(player1.getNumTrainsLeft() == 40);
-		
-		//cards are discarded
-		List<TrackColor> discarded = game.getGameBoard().getDiscardedTrainCarCards();
-		assertTrue(discarded.size() == 5);
-		for (TrackColor tc : discarded)
-		{
-			assertTrue(tc == TrackColor.Green);
-		}
-		
-		//points update correctly
-		assertTrue(player1.getPointsScored() == 10);
-		
-		//can trigger final round && updates destinations
-		assertTrue(manager.getFinalTurnIndex() == -1);
-		TestPlayer player2 = (TestPlayer)manager.getPlayerByID(id2);
-		player2.setNumTrainsLeft(5);
-		
-		start = new City("Calgary");
-		end = new City("Salt Lake City");
-		DestinationRoute dest = new DestinationRoute(start, end, 7);
-		player2.getDestinationRoute().add(dest);
-		assertFalse(dest.isCompleted());
-	
-		start = new City("Helena");
-		end = new City("Salt Lake City");
-		route = new CityToCityRoute(start, end, 3, TrackColor.Purple);		
-		game.getGameBoard().claimRoute(id2, route);
-		
-		start = new City("Calgary");
-		end = new City("Winnipeg");
-		route = new CityToCityRoute(start, end, 6, TrackColor.White);
-		game.getGameBoard().claimRoute(id2, route);
-		
-		start = new City("Helena");
-		end = new City("Winnipeg");
-		route = new CityToCityRoute(start, end, 4, TrackColor.Blue);
-		cards = new HashMap<TrackColor,Integer>();
-		cards.put(TrackColor.Blue, 2);
-		cards.put(TrackColor.None, 2);
-
-		serverFacade.buyRoute(id2, game.getGameID(), route, cards);
-		assertTrue(manager.getFinalTurnIndex() == 1);
-		assertTrue(dest.isCompleted());
-		
-		//can trigger game end
-		start = new City("Vancouver");
-		end = new City("Seattle");
-		route = new CityToCityRoute(start, end, 1, TrackColor.None);
-		cards = new HashMap<TrackColor,Integer>();
-		cards.put(TrackColor.Yellow, 1);
-		
-		serverFacade.buyRoute(id1, game.getGameID(), route, cards);
-		assertTrue(game.isGameOver());
-		
-		//TODO can update longest road when appropriate
-	}
-	
-	//*********************************************************************************
-	//DRAW TRAIN CARD TESTS
-
-	@Test
-	public void testDrawTrainCardInvalidInputs() throws AddUserException, InternalServerException, InvalidCredentialsException, PreConditionException, OutOfBoundsException
-	{
-		int id1 = serverFacade.register("test1", "test1");
-		int id2 = serverFacade.register("test2", "test2");
-		
-		TestGame game = new TestGame();
-		serverFacade.createGame(game, id1, PlayerColor.Black);
-		serverFacade.addPlayerToGame(id2, game.getGameID(), PlayerColor.Blue);
-		serverFacade.startGame(id1, game.getGameID());
-		serverFacade.selectDestinations(id1, game.getGameID(), new int[] {0,1});
-		serverFacade.selectDestinations(id2, game.getGameID(), new int[] {0,1});
-		
-		//invalid or null inputs
-		assertFalse(serverFacade.canDrawTrainCard(-1, game.getGameID(), 0));
-		assertFalse(serverFacade.canDrawTrainCard(id1, -1, 0));
-		try{
-			serverFacade.canDrawTrainCard(id1, game.getGameID(), -1);
-			assert(false);
-		} catch(OutOfBoundsException e){
-		}
-		try{
-			serverFacade.canDrawTrainCard(id1, game.getGameID(), 6);
-			assert(false);
-		} catch(OutOfBoundsException e){
-		}
-	}
-	
-	@Test
-	public void testDrawTrainCardInvalidPreconditions() throws AddUserException, InternalServerException, InvalidCredentialsException, PreConditionException, OutOfBoundsException, BadCredentialsException, AlreadyLoggedInException
-	{
-		int id1 = serverFacade.register("test1", "test1");
-		int id2 = serverFacade.register("test2", "test2");
-		
-		TestGame game = new TestGame();
-		serverFacade.createGame(game, id1, PlayerColor.Black);
-		serverFacade.addPlayerToGame(id2, game.getGameID(), PlayerColor.Blue);
-		serverFacade.startGame(id1, game.getGameID());
-		serverFacade.selectDestinations(id1, game.getGameID(), new int[] {0,1});
-		serverFacade.selectDestinations(id2, game.getGameID(), new int[] {0,1});
-		
-		//not logged in
-		serverFacade.logout(id1);
-		assertFalse(serverFacade.canDrawTrainCard(id1, game.getGameID(), 0));
-		serverFacade.login("test1", "test1");
-		
-		//not correct turn
-		assertFalse(serverFacade.canDrawTrainCard(id2, game.getGameID(), 0));
-		
-		//no cards remaining in deck
-		game.getGameBoard().getDeckTrainCarCards().clear();
-		assertFalse(serverFacade.canDrawTrainCard(id2, game.getGameID(), 5));
-		
-		//empty space in visible
-		game.getGameBoard().getVisibleTrainCarCards()[3] = null;
-		assertFalse(serverFacade.canDrawTrainCard(id1, game.getGameID(), 3));
-		
-		//already got destinations this turn
-		serverFacade.getDestinations(id1, game.getGameID());
-		assertFalse(serverFacade.canDrawTrainCard(id1, game.getGameID(), 0));
-	}
-	
-	@Test
-	public void testDrawTrainCardSuccessCases() throws AddUserException, InternalServerException, InvalidCredentialsException, PreConditionException, OutOfBoundsException
-	{
-		int id1 = serverFacade.register("test1", "test1");
-		int id2 = serverFacade.register("test2", "test2");
-		
-		TestGame game = new TestGame();
-		serverFacade.createGame(game, id1, PlayerColor.Black);
-		serverFacade.addPlayerToGame(id2, game.getGameID(), PlayerColor.Blue);
-		serverFacade.startGame(id1, game.getGameID());
-		serverFacade.selectDestinations(id1, game.getGameID(), new int[] {0,1});
-		serverFacade.selectDestinations(id2, game.getGameID(), new int[] {0,1});
-		
-		Player player1 = game.getPlayerByIndex(0);
-		Player player2 = game.getPlayerByIndex(1);
-		List<TrackColor> deck = game.getGameBoard().getDeckTrainCarCards();
-		TrackColor[] visible = game.getGameBoard().getVisibleTrainCarCards();
-		
-		Map<TrackColor,Integer> player1Cards = player1.getTrainCarCards();
-		Map<TrackColor,Integer> player2Cards = player2.getTrainCarCards();
-		player1Cards.clear();
-		player2Cards.clear();
-		visible[0] = TrackColor.Blue;
-		visible[1] = TrackColor.Blue;
-		int deckSize = deck.size();
-		TrackColor topDeck = deck.get(0);
-		
-		//drawing 2 non-wilds from visible works
-		serverFacade.drawTrainCard(id1, game.getGameID(), 0);
-		assertTrue(deck.size() == deckSize - 1);
-		assertTrue(visible[0] == topDeck);
-		assertTrue(game.getPlayerManager().drewAlreadyCurrentTurn);
-		assertTrue(player1Cards.get(TrackColor.Blue) == 1);
-		serverFacade.drawTrainCard(id1, game.getGameID(), 1);
-		assertTrue(player1Cards.get(TrackColor.Blue) == 2);
-		assertTrue(game.getPlayerManager().isPlayersTurn(id2));
-		assertFalse(game.getPlayerManager().drewAlreadyCurrentTurn);
-		
-		//drawing a single wild from visible works
-		visible[2] = TrackColor.None;
-		serverFacade.drawTrainCard(id2, game.getGameID(), 2);
-		assertTrue(player2Cards.get(TrackColor.None) == 1);
-		assertTrue(game.getPlayerManager().isPlayersTurn(id1));
-		assertFalse(game.getPlayerManager().drewAlreadyCurrentTurn);
-		
-		//drawing 2 cards from the deck works
-		deck.add(0, TrackColor.None);
-		serverFacade.drawTrainCard(id1, game.getGameID(), 5);
-		assertTrue(game.getPlayerManager().drewAlreadyCurrentTurn);
-		serverFacade.drawTrainCard(id1, game.getGameID(), 5);
-		assertTrue(game.getPlayerManager().isPlayersTurn(id2));
-		assertFalse(game.getPlayerManager().drewAlreadyCurrentTurn);
-		
-		//drawing 1-and-1 works when visible is not wild
-		visible[4] = TrackColor.Yellow;
-		serverFacade.drawTrainCard(id2, game.getGameID(), 4);
-		assertTrue(game.getPlayerManager().drewAlreadyCurrentTurn);
-		serverFacade.drawTrainCard(id2, game.getGameID(), 5);
-		assertTrue(game.getPlayerManager().isPlayersTurn(id1));
-		assertFalse(game.getPlayerManager().drewAlreadyCurrentTurn);
+		//how do you define wildcards?
 	}
 
-	//*********************************************************************************
-	//GET DESTINATIONS TESTS
+	@Test
+	public void testDrawTrainCardFailAfterVisible() throws OutOfBoundsException, InternalServerException
+	{
+		//Player cannot select wild card after drawing one from visible cards
+		assertTrue(serverFacade.canDrawTrainCard(1, 1, 3));
+		//Player cannot draw destination ticket after initial train draw until next turn
+		//Player cannot build route after intial train draw until next turn
+		
+		//how do you handle those two cases??
+		// using playerManager.drewAlreadyCurrentTurn && gameBoard.getVisibleTrainCarCards()[cardLocation] == TrackColor.None????
+	}
+
 
 	@Test
-	public void testGetDestinations() {
+	public void testDrawTrainCard() throws PreConditionException, OutOfBoundsException, InternalServerException {
+		
+		serverFacade.drawTrainCard(1,1,3);
+	}
 
+	
+
+	@Test
+	public void testGetDestinations() { 
+		
 		ServerFacade facade = ServerFacade.getServerFacade();
 		int test1ID = 0;
 		int test2ID = 0;
@@ -1086,6 +768,7 @@ public class ServerFacade_Test {
 			facade.startGame(test3ID, game2ID);
 
 			//call canGetDestinations on game that has already finished
+			//figure out how to update game2 so it is considered over
 			game2.setGameOver(true);
 			assertFalse(facade.canGetDestinations(test3ID, game2ID));
 
@@ -1105,20 +788,13 @@ public class ServerFacade_Test {
 			facade.login("test1", "test1"); //ensure that logging back in worked
 
 			//working example
-			facade.selectDestinations(test1ID, game1ID, new int[]{0,1,2});
-			facade.selectDestinations(test2ID, game1ID, new int[]{0,1,2});
 			assertTrue(facade.canGetDestinations(test1ID, game1ID));
 
 			//call canGetDestinations on game when already called draw train car
 			if(facade.canDrawTrainCard(test1ID, game1ID, 0)) //try to ensure this test will happen
 			{
-				facade.drawTrainCard(test1ID, game1ID, 5);
+				facade.drawTrainCard(test1ID, game1ID, 0);
 				assertFalse(facade.canGetDestinations(test1ID, game1ID));
-				
-				//set turn index to next player
-				TestPlayerManager manager = (TestPlayerManager)game1.getPlayerManager();
-				manager.drewAlreadyCurrentTurn = false;
-				manager.setCurrentTurnIndex(1);
 			}
 			else
 			{
@@ -1126,45 +802,44 @@ public class ServerFacade_Test {
 			}
 
 			//get game in position where getDestinations returns true
-			if(facade.canGetDestinations(test2ID, game1ID))
+			if(facade.canGetDestinations(test1ID, game1ID))
 			{
-				facade.getDestinations(test2ID, game1ID);
+				facade.getDestinations(test1ID, game1ID);
 				//verify destination routes were added for user to consider
 				TestPlayerManager manager = (TestPlayerManager)game1.getPlayerManager();
-				Player player1 = manager.getPlayerByID(test2ID);
-				assertTrue(player1.getDestinationRoutesToConsider().size() > 0);
-				assertFalse(facade.canGetDestinations(test2ID, game1ID));
-				facade.selectDestinations(test2ID, game1ID, new int[]{0,1,2});
+				Player player1 = manager.getPlayerByID(test1ID);
+				assertTrue(player1.getDestinationRoutesToConsider().length > 0);
 			}
 			else
 			{
 				fail("Something went wrong. Unable to run all tests");
 			}
-			
-			//cannot get destinations when none remain
-			assertTrue(facade.canGetDestinations(test1ID, game1ID));
-			TestGameBoard board = (TestGameBoard)game1.getGameBoard();
-			board.setDestinationRoutes(new ArrayList<DestinationRoute>());
-			assertFalse(facade.canGetDestinations(test1ID, game1ID));
+			/*
+		//call canGetDestinations on game when no destinations remain
+		//figure out how to clear the list of destinations
+		TestGameBoard board = (TestGameBoard)game1.getGameBoard();
+		board.setDestinationRoutes(new List<DestinationRoute>());
+		assertFalse(facade.canGetDestinations(test1ID, game1ID));
+			 */
 		}
 		catch(AddUserException e) {
 			fail("Something went wrong trying to register users");
-		}
+		}	
 		catch(InternalServerException e) {
 			fail("Something went wrong trying to register users");
-		}
+		} 
 		catch (PreConditionException e) {
 			e.printStackTrace();
 			fail("Something went wrong");
-		}
+		} 
 		catch (BadCredentialsException e) {
 			e.printStackTrace();
 			fail("Something went wrong");
-		}
+		} 
 		catch (AlreadyLoggedInException e) {
 			e.printStackTrace();
 			fail("Something went wrong");
-		}
+		} 
 		catch (OutOfBoundsException e) {
 			e.printStackTrace();
 			fail("Something went wrong");
@@ -1173,42 +848,26 @@ public class ServerFacade_Test {
 			fail("Problems registering");
 		}
 	}
-	
-	//*********************************************************************************
-	//SELECT DESTINATIONS TESTS
 
 	@Test
 	public void testSelectDestinations() {
-
+		
 		try
 		{
-			ServerFacade.firebomb();
 			ServerFacade facade = ServerFacade.getServerFacade();
 			int user1 = facade.register("test1", "test1");
 			int user2 = facade.register("test2", "test2");
 			int[] destinations = new int[]{0,1,2};
-
+			
 			TestGame game1 = new TestGame();
 			int game1ID = game1.getGameID();
-
+			
 			facade.createGame(game1, user1, PlayerColor.Blue);
-
+			
 			facade.addPlayerToGame(user2, game1ID, PlayerColor.Red);
-
+			
 			facade.startGame(user1, game1ID);
 			
-			//test selecting only one destination on first round
-			try
-			{
-				facade.selectDestinations(user1, game1ID, new int[]{0});
-				fail("incorrectly allowed player to select 1 dest in first round");
-			}
-			catch (PreConditionException e){}
-			
-			
-			facade.selectDestinations(user1, game1ID, new int[]{0,1,2});
-			facade.selectDestinations(user2, game1ID, new int[]{0,1,2});
-
 			if (facade.canGetDestinations(user1, game1ID)) {
 				facade.getDestinations(user1, game1ID);
 			}
@@ -1216,59 +875,55 @@ public class ServerFacade_Test {
 			{
 				fail("Something went wrong with getDestinations");
 			}
-
+			
 			//Not the correct turn
 			assertFalse(facade.canSelectDestinations(user2, game1ID, destinations));
-
+			
 			//Not logged in
 			facade.logout(user1);
 			assertFalse(facade.canSelectDestinations(user1, game1ID, destinations));
 			facade.login("test1", "test1");
-
+			
 			//invalid inputs
 			assertFalse(facade.canSelectDestinations(-1, game1ID, destinations));
 			assertFalse(facade.canSelectDestinations(user1, -1, destinations));
 			assertFalse(facade.canSelectDestinations(user1, game1ID, null));
-
-			TestPlayerManager manager = (TestPlayerManager)game1.getPlayerManager();
-
+			
 			//valid usage
 			assertTrue(facade.canSelectDestinations(user1, game1ID, destinations));
-			int dests = manager.getPlayerByID(user1).getDestinationRoute().size();
 			facade.selectDestinations(user1, game1ID, destinations);
 			//test results
-			assertTrue(manager.getPlayerByID(user1).getDestinationRoute().size() == dests+3);
-			assertTrue(manager.getCurrentTurnIndex() == 1);
-			assertTrue(manager.getPlayerByID(user1).getDestinationRoutesToConsider() == null);
-
-			//TODO verify a selected destination will correctly be marked as completed when necessary
 			
-			manager.setCurrentTurnIndex(1);
-			manager.getPlayerByID(user2).setDestinationRoutesToConsider(null);
+			//selecting destinations updates player's score
+				//update a player with routes such that they have a destination
+				//update destination deck such that that is the only destination available
+				//update so it is that player's turn
+				//getDestinations
+				//selectDestination
+				//verify score increased by desired amount
 			
-			//selecting when haven't previously called getDestinations
-			assertFalse(facade.canSelectDestinations(user2, game1ID, new int[]{1}));
+			//selecting destinations ends the game
+				//update current turn and finalTurnIndex such that this is final turn
+				//getDestinations
+				//verify game ended
 			
 			//selecting destinations when already drawn train card
+				//update current turn
+			TestPlayerManager manager = (TestPlayerManager)game1.getPlayerManager();
+			manager.setCurrentTurnIndex(1);
 			if (facade.canDrawTrainCard(user2, game1ID, 0))
 			{
 				facade.drawTrainCard(user2, game1ID, 0);
 				assertFalse(facade.canSelectDestinations(user2, game1ID, destinations));
-				manager.setDrewAlreadyCurrentTurn(false);
-				manager.setCurrentTurnIndex(0);
 			}
 			else
 			{
 				fail("Could not draw train card");
 			}
 			
-			//selecting destinations ends the game
-			//update current turn and finalTurnIndex such that this is final turn
-			manager.setFinalTurnIndex(1);
-			facade.getDestinations(user1, game1ID);
-			facade.selectDestinations(user1,game1ID, new int[]{0});
-			//verify game ended
-			assertTrue(game1.isGameOver());
+			/*
+			 * 1,5,7,8,9
+			 */
 		}
 		catch(AddUserException e)
 		{
@@ -1295,18 +950,10 @@ public class ServerFacade_Test {
 		}
 	}
 
-	@Test
-	public void testSendClientModelInformation() {
-		fail("Not yet implemented");
-	}
-	
-	@Test
-	public void testLoadGameState() {
-		fail("Not yet implemented");
-	}
+
 
 	@Test
-	public void testSaveGameState() {
+	public void testSendClientModelInformation() {
 		fail("Not yet implemented");
 	}
 
@@ -1315,27 +962,62 @@ public class ServerFacade_Test {
 		fail("Not yet implemented");
 	}
 
+
 	public static void main(String[] args)
 	{
 		String[] testClasses = new String[]{
 				"ServerFacade_Test"
 		};
-
+		
 		org.junit.runner.JUnitCore.main(testClasses);
 	}
-
+	
+	
+	//something not sure if we need to test
 	/**
-	 * 	
-	 @Test
-	 public void testGetUserGames() {
-	 fail("Not yet implemented");
-	 }
+	 * 	@Test
+	public void testCanLeaveGame() {
+		fail("Not yet implemented");
+	}
 
-	 @Test
-	 public void testGetJoinableGames() {
-	 fail("Not yet implemented");
-	 }
+	@Test
+	public void testLeaveGame() {
+		fail("Not yet implemented");
+	}
 
+	@Test
+	public void testLogin() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testLogout() {
+		fail("Not yet implemented");
+	}
+		@Test
+	public void testLoadGameState() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testSaveGameState() {
+		fail("Not yet implemented");
+	}
+	
+	@Test
+	public void testGetUserGames() {
+		fail("Not yet implemented");
+	}
+	
+	@Test
+	public void testGetJoinableGames() {
+		fail("Not yet implemented");
+	}
+	
+	@Test
+	public void testRegister() {
+		fail("Not yet implemented");
+	}
 	 */
 
 }

@@ -1,19 +1,13 @@
 package server.command;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import model.CityToCityRoute;
 import model.Game;
 import model.GameBoard;
-import model.TrackColor;
 
 import com.google.gson.annotations.SerializedName;
 
-import server.ServerFacade;
 import server.exception.InternalServerException;
 import server.exception.OutOfBoundsException;
 import server.exception.PreConditionException;
@@ -25,31 +19,46 @@ import server.responses.ResponseWrapper;
  *
  * Created by rodriggl on 1/29/2016.
  */
-public class BuyRouteCommand extends TurnStartedNotificationCommand {
+public class BuyRouteCommand extends Command {
+	@SerializedName("gameId")
+	private int gameID;
 	@SerializedName("routeIndex")
 	private int routeIndex;
-	@SerializedName("trainColor")
-	private String trainColor;
-	@SerializedName("numberOfWilds")
-	private int numberOfWilds;
+	
+    @Override
+    public ResponseWrapper execute(int userID) {
 
-	@Override
-	public List<ResponseWrapper> turnExecute(int userId) {
-		List<ResponseWrapper> responses = new ArrayList<>();
-		ResponseWrapper responseWrapper = new ResponseWrapper(userId, commandName);
-		responses.add(responseWrapper);
-
-		try {
-			CityToCityRoute route = ServerFacade.getCityMapping().get(routeIndex);
-			Map<TrackColor, Integer> cards = Collections.singletonMap(TrackColor.getColor(trainColor), route.getNumTrains() - numberOfWilds);
-			serverFacade.buyRoute(userId, super.gameId, route, cards);
-			responses.addAll(new SendClientModelInformationCommand(super.gameId).setSendPublic(true).execute(userId));
-		} catch (PreConditionException | InternalServerException| OutOfBoundsException e) {
-			responses.clear();
-			responses.add(responseWrapper);
-			responseWrapper.setResponse(Response.newServerErrorResponse());
+    	CityToCityRoute route=getRoute();
+    	try {
+			serverFacade.buyRoute(userID, gameID, route);
+		} catch (PreConditionException | InternalServerException
+				| OutOfBoundsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
-		return responses;
-	}
+    	
+        return new ResponseWrapper(userID, Response.newServerErrorResponse(), commandName);
+    }
+    
+    private CityToCityRoute getRoute()
+    {
+    	List<Game> games=serverFacade.getAllGames();
+    	Game game=null;
+    	
+    	for(int i=0; i<games.size(); i++)
+    	{
+    		if(games.get(i).getGameID()==gameID)
+    		{
+    			game=games.get(i);
+    			break;
+    		}
+    	}
+    	
+    	GameBoard board=game.getGameBoard();
+    	List<CityToCityRoute> routes=board.getRoutes();
+    	CityToCityRoute route=routes.get(routeIndex);
+    	
+    	return route;
+    		
+    }
 }

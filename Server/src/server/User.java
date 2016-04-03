@@ -2,7 +2,6 @@ package server;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import server.exception.InvalidCredentialsException;
 
@@ -11,6 +10,7 @@ public class User {
 	protected int playerID;
 	protected String username;
 	protected String password;
+	protected List<Integer> joinedGames;
 	protected boolean loggedIn;
 	
 
@@ -27,14 +27,11 @@ public class User {
 					throw new InvalidCredentialsException("Username contains invalid characters");
 				}
 			}
-			Pattern p = Pattern.compile("[^a-zA-Z0-9]");
-			if(p.matcher(password).find()){
-				throw new InvalidCredentialsException("Password contains invalid characters");
-			}
 		}
 		playerID = nextID++;
 		this.username = username;
 		this.password = password;
+		joinedGames = new ArrayList<Integer>();
 		loggedIn = false;
 	}
 	
@@ -56,6 +53,16 @@ public class User {
 
 	public String getPassword() {
 		return password;
+	}
+
+	public void joinGame(int gameID){
+		joinedGames.add(gameID);
+	}
+	
+	public void leaveGame(int gameID){
+		if(joinedGames.contains(gameID)){
+			joinedGames.remove(gameID);
+		}
 	}
 
 }

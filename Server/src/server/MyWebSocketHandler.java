@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
@@ -18,7 +16,6 @@ import server.command.Command;
 import server.exception.CommandNotFoundException;
 import server.responses.Response;
 import server.command.LoginCommand;
-import server.command.LogoutCommand;
 import server.command.RegisterCommand;
 import server.responses.ResponseWrapper;
 
@@ -34,16 +31,10 @@ public class MyWebSocketHandler {
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
         System.out.println("Close: statusCode=" + statusCode + ", reason=" + reason);
-        
-        Command command = new LogoutCommand();
-        command.execute(personal_id);
-        //sendMessages(responseWrappers);
     }
 
     @OnWebSocketError
     public void onError(Throwable t) {
-        Command command = new LogoutCommand();
-        command.execute(personal_id);
         System.out.println("Error: " + t.getMessage());
     }
 
@@ -56,32 +47,26 @@ public class MyWebSocketHandler {
 
     @OnWebSocketMessage
     public void onMessage(String message) {
-
         System.out.println("Message: " + message);
-
 		try {
             Command command = CommandFactory.makeCommand(message);
-            List<ResponseWrapper> responseWrappers = command.execute(personal_id);
-
+            ResponseWrapper responseWrapper = command.execute(personal_id);
+	        
 	        if(command instanceof LoginCommand || command instanceof RegisterCommand)
 	        {
-	        	//make sure they successfully logged in/registered
-	        	if(responseWrappers.get(0).getTargetIds()!= null)
+	        	if(responseWrapper.getTargetIds()!= null)	//make sure they successfully logged in/registered
 	        	{
-	        		//there should only be one id in the idlist
-                    personal_id = responseWrappers.get(0).getTargetIds().get(0);
+                    personal_id = responseWrapper.getTargetIds().get(0); //there should only be one id in the idlist
 	        		sessions.put(personal_id, personal_session);
-	     
 	        	}
 	        	else
 	        	{
-	        		sendInvalidMessage(responseWrappers.get(0).getResponse());
+	        		sendInvalidMessage(responseWrapper.getResponse());
 	        		return;
 	        	}
 	        }
-
-	        //a message will be sent back regardless of whether request was successful or not
-	        sendMessages(responseWrappers);
+	        
+			sendMessage(responseWrapper.getTargetIds().iterator(), responseWrapper.getResponse());		//send back to server
 		}
 
 		catch (CommandNotFoundException e1) {
@@ -109,36 +94,30 @@ public class MyWebSocketHandler {
             }
         });
     }
-
-    public void sendMessages(List<ResponseWrapper> wrappers)
+    
+    public void sendMessages(ArrayList<ResponseWrapper> wrappers)
     {
     	//go through each response wrapper
     	for(int i=0; i<wrappers.size(); i++)
     	{
-
+    		
     		Iterator<Integer> targetIds=wrappers.get(i).getTargetIds().iterator();
     		String message=wrappers.get(i).getResponse();
-
+    		
     		//send the message of this particular response wrapper to all of its targetIDs
     		targetIds.forEachRemaining(targetId -> {
     			try{
-    				
-    				//-1 means to send to everyone, otherwise, send the message to the specified targetId.
-    				if(targetId==-1)
-    					sendPublicMessage(message);
-    				else
-    					sessions.get(targetId).getRemote().sendString(message);
-    				
+    				sessions.get(targetId).getRemote().sendString(message);
     			} catch(IOException e) {
     				System.err.println("Failed to send to user " + id);
     			}
-
+    			
     		});
-
+    		
     	}
     }
-
-    public void sendInvalidMessage(String message)
+    
+    public void sendInvalidMessage(String message) 
     {
     	try {
 			personal_session.getRemote().sendString(message);

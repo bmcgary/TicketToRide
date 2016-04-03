@@ -145,9 +145,6 @@ public class GameBoard {
 	 * @param routes the routes to be added back to the deck
 	 */
 	public void returnDestinationRoutes(List<DestinationRoute> routes){
-		if(routes == null){
-			return;
-		}
 		for(DestinationRoute route : routes){
 			destinationRoutes.add(route);
 		}
@@ -243,7 +240,7 @@ public class GameBoard {
 	}
 
 	public void initialize() throws InternalServerException {
-		//add 12 of each TrackColor to deck, 14 of locomotive
+		//add 12 of each TrackColor to deck, 16 of locomotive
 		for(TrackColor tc : TrackColor.values()){
 			int toAdd = 12;
 			if(tc == TrackColor.None){
@@ -264,8 +261,6 @@ public class GameBoard {
 		
 		//use DestinationCards.txt to load in cities, destinationRoutes
 		this.loadDestinationRoutes();
-		
-		Collections.shuffle(destinationRoutes);
 		
 		//use CityToCityRoutes.txt to load in additional cities, routes list
 		this.loadCityToCityRoutes();
@@ -368,6 +363,7 @@ public class GameBoard {
 					city2 = text;
 					break;
 				case 3:
+					System.out.print(line + "\n");
 					color = TrackColor.valueOf(text);
 					break;
 				case 0:
@@ -429,48 +425,6 @@ public class GameBoard {
 			gb.loadCityToCityRoutes();
 		}
 		return GameBoard.routeMapping;
-	}
-	public int getLongestRoutePlayer() {
-		int longestRoutePlayerID = -1;
-		int longestRouteLength = 0;
-		for(int playerID : this.currentRoutes.keySet()){
-			int playersLongestRouteLength = this.calcLongestRoute(this.currentRoutes.get(playerID));
-			if(playersLongestRouteLength > longestRouteLength){
-				longestRouteLength = playersLongestRouteLength;
-				longestRoutePlayerID = playerID;
-			}
-		}
-		return longestRoutePlayerID;
-	}
-	
-	private int calcLongestRoute(List<CityToCityRoute> list) {
-		int longestRoute = 0;
-		for(CityToCityRoute c2cr : list){
-			List<CityToCityRoute> reducedList = new ArrayList<CityToCityRoute>(list);
-			reducedList.remove(c2cr);
-			int routeLength1 = c2cr.getNumTrains() + rCalcLongestRoute(c2cr.getEnd(), reducedList);
-			int routeLength2 = c2cr.getNumTrains() + rCalcLongestRoute(c2cr.getStart(), reducedList);
-			longestRoute = Math.max(longestRoute, routeLength1);
-			longestRoute = Math.max(longestRoute, routeLength2);
-		}
-		return longestRoute;
-	}
-	
-	private int rCalcLongestRoute(City lastCity, List<CityToCityRoute> list){
-		int rLongestRoute = 0;
-		for(CityToCityRoute c2cr : list){
-			List<CityToCityRoute> reducedList = new ArrayList<CityToCityRoute>(list);
-			reducedList.remove(c2cr);
-			if(c2cr.getStart().equals(lastCity)){
-				int routeLength1 = c2cr.getNumTrains() + rCalcLongestRoute(c2cr.getEnd(), reducedList);
-				rLongestRoute = Math.max(rLongestRoute, routeLength1);
-			}
-			else if(c2cr.getEnd().equals(lastCity)){
-				int routeLength2 = c2cr.getNumTrains() + rCalcLongestRoute(c2cr.getStart(), reducedList);
-				rLongestRoute = Math.max(rLongestRoute, routeLength2);
-			}
-		}
-		return rLongestRoute;
 	}
 	
 }

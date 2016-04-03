@@ -4,6 +4,3 @@
 .project
 .DS_Store
 .idea/
-/Server/build/
-/Server/dist/
-.directory
