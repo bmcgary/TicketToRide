@@ -3,11 +3,12 @@ package server.command;
 import com.google.gson.annotations.SerializedName;
 import server.exception.AddUserException;
 import server.exception.InternalServerException;
-import server.ServerFacade;
+import server.exception.InvalidCredentialsException;
 import server.responses.Response;
 import server.responses.ResponseWrapper;
 
 import java.util.Collections;
+import java.util.List;
 
 /**
  *
@@ -23,16 +24,16 @@ public class RegisterCommand extends Command {
     String email;
 
     @Override
-    public ResponseWrapper execute(int userID) {
+    public List<ResponseWrapper> execute(int userID) {
         ResponseWrapper responseWrapper = new ResponseWrapper(commandName);
         try {
             userID = serverFacade.register(username, password);
             responseWrapper.addTargetId(userID).setResponse(Response.newSuccessResponse());
-        } catch (AddUserException e) {
-            responseWrapper.setResponse(Response.newInvalidInputResponse());
-        } catch (InternalServerException e) {
+        } catch (AddUserException | InternalServerException e) {
             responseWrapper.setResponse(Response.newServerErrorResponse());
+        } catch (InvalidCredentialsException e) {
+            responseWrapper.setResponse(Response.newInvalidInputResponse());
         }
-        return responseWrapper;
+        return Collections.singletonList(responseWrapper);
     }
 }

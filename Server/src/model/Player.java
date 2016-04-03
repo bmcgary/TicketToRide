@@ -17,7 +17,7 @@ public class Player {
 	protected int ID;
 	protected int numTrainsLeft;
 	protected List<DestinationRoute> destinationRoutes;
-	protected DestinationRoute[] destinationRoutesToConsider;
+	protected List<DestinationRoute> destinationRoutesToConsider;
 	protected Map<TrackColor,Integer> trainCarCards;
 	protected PlayerColor color;
 	protected int pointsScored;
@@ -30,7 +30,7 @@ public class Player {
 		this.pointsScored = 0;
 		this.trainCarCards = new HashMap<TrackColor, Integer>();
 		this.destinationRoutes = new ArrayList<DestinationRoute>();
-		this.destinationRoutesToConsider = new DestinationRoute[3];
+		this.destinationRoutesToConsider = null;
 		this.numTrainsLeft = 45;
 	}
 	
@@ -39,11 +39,11 @@ public class Player {
 		return destinationRoutes;
 	}
 	
-	public DestinationRoute[] getDestinationRoutesToConsider(){
+	public List<DestinationRoute> getDestinationRoutesToConsider(){
 		return destinationRoutesToConsider;
 	}
 	
-	public void setDestinationRoutesToConsider(DestinationRoute[] routes){
+	public void setDestinationRoutesToConsider(List<DestinationRoute> routes){
 		this.destinationRoutesToConsider = routes;
 	}
 	
@@ -159,4 +159,20 @@ public class Player {
 		return true;
 	}
 
+	public int getDestinationPoints() {
+		int output = 0;
+		for(DestinationRoute dr : destinationRoutes){
+			if(dr.isCompleted()){
+				output += dr.getPointValue();
+			}
+			else{
+				output -= dr.getPointValue();
+			}
+		}
+		return output;
+	}
+
+	public int getPointsScored() {
+		return pointsScored;
+	}
 }

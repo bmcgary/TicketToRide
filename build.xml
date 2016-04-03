@@ -1,0 +1,103 @@
+<project name="T2R Server" default="server" basedir=".">
+
+	<!-- PROPERTIES -->
+	<!-- ********** -->
+
+	<!-- Directory paths for the java server, javascript, and dest dir for the student copy -->
+    <property name="port.arg" value="8081"/>
+
+    <!-- Input folders -->
+    <property name="server.dir" value="Server/"/>
+    <property name="server.src.dir" value="${server.dir}/src"/>
+    <property name="server.lib.dir" value="${server.dir}/lib"/>
+
+    <!-- Base output folder -->
+    <property name="dest.dir" value="docs"/>
+    <!-- Jar file path/name from here -->
+
+	<property name="server.src" location="${server.dir}/src"/>
+	<property name="server.build" location="${server.dir}/build"/>
+	<property name="server.dist" location="${server.dir}/dist"/>
+	<property name="server.test" location="${server.src}/test"/>
+
+	<!-- CLASSPATHS -->
+	<!-- ********** -->
+
+	<path id="server.classpath">
+		<fileset dir="${server.lib.dir}">
+			<include name="**/*.jar" />
+			<include name="**/websocket/*.jar" />
+		</fileset>
+	</path>
+
+	<path id="all-classpath">
+		<path refid="server.classpath"/>
+		<pathelement location="${server.build}"/>
+	</path>
+
+	<!-- TARGETS -->
+	<!-- ******* -->
+	<target name="init" description="create build directories">
+		<tstamp/>
+		<mkdir dir="${server.build}"/>
+		<mkdir dir="${server.dist}"/>
+	</target>
+
+	<target name="clean" description="clean build files" >
+		<delete dir="${server.build}"/>
+		<delete dir="${server.dist}"/>
+	</target>
+
+	<target name="compile" depends="init" description="compile the source " >
+		<javac srcdir="${server.src}" destdir="${server.build}" debug="true" includeantruntime="true">
+			<classpath refid="server.classpath" />
+		</javac>
+	</target>
+
+	<target name="compile-test" depends="init" description="compile the source " >
+		<javac srcdir="${server.test}" destdir="${server.build}" debug="true" includeantruntime="true">
+			<classpath refid="server.classpath" />
+		</javac>
+	</target>
+
+	<target name="package" depends="compile" description="package the jar file" >
+		<mkdir dir="${server.dist}/lib"/>
+		<copy todir="${server.dist}/lib">
+			<fileset dir="${server.lib.dir}">
+				<include name="**"/>
+			</fileset>
+		</copy>
+ 		<jar jarfile="${server.dist}/t2r-server.jar" basedir="${server.build}">
+			<manifest>
+				<attribute name="Main-Class" value="server.ServerMain"/>
+				<attribute name="Class-Path"
+					value="lib/gson-2.2.4.jar" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="server" depends="package" description="compiles, packages, and runs the student server">
+		<java jar="${server.dist}/t2r-server.jar" dir="${server.dist}" fork="yes">
+			<assertions>
+				<enable/>
+			</assertions>
+		</java>
+	</target>
+
+	<target name="test" depends="compile, compile-test" description="compiles, packages, and runs the JUnit tests for the project">
+		<java classname="main.Tester" fork="yes">
+			<classpath>
+				<path refid="all-classpath"/>
+			</classpath>
+			<assertions>
+				<enable/>
+			</assertions>
+		</java>
+	</target>
+
+    <target name="make-tester-zip" depends="package" description="makes a zip file for your testing team">
+        <zip destfile="./tester.zip" basedir="${server.dist}" />
+    </target>
+
+</project>
+ 

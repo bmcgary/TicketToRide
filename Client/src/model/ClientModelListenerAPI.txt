@@ -1,0 +1,43 @@
+-Login Controllers listeners-
+    "server:Login", "server:Register", "server:ForgotUserNameOrPassword":
+        These do not touch the model at all. Look at the universal API for documentation on these.
+
+
+-DO NOT listen for these-
+    "Logout":
+        The model handles this by clearing the model and switching to the Login Menu.
+
+    "StartGame", "CreateGame", "JoinGame", "SendClientModelInformation":
+        Each of these commands, if successful will be followed by an Update game command.
+        It they are not successful, the modelFacade will alert you.
+
+    "GetLeaderboards", "AddAI", "LeaveGame", "SendChat":
+        These commands are still not implemented.
+
+-Lobby Controller commands (Not currently being used)-
+    "model:UpdateJoinableGames":
+
+    "model:UpdateGame":
+
+    "model:UpdateUserGames":
+
+
+-Game Controller commands-
+    "model:PublicClientModelInformation", "model:PrivateClientModelInformation":
+        These commands are used to initially load each of the game models with data about the current game.
+
+    "model:BuyRoute", "model:DrawTrainCard", "model:NotifyDestinationRouteCompleted", "model:SelectDestinations":
+        These commands all send back the latest version of the model contained in a ModelContainer. See the Model Design
+        for a quick reference of each of the getters that you can use.
+
+    "model:GetDestinations":
+        This command also sends a ModelContainer, and contained in that container is a temp variable holding the list of
+        cards.
+
+    "model:GameEnded":
+        The modelFacade method for this command still needs to be implemented, but it also return a ModelContainer with
+        a temp variable with the information to display that you can access.
+
+    "model:SetGameInView":
+        All the game controllers should listen to this. This is called when a player switches games.
+}

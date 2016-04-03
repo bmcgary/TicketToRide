@@ -109,7 +109,7 @@ public class PlayerManager {
 				wildsNeeded -= trainCards.get(TrackColor.None);
 			}
 			
-			return (wildsNeeded <= 0) ? true : false;
+			return wildsNeeded <= 0;
 			
 		}
 	}
@@ -122,7 +122,7 @@ public class PlayerManager {
 	{
 		//detects whether final round has been triggered
 		Player currentPlayer = players.get(currentTurnIndex);
-		if(currentPlayer.getTrainsLeft() < 3){
+		if(finalTurnIndex == -1 && currentPlayer.getTrainsLeft() < 3){
 			this.finalTurnIndex = currentTurnIndex;
 		}
 		
@@ -158,24 +158,23 @@ public class PlayerManager {
 				player = players.get(i);
 				
 			}
-			
-			player.getDestinationRoute().add(route);
-			assert(player.getDestinationRoute().contains(route));
 		}
+		assert(player != null);
+		player.getDestinationRoute().add(route);
+		assert(player.getDestinationRoute().contains(route));
 	}
 	
 	public void addDestinationRoutesToConsider(int playerID, List<DestinationRoute> routes){
-		System.out.println("Destination routes to consider size: " + routes.size());
 		Player player = null;
-		for(int i =0; i < players.size();i++)	
+		for(Player p : players)	
 		{	
-			if(players.get(i).getPlayerID()==playerID)
+			if(p.getPlayerID()==playerID)
 			{ 
-				player = players.get(i);
+				player = p;
 			}
 		}
 		if(player != null){
-			player.setDestinationRoutesToConsider(routes.toArray(new DestinationRoute[routes.size()]));
+			player.setDestinationRoutesToConsider(routes);
 		}
 	}
 	
@@ -370,7 +369,7 @@ public class PlayerManager {
 		for(Player p : players){
 			if(p.getPlayerID() == playerID){
 				for(int i : destinationsSelected){
-					if(p.getDestinationRoutesToConsider()[i] == null){
+					if(p.getDestinationRoutesToConsider() == null){
 						return false;
 					}
 				}
@@ -395,15 +394,15 @@ public class PlayerManager {
 		List<DestinationRoute> output = null;
 		for(Player p : players){
 			if(p.getPlayerID() == playerID){
-				output = Arrays.asList(p.getDestinationRoutesToConsider());
+				output = new ArrayList<DestinationRoute>(p.getDestinationRoutesToConsider());
 				for(int i : destinationsSelected){
-					DestinationRoute dr = p.getDestinationRoutesToConsider()[i];
+					DestinationRoute dr = p.getDestinationRoutesToConsider().get(i);
 					this.addDestinationRoute(playerID, dr);
 					output.remove(dr);
 				}
-				p.setDestinationRoutesToConsider(new DestinationRoute[3]);
+				p.setDestinationRoutesToConsider(null);
+				break;
 			}
-			break;
 		}
 		return output;
 	}
@@ -417,7 +416,21 @@ public class PlayerManager {
 	}
 	
 	public boolean isFinalRound(){
-		return (this.finalTurnIndex >= 0) ? true : false;
+		return this.finalTurnIndex >= 0;
+	}
+
+	public void calculateDestinationRoutePoints() {
+		for(Player p : players){
+			p.addPoints(p.getDestinationPoints());
+		}
+	}
+
+	public void giveLongestRoutePoints(int playerID) {
+		for(Player p : players){
+			if(p.getPlayerID() == playerID){
+				p.addPoints(10);
+			}
+		}
 	}
 }
 
