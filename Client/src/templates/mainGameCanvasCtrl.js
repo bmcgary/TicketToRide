@@ -1,6 +1,6 @@
 var app = angular.module('ticketToRide');
 
-app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, StaticTrackList, PlayerColor, $uibModal, ModelFacade, TrainCardColor) {
+app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, StaticTrackList, PlayerColor, $uibModal, ModelFacade, TrainCardColor, TrackColor) {
 
 
     var canvas = document.getElementById('canvas');
@@ -52,15 +52,15 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
     var currentGameModel;
     var gameStarted = true;
     var playerHand = {
-        wildTrainCards:0,
-        blackTrainCards:0,
-        whiteTrainCards:0,
-        redTrainCards:0,
-        yellowTrainCards:0,
-        greenTrainCards:0,
-        blueTrainCards:0,
-        purpleTrainCards:0,
-        orangeTrainCards:0
+         wild:0,
+         red:0,
+         green:0,
+         blue:0,
+         yellow:0,
+         black:0,
+         white:0,
+         purple:0,
+         orange:0
     };
 
     function updateGameInformation(modelContainer)
@@ -74,15 +74,17 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
 
     function updatePlayerHand(modelContainer)
        {
-            playerHand.wildTrainCards = modelContainer.getTrainCardsByColor(TrainCardColor.WILD);
-            playerHand.blackTrainCards = modelContainer.getTrainCardsByColor(TrainCardColor.BLACK);
-            playerHand.whiteTrainCards = modelContainer.getTrainCardsByColor(TrainCardColor.WHITE);
-            playerHand.redTrainCards = modelContainer.getTrainCardsByColor(TrainCardColor.RED);
-            playerHand.yellowTrainCards = modelContainer.getTrainCardsByColor(TrainCardColor.YELLOW);
-            playerHand.greenTrainCards = modelContainer.getTrainCardsByColor(TrainCardColor.GREEN);
-            playerHand.blueTrainCards = modelContainer.getTrainCardsByColor(TrainCardColor.BLUE);
-            playerHand.purpleTrainCards = modelContainer.getTrainCardsByColor(TrainCardColor.PURPLE);
-            playerHand.orangeTrainCards = modelContainer.getTrainCardsByColor(TrainCardColor.ORANGE);
+            playerHand.wild = modelContainer.getTrainCardsByColor(TrainCardColor.WILD);
+            playerHand.black = modelContainer.getTrainCardsByColor(TrainCardColor.BLACK);
+            playerHand.white = modelContainer.getTrainCardsByColor(TrainCardColor.WHITE);
+            playerHand.red = modelContainer.getTrainCardsByColor(TrainCardColor.RED);
+            playerHand.yellow = modelContainer.getTrainCardsByColor(TrainCardColor.YELLOW);
+            playerHand.green = modelContainer.getTrainCardsByColor(TrainCardColor.GREEN);
+            playerHand.blue = modelContainer.getTrainCardsByColor(TrainCardColor.BLUE);
+            playerHand.purple = modelContainer.getTrainCardsByColor(TrainCardColor.PURPLE);
+            playerHand.orange = modelContainer.getTrainCardsByColor(TrainCardColor.ORANGE);
+            
+           
        }
 
     function setTrainImage(modelContainer)
@@ -135,7 +137,31 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
     {
         updateGameInformation(modelContainer);
     });
-    
+
+    $rootScope.$on('model:SelectDestinations', function (event, modelContainer)
+    {
+        updateGameInformation(modelContainer);
+    });
+
+    $rootScope.$on('model:TurnStartedNotification', function (event, modelContainer)
+    {
+        updateGameInformation(modelContainer);
+    });
+    $rootScope.$on('model:AvailableTrainCardsNotification', function (event, modelContainer)
+    {
+        updateGameInformation(modelContainer);
+    });
+    $rootScope.$on('model:DrawTrainCard', function (event, modelContainer)
+    {
+        updateGameInformation(modelContainer);
+    });
+    $rootScope.$on('model:BuyRoute', function (event, modelContainer)
+    {
+        updateGameInformation(modelContainer);
+    });
+
+
+
 //BOARD METHODS////////////////////////////////////////
 
 
@@ -399,7 +425,7 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
                 if(routeToHighlight != -1)
                 {
                     highlightRoute(routeToHighlight);
-                    openBuyRouteModal(1);
+                    openBuyRouteModal(routeToHighlight);
 
                 }
             }
@@ -544,22 +570,83 @@ function trackTransforms(context){
     };
 
 
+
+
+
 //---------------------------Buy Route modal -------------------------------------------------------
+
+
+    var modalColors = [];
+    function defineCardSelectionColors(routeColor)
+          {
+               modalColors = [];
+               if(routeColor == TrackColor.GRAY)
+               {
+                  for(var cardColor in playerHand)
+                  {
+                     if(playerHand[cardColor] > 0)
+                     {
+
+                        var colorInfo = {};
+                        colorInfo[cardColor] = playerHand[cardColor];
+                        modalColors.push(colorInfo);
+
+
+                     }
+                  }
+
+               }
+               else
+               {
+                     if(playerHand[routeColor] > 0)
+                     {
+                         var cardColor = TrainCardColor.get(routeColor);
+                         var colorInfo = {};
+                         colorInfo[cardColor] =  playerHand[cardColor];;
+                         modalColors.push(colorInfo);
+
+                     }
+
+               }
+
+
+          }
+
+
+
+
+
+
+
+
 	function openBuyRouteModal(routeIndex)
 	{
 
         var routeInfo = StaticTrackList[routeIndex];
+        defineCardSelectionColors(routeInfo.trackColor);
 
 		var modalInstance = $uibModal.open({
 			  animation: true,
 			  templateUrl: 'buyRoute.html',
 			  controller: 'buyRouteCtrl',
 
+
+
 			  resolve:
 			  {
-			        routeInfo: function()
+			        routeColor: function()
 			        {
-			            return routeInfo;
+			            return routeInfo.trackColor;
+			        },
+
+			        modalColors: function()
+			        {
+			            return modalColors;
+			        },
+			        
+			        routeCost: function()
+			        {
+			            return routeInfo.trainsRequired;
 			        },
 
 			        playerHand: function()
@@ -580,61 +667,108 @@ function trackTransforms(context){
 });
 
 // Destination modal's controller ------------------------------------------------------------------------
-app.controller('buyRouteCtrl', function ($scope, $uibModalInstance, routeInfo, playerHand) {
+app.controller('buyRouteCtrl', function ($scope, $uibModalInstance, routeColor, routeCost, playerHand, modalColors) {
 
-
-      $scope.alert = {showAlert: false, message: "", type:""};
-
+     $scope.alert = {showAlert: false, message: "", type:""};
 
       $scope.colors = [];
-      if($scope.playerHand[wildTrainCards] == 0)
+      for(var colorIndex in modalColors)
       {
-            $scope.colors = ['wild'];
+        for(var color in modalColors[colorIndex])
+
+        $scope.colors.push(color);
       }
 
+      
 
 
-
-      $scope.numbers = [1,2,3,4,5,6,7,8,9];
-      $scope.trainCardPath = "/images/trainCards/ttr-train-black.jpg";
+      $scope.normalTrainNumbers = [];
+      $scope.wildNumbers = [];
+      $scope.trainCardPath = "";
       $scope.trainCost = "0";
       $scope.wildCost = "0";
-      $scope.trainColor = "black";
+      $scope.trainColor = "Select A Color";
 
-      $scope.ok = function () {
+
+        for(var modalColor in modalColors[0])
+        {
+            if(modalColor == 'wild')
+            {
+                for(var counter = 0; counter <= modalColors[colorIndex][color]; counter ++ )
+                 {
+                    $scope.wildNumbers.push(counter);
+                 }
+            }
+        }
+
+
+     $scope.ok = function () {
 
 
 
       };
 
+
       $scope.selectColor = function(color)
       {
+        $scope.normalTrainNumbers = [];
+        for(var colorIndex in modalColors)
+        {
+            for(var modalColor in modalColors[colorIndex])
+            {
+                if(modalColor == color)
+                {
+                    for(var counter = 0; counter <= modalColors[colorIndex][color]; counter ++ )
+                     {
+                        $scope.normalTrainNumbers.push(counter);
+                     }
+                }
+            }
+
+        }
         switch(color)
         {
-            case "blue":
-            $scope.trainCardPath = "/images/trainCards/ttr-train-blue.jpg";
-            $scope.trainColor = "blue";
-            break;
             case "red":
             $scope.trainCardPath = "/images/trainCards/ttr-train-red.jpg";
-            $scope.trainColor = "red";
+            $scope.trainColor = "Red";
+            break;
+            case "blue":
+            $scope.trainCardPath = "/images/trainCards/ttr-train-blue.jpg";
+            $scope.trainColor = "Blue";
+            break;
+            case "black":
+            $scope.trainCardPath = "/images/trainCards/ttr-train-black.jpg";
+            $scope.trainColor = "Black";
             break;
             case "green":
             $scope.trainCardPath = "/images/trainCards/ttr-train-green.jpg";
-            $scope.trainColor = "green";
+            $scope.trainColor = "Green";
             break;
-            case "wild":
-            $scope.trainCardPath = "/images/trainCards/ttr-train-wild.jpg";
-            $scope.trainColor = "green";
+            case "orange":
+            $scope.trainCardPath = "/images/trainCards/ttr-train-orange.jpg";
+            $scope.trainColor = "Orange";
+            break;
+            case "purple":
+            $scope.trainCardPath = "/images/trainCards/ttr-train-purple.jpg";
+            $scope.trainColor = "Purple";
+            break;
+            case "yellow":
+            $scope.trainCardPath = "/images/trainCards/ttr-train-yellow.jpg";
+            $scope.trainColor = "Yellow";
+            break;
+            case "white":
+            $scope.trainCardPath = "/images/trainCards/ttr-train-white.jpg";
+            $scope.trainColor = "White";
             break;
             default:
-            $scope.trainCardPath = "/images/trainCards/ttr-train-black.jpg";
-            $scope.trainColor = "black";
+            $scope.trainCardPath = "/images/trainCards/ttr-train-white.jpg";
+            $scope.trainColor = "Select Train Color";
+            break;
 
 
         }
 
-        //alert(color);
+
       }
 
       $scope.selectTrainCost = function(cost)

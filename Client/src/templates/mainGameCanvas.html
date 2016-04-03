@@ -42,7 +42,7 @@
                             {{trainCost}} <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="btn-append-to-single-button">
-                            <li ng-repeat="number in numbers" role="menuitem" ng-click="selectTrainCost(number)">
+                            <li ng-repeat="number in normalTrainNumbers" role="menuitem" ng-click="selectTrainCost(number)">
                                 <a>{{number}}</a>
                             </li>
 
@@ -79,7 +79,7 @@
                         {{wildCost}} <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="btn-append-to-single-button">
-                        <li ng-repeat="number in numbers" role="menuitem" ng-click="selectWildCost(number)">
+                        <li ng-repeat="number in wildNumbers" role="menuitem">
                             <a>{{number}}</a>
                         </li>
 
