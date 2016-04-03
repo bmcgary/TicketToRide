@@ -77,7 +77,7 @@ app.controller('mainGameRightTabsCtrl', function ($scope, $rootScope, ClientAPI,
 			{
 				case 'destination':
 					//if player has already drawn a card the option to draw a destination card is no longer an option
-					return false;
+					return $scope.secondTrainCardRound;
 					break;
 				case 5:
 					return false;
@@ -139,13 +139,12 @@ app.controller('mainGameRightTabsCtrl', function ($scope, $rootScope, ClientAPI,
 
 	function checkEligibility(input)
 	{
-		if($scope.cardsVisible[input] === 'wild' && !canDrawWild)
+		if($scope.cardsVisible[input] === 'wild' && $scope.secondTrainCardRound)
 			return false;	
 		return true;
 	}
 
 	var states = {'notYourTurn':notYourTurnState, 'yourTurn':yourTurnState};
-	var canDrawWild = false;
 
 //---------------------------Destination modal -------------------------------------------------------
 	function openDestinationModal(amountOfdestsToPick, imagesArray)

@@ -250,9 +250,9 @@ $scope.games = [
 	//----------------------- Load view from model------------------------------------
 	var fillViewFromModel = function (modelContainer)
 	{
-		console.log(modelContainer);
+		$scope.secondTrainCardRound = modelContainer.playerMustDrawAgain();
 	
-		$scope.topNavMessage = "Waiting for " + modelContainer.getPlayerNameById(modelContainer.getTurnIndex()) + "to take their turn";
+		$scope.topNavMessage = "Waiting for " + modelContainer.getPlayerNameById(modelContainer.getTurnIndex()) + " to take their turn";
 
 		//------------- Destinations in your hand
 		$scope.destinations.length = 0;
