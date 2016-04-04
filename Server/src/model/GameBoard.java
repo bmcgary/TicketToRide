@@ -78,15 +78,16 @@ public class GameBoard {
 	public boolean canDrawDeckTrainCar(){
 		if(this.deckTrainCarCards.size() == 0){
 			if(this.discardedTrainCarCards.size() > 0){
-				Collections.shuffle(discardedTrainCarCards);
-				deckTrainCarCards = discardedTrainCarCards;
-				discardedTrainCarCards = new ArrayList<TrackColor>();
+				reshuffleAndFillVisible();
+				//Collections.shuffle(discardedTrainCarCards);
+				//deckTrainCarCards = discardedTrainCarCards;
+				//discardedTrainCarCards = new ArrayList<TrackColor>();
 			}
 			else{
 				return false;
 			}
 		}
-		return true;
+		return !deckTrainCarCards.isEmpty();
 	}
 
 	/**
@@ -166,9 +167,33 @@ public class GameBoard {
 		}
 		else{
 			TrackColor output = visibleTrainCarCards[index];
-			visibleTrainCarCards[index] = deckTrainCarCards.get(0);
-			deckTrainCarCards.remove(0);
+			if (deckTrainCarCards.size() == 0)
+			{
+				visibleTrainCarCards[index] = null;
+			}
+			else
+			{
+				visibleTrainCarCards[index] = deckTrainCarCards.get(0);
+				deckTrainCarCards.remove(0);
+			}
 			return output;
+		}
+	}
+	
+	private void reshuffleAndFillVisible()
+	{
+		assert(deckTrainCarCards.isEmpty());
+		deckTrainCarCards = discardedTrainCarCards;
+		discardedTrainCarCards = new ArrayList<TrackColor>();
+		Collections.shuffle(deckTrainCarCards);
+		
+		//fill visibleCards where necessary and able
+		for (int i = 0; i < visibleTrainCarCards.length; i++)
+		{
+			if (visibleTrainCarCards[i] == null && !deckTrainCarCards.isEmpty())
+			{
+				visibleTrainCarCards[i] = deckTrainCarCards.remove(0);
+			}
 		}
 	}
 	
@@ -181,6 +206,10 @@ public class GameBoard {
 		if(this.canDrawDeckTrainCar()){
 			TrackColor output = deckTrainCarCards.get(0);
 			deckTrainCarCards.remove(0);
+			if (deckTrainCarCards.isEmpty() && !discardedTrainCarCards.isEmpty())
+			{
+				reshuffleAndFillVisible();
+			}
 			return output;
 		}
 		throw new InternalServerException("If this gets reached, Trent messed up somehow. Check GameBoard::drawDeckTrainCar()");
@@ -190,9 +219,14 @@ public class GameBoard {
 	 * Adds the given cards to the discard pile
 	 * @param cards the cards to be discarded
 	 */
-	public void discardTrainCards(List<TrackColor> cards){
+	public void discardTrainCards(List<TrackColor> cards){		
 		for(TrackColor card : cards){
 			discardedTrainCarCards.add(card);
+		}
+		
+		if (deckTrainCarCards.isEmpty())
+		{
+			reshuffleAndFillVisible();
 		}
 	}
 	
