@@ -62,6 +62,7 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
          purple:0,
          orange:0
     };
+    var playerColorWord;
 
     function updateGameInformation(modelContainer)
     {
@@ -69,6 +70,7 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         gameID = modelContainer.getGameId();
         updatePlayerHand(modelContainer);
         setTrainImage(modelContainer);
+        redraw();
 
     }
 
@@ -93,21 +95,27 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
            {
                case PlayerColor.BLACK:
                    trainImage.src   = '/images/pieces/ttr-piece-black-sq.jpg';
+                   playerColorWord = "black";
                    break;
                case PlayerColor.BLUE:
                    trainImage.src   = '/images/pieces/ttr-piece-blue-sq.jpg';
+                   playerColorWord = "blue";
                    break;
                case PlayerColor.GREEN:
                    trainImage.src   = '/images/pieces/ttr-piece-green-sq.jpg';
+                   playerColorWord = "green";
                    break;
                case PlayerColor.RED:
                    trainImage.src   = '/images/pieces/ttr-piece-red-sq.jpg';
+                   playerColorWord = "red";
                    break;
                case PlayerColor.YELLOW:
                    trainImage.src   = '/images/pieces/ttr-piece-yellow-sq.jpg';
+                   playerColorWord = "yellow";
                    break;
                default:
                    trainImage.src   = '/images/pieces/ttr-piece-blue-sq.jpg';
+                   playerColorWord = "blue";
            }
     }
 
@@ -175,6 +183,7 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         if(gameStarted)
         {
         //Draw existing routes
+
         }
 
     }
@@ -229,7 +238,11 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
 
     };
 
+    function drawExistingRoutes()
+    {
 
+
+    }
 
 
     function drawRoute(routeId){
@@ -656,9 +669,16 @@ function trackTransforms(context){
 			  }
 			});
 
-            modalInstance.result.then(function (selectedItem) {
-                  $scope.selected = selectedItem;
-                }, function () {
+            modalInstance.result.then(
+
+                function (buyRouteInfo) {
+
+                  var colorToSend = buyRouteInfo["color"];
+                  var wildsToSend = buyRouteInfo["wilds"];
+
+                  ClientAPI.buyRoute(gameID, routeIndex, colorToSend, wildsToSend);
+                },
+                function () {
 
                 });
 
@@ -704,7 +724,20 @@ app.controller('buyRouteCtrl', function ($scope, $uibModalInstance, routeColor, 
 
      $scope.ok = function () {
 
-
+        if($scope.trainColor != "Select A Color")
+        {
+            if(($scope.trainCost + $scope.wildCost) >= routeCost)
+               {
+                    var lowerTrainColor = $scope.trainColor.toLowerCase();
+                    var wildCardsUsed = $scope.wildCost;
+                    var buyRouteInfo = {"color":lowerTrainColor, "wilds":wildCardsUsed};
+                   $uibModalInstance.close(buyRouteInfo);
+               }
+            else
+            {
+                alert("Please select more trains.");
+            }
+        }
 
       };
 
