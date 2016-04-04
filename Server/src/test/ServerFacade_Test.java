@@ -111,13 +111,13 @@ public class ServerFacade_Test {
 	//	serverFacade.
 		serverFacade.buyRoute(user.getPlayerID(), game.getGameID(), ctoc1, cards);
 		//no enough resources
-		
+
 		cards.put(TrackColor.Orange, 0);
 
-		
+
 		assertFalse(serverFacade.getAllGames().get(game.getGameID()).getPlayerManager().canBuyTrack(user.getPlayerID(), 2));
 		assertFalse(serverFacade.getAllGames().get(game.getGameID()).getPlayerManager().canBuyTrackWithCards(user.getPlayerID(), 2, TrackColor.Black, cards));
-	
+
 	}
 
 

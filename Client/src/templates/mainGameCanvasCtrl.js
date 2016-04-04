@@ -64,12 +64,15 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
     };
     var playerColorWord;
 
+    var routesPurchased;
+
     function updateGameInformation(modelContainer)
     {
         currentGameModel = modelContainer
         gameID = modelContainer.getGameId();
         updatePlayerHand(modelContainer);
         setTrainImage(modelContainer);
+        routesPurchased = modelContainer.getRoutesOwned();
         redraw();
 
     }
@@ -183,7 +186,7 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         if(gameStarted)
         {
         //Draw existing routes
-
+        drawExistingRoutes();
         }
 
     }
