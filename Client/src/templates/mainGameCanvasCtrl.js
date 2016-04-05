@@ -122,6 +122,36 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
            }
     }
 
+    function setOtherTrainImage(color)
+    {
+        switch(color)
+           {
+               case PlayerColor.BLACK:
+                   trainImage.src   = '/images/pieces/ttr-piece-black-sq.jpg';
+                   playerColorWord = "black";
+                   break;
+               case PlayerColor.BLUE:
+                   trainImage.src   = '/images/pieces/ttr-piece-blue-sq.jpg';
+                   playerColorWord = "blue";
+                   break;
+               case PlayerColor.GREEN:
+                   trainImage.src   = '/images/pieces/ttr-piece-green-sq.jpg';
+                   playerColorWord = "green";
+                   break;
+               case PlayerColor.RED:
+                   trainImage.src   = '/images/pieces/ttr-piece-red-sq.jpg';
+                   playerColorWord = "red";
+                   break;
+               case PlayerColor.YELLOW:
+                   trainImage.src   = '/images/pieces/ttr-piece-yellow-sq.jpg';
+                   playerColorWord = "yellow";
+                   break;
+               default:
+                   trainImage.src   = '/images/pieces/ttr-piece-blue-sq.jpg';
+                   playerColorWord = "blue";
+           }
+    }
+
 
                     
                     
@@ -185,8 +215,8 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         context.drawImage(mapImage,0,0,890,460);
         if(gameStarted)
         {
-        //Draw existing routes
-        drawExistingRoutes();
+             //Draw existing routes
+            drawExistingRoutes();
         }
 
     }
@@ -243,10 +273,18 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
 
     function drawExistingRoutes()
     {
+        for(var routesPurchasedIterator in routesPurchased)
+        {
+            var boughtRouteIndex = routesPurchased[routesPurchasedIterator];
+            var currentColor = currentGameModel.getPlayerColorByRouteId(boughtRouteIndex);
+            setOtherTrainImage(currentColor);
+            drawRoute(boughtRouteIndex);
+
+
+        }
 
 
     }
-
 
     function drawRoute(routeId){
         var route = StaticTrackList[routeId].tracks;
