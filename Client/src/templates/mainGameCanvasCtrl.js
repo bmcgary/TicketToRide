@@ -679,7 +679,7 @@ function trackTransforms(context){
             if($scope.secondTrainCardRound)
             {
 
-                return true;
+                return false;
 
             }
 
