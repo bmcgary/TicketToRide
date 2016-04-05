@@ -12,7 +12,9 @@ app.factory('GameBoard', function (TrainCardColor, StaticTrackList) {
     GameBoard.prototype.playerIdForTheLongestBonus = -1;
 
     //constructor 
-    function GameBoard () {}
+    function GameBoard () {
+        
+    }
 
     GameBoard.prototype.updateCardsVisible = function (availableTrainCards) {
         for(var i = 0; i < 5; i++) {
@@ -20,8 +22,11 @@ app.factory('GameBoard', function (TrainCardColor, StaticTrackList) {
         }
     }
 
-    GameBoard.prototype.setRoutesPurchased = function (routes, trainColor) {
+    GameBoard.prototype.resetRoutesPurchased = function () {
         this.routesPurchased = {};
+    }
+
+    GameBoard.prototype.addRoutesPurchased = function (routes, trainColor) {
         for(var index in routes) {
             this.addRoutePurchased(routes[index], trainColor);
         }

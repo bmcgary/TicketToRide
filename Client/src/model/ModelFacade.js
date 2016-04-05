@@ -142,6 +142,8 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
     {
         var game = usersGames[parameters.gameID];
         var playersFromJSON = parameters.players;
+        game.board.resetRoutesPurchased();
+        
         for(var index in playersFromJSON)
         {
             var playerId = playersFromJSON[index].playerOrder;
@@ -149,8 +151,7 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
 
             playerInModel.trainsLeft = playersFromJSON[index].trainsLeft;
             playerInModel.points = playersFromJSON[index].points;
-            game.board.setRoutesPurchased(playersFromJSON[index].routes, playerInModel.playerColor);
-
+            game.board.addRoutesPurchased(playersFromJSON[index].routes, playerInModel.playerColor);
         }
         //get game history???
 

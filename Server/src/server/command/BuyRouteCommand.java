@@ -40,14 +40,22 @@ public class BuyRouteCommand extends TurnStartedNotificationCommand {
 		responses.add(responseWrapper);
 
 		try {
-			CityToCityRoute route = ServerFacade.getCityMapping().get(routeIndex);
+			CityToCityRoute route = ServerFacade.getCityMapping().get(routeIndex - 1);
 			Map<TrackColor, Integer> cards = Collections.singletonMap(TrackColor.getColor(trainColor), route.getNumTrains() - numberOfWilds);
 			serverFacade.buyRoute(userId, super.gameId, route, cards);
 			responses.addAll(new SendClientModelInformationCommand(super.gameId).setSendPublic(true).execute(userId));
-		} catch (PreConditionException | InternalServerException| OutOfBoundsException e) {
+		} catch (PreConditionException e) {
 			responses.clear();
 			responses.add(responseWrapper);
-			responseWrapper.setResponse(Response.newServerErrorResponse());
+			responseWrapper.setResponse(Response.newServerErrorResponse().setMessage("Precondition error: " + e.getMessage()));
+		} catch (InternalServerException e) {
+			responses.clear();
+			responses.add(responseWrapper);
+			responseWrapper.setResponse(Response.newServerErrorResponse().setMessage("Internal error: " + e.getMessage()));
+		} catch (OutOfBoundsException e) {
+			responses.clear();
+			responses.add(responseWrapper);
+			responseWrapper.setResponse(Response.newServerErrorResponse().setMessage("Out of Bounds error: " + e.getMessage()));
 		}
 
 		return responses;
