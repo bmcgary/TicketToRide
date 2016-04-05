@@ -441,7 +441,7 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
                 if(routeToHighlight != -1)
                 {
                     highlightRoute(routeToHighlight);
-                    
+
                     openBuyRouteModal(routeToHighlight);
 
                 }
