@@ -64,17 +64,7 @@ app.factory('ModelContainer', function () {
     };
 
     ModelContainer.prototype.getPlayerColorByRouteId = function(routeId) {
-        var playerId = this.model.board.tracksPurchased[routeId];
-
-        if(this.getPlayerId() == playerId) {
-            return this.getPlayerColor();
-        } else {
-            for(var i = 0; i < this.getOpponentsSize(); i++) {
-                if(this.getOpponentPlayerId(i) == playerId) {
-                    return this.getOpponentColor(i);
-                }
-            }
-        }
+        return this.model.board.tracksPurchased[routeId];
     };
 
     ModelContainer.prototype.getPlayerIdForTheLongestBonus = function() {

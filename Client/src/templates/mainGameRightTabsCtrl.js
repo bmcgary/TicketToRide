@@ -38,17 +38,21 @@ app.controller('mainGameRightTabsCtrl', function ($scope, $rootScope, ClientAPI,
 					{selected:false, url:'ttr-route-calgary-phoenix.jpg'},
 					{selected:false, url:'ttr-route-calgary-saltLakeCity.jpg'}];*/
 		var imagesArray = [];
+		var firstRound = parameters.isFirstRound();
 		parameters = parameters.getTemporaryStorageOfDestinationCardsToBeSelectedFrom();
 		for(index in parameters)
 		{
 
-			imagesArray.push({selected:false, url:'ttr-route-' + camelize(parameters[index].city1) + 
-					'-' + camelize(parameters[index].city2) + '.jpg'});
+			imagesArray.push({selected:false, 
+				url:'ttr-route-' + camelize(parameters[index].city1) + '-' + camelize(parameters[index].city2) + '.jpg', 
+				city1:parameters[index].city1,
+				city2:parameters[index].city2,
+				points: parameters[index].points});
 		}
 
-		var numberOfDestiantionsToPick = 1;
+		
 		//-----------------------------------
-		states[$scope.currentTurn]['getDestinationCardsCallBack'](numberOfDestiantionsToPick, imagesArray);
+		states[$scope.currentTurn]['getDestinationCardsCallBack'](firstRound, imagesArray);
 
 
 			function camelize(str) {//The server sends back city names with spaces but the files are camelcased. So a converstion is needed
@@ -63,6 +67,7 @@ app.controller('mainGameRightTabsCtrl', function ($scope, $rootScope, ClientAPI,
 
 
 	//---------------------------- States used ------------------------------------------
+
 	var notYourTurnState = 
 	{
 		'disableCard':function(input){return true;},
@@ -126,15 +131,53 @@ app.controller('mainGameRightTabsCtrl', function ($scope, $rootScope, ClientAPI,
 			}
 		},
 		//what to do once the destination cards have come back from the server
-		'getDestinationCardsCallBack':function(numberOfCardsToSelect, imagesArray){
+		'getDestinationCardsCallBack':function(firstRound, imagesArray){
 				//imagesArray we are exepecting:
 				/*[{selected:false, url:'ttr-route-boston-miami.jpg'},
 					{selected:false, url:'ttr-route-calgary-phoenix.jpg'},
 					{selected:false, url:'ttr-route-calgary-saltLakeCity.jpg'}];*/
 				//fix the imagesArray to look like that in case is isn't already
+				if(firstRound)
+					openDestinationModal(2, imagesArray);
+				else
+				{
+					//show the thing on the right
+					$scope.selectDestOnRight = true;
+					$scope.availableDestsToPickFrom = imagesArray;
 
-				openDestinationModal(numberOfCardsToSelect, imagesArray);
+
+					//console.log("Select destination during game");
+					//ClientAPI.selectDestinations($scope.currentGameId,[1]);
+				}
 			}
+	}
+
+	var states = {'notYourTurn':notYourTurnState, 'yourTurn':yourTurnState};
+
+	$scope.selectDestSubmitPressed = function()
+	{
+		var selectedIndexes = [];
+		
+		for(index in $scope.availableDestsToPickFrom)
+		{
+			if($scope.availableDestsToPickFrom[index]['selected'])
+			{
+				selectedIndexes.push(parseInt(index));
+			}
+		}
+
+		if(selectedIndexes.length >= 1)//this is only in game selection so its always 1
+		{
+			$scope.selectDestOnRight = false;
+    		ClientAPI.selectDestinations($scope.currentGameId,selectedIndexes);
+		}
+		else
+			alert("You need to chose at least 1 destination card", 'danger');
+	}
+
+	$scope.destCardSelected = function(index)
+	{
+		$scope.availableDestsToPickFrom[index]['selected'] = !$scope.availableDestsToPickFrom[index]['selected'];
 	}
 
 	function checkEligibility(input)
@@ -143,8 +186,6 @@ app.controller('mainGameRightTabsCtrl', function ($scope, $rootScope, ClientAPI,
 			return false;	
 		return true;
 	}
-
-	var states = {'notYourTurn':notYourTurnState, 'yourTurn':yourTurnState};
 
 //---------------------------Destination modal -------------------------------------------------------
 	function openDestinationModal(amountOfdestsToPick, imagesArray)
@@ -174,7 +215,7 @@ app.controller('mainGameRightTabsCtrl', function ($scope, $rootScope, ClientAPI,
 			{
 				
 		  		console.log(selectedItems); //from here ship it out via the ClientAPI
-				ClientAPI.selectDestinations($scope.currentGameId,selectedItems)
+				ClientAPI.selectDestinations($scope.currentGameId,selectedItems);
 			});//dont need a function for canceling since that isn't allowed
 	}
 

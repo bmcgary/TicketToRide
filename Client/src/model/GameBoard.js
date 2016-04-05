@@ -13,13 +13,17 @@ app.factory('GameBoard', function (TrainCardColor, StaticTrackList) {
 
     //constructor 
     function GameBoard () {
-        this.routesPurchased = {};
+        
     }
 
     GameBoard.prototype.updateCardsVisible = function (availableTrainCards) {
         for(var i = 0; i < 5; i++) {
             this.cardsVisible[i] = availableTrainCards[i].color;
         }
+    }
+
+    GameBoard.prototype.resetRoutesPurchased = function () {
+        this.routesPurchased = {};
     }
 
     GameBoard.prototype.addRoutesPurchased = function (routes, trainColor) {
