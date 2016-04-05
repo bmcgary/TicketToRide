@@ -36,6 +36,9 @@ public class CityToCityRoute extends Route {
 		else if(this.getNumTrains() != obj.getNumTrains()){
 			return false;
 		}
+		else if(this.getTrackColor() != obj.getTrackColor()){
+			return false;
+		}
 		else{
 			return true;
 		}
