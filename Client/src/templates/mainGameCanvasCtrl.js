@@ -674,9 +674,10 @@ function trackTransforms(context){
 
     function canBuyRoute()
     {
-        if($scope.selectDestOnRight)
+    //from current model- if player must draw again- can't buy route
+        if(!$scope.selectDestOnRight)
         {
-            if($scope.secondTrainCardRound)
+            if(!$scope.secondTrainCardRound)
             {
 
                 return true;
