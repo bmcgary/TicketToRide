@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -175,9 +176,36 @@ public class GameBoard {
 			{
 				visibleTrainCarCards[index] = deckTrainCarCards.get(0);
 				deckTrainCarCards.remove(0);
-				//test comment for GitBash
+				if(excessWilds()){
+					replaceAllVisibleTrainCards();
+				}
 			}
 			return output;
+		}
+	}
+	
+	private boolean excessWilds(){
+		int totalWilds = 0;
+		for(int i = 0; i < 5; ++i){
+			if(visibleTrainCarCards[i].equals(TrackColor.None)){
+				totalWilds++;
+			}
+		}
+		
+		return totalWilds >= 3;
+	}
+	
+	private void replaceAllVisibleTrainCards(){
+		for(int i = 0; i < 5; ++i){
+			TrackColor card = visibleTrainCarCards[i];
+			if(card != null){
+				this.discardTrainCards(new ArrayList<TrackColor>(Arrays.asList(card)));
+			}
+			try {
+				visibleTrainCarCards[i] = this.drawDeckTrainCar();
+			} catch (InternalServerException e) {
+				visibleTrainCarCards[i] = null;
+			}
 		}
 	}
 	
@@ -295,6 +323,10 @@ public class GameBoard {
 		//add 5 cards from TrainCarDeck into the visible pile
 		for(int i = 0; i < this.visibleTrainCarCards.length; ++i){
 			this.visibleTrainCarCards[i] = this.drawDeckTrainCar();
+		}
+		
+		//redo visible train cards if there are too many wilds
+			replaceAllVisibleTrainCards();
 		}
 		
 		//use DestinationCards.txt to load in cities, destinationRoutes
