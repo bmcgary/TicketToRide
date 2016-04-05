@@ -18,6 +18,7 @@ import model.Player;
 import model.PlayerColor;
 import model.TestGame;
 import model.TestGameBoard;
+import model.TestPlayer;
 import model.TestPlayerManager;
 import model.TrackColor;
 
@@ -31,6 +32,7 @@ import server.ServerFacade;
 import server.exception.AddUserException;
 import server.exception.AlreadyLoggedInException;
 import server.exception.BadCredentialsException;
+import server.exception.GameOverException;
 import server.exception.InternalServerException;
 import server.exception.InvalidCredentialsException;
 import server.exception.OutOfBoundsException;
@@ -510,6 +512,272 @@ public class ServerFacade_Test {
 	 * @throws PreConditionException 
 	 */
 	
+	///start-> buy routes logic testing
+	
+	
+	@Test 
+	public void BuyRouteWrongInputsTest() throws AddUserException, InternalServerException, InvalidCredentialsException, PreConditionException, OutOfBoundsException
+	{
+
+		TestGame game = new TestGame();
+		int user1 = serverFacade.register("buyRoute1", "test1");
+		int user2 = serverFacade.register("buyRoute2", "test2");
+		serverFacade.createGame(game, user1, PlayerColor.Green);
+		
+		serverFacade.addPlayerToGame(user2, game.getGameID(), PlayerColor.Blue);
+		serverFacade.startGame(user1, game.getGameID());
+		
+		//have to selectDestinations First before can buy routes!!!
+		
+		serverFacade.selectDestinations(user1, game.getGameID(), new int[] {1,0});
+		serverFacade.selectDestinations(user2, game.getGameID(), new int[] {0,1});
+		
+		Map<TrackColor,Integer> addCards = new HashMap<TrackColor,Integer>();
+		for(int i =0; i < TrackColor.values().length;i++)
+		{
+			if(!addCards.containsKey(TrackColor.values()[i]))
+			{
+				addCards.put(TrackColor.values()[i],5);
+			}
+		}
+
+		City start = new City("Seattle");
+		City start2 = new City("Seattle_2");
+		City start3 = new City("Seattle_3");
+		game.getPlayerManager().addTrainCarCards(user1, addCards);
+		game.getPlayerManager().addTrainCarCards(user2, addCards);
+		City end = new City("Provo");
+		CityToCityRoute route = new CityToCityRoute(start, end, 5, TrackColor.Green);
+		CityToCityRoute route2 = new CityToCityRoute(start2, end, 5, TrackColor.Blue);
+		CityToCityRoute route3 = new CityToCityRoute(start3, end, 5, TrackColor.Orange);
+
+
+		Map<TrackColor,Integer> cards = new HashMap<TrackColor,Integer>();
+		cards.put(TrackColor.Green, 5);
+		
+		assertFalse(serverFacade.canBuyRoute(0, game.getGameID(), route2, cards));
+		assertFalse(serverFacade.canBuyRoute(0,0,null,null));
+
+		assertFalse(serverFacade.canBuyRoute(user1, game.getGameID(), route3, cards));
+
+		assertFalse(serverFacade.canBuyRoute(user1, game.getGameID(), route, null));
+	}
+	
+	/*
+	 * 
+	 * buy route should success case
+	 * test may have problems
+	 */
+	@Test
+	public void BuyRouteSuccess() throws AddUserException, InternalServerException, InvalidCredentialsException, PreConditionException, OutOfBoundsException
+	{
+		int user1 = serverFacade.register("buyR11", "test1");
+		int user2 = serverFacade.register("buyR22", "test2");
+		
+		TestGame game = new TestGame();
+		serverFacade.createGame(game, user1, PlayerColor.Black);
+		serverFacade.addPlayerToGame(user2, game.getGameID(), PlayerColor.Yellow);
+		
+		
+		serverFacade.startGame(user1, game.getGameID());
+		serverFacade.selectDestinations(user1, game.getGameID(), new int[] {1,0});
+		serverFacade.selectDestinations(user2, game.getGameID(), new int[] {0,1});
+		
+		
+		Map<TrackColor,Integer> addCards = new HashMap<TrackColor,Integer>();
+		//give 15 cards this time
+		for(int i =0; i < TrackColor.values().length;i++)
+		{
+			if(!addCards.containsKey(TrackColor.values()[i]))
+			{
+				addCards.put(TrackColor.values()[i],10);
+			}
+		}
+		game.getPlayerManager().addTrainCarCards(user1, addCards);
+		game.getPlayerManager().addTrainCarCards(user2, addCards);
+		
+		City start = new City("Beijing");
+		City end = new City("L A");
+		CityToCityRoute route = new CityToCityRoute(start, end, 5, TrackColor.Black);
+		
+		Map<TrackColor,Integer> cards = new HashMap<TrackColor,Integer>();
+		cards.put(TrackColor.Black, 5);
+		
+		assertFalse(serverFacade.canBuyRoute(user1, game.getGameID(), route, cards));
+		//serverFacade.buyRoute(user1, game.getGameID(), route, cards);
+
+		
+		
+		TestPlayerManager CurrentP = (TestPlayerManager)game.getPlayerManager();
+		
+		TestPlayer player1 = (TestPlayer)CurrentP.getPlayerByID(user1);
+		assertEquals(player1.getNumTrainsLeft(),45);
+		
+
+		List<TrackColor> discarded = game.getGameBoard().getDiscardedTrainCarCards();
+		assertEquals(discarded.size(),0);
+
+		
+	
+	}
+	@Test(expected = PreConditionException.class)
+	public void faillingToBuyRoutes() throws AddUserException, InternalServerException, InvalidCredentialsException, PreConditionException, OutOfBoundsException, BadCredentialsException, AlreadyLoggedInException, GameOverException
+	{
+		int user1 = serverFacade.register("buyRFaill1", "test1");
+		int user2 = serverFacade.register("buyRFaill2", "test2");
+		
+		TestGame game = new TestGame();
+		serverFacade.createGame(game, user1, PlayerColor.Black);
+		serverFacade.addPlayerToGame(user2, game.getGameID(), PlayerColor.Yellow);
+		
+		
+		serverFacade.startGame(user1, game.getGameID());
+		serverFacade.selectDestinations(user1, game.getGameID(), new int[] {1,0});
+		serverFacade.selectDestinations(user2, game.getGameID(), new int[] {0,1});
+		
+		
+		Map<TrackColor,Integer> addCards = new HashMap<TrackColor,Integer>();
+		for(int i =0; i < TrackColor.values().length;i++)
+		{
+			if(!addCards.containsKey(TrackColor.values()[i]))
+			{
+				addCards.put(TrackColor.values()[i],5);
+			}
+		}
+		game.getPlayerManager().addTrainCarCards(user1, addCards);
+		game.getPlayerManager().addTrainCarCards(user2, addCards);
+		
+		City start = new City("Seattle33");
+		City end = new City("Provo33");
+		CityToCityRoute route = new CityToCityRoute(start, end, 5, TrackColor.Green);
+		Map<TrackColor,Integer> cards = new HashMap<TrackColor,Integer>();
+		cards.put(TrackColor.Green, 5);
+		
+		//have problems
+		//assertFalse(serverFacade.canBuyRoute(3333, game.getGameID(), route, cards));
+		
+		assertFalse(serverFacade.canBuyRoute(user2, game.getGameID(), route, cards));
+		
+		game.getPlayerManager().drewAlreadyCurrentTurn = true;
+		assertFalse(serverFacade.canBuyRoute(user1, game.getGameID(), route, cards));
+				
+		game.getPlayerManager().advanceTurn();
+		serverFacade.getDestinations(user1, game.getGameID());
+		
+		assertFalse(serverFacade.canBuyRoute(user1, game.getGameID(), route, cards));
+		
+		serverFacade.selectDestinations(user1, game.getGameID(), new int[]{0});
+		
+	}
+	@Test
+	public void BuyRouteClaimedRoutesAlready() throws AddUserException, InternalServerException, InvalidCredentialsException, PreConditionException, OutOfBoundsException, GameOverException
+	{
+		int user1 = serverFacade.register("buyRFail122", "test1");
+		int user2 = serverFacade.register("buyRFail233", "test2");
+		
+		TestGame game = new TestGame();
+		serverFacade.createGame(game, user1, PlayerColor.Black);
+		serverFacade.addPlayerToGame(user2, game.getGameID(), PlayerColor.Yellow);
+		
+		
+		serverFacade.startGame(user1, game.getGameID());
+		serverFacade.selectDestinations(user1, game.getGameID(), new int[] {1,0});
+		serverFacade.selectDestinations(user2, game.getGameID(), new int[] {0,1});
+		
+		
+		Map<TrackColor,Integer> addCards = new HashMap<TrackColor,Integer>();
+		for(int i =0; i < TrackColor.values().length;i++)
+		{
+			if(!addCards.containsKey(TrackColor.values()[i]))
+			{
+				addCards.put(TrackColor.values()[i],5);
+			}
+		}
+		game.getPlayerManager().addTrainCarCards(user1, addCards);
+		game.getPlayerManager().addTrainCarCards(user2, addCards);
+		
+		City start = new City("Seattle333");
+		City end = new City("Provo333");
+		CityToCityRoute route = new CityToCityRoute(start, end, 5, TrackColor.Green);
+		Map<TrackColor,Integer> cards = new HashMap<TrackColor,Integer>();
+		cards.put(TrackColor.Green, 5);
+		game.getGameBoard().claimRoute(user1, route);
+		assertFalse(serverFacade.canBuyRoute(user2, game.getGameID(), route, cards));
+		
+	//	assertFalse(serverFacade.canBuyRoute(user2, game.getGameID(), route, cards));
+		
+		
+	//	game.getPlayerManager().drewAlreadyCurrentTurn = true;
+	//	assertFalse(serverFacade.canBuyRoute(user1, game.getGameID(), route, cards));
+				
+	//	game.getPlayerManager().advanceTurn();
+	//	serverFacade.getDestinations(user1, game.getGameID());
+		
+	//	assertFalse(serverFacade.canBuyRoute(user1, game.getGameID(), route, cards));
+		
+	//	serverFacade.selectDestinations(user1, game.getGameID(), new int[]{0});
+		
+
+	}
+	@Test
+	public void BuyRouteWrongNoEnoughResources() throws AddUserException, InternalServerException, InvalidCredentialsException, PreConditionException, OutOfBoundsException, GameOverException
+	{
+		int user1 = serverFacade.register("buyRFail1", "test1");
+		int user2 = serverFacade.register("buyRFail2", "test2");
+		
+		TestGame game = new TestGame();
+		serverFacade.createGame(game, user1, PlayerColor.Black);
+		serverFacade.addPlayerToGame(user2, game.getGameID(), PlayerColor.Yellow);
+		
+		
+		serverFacade.startGame(user1, game.getGameID());
+		serverFacade.selectDestinations(user1, game.getGameID(), new int[] {1,0});
+		serverFacade.selectDestinations(user2, game.getGameID(), new int[] {0,1});
+		
+		
+		Map<TrackColor,Integer> addCards = new HashMap<TrackColor,Integer>();
+		for(int i =0; i < TrackColor.values().length;i++)
+		{
+			if(!addCards.containsKey(TrackColor.values()[i]))
+			{
+				addCards.put(TrackColor.values()[i],5);
+			}
+		}
+		game.getPlayerManager().addTrainCarCards(user1, addCards);
+		game.getPlayerManager().addTrainCarCards(user2, addCards);
+		
+		City start = new City("Seattle3333");
+		City end = new City("Provo3333");
+		
+		CityToCityRoute route1 = new CityToCityRoute(start, end, 3, TrackColor.Green);
+		Map<TrackColor,Integer> cards = new HashMap<TrackColor,Integer>();
+
+		assertFalse(serverFacade.canBuyRoute(user2, game.getGameID(), route1, cards));
+		CityToCityRoute route = new CityToCityRoute(start, end, 5, TrackColor.Green);
+		cards.put(TrackColor.Green, 5);
+		
+		game.getPlayerManager().advanceTurn();
+		
+		//insufficient train cards
+		Map<TrackColor,Integer> tooFew = new HashMap<TrackColor,Integer>();
+		tooFew.put(TrackColor.Green, 4);
+		assertFalse(serverFacade.canBuyRoute(user2, game.getGameID(), route, tooFew));
+		
+
+		assertFalse(serverFacade.canBuyRoute(user2, game.getGameID(), route, cards));
+		
+		game.getPlayerManager().advanceTurn();
+		
+		///no enough cards
+		game.getPlayerByIndex(0).useTrains(36);//should fail
+		assertFalse(serverFacade.canBuyRoute(user1, game.getGameID(), route, cards));
+		
+		//change to second person's turn
+
+		
+	}
+	
+
 
 
 
