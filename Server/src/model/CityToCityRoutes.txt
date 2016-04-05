@@ -26,6 +26,10 @@ Portland
 San Francisco
 Purple
 5
+San Francisco
+Los Angeles
+Purple
+3
 Vancouver
 Calgary
 None
