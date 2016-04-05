@@ -140,6 +140,7 @@ app.controller('mainGameRightTabsCtrl', function ($scope, $rootScope, ClientAPI,
 				{
 					//show the thing on the right
 					$rootScope.selectDestOnRight = true;
+					$scope.selectDestOnRight = true;
 					$scope.availableDestsToPickFrom = imagesArray;
 				}
 			}
@@ -162,6 +163,7 @@ app.controller('mainGameRightTabsCtrl', function ($scope, $rootScope, ClientAPI,
 		if(selectedIndexes.length >= 1)//this is only in game selection so its always 1
 		{
 			$rootScope.selectDestOnRight = false;
+			$scope.selectDestOnRight = false;
     		ClientAPI.selectDestinations($scope.currentGameId,selectedIndexes);
 		}
 		else
@@ -222,6 +224,11 @@ app.controller('destinationModalCtrl', function ($scope, $uibModalInstance, amou
 
 
   $scope.availableDestsToPickFrom = availableDestsToPickFrom;
+
+	$scope.destCardSelected = function(index)
+	{
+		$scope.availableDestsToPickFrom[index]['selected'] = !$scope.availableDestsToPickFrom[index]['selected'];
+	}
 
   $scope.ok = function () {
 	//check that they have chosen enough
