@@ -326,6 +326,7 @@ public class GameBoard {
 		}
 		
 		//redo visible train cards if there are too many wilds
+		while(excessWilds()){
 			replaceAllVisibleTrainCards();
 		}
 		
