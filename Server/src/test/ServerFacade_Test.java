@@ -61,6 +61,76 @@ public class ServerFacade_Test {
 	public void setUp() throws Exception {
 		serverFacade = ServerFacade.getServerFacade();
 	}
+	
+	/**
+	 * set up a game for testing
+	 * @throws Exception
+	 */
+	// current no way to create a gameboard...or do I miss something here?
+	//May you show me a way to add a gameboard to a game?
+	@Before
+	public void buildGame_version1() throws Exception{
+	game1 = new TestGame();
+	gameboard1 = new TestGameBoard();
+	List<City> cities = new ArrayList<City>();
+	List<CityToCityRoute> routes = new ArrayList<CityToCityRoute>();
+	Map<Integer, List<CityToCityRoute>> currentRoutes = new HashMap<Integer,List<CityToCityRoute>>();
+	List<DestinationRoute> destinationRoutes = new ArrayList<DestinationRoute>();
+	List<TrackColor> deckTrainCarCards = new ArrayList<TrackColor>();
+	TrackColor[] visibleTrainCarCards= new TrackColor[256];
+	List<TrackColor> discardedTrainCarCards = new ArrayList<TrackColor>();
+	City city1 = new City("LA");
+	City city2 = new City("SA");
+	City city3 = new City("GA");
+	
+	
+	cities.addAll(Arrays.asList(city1,city2,city3));
+	CityToCityRoute ctoc1 = new CityToCityRoute(city1,city2,3,TrackColor.Orange);
+	CityToCityRoute ctoc2 = new CityToCityRoute(city2,city3,3,TrackColor.White);
+	currentRoutes.put(1, new ArrayList<CityToCityRoute>());
+
+	routes.add(ctoc1);
+	routes.add(ctoc2);
+	DestinationRoute dr = new DestinationRoute(city1,city2,2);
+	destinationRoutes.add(dr);
+	deckTrainCarCards.add(TrackColor.Orange);
+	visibleTrainCarCards[0] = TrackColor.Black;
+	visibleTrainCarCards[1] = TrackColor.White;
+	visibleTrainCarCards[2] = TrackColor.Orange;
+	discardedTrainCarCards.add(TrackColor.Black);
+	
+	
+	}
+
+	@Before
+	public void buildGame_version2() throws Exception{
+	List<City> cities = new ArrayList<City>();
+	List<CityToCityRoute> routes = new ArrayList<CityToCityRoute>();
+	Map<Integer, List<CityToCityRoute>> currentRoutes = new HashMap<Integer,List<CityToCityRoute>>();
+	List<DestinationRoute> destinationRoutes = new ArrayList<DestinationRoute>();
+	List<TrackColor> deckTrainCarCards = new ArrayList<TrackColor>();
+	TrackColor[] visibleTrainCarCards= new TrackColor[256];
+	List<TrackColor> discardedTrainCarCards = new ArrayList<TrackColor>();
+	City city1 = new City("LA");
+	City city2 = new City("SA");
+	City city3 = new City("GA");
+	
+	cities.addAll(Arrays.asList(city1,city2,city3));
+	CityToCityRoute ctoc1 = new CityToCityRoute(city1,city2,3,TrackColor.Orange);
+	CityToCityRoute ctoc2 = new CityToCityRoute(city2,city3,3,TrackColor.White);
+	currentRoutes.put(1, new ArrayList<CityToCityRoute>());
+
+	routes.add(ctoc1);
+	routes.add(ctoc2);
+	DestinationRoute dr = new DestinationRoute(city1,city2,2);
+	destinationRoutes.add(dr);
+	deckTrainCarCards.add(TrackColor.Orange);
+	visibleTrainCarCards[0] = TrackColor.Black;
+	visibleTrainCarCards[1] = TrackColor.White;
+	visibleTrainCarCards[2] = TrackColor.Orange;
+	discardedTrainCarCards.add(TrackColor.Black);
+	
+	}
 
 	@After
 	public void firebombServerFacade()
@@ -76,7 +146,7 @@ public class ServerFacade_Test {
 	 * 
 	 */
 	@Test
-	public void buyRoute() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, PreConditionException, InternalServerException, OutOfBoundsException
+	public void buyRoute() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, PreConditionException, InternalServerException, OutOfBoundsException, InvalidCredentialsException
 	{
 //		User user = new User("canBuy","password");
 //		User user2 = new User("canBuy2","password");
