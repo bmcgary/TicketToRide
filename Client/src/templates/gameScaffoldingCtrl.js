@@ -310,10 +310,6 @@ $scope.games = [
 
 	}
 
-	$rootScope.$on('TESTER',function(event, params)
-	{
-		alert("in ctrl");
-	});
 
 	function waitingToStartModalSetUp(parameters)
 	{
