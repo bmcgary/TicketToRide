@@ -715,7 +715,6 @@ public class ServerFacade_Test {
 		
 	//	assertFalse(serverFacade.canBuyRoute(user1, game.getGameID(), route, cards));
 		
-	//	serverFacade.selectDestinations(user1, game.getGameID(), new int[]{0});
 		
 
 	}
@@ -776,13 +775,156 @@ public class ServerFacade_Test {
 
 		
 	}
+	/*
+	 * 
+	 * test draw card -> success case
+	 * currently failed
+	 */
+	@Test
+	public void DrawCardSuccess() throws AddUserException, InternalServerException, InvalidCredentialsException, PreConditionException, OutOfBoundsException
+	{
+		int user1 = serverFacade.register("drawCards1", "PASSWORD");
+		int user2 = serverFacade.register("drawCards2", "PASSWORDD");
+		int user3 = serverFacade.register("drawCards3", "PASSWORDD");
+		int user4 = serverFacade.register("drawCards4", "PASSWORDD");
+
+
+		
+		TestGame game = new TestGame();
+		serverFacade.createGame(game, user1, PlayerColor.Green);
+		serverFacade.addPlayerToGame(user2, game.getGameID(), PlayerColor.Yellow);
+		serverFacade.addPlayerToGame(user3, game.getGameID(), PlayerColor.Blue);
+		serverFacade.addPlayerToGame(user4, game.getGameID(), PlayerColor.Red);
+
+		
+		serverFacade.startGame(user1, game.getGameID());
+		serverFacade.selectDestinations(user1, game.getGameID(), new int[] {0,1});
+		serverFacade.selectDestinations(user2, game.getGameID(), new int[] {0,1});
+		serverFacade.selectDestinations(user3, game.getGameID(), new int[] {0,1});
+		serverFacade.selectDestinations(user4, game.getGameID(), new int[] {1,0});
+		List<TrackColor> allCards = game.getGameBoard().getDeckTrainCarCards();
+		TrackColor[] visibleCards = game.getGameBoard().getVisibleTrainCarCards();
+
+		//get track of players
+		Player player1 = game.getPlayerByIndex(0);
+		Player player2 = game.getPlayerByIndex(1);
+		Player player3 = game.getPlayerByIndex(2);
+		Player player4 = game.getPlayerByIndex(3);
+		
+		
+		Map<TrackColor,Integer> Cards1 = player1.getTrainCarCards();
+		Map<TrackColor,Integer> Cards2 = player2.getTrainCarCards();
+		Map<TrackColor,Integer> Cards3 = player3.getTrainCarCards();
+		Map<TrackColor,Integer> Cards4 = player4.getTrainCarCards();
+
+
+		visibleCards[0] = TrackColor.Blue;
+		visibleCards[1] = TrackColor.Orange;
+		visibleCards[2] = TrackColor.Green;
+		visibleCards[3] = TrackColor.Black;
+		
+		serverFacade.drawTrainCard(user1, game.getGameID(), 0);
+		assertTrue(game.getPlayerManager().drewAlreadyCurrentTurn);
+		//assertEqual(Cards3.get(TrackColor.Blue),2);
+		//assertEqual(Cards1.get(TrackColor.Black),1);
+
+		serverFacade.drawTrainCard(user1, game.getGameID(), 1);
+		//assertNotEquals(Cards1.get(TrackColor.Blue),2);
+
+		allCards.add(0, TrackColor.Orange);
+		serverFacade.drawTrainCard(user2, game.getGameID(), 5);
+		//not turn yet
+		//serverFacade.drawTrainCard(user3, game.getGameID(), 5);
+
+
+	}
+
+	/*
+	 * 
+	 * wrong inputs
+	 */
+	@Test (expected=OutOfBoundsException.class)
+	public void drawCardWrongInputsFaillingCases() throws AddUserException, InternalServerException, InvalidCredentialsException, PreConditionException, OutOfBoundsException
+	{
+		int user1 = serverFacade.register("wrongI1", "test1");
+		int user2 = serverFacade.register("wronI2", "test2");
+		
+		TestGame game = new TestGame();
+		serverFacade.createGame(game, user1, PlayerColor.Green);
+		serverFacade.addPlayerToGame(user2, game.getGameID(), PlayerColor.Blue);
+		serverFacade.startGame(user1, game.getGameID());
+		serverFacade.selectDestinations(user1, game.getGameID(), new int[] {1,0});
+		serverFacade.selectDestinations(user2, game.getGameID(), new int[] {0,1});
+		
+		//no card initialized yet / wrong user id
+		assertFalse(serverFacade.canDrawTrainCard(1111, game.getGameID(), 0));
+		
+		game.getGameBoard().getDeckTrainCarCards().clear();
+		assertFalse(serverFacade.canDrawTrainCard(user1, game.getGameID(), 5));
+		serverFacade.canDrawTrainCard(user1, game.getGameID(), -1);
+
+		//serverFacade.canDrawTrainCard(user1, game.getGameID(), 6);
+
+	}
+	
+	@Test (expected=OutOfBoundsException.class)
+	public void drawCardNotiNITIALIZED() throws AddUserException, InternalServerException, InvalidCredentialsException, PreConditionException, OutOfBoundsException
+	{
+		int user1 = serverFacade.register("wrongI11", "test1");
+		int user2 = serverFacade.register("wronI22", "test2");
+		
+		TestGame game = new TestGame();
+		serverFacade.createGame(game, user1, PlayerColor.Green);
+		serverFacade.addPlayerToGame(user2, game.getGameID(), PlayerColor.Blue);
+		serverFacade.startGame(user1, game.getGameID());
+		serverFacade.selectDestinations(user1, game.getGameID(), new int[] {1,0});
+		serverFacade.selectDestinations(user2, game.getGameID(), new int[] {0,1});		
+		assertFalse(serverFacade.canDrawTrainCard(1111, game.getGameID(), 0));
+		serverFacade.canDrawTrainCard(user1, game.getGameID(), 6);
+
+	}
+	/*
+	 * 
+	 * draw card failing cases
+	 */
+	@Test
+	public void DrawCardMoreFailingCases() throws AddUserException, InternalServerException, InvalidCredentialsException, PreConditionException, OutOfBoundsException, BadCredentialsException, AlreadyLoggedInException
+	{
+		int user1 = serverFacade.register("dMore1", "test1");
+		int user2 = serverFacade.register("dMore2", "test2");
+		int user3 = serverFacade.register("dMore3", "test2");
+
+		
+		TestGame game = new TestGame();
+		serverFacade.createGame(game, user1, PlayerColor.Green);
+		serverFacade.addPlayerToGame(user2, game.getGameID(), PlayerColor.Blue);
+		serverFacade.addPlayerToGame(user3, game.getGameID(), PlayerColor.Red);
+
+		serverFacade.startGame(user1, game.getGameID());
+		serverFacade.selectDestinations(user1, game.getGameID(), new int[] {0,1});
+		serverFacade.selectDestinations(user2, game.getGameID(), new int[] {0,1});
+		serverFacade.selectDestinations(user3, game.getGameID(), new int[] {0,1});
+		
+		assertFalse(serverFacade.canDrawTrainCard(user3, game.getGameID(), 0));
+		//id is  a problem?
+		assertFalse(serverFacade.canDrawTrainCard(9999, game.getGameID(), 0));
+
+		//have destinations already
+		serverFacade.getDestinations(user1, game.getGameID());
+		assertFalse(serverFacade.canDrawTrainCard(user1, game.getGameID(), 0));
+	}
 	
 
-
-
-
-
-
+	
+	/*
+	 * test tie score needs to be done  (end game logic)
+	 * two people have longest routes. Both of them should receive 10 points
+	 */
+	@Test
+	public void testTieScore()
+	{
+		//currently working on
+	}
 
 
 
