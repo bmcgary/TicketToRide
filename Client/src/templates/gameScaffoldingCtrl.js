@@ -55,6 +55,7 @@ $scope.opponents = [{
 
 //----------------------- Right tabed section's model data --------------------
 $scope.cardsVisible = ['black','yellow', 'blue', 'green', 'wild'];
+$scope.selectDestOnRight = false;
 
 //----------------------- Bottom tabed section's model data -------------------
 $scope.destinations = [	/*{cityName1:'CITY 1',cityName2: 'CITY 2',isComplete: true,points:10},
@@ -250,6 +251,8 @@ $scope.games = [
 	//----------------------- Load view from model------------------------------------
 	var fillViewFromModel = function (modelContainer)
 	{
+		$scope.selectDestOnRight = false;
+
 		$scope.secondTrainCardRound = modelContainer.playerMustDrawAgain();
 	
 		$scope.topNavMessage = "Waiting for " + modelContainer.getPlayerNameById(modelContainer.getTurnIndex()) + " to take their turn";
