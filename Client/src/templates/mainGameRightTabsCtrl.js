@@ -132,22 +132,15 @@ app.controller('mainGameRightTabsCtrl', function ($scope, $rootScope, ClientAPI,
 		},
 		//what to do once the destination cards have come back from the server
 		'getDestinationCardsCallBack':function(firstRound, imagesArray){
-				//imagesArray we are exepecting:
-				/*[{selected:false, url:'ttr-route-boston-miami.jpg'},
-					{selected:false, url:'ttr-route-calgary-phoenix.jpg'},
-					{selected:false, url:'ttr-route-calgary-saltLakeCity.jpg'}];*/
+
 				//fix the imagesArray to look like that in case is isn't already
 				if(firstRound)
 					openDestinationModal(2, imagesArray);
 				else
 				{
 					//show the thing on the right
-					$scope.selectDestOnRight = true;
+					$rootScope.selectDestOnRight = true;
 					$scope.availableDestsToPickFrom = imagesArray;
-
-
-					//console.log("Select destination during game");
-					//ClientAPI.selectDestinations($scope.currentGameId,[1]);
 				}
 			}
 	}
@@ -168,7 +161,7 @@ app.controller('mainGameRightTabsCtrl', function ($scope, $rootScope, ClientAPI,
 
 		if(selectedIndexes.length >= 1)//this is only in game selection so its always 1
 		{
-			$scope.selectDestOnRight = false;
+			$rootScope.selectDestOnRight = false;
     		ClientAPI.selectDestinations($scope.currentGameId,selectedIndexes);
 		}
 		else

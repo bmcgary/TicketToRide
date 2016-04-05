@@ -255,7 +255,10 @@ $scope.games = [
 
 		$scope.secondTrainCardRound = modelContainer.playerMustDrawAgain();
 	
-		$scope.topNavMessage = "Waiting for " + modelContainer.getPlayerNameById(modelContainer.getTurnIndex()) + " to take their turn";
+		if(modelContainer.getPlayerId() == modelContainer.getTurnIndex())
+			$scope.topNavMessage = "It's your turn!";
+		else	
+			$scope.topNavMessage = "Waiting for " + modelContainer.getPlayerNameById(modelContainer.getTurnIndex()) + "'s turn";
 
 		//------------- Destinations in your hand
 		$scope.destinations.length = 0;

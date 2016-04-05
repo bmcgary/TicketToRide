@@ -479,10 +479,10 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
                 if(routeToHighlight != -1)
                 {
                     highlightRoute(routeToHighlight);
-                    if(canBuyRoute())
-                    {
+                    //if(canBuyRoute())
+                    //{
                         openBuyRouteModal(routeToHighlight);
-                    }
+                    //}
                 }
             }
         }
@@ -680,7 +680,7 @@ function trackTransforms(context){
             if(!$scope.secondTrainCardRound)
             {
 
-                return true;
+                return false;
 
             }
 
