@@ -71,8 +71,12 @@ app.factory('GameBoard', function (TrainCardColor, StaticTrackList) {
         this.isLastRound = last;
     }
 
+    GameBoard.prototype.setIsFirstRound = function (last) {
+        this.isFirstRound = last;
+    }
+
     GameBoard.prototype.setMustDrawAgain = function (drawAgain) {
-        this.getMustDrawAgain = drawAgain;
+        this.mustDrawAgain = drawAgain;
     }
 
     GameBoard.prototype.setPlayerIdForTheLongestBonus = function (id) {

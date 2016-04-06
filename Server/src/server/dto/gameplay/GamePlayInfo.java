@@ -33,12 +33,11 @@ public class GamePlayInfo extends GameInfo {
         this.gamePlayerInfos = new ArrayList<>();
         this.privatePlayerInfos = new HashMap<>();
         List<Player> players = game.getPlayerManager().getPlayers();
-        List<CityToCityRoute> routes = game.getGameBoard().getRoutes();
-        // copy the list
-        this.availableRoutes = new ArrayList<>(routes).parallelStream().map(routes::indexOf).collect(Collectors.toList());
+        Map<Integer,CityToCityRoute> mapping = ServerFacade.getCityMapping();
+        this.availableRoutes = mapping.entrySet().stream().map(Map.Entry::getKey).collect(Collectors.toList());
         for (int i = 0; i < players.size(); ++i) {
-            List<CityToCityRoute> playerRoutes = game.getGameBoard().getCurrentRoutes().get(i);
-            List<Integer> convertedRoutes = playerRoutes == null ? null : playerRoutes.parallelStream().map(routes::indexOf).collect(Collectors.toList());
+            List<CityToCityRoute> playerRoutes = game.getGameBoard().getCurrentRoutes().get(players.get(i).getPlayerID());
+            List<Integer> convertedRoutes = playerRoutes == null ? null : playerRoutes.parallelStream().map(route -> mapping.entrySet().stream().filter(e -> e.getValue().equals(route)).findFirst().get().getKey()).collect(Collectors.toList());
             Player player = players.get(i);
             this.gamePlayerInfos.add(new GamePlayerInfo(player, i, convertedRoutes));
             this.privatePlayerInfos.put(player.getPlayerID(), new PrivatePlayerInfo(super.gameId, player, i));

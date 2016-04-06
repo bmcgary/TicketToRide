@@ -83,11 +83,11 @@ app.factory('Player', function (TrainCardColor, DestinationCard) {
 
     //Setters
     Player.prototype.incrementTrainCards = function (cardDrawn) {
-        trainCards[cardDrawn] += 1;
+       this.trainCards[cardDrawn] += 1;
     }
 
     Player.prototype.setTrainCards = function (cardDrawn, value) {
-        trainCards[cardDrawn] = value;
+        this.trainCards[cardDrawn] = value;
     }
 
     Player.prototype.setPlayerName = function (name) {
@@ -104,6 +104,10 @@ app.factory('Player', function (TrainCardColor, DestinationCard) {
 
     Player.prototype.setPoints = function (points) {
         this.points = points;
+    }
+
+    Player.prototype.setTemporaryStorageOfCardsToBeSelectedFrom = function (destinations) {
+        this.temporaryStorageOfCardsToBeSelectedFrom = destinations;
     }
 
     return Player;
