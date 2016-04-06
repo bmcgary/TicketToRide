@@ -1,4 +1,5 @@
-package server;
+package test;
+
 
 import static org.junit.Assert.*;
 
@@ -38,7 +39,7 @@ import server.exception.InvalidCredentialsException;
 import server.exception.OutOfBoundsException;
 import server.exception.PreConditionException;
 
-public class ServerFacade_Test {
+public class server_facade_chao_version {
 	
 	/*
 		serverFacade test Chao's version
@@ -929,3 +930,4 @@ public class ServerFacade_Test {
 
 
 }
+

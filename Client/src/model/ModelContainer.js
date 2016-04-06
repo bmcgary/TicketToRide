@@ -11,131 +11,137 @@ app.factory('ModelContainer', function () {
 
     //Game data
     ModelContainer.prototype.getGameId = function() {
-        return this.model.gameId;
+        return this.model.getGameId();
     };
 
     ModelContainer.prototype.getGameName = function() {
-        return this.model.gameName;
+        return this.model.getGameName();
     };
 
     ModelContainer.prototype.getGameHistorySize = function() {
-        return this.model.gameHistory.length;
+        alert("not implemented: ModelContainer-getGameHistorySize");
+        //return this.model.getGameHistory().length;
     };
 
     ModelContainer.prototype.getGameHistoryAtIndex = function(index) {
-        return this.model.gameHistory[index];
+        alert("not implemented: ModelContainer-getGameHistoryAtIndex");
+        //return this.model.getGameHistory()[index];
     };
 
     ModelContainer.prototype.getGameChatSize = function() {
-        return this.model.gameChat.length;
+        alert("not implemented: ModelContainer-getGameChatSize");
+        //return this.model.getGameChat().length;
     };
 
     ModelContainer.prototype.getGameChatAtIndex = function(index) {
-        return this.model.gameChat[index];
+        alert("not implemented: ModelContainer-getGameChatAtIndex");
+        //return this.model.getGameChat()[index];
     };
 
     ModelContainer.prototype.isGameOver = function() {
-        return this.model.gameOver;
+        return this.model.getGameOver();
     };
 
     //Gameboard Data
     ModelContainer.prototype.deckHasDestinations = function() {
-        return this.model.board.deckHasDestinations;
+        alert("not implemented: ModelContainer-deckHasDestinations");
+        //return this.model.getBoard().getDeckHasDestinations();
     };
 
     ModelContainer.prototype.deckHasTrains = function() {
-        return this.model.board.deckHasTrains;
+        alert("not implemented: ModelContainer-deckHasTrains");
+        //return this.model.getBoard().getDeckHasTrains();
     };
 
     ModelContainer.prototype.isFirstRound = function() {
-        return this.model.board.isFirstRound;
+        return this.model.getBoard().getIsFirstRound();
     };
 
     ModelContainer.prototype.isLastRound = function() {
-        return this.model.board.isLastRound;
+        return this.model.getBoard().getIsLastRound();
     };
 
     ModelContainer.prototype.getCardVisibleAt = function(index) {
-        return this.model.board.cardsVisible[index];
+        return this.model.getBoard().getCardsVisibleAt(index);
     };
 
     ModelContainer.prototype.getRoutesOwned = function() {
-        return Object.keys(this.model.board.routesPurchased);
+        return Object.keys(this.model.getBoard().getRoutesPurchased());
     };
 
     ModelContainer.prototype.getPlayerColorByRouteId = function(routeId) {
-        return this.model.board.tracksPurchased[routeId];
+        return this.model.getBoard().getRoutesPurchased()[routeId];
     };
 
     ModelContainer.prototype.getPlayerIdForTheLongestBonus = function() {
-        if(!this.model.gameOver)
+        if(!this.model.getGameOver())
         {
             alert("The longest bonus is awarded after the game is over");
         }
         else
         {
-            return this.model.board.playerIdForTheLongestBonus;
+            return this.model.getBoard().getPlayerIdForTheLongestBonus();
         }
     };
 
     ModelContainer.prototype.playerMustDrawAgain = function() {
-        return this.model.board.mustDrawAgain;
+        return this.model.getBoard().getMustDrawAgain();
     };
 
     //Opponent Data
     ModelContainer.prototype.getOpponentsSize = function() {
-        return this.model.opponents.length;
+        return this.model.getOpponents().length;
     };
 
     ModelContainer.prototype.getOpponentName = function(index) {
-        return this.model.opponents[index].playerName;
+        return this.model.getOpponents()[index].getPlayerName();
     };
 
     ModelContainer.prototype.getOpponentColor = function(index) {
-        return this.model.opponents[index].playerColor;
+        return this.model.getOpponents()[index].getPlayerColor();
     };
 
     ModelContainer.prototype.getOpponentPoints = function(index) {
-        return this.model.opponents[index].points;
+        return this.model.getOpponents()[index].getPoints();
     };
 
     ModelContainer.prototype.getOpponentTrainsLeft = function(index) {
-        return this.model.opponents[index].trainsLeft;
+        return this.model.getOpponents()[index].getTrainsLeft();
     };
 
     ModelContainer.prototype.getOpponentPlayerId = function(index) {
-        return this.model.opponents[index].playerId;
+        return this.model.getOpponents()[index].getPlayerId();
     };
 
     //Player Data
     ModelContainer.prototype.getPlayerName = function() {
-        return this.model.player.playerName;
+        return this.model.getPlayer().getPlayerName();
     };
 
     ModelContainer.prototype.getPlayerColor = function() {
-        return this.model.player.playerColor;
+        return this.model.getPlayer().getPlayerColor();
     };
 
     ModelContainer.prototype.getPlayerPoints = function() {
-        return this.model.player.points;
+        return this.model.getPlayer().getPoints();
     };
 
     ModelContainer.prototype.getPlayerTrainsLeft = function() {
-        return this.model.player.trainsLeft;
+        return this.model.getPlayer().getTrainsLeft();
     };
 
     ModelContainer.prototype.getPlayerId = function() {
-        return this.model.player.playerId;
+        return this.model.getPlayer().getPlayerId();
     };
 
     ModelContainer.prototype.getTurnIndex = function() {
-        return this.model.turnIndex;
+        return this.model.getTurnIndex();
     };
 
     ModelContainer.prototype.getTrainCardsByColor = function(trainCardColor) {
 		var convertedColor =  trainCardColor == 'wild' ? 'None' : trainCardColor;
 		convertedColor = (convertedColor.charAt(0).toUpperCase() + convertedColor.slice(1));
-        var count = this.model.player.trainCards[convertedColor];
+        var count = this.model.getPlayer().getTrainCards()[convertedColor];
         if(typeof(count) === 'undefined' || typeof(count) === 'null') {
             count = 0;
         }
@@ -143,32 +149,32 @@ app.factory('ModelContainer', function () {
     };
 
     ModelContainer.prototype.getPlayerNameById = function(playerId) {
-        return this.model.getPlayerById(playerId).playerName;
+        return this.model.getPlayerById(playerId).getPlayerName();
     };
 
     //DestinationCard Data
     ModelContainer.prototype.getPlayersDestinationSize = function() {
-        return this.model.player.destinationCards.length;
+        return this.model.getPlayer().getDestinationCards().length;
     };
 
     ModelContainer.prototype.getPlayersDestinationCityName1 = function(index) {
-        return this.model.player.destinationCards[index].cityName1;
+        return this.model.getPlayer().getDestinationCards()[index].getCityName1();
     };
 
     ModelContainer.prototype.getPlayersDestinationCityName2 = function(index) {
-        return this.model.player.destinationCards[index].cityName2;
+        return this.model.getPlayer().getDestinationCards()[index].getCityName2();
     };
 
     ModelContainer.prototype.getPlayersDestinationIsComplete = function(index) {
-        return this.model.player.destinationCards[index].isComplete;
+        return this.model.getPlayer().getDestinationCards()[index].getIsComplete();
     };
 
     ModelContainer.prototype.getPlayersDestinationPoints = function(index) {
-        return this.model.player.destinationCards[index].points;
+        return this.model.getPlayer().getDestinationCards()[index].getPoints();
     };
 
     ModelContainer.prototype.getTemporaryStorageOfDestinationCardsToBeSelectedFrom = function() {
-        return this.model.player.temporaryStorageOfCardsToBeSelectedFrom;
+        return this.model.getPlayer().getTemporaryStorageOfCardsToBeSelectedFrom();
     };
 
     return ModelContainer;

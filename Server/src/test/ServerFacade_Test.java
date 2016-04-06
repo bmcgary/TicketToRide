@@ -61,6 +61,12 @@ public class ServerFacade_Test {
 	public void setUp() throws Exception {
 		serverFacade = ServerFacade.getServerFacade();
 	}
+	
+	/**
+	 * set up a game for testing
+	 * @throws Exception
+	 */
+
 
 	@After
 	public void firebombServerFacade()
@@ -76,7 +82,7 @@ public class ServerFacade_Test {
 	 * 
 	 */
 	@Test
-	public void buyRoute() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, PreConditionException, InternalServerException, OutOfBoundsException
+	public void buyRoute() throws AddUserException, BadCredentialsException, AlreadyLoggedInException, PreConditionException, InternalServerException, OutOfBoundsException, InvalidCredentialsException
 	{
 //		User user = new User("canBuy","password");
 //		User user2 = new User("canBuy2","password");

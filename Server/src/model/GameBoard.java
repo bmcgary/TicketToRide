@@ -175,6 +175,7 @@ public class GameBoard {
 			{
 				visibleTrainCarCards[index] = deckTrainCarCards.get(0);
 				deckTrainCarCards.remove(0);
+				//test comment for GitBash
 			}
 			return output;
 		}

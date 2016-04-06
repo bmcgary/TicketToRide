@@ -52,7 +52,7 @@ $rootScope.$on('server:UpdateGame', function(event, parameters) {
     				takenColors.push(games[keys[i]].players[k].playerColor);
     			}
     			for(var c =0; c<takenColors.length; c++){//loop through taken colors and remove them from availableColors
-            var index = availablecolors.indexOf(takenColors[i]);
+            var index = availablecolors.indexOf(takenColors[c]);
             availablecolors.splice(index, 1);
     			}
 					games[keys[i]].availableColors= availablecolors;//attach availableColors to the game object
