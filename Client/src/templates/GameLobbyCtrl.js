@@ -88,6 +88,12 @@ $rootScope.$on('server:UpdateGame', function(event, parameters) {
 			$state.go('mainGame');
 		}
 	});
+	$scope.reJoinGame = function(game){
+		ClientAPI.sendClientModelInformation(game.gameID);
+		ModelFacade.setGameInView(game.gameID);
+		$state.go('mainGame');
+	}
+
 	//END JOIN/REJOIN FUNCTIONS
   // this Toggles the Create New game modal
   $scope.modalShown = false;

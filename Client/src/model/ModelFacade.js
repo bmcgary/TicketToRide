@@ -31,8 +31,8 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
         {
             for(var index in parameters.games)
             {
-                var game = parameters.games[index];
-                joinableGames[game.gameId] = new GameDataForLobby(game);
+                var gameJSON = parameters.games[index];
+                joinableGames[gameJSON.gameID] = new GameDataForLobby(gameJSON);
             }    
             $rootScope.$broadcast('model:UpdateJoinableGames', joinableGames);
         }
@@ -132,7 +132,6 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
 
     $rootScope.$on('server:PrivateClientModelInformation', function (event, parameters)
     {
-
         usersGames[parameters.gameId].setPrivateInfo(parameters);
         broadcastIfInView(parameters.gameId, 'PrivateClientModelInformation');
 
@@ -142,20 +141,20 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
     {
         var game = usersGames[parameters.gameID];
         var playersFromJSON = parameters.players;
-        game.board.resetRoutesPurchased();
+        game.getBoard().resetRoutesPurchased();
         
         for(var index in playersFromJSON)
         {
             var playerId = playersFromJSON[index].playerOrder;
             var playerInModel = game.getPlayerById(playerId);
 
-            playerInModel.trainsLeft = playersFromJSON[index].trainsLeft;
-            playerInModel.points = playersFromJSON[index].points;
-            game.board.addRoutesPurchased(playersFromJSON[index].routes, playerInModel.playerColor);
+            playerInModel.setTrainsLeft(playersFromJSON[index].trainsLeft);
+            playerInModel.setPoints(playersFromJSON[index].points);
+            game.getBoard().addRoutesPurchased(playersFromJSON[index].routes, playerInModel.getPlayerColor());
         }
         //get game history???
 
-        broadcastIfInView(game.gameId, 'PublicClientModelInformation');
+        broadcastIfInView(game.getGameId(), 'PublicClientModelInformation');
     });
 
     $rootScope.$on('server:BuyRoute', function (event, parameters)
@@ -174,12 +173,12 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
             var playerId = parameters.playerIndex;
             var game = usersGames[parameters.gameId];
 
-			if(parameters.cardDrawn in game.player.trainCards)
-	            game.player.trainCards[parameters.cardDrawn] += 1;
+			if(parameters.cardDrawn in game.getPlayer().getTrainCards())
+	            game.getPlayer().incrementTrainCards(parameters.cardDrawn);
 			else
-				game.player.trainCards[parameters.cardDrawn] = 1;
+				game.getPlayer().setTrainCards(parameters.cardDrawn, 1);
 
-			game.board.mustDrawAgain = parameters.canDrawAgain;
+			game.getBoard().setMustDrawAgain(parameters.canDrawAgain);
             broadcastIfInView(parameters.gameId, 'DrawTrainCard');
         }
     });
@@ -187,7 +186,7 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
     $rootScope.$on('server:AvailableTrainCardsNotification', function (event, parameters)
     {
             var game = usersGames[parameters.gameId];
-            game.board.updateCardsVisible(parameters.availableTrainCards);
+            game.getBoard().updateCardsVisible(parameters.availableTrainCards);
 
             broadcastIfInView(parameters.gameId, 'DrawTrainCard');
     });
@@ -195,7 +194,7 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
     $rootScope.$on('server:NotifyDestinationRouteCompleted', function (event, parameters)
     {
         var game = usersGames[parameters.gameId];
-        var player = game.player;
+        var player = game.getPlayer();
         player.setDestinationComplete(parameters.route);
 
         broadcastIfInView(parameters.gameId, 'NotifyDestinationRouteCompleted');
@@ -206,7 +205,7 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
 		if(checkDescriptionIsSuccess(parameters.description, 'SelectDestinations'))
 		{
             var game = usersGames[parameters.gameId];
-            var player = game.player;
+            var player = game.getPlayer();
 
             player.addDestinationCards(parameters.destinationCards);
             broadcastIfInView(parameters.gameId, 'SelectDestinations');
@@ -218,9 +217,9 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
         if(checkDescriptionIsSuccess(parameters.description, 'GetDestinations'))
         {
             var game = usersGames[parameters.gameId];
-            var player = game.player;
+            var player = game.getPlayer();
 
-            player.temporaryStorageOfCardsToBeSelectedFrom = parameters.destinationCards;
+            player.setTemporaryStorageOfCardsToBeSelectedFrom(parameters.destinationCards);
             broadcastIfInView(parameters.gameId, 'GetDestinations');
         }
     });
@@ -231,20 +230,15 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
         var playerId = parameters.playerIndex;
         var player = game.getPlayerById(playerId);
 
-        game.turnIndex = playerId;
-        game.board.isLastRound = parameters.lastRound;
-
-        if(game.board.isLastRound)
-        {
-            game.gameHistory.push(player.playerName + " begins the last round");
-        }
+        game.setTurnIndex(playerId);
+        game.getBoard().setIsLastRound(parameters.lastRound);
 			
 		//the gameScaffoldingCtrl listens to this to show the select destinations
 		broadcastIfInView(parameters.gameId, 'TurnStartedNotification');
 
-        if(game.board.isFirstRound && playerId == game.player.playerId)
+        if(game.getBoard().getIsFirstRound() && playerId == game.getPlayer().playerId)
         {
-            game.board.isFirstRound = false;
+            game.getBoard().setIsFirstRound(false);
         }
 
     });
@@ -259,11 +253,11 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
 
             if(parameters.players[index].longestRouteRecipient)
             {
-                game.board.playerIdForTheLongestBonus = playerId;
+                game.getBoard().setPlayerIdForTheLongestBonus(playerId);
             }
-            game.getPlayerById(playerId).points = points;
+            game.getPlayerById(playerId).setPoints(points);
         }
-        game.gameOver = true;
+        game.setGameOver(true);
 
         broadcastIfInView(parameters.gameId, 'GameEnded');
     });
@@ -274,31 +268,31 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
     	canBuyRoute: function (routeIndex, trainColor, numberOfWilds) {
             var model = getModel();
 
-            if(model.player.playerId != model.turnIndex) { //not your turn!
+            if(model.player.playerId != model.getTurnIndex()) { //not your turn!
                 return false;
             }
 
-            var type = typeof(model.board.tracksPurchased[routeIndex]);
+            var type = typeof(model.getBoard().getTracksPurchased()[routeIndex]);
             if(type != 'undefined' && type != 'null') { //route is owned
                 return false;
-            } else if(numberOfWilds > model.player.trainCards[TrainCardColor.WILD]) { //The player has enough wilds
+            } else if(numberOfWilds > model.getPlayer().getTrainCards()[TrainCardColor.WILD]) { //The player has enough wilds
                 return false;
             } else { //The player has enough cards of that train color
-                return StaticTrackList.routeIndex.trainsRequired <= (numberOfWilds + model.player.trainCards[trainColor]);
+                return StaticTrackList.routeIndex.trainsRequired <= (numberOfWilds + model.getPlayer().getTrainCards()[trainColor]);
             }
     	},
 
     	canDrawCard: function (cardLocation) {
     		var model = getModel();
 
-            if(model.player.playerId != model.turnIndex) { //not your turn!
+            if(model.getPlayer().getPlayerId() != model.getTurnIndex()) { //not your turn!
                 return false;
             }
 
             if(cardLocation == 0) { //The player is drawing from the top of the deck
-                return model.board.deckHasTrains;
-            } else if(model.board.mustDrawAgain) { //The player has already drawn one card, so the second cannot be a wild
-                return TrainCardColor.WILD != model.board.cardsVisible[cardLocation - 1];
+                return model.getBoard().getDeckHasTrains();
+            } else if(model.getBoard().getMustDrawAgain()) { //The player has already drawn one card, so the second cannot be a wild
+                return TrainCardColor.WILD != model.getBoard().getCardsVisibleAt(cardLocation - 1);
             } else {
                 return  true;
             }
@@ -307,22 +301,22 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
     	canDrawDestination: function () {
     		var model = getModel();
 
-            if(model.player.playerId != model.turnIndex) { //not your turn!
+            if(model.getPlayer().getPlayerId() != model.getTurnIndex()) { //not your turn!
                 return false;
             }
 
             //The player can draw destinations, as long as there are destinations to be drawn, and the player has not already drawn a train card
-    		return model.board.deckHasDestinations && !model.board.mustDrawAgain;
+    		return model.getBoard().getDeckHasDestinations() && !model.getBoard().getMustDrawAgain();
     	},
 
     	canSelectDestination: function (destinationsSelected) {
     		var model = getModel();
 
-            if(model.player.playerId != model.turnIndex) { //not your turn!
+            if(model.player.playerId != model.getTurnIndex()) { //not your turn!
                 return false;
             }
 
-            if(model.board.isFirstRound) { //During the first round, the player must select at least 2 destinations
+            if(model.getBoard().getIsFirstRound()) { //During the first round, the player must select at least 2 destinations
                 return destinationsSelected.length >= 2;
             } else { //Otherwise, the player must select at least 1 destination
                 return destinationsSelected.length >= 1;

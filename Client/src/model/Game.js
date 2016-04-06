@@ -1,21 +1,18 @@
 var app = angular.module('ticketToRide');
 
 app.factory('Game', function (Opponent, Player, GameBoard) {
+    //constructor
+    function Game (id) {
+        this.gameId = id;
+        this.player = new Player();
 
-    Game.prototype.opponents = [];
-    Game.prototype.player = {};
-    Game.prototype.board = {};
-    Game.prototype.gameId = -1;
-    Game.prototype.gameName = "";
-    Game.prototype.gameHistory = [];
-    Game.prototype.gameChat = [];
-    Game.prototype.turnIndex = -1;
-    Game.prototype.gameOver = false;
-
-    //constructor 
-    function Game (gameId) {
-        this.gameId = gameId;
-        Game.prototype.player = new Player();
+        this.opponents = [];
+        this.board = {};
+        this.gameName = "";
+        this.gameHistory = [];
+        this.gameChat = [];
+        this.turnIndex = -1;
+        this.gameOver = false;
     }
 
     Game.prototype.updateLobbyData = function (gameDataJSON) {
@@ -33,9 +30,9 @@ app.factory('Game', function (Opponent, Player, GameBoard) {
         var playerId = parameters.playerOrder;
         for(var index in this.opponents) {
             var opponent = this.opponents[index];
-            if(opponent.playerId == playerId) {
-                this.player.playerColor = this.opponents[index].playerColor;
-                this.player.playerName = this.opponents[index].playerName;
+            if(opponent.getPlayerId() == playerId) {
+                this.player.setPlayerColor(this.opponents[index].playerColor);
+                this.player.setPlayerName(this.opponents[index].playerName);
                 this.opponents.splice(index,1);
             }
         }
@@ -43,16 +40,54 @@ app.factory('Game', function (Opponent, Player, GameBoard) {
     }
 
     Game.prototype.getPlayerById = function (playerId) {
-        if(this.player.playerId == playerId) {
+        if(this.player.getPlayerId() == playerId) {
             return this.player;
         } else {
             for(var index in this.opponents) {
                 var opponent = this.opponents[index];
-                if(opponent.playerId == playerId) {
+                if(opponent.getPlayerId() == playerId) {
                     return opponent;
                 }
             }
         }
+    }
+
+    //Getters
+    Game.prototype.getTurnIndex = function () {
+        return this.turnIndex;
+    }
+
+    Game.prototype.getGameOver = function () {
+        return this.gameOver;
+    }
+
+    Game.prototype.getGameName = function () {
+        return this.gameName;
+    }
+
+    Game.prototype.getGameId = function () {
+        return this.gameId;
+    }
+
+    Game.prototype.getBoard = function () {
+        return this.board;
+    }
+
+    Game.prototype.getPlayer = function () {
+        return this.player;
+    }
+
+    Game.prototype.getOpponents = function () {
+        return this.opponents;
+    }
+
+    //Setters
+    Game.prototype.setTurnIndex = function (index) {
+        this.turnIndex = index;
+    }
+
+    Game.prototype.setGameOver = function (over) {
+        this.gameOver = over;
     }
 
     return Game;

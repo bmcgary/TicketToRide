@@ -16,12 +16,12 @@ $scope.currentGameId = -1;
 $scope.topNavMessage = "Waiting to Start the Game";
 
 //----------------------- Main menu data --------------------------------------
-$scope.thisPlayer = {/*
+$scope.thisPlayer = {
 	playerName:'player 4',
 	playerColor:'green',
 	points:6,
 	trainsLeft:7,
-	playerId:4*/
+	playerId:4
 };
 $scope.opponents = [/*{
 	playerName:'player 1',

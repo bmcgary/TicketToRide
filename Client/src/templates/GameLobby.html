@@ -88,10 +88,7 @@
 					<span ng-repeat="player in game.players">{{player.username}}&nbsp</span>
 				</div>
 				<div>
-					<label>Colors: </label>
-					<span ng-repeat="color in game.availableColors">
-          	<button type="button" name="button" class="button" ng-click="joinGame(game,color)">{{color}}</button>
-          </span>
+          	<button type="button" name="button" class="button" ng-click="reJoinGame(game)">REJOIN</button>
 				</div>
 			</div>
 		</div>

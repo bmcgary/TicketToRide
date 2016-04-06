@@ -1,22 +1,38 @@
 var app = angular.module('ticketToRide');
 
 app.factory('DestinationCard', function () {
-
-    DestinationCard.prototype.cityName1 = "";
-    DestinationCard.prototype.cityName2 = "";
-    DestinationCard.prototype.isComplete = false;
-    DestinationCard.prototype.points = -1;
-
-    //constructor 
+    //constructor
     function DestinationCard (gameDataJSON) {
         this.cityName1 = gameDataJSON.city1;
         this.cityName2 = gameDataJSON.city2;
 
         this.points = gameDataJSON.points;
+        this.isComplete = false;
     }
 
     DestinationCard.prototype.equals = function (card) {
         return this.cityName1 == card.cityName1 && this.cityName2 == card.cityName2 && this.points == card.points;
+    }
+
+    //Getters
+    DestinationCard.prototype.getIsComplete = function () {
+        return this.isComplete;
+    }
+
+    DestinationCard.prototype.getPoints = function () {
+        return this.points;
+    }
+
+    DestinationCard.prototype.getCityName1 = function () {
+        return this.cityName1;
+    }
+    DestinationCard.prototype.getCityName2 = function () {
+        return this.cityName2;
+    }
+
+    //Setters
+    DestinationCard.prototype.setIsComplete = function (complete) {
+        this.isComplete = complete;
     }
 
     return DestinationCard;

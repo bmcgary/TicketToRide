@@ -1,19 +1,17 @@
 var app = angular.module('ticketToRide');
 
 app.factory('Player', function (TrainCardColor, DestinationCard) {
-
-    Player.prototype.playerName = "";
-    Player.prototype.playerColor = "";
-    Player.prototype.points = -1;
-    Player.prototype.trainsLeft = -1;
-    Player.prototype.trainCards = {}; //Map <color, int>
-    Player.prototype.destinationCards = [];
-    Player.prototype.playerId = -1;
-
-    Player.prototype.temporaryStorageOfCardsToBeSelectedFrom = [];
-
     //constructor 
-    function Player () {}
+    function Player () {
+        this.playerName = "";
+        this.playerColor = "";
+        this.points = -1;
+        this.trainsLeft = -1;
+        this.trainCards = {}; //Map <color, int>
+        this.destinationCards = [];
+        this.playerId = -1;
+        this.temporaryStorageOfCardsToBeSelectedFrom = [];
+    }
 
     Player.prototype.setInGameData = function (gameDataJSON) {
         this.playerId = gameDataJSON.playerOrder;
@@ -26,7 +24,7 @@ app.factory('Player', function (TrainCardColor, DestinationCard) {
         }
 
         for(var index in gameDataJSON.destinationCards) {
-            Player.prototype.destinationCards[index] = new DestinationCard(gameDataJSON.destinationCards[index]);
+            this.destinationCards[index] = new DestinationCard(gameDataJSON.destinationCards[index]);
         }
 
         if("possibleDestinationCards" in gameDataJSON) {
@@ -37,7 +35,7 @@ app.factory('Player', function (TrainCardColor, DestinationCard) {
     Player.prototype.setDestinationComplete = function (destinationCompleted) {
         for(var index in this.destinationCards) {
             if(this.destinationCards[index].equals(this.destinationCompleted)) {
-                this.destinationCards[index].isComplete = true;
+                this.destinationCards[index].setIsComplete(true);
                 break;
             }
         }
@@ -48,6 +46,68 @@ app.factory('Player', function (TrainCardColor, DestinationCard) {
         for(var index in destinations) {
             this.destinationCards.push(new DestinationCard(destinations[index]));
         }
+    }
+
+    //Getters
+    Player.prototype.getPlayerName = function () {
+        return this.playerName;
+    }
+
+    Player.prototype.getPlayerColor = function () {
+        return this.playerColor;
+    }
+
+    Player.prototype.getPoints = function () {
+        return this.points;
+    }
+
+    Player.prototype.getTrainsLeft = function () {
+        return this.trainsLeft;
+    }
+
+    Player.prototype.getTrainCards = function () {
+        return this.trainCards;
+    }
+
+    Player.prototype.getDestinationCards = function () {
+        return this.destinationCards;
+    }
+
+    Player.prototype.getPlayerId = function () {
+        return this.playerId;
+    }
+
+    Player.prototype.getTemporaryStorageOfCardsToBeSelectedFrom = function () {
+        return this.temporaryStorageOfCardsToBeSelectedFrom;
+    }
+
+    //Setters
+    Player.prototype.incrementTrainCards = function (cardDrawn) {
+       this.trainCards[cardDrawn] += 1;
+    }
+
+    Player.prototype.setTrainCards = function (cardDrawn, value) {
+        this.trainCards[cardDrawn] = value;
+    }
+
+    Player.prototype.setPlayerName = function (name) {
+        this.playerName = name;
+    }
+
+    Player.prototype.setPlayerColor = function (color) {
+        this.playerColor = color;
+    }
+
+    Player.prototype.setTrainsLeft = function (trains) {
+        this.trainsLeft = trains;
+    }
+
+    Player.prototype.setPoints = function (points) {
+        this.points = points;
+    }
+
+    Player.prototype.setTemporaryStorageOfCardsToBeSelectedFrom = function (destinations) {
+        this.temporaryStorageOfCardsToBeSelectedFrom = destinations;
     }
 
     return Player;

@@ -40,7 +40,7 @@ public class JoinGameCommand extends Command {
             responses.add(responseWrapper);
             if (color != null) {
                 Command command = new UpdateJoinableGamesCommand();
-                List<ResponseWrapper> commandResponses = command.execute(userID);
+                List<ResponseWrapper> commandResponses = command.preparedExecute(userID);
                 responses.addAll(commandResponses);
             }
             return responses;
@@ -68,11 +68,11 @@ public class JoinGameCommand extends Command {
             // update user games responses
             Command userGames = new UpdateUserGamesCommand();
             List<Player> players = thisGame.getPlayerManager().getPlayers();
-            players.stream().forEach(player -> responses.addAll(userGames.execute(player.getPlayerID())));
+            players.stream().forEach(player -> responses.addAll(userGames.preparedExecute(player.getPlayerID())));
 
             // start game response
             if (thisGame.getPlayerManager().getPlayers().size() == 5) {
-                responses.addAll(new StartGameCommand(gameId).execute(-1));
+                responses.addAll(new StartGameCommand(gameId).preparedExecute(-1));
             }
 
             return responses;

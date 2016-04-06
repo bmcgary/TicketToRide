@@ -11,7 +11,7 @@ import java.util.List;
  * Created by rodriggl on 1/29/2016.
  */
 public abstract class Command {
-    protected transient ServerFacade serverFacade = ServerFacade.getServerFacade();
+    protected transient ServerFacade serverFacade;
     protected transient String commandName;
 
     /**
@@ -21,6 +21,11 @@ public abstract class Command {
      * @return  a list of userIDs to message and the response message
      */
     public abstract List<ResponseWrapper> execute(int userID);
+
+    public List<ResponseWrapper> preparedExecute(int userID) {
+        this.serverFacade = ServerFacade.getServerFacade();
+        return execute(userID);
+    }
 
     public Command setCommandName(String commandName) {
         this.commandName = commandName;
