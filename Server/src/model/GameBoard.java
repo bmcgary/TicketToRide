@@ -509,17 +509,21 @@ public class GameBoard {
 		}
 		return GameBoard.routeMapping;
 	}
-	public int getLongestRoutePlayer() {
-		int longestRoutePlayerID = -1;
+	public List<Integer> getLongestRoutePlayer() {
+		List<Integer> listLongestRoutePlayerIDs = new ArrayList<Integer>();
 		int longestRouteLength = 0;
 		for(int playerID : this.currentRoutes.keySet()){
 			int playersLongestRouteLength = this.calcLongestRoute(this.currentRoutes.get(playerID));
 			if(playersLongestRouteLength > longestRouteLength){
 				longestRouteLength = playersLongestRouteLength;
-				longestRoutePlayerID = playerID;
+				listLongestRoutePlayerIDs.clear();
+				listLongestRoutePlayerIDs.add(playerID);
+			}
+			else if(playersLongestRouteLength == longestRouteLength){
+				listLongestRoutePlayerIDs.add(playerID);
 			}
 		}
-		return longestRoutePlayerID;
+		return listLongestRoutePlayerIDs;
 	}
 	
 	private int calcLongestRoute(List<CityToCityRoute> list) {
