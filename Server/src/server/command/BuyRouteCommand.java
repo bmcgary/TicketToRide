@@ -43,7 +43,7 @@ public class BuyRouteCommand extends TurnStartedNotificationCommand {
 			CityToCityRoute route = ServerFacade.getCityMapping().get(routeIndex);
 			Map<TrackColor, Integer> cards = Collections.singletonMap(TrackColor.getColor(trainColor), route.getNumTrains() - numberOfWilds);
 			serverFacade.buyRoute(userId, super.gameId, route, cards);
-			responses.addAll(new SendClientModelInformationCommand(super.gameId).setSendPublic(true).execute(userId));
+			responses.addAll(new SendClientModelInformationCommand(super.gameId).setSendPublic(true).preparedExecute(userId));
 		} catch (PreConditionException e) {
 			responses.clear();
 			responses.add(responseWrapper);

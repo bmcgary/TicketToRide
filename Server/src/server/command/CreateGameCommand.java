@@ -55,7 +55,7 @@ public class CreateGameCommand extends Command {
         }
         responses.add(new ResponseWrapper(userID, new UpdateGameResponse(game.getGameID()), "UpdateGame"));
 
-        responses.addAll(new UpdateUserGamesCommand().execute(userID));
+        responses.addAll(new UpdateUserGamesCommand().preparedExecute(userID));
 
         return responses;
     }
