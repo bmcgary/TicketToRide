@@ -98,15 +98,26 @@ public class GameBoard {
 	 */
 	public boolean isRouteAvailable(CityToCityRoute route){
 		//route must exist
-		if(!routes.contains(route)){
+		int routesFound = 0;
+		for(CityToCityRoute c2cr : routes){
+			if(c2cr.equals(route)){
+				routesFound++;
+			}
+		}
+		if(routesFound < 1){
 			return false;
 		}
 		
 		//nobody can have the route already
 		for(Integer key : currentRoutes.keySet()){
 			List<CityToCityRoute> list = currentRoutes.get(key);
-			if(list.contains(route)){
-				return false;
+			for(CityToCityRoute c2cr : list){
+				if(c2cr.equals(route)){
+					routesFound--;
+					if(routesFound < 1){
+						return false;
+					}
+				}
 			}
 		}
 		return true;
