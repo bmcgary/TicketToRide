@@ -741,16 +741,7 @@ app.controller('buyRouteCtrl', function ($scope, $uibModalInstance, routeColor, 
 
         if(($scope.trainCost + $scope.wildCost) >= routeCost)
            {
-                var lowerTrainColor;
-                if($scope.trainColor != "Select A Color")
-                {
-                  lowerTrainColor = "black";
-                }
-                else
-                {
-                  lowerTrainColor = $scope.trainColor.toLowerCase();
-                }
-
+                var lowerTrainColor = $scope.trainColor.toLowerCase();
                 var wildCardsUsed = $scope.wildCost;
                 var buyRouteInfo = {"color":lowerTrainColor, "wilds":wildCardsUsed};
                $uibModalInstance.close(buyRouteInfo);
