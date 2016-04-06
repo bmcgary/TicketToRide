@@ -85,7 +85,7 @@ app.factory('ModelContainer', function () {
     };
 
     ModelContainer.prototype.playerMustDrawAgain = function() {
-        return this.model.getBoard().getMustDrawAgain();
+        return this.model.getBoard().mustDrawAgain;
     };
 
     //Opponent Data
