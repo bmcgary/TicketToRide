@@ -39,7 +39,6 @@ public class SendClientModelInformationCommand extends Command {
     public List<ResponseWrapper> execute(List<Integer> playerIds) {
         List<ResponseWrapper> responses = new ArrayList<>();
         ResponseWrapper responseWrapper = new ResponseWrapper(getName());
-        responses.add(responseWrapper);
         Game game;
         try {
             game = serverFacade.getGame(gameId);
@@ -48,6 +47,7 @@ public class SendClientModelInformationCommand extends Command {
             }
         } catch (GameNotFoundException | InvalidCredentialsException e) {
             responseWrapper.setTargetIds(playerIds).setResponse(Response.newServerErrorResponse());
+            responses.add(responseWrapper);
             return responses;
         }
         List<Integer> gamePlayInfoPlayerIds = gamePlayInfo.getPlayerIds();
@@ -70,8 +70,7 @@ public class SendClientModelInformationCommand extends Command {
             responses.add(privateResponseWrapper.setResponse(gamePlayInfo.getPrivateInfo(playerId)));
         });
 
-        responseWrapper.setTargetIds(sendPublic ? gamePlayInfoPlayerIds : playersInGame).setResponse(Response.newSuccessResponse());
-        responses.add(new ResponseWrapper(playersInGame, gamePlayInfo, "PublicClientModelInformation"));
+        responses.add(new ResponseWrapper(sendPublic ? gamePlayInfoPlayerIds : playersInGame, gamePlayInfo, "PublicClientModelInformation"));
 
         AvailableTrainCardsNotificationResponse response = new AvailableTrainCardsNotificationResponse(gameId, game.getGameBoard().getVisibleTrainCarCards());
         responses.add(new ResponseWrapper(playersInGame, response, AvailableTrainCardsNotificationResponse.getName()));
