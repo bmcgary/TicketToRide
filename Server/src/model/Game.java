@@ -324,8 +324,10 @@ public class Game {
 			playerManager.calculateDestinationRoutePoints();
 			
 			//figure out who has longest route, award points
-			int longestRoutePlayerID = gameBoard.getLongestRoutePlayer();
-			playerManager.giveLongestRoutePoints(longestRoutePlayerID);
+			List<Integer> longestRoutePlayerIDs = gameBoard.getLongestRoutePlayer();
+			for(int id : longestRoutePlayerIDs){
+				playerManager.giveLongestRoutePoints(id);
+			}
 			
 			//lock out later point calculations
 			calculatedGameFinalPoints = true;
