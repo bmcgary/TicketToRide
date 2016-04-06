@@ -32,7 +32,7 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
             for(var index in parameters.games)
             {
                 var gameJSON = parameters.games[index];
-                joinableGames[gameJSON.gameID] = new GameDataForLobby(game);
+                joinableGames[gameJSON.gameID] = new GameDataForLobby(gameJSON);
             }    
             $rootScope.$broadcast('model:UpdateJoinableGames', joinableGames);
         }
