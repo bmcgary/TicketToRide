@@ -50,7 +50,7 @@
         <!-- /.navbar-collapse -->
       </nav>
 
-	<div class="col-xs-2" style="height:100%; background-color:#eaeaea;">
+	<div class="col-xs-2" style="height:100%; background-color:#eaeaea;"> <!-- left side bar -->
 				
 		<div class="row" style="">
 			<div style="height:100%; padding-bottom:100%;" ui-view="menu"></div> 
@@ -59,11 +59,11 @@
 		</div>
 	</div> 
 	<div class="col-xs-10" style="height:100%; padding:0;">
-		<div class="row" style="height:65%;">
+		<div class="row" style="height:65%;"> <!-- canvas -->
 			<div class="col-xs-10" id="canvasHolder" style="height:100%;padding-left:0; padding-right:0;padding-bottom:5%;">
 				<div ui-view="canvas"></div>
 			</div>
-			<div class="col-xs-2" id="rightTabs" style="background-color:yellow; height:100%;">
+			<div class="col-xs-2" id="rightTabs" style="background-color:rgba(0, 0, 0, 0.4); height:100%;">
 				<div ui-view="rightTabs"></div>
 			</div>
 		</div>

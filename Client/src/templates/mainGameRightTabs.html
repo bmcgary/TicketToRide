@@ -6,7 +6,7 @@
             <ul>
                 <li ng-repeat="destCard in availableDestsToPickFrom">
                     <input type="checkbox" ng-model="destCard.selected"></input> 
-		    <img src="images/routeCards/{{destCard.url}}" ng-class="destCard.selected ? 'trainDeckCards' : 'trainDeckCardsDisabled'" height="125px"></img>
+		    <img src="images/routeCards/{{destCard.url}}" ng-class="destCard.selected ? 'trainDeckCards' : 'trainDeckCardsDisabled'" height="125px" ng-click="destCardSelected($index)" style="cursor:pointer;"></img>
                 </li>
             </ul>
         </div>
@@ -32,8 +32,8 @@
 	<div ng-if="selectDestOnRight">
 
 		<div ng-repeat="destCard in availableDestsToPickFrom" ng-click="destCardSelected($index)">
-			<img src="images/routeCards/{{destCard.url}}" ng-class="destCard.selected ? 'trainDeckCards' : 'trainDeckCardsDisabled'" height="{{ heightAmount }}"></img>
-			<div>
+			<img src="images/routeCards/{{destCard.url}}" ng-class="destCard.selected ? 'trainDeckCards' : 'trainDeckCardsDisabled'" height="{{ heightAmount }}" style="cursor:pointer;"></img>
+			<div style="color:white;">
 				<b>From:</b> {{ destCard.city1 }} <br/> <b>To:</b> {{ destCard.city2 }} <br/> <b>Points:</b> {{ destCard.points }}
 			</div>
 		</div>

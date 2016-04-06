@@ -479,8 +479,10 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
                 if(routeToHighlight != -1)
                 {
                     highlightRoute(routeToHighlight);
-                    openBuyRouteModal(routeToHighlight);
-
+                    if(canBuyRoute())
+                    {
+                        openBuyRouteModal(routeToHighlight);
+                    }
                 }
             }
         }
@@ -668,7 +670,23 @@ function trackTransforms(context){
 
 
 
+//Buy Route Functionality//////////////////////////////////////////////////////////////////////////////////////////////
 
+    function canBuyRoute()
+    {
+    //from current model- if player must draw again- can't buy route
+        if(!$rootScope.selectDestOnRight)
+        {
+            if(!$rootScope.secondTrainCardRound)
+            {
+
+                return true;
+
+            }
+
+        }
+        return false;
+    }
 
 
 
@@ -736,8 +754,12 @@ app.controller('buyRouteCtrl', function ($scope, $uibModalInstance, routeColor, 
       for(var colorIndex in modalColors)
       {
         for(var color in modalColors[colorIndex])
+            if(color != "wild")
+            {
+                $scope.colors.push(color);
+            }
 
-        $scope.colors.push(color);
+
       }
 
       

@@ -42,7 +42,7 @@ app.factory('Player', function (TrainCardColor, DestinationCard) {
     }
 
     Player.prototype.addDestinationCards = function (destinations) {
-        this.destinations = [];
+        this.destinationCards = [];
         for(var index in destinations) {
             this.destinationCards.push(new DestinationCard(destinations[index]));
         }

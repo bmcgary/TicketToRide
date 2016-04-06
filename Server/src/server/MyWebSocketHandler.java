@@ -91,6 +91,8 @@ public class MyWebSocketHandler {
     }
 
     public void sendPublicMessage(String message) {
+    	System.out.println("Sending out this public message:");
+    	System.out.println("\t" + message);
         sessions.forEach((id, session) -> {
             try {
                 session.getRemote().sendString(message);
@@ -101,7 +103,9 @@ public class MyWebSocketHandler {
     }
 
     public void sendMessage(Iterator<Integer> targetIds, String message) {
-        targetIds.forEachRemaining(targetId -> {
+    	System.out.println("Sending out this message:");
+    	System.out.println("\t" + message);
+    	targetIds.forEachRemaining(targetId -> {
             try {
                 sessions.get(targetId).getRemote().sendString(message);
             } catch (IOException e) {
@@ -119,6 +123,8 @@ public class MyWebSocketHandler {
     		Iterator<Integer> targetIds=wrappers.get(i).getTargetIds().iterator();
     		String message=wrappers.get(i).getResponse();
 
+        	System.out.println("Sending out this one message of many:");
+        	System.out.println("\t" + message);
     		//send the message of this particular response wrapper to all of its targetIDs
     		targetIds.forEachRemaining(targetId -> {
     			try{
@@ -140,6 +146,8 @@ public class MyWebSocketHandler {
 
     public void sendInvalidMessage(String message)
     {
+    	System.out.println("Sending out this invalid message:");
+    	System.out.println("\t" + message);
     	try {
 			personal_session.getRemote().sendString(message);
 		} catch (IOException e) {

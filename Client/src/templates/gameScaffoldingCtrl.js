@@ -16,14 +16,14 @@ $scope.currentGameId = -1;
 $scope.topNavMessage = "Waiting to Start the Game";
 
 //----------------------- Main menu data --------------------------------------
-$scope.thisPlayer = {
+$scope.thisPlayer = {/*
 	playerName:'player 4',
 	playerColor:'green',
 	points:6,
 	trainsLeft:7,
-	playerId:4
+	playerId:4*/
 };
-$scope.opponents = [{
+$scope.opponents = [/*{
 	playerName:'player 1',
 	playerColor:'blue',
 	points:10,
@@ -50,7 +50,7 @@ $scope.opponents = [{
 	points:6,
 	trainsLeft:7,
 	playerId:3
-}];
+}*/];
 
 
 //----------------------- Right tabed section's model data --------------------
@@ -75,7 +75,7 @@ $scope.playersTrainCards =
 }
 
 //------------------------------ Stuff in the nav bar -------------------------
-$scope.games = [
+$scope.games = [/*
 
 	{
     name: "GAME AWESOME",
@@ -97,7 +97,7 @@ $scope.games = [
     link: "#/game",
 	gameId: 4,
 	action:$scope.changeGame
-  }];
+  }*/];
 
 
 //------------------------------ Methods and jank -------------------------------------
@@ -255,7 +255,10 @@ $scope.games = [
 
 		$scope.secondTrainCardRound = modelContainer.playerMustDrawAgain();
 	
-		$scope.topNavMessage = "Waiting for " + modelContainer.getPlayerNameById(modelContainer.getTurnIndex()) + " to take their turn";
+		if(modelContainer.getPlayerId() == modelContainer.getTurnIndex())
+			$scope.topNavMessage = "It's your turn!";
+		else	
+			$scope.topNavMessage = "Waiting for " + modelContainer.getPlayerNameById(modelContainer.getTurnIndex()) + "'s turn";
 
 		//------------- Destinations in your hand
 		$scope.destinations.length = 0;
@@ -278,8 +281,12 @@ $scope.games = [
 		$scope.cardsVisible.length = 0;
 		for(var i = 0; i < 5; i++)
 		{
-			var color = modelContainer.getCardVisibleAt(i).toLowerCase();
-			$scope.cardsVisible.push(color == 'none' ? 'wild' : color); 
+			var color = modelContainer.getCardVisibleAt(i)
+			if(typeof(color) != 'undefined')
+			{
+				color = color.toLowerCase();
+				$scope.cardsVisible.push(color == 'none' ? 'wild' : color); 
+			}
 		}
 
 		//-------------- Players section on the left
@@ -306,10 +313,6 @@ $scope.games = [
 
 	}
 
-	$rootScope.$on('TESTER',function(event, params)
-	{
-		alert("in ctrl");
-	});
 
 	function waitingToStartModalSetUp(parameters)
 	{
@@ -324,43 +327,44 @@ $scope.games = [
 		
 		$scope.currentGameId = parameters.getGameId();
 		//TODO check if the game has started. if not show this, else nothing
+		if(!$uibModalStack.getTop()) //only show if the modal doenst already exist
+		{
 			waitingModalInstance = waitingToStartModalModal(iAmTheCreator);
+		}
 	}
 
 //---------------------------------- Waiting to start Modal
 	function waitingToStartModalModal(iAmTheCreator)
 	{
-		if(!$uibModalStack.getTop()) //only show if the modal doenst already exist
-		{
-			var modalInstance = $uibModal.open({
-				  animation: true,
-				  templateUrl: 'waitingToStartGameModal.html',
-				  controller: 'waitingToStartModalCtrl',
-				  backdrop : 'static',
-				  keyboard: false,
-				  //size: size,
-				  resolve: 
-				  {
-					   ppl: function () 
-	 				   {
-						 return $scope.allPlayers;
-					   },
-					   iAmTheCreator : function()
-					   {
-						 return iAmTheCreator;
-   					   }
-				  }
-				});
+		var modalInstance = $uibModal.open({
+			  animation: true,
+			  templateUrl: 'waitingToStartGameModal.html',
+			  controller: 'waitingToStartModalCtrl',
+			  backdrop : 'static',
+			  keyboard: false,
+			  //size: size,
+			  resolve: 
+			  {
+				   ppl: function () 
+ 				   {
+					 return $scope.allPlayers;
+				   },
+				   iAmTheCreator : function()
+				   {
+					 return iAmTheCreator;
+				   }
+			  }
+			});
 
-			modalInstance.result.then(
-				function ()  //they selected stuff
-				{
-			  		//console.log(selectedItems); //from here ship it out via the ClientAPI
-					ClientAPI.startGame($scope.currentGameId);
-				});//dont need a function for canceling since that isn't allowed
+		modalInstance.result.then(
+			function ()  //they selected stuff
+			{
+		  		//console.log(selectedItems); //from here ship it out via the ClientAPI
+				ClientAPI.startGame($scope.currentGameId);
+			});//dont need a function for canceling since that isn't allowed
 
-			return modalInstance;
-		}
+		return modalInstance;
+
 	}
 
 });
