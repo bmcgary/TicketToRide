@@ -2,6 +2,7 @@ package server.command;
 
 import com.google.gson.annotations.SerializedName;
 import model.Game;
+import server.ServerFacade;
 import server.dto.gameplay.GamePlayInfo;
 import server.exception.GameNotFoundException;
 import server.exception.InvalidCredentialsException;
@@ -37,6 +38,7 @@ public class SendClientModelInformationCommand extends Command {
     }
 
     public List<ResponseWrapper> execute(List<Integer> playerIds) {
+        serverFacade = ServerFacade.getServerFacade();
         List<ResponseWrapper> responses = new ArrayList<>();
         ResponseWrapper responseWrapper = new ResponseWrapper(getName());
         Game game;
