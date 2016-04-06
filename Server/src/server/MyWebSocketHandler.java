@@ -36,14 +36,14 @@ public class MyWebSocketHandler {
         System.out.println("Close: statusCode=" + statusCode + ", reason=" + reason);
         
         Command command = new LogoutCommand();
-        command.execute(personal_id);
+        command.preparedExecute(personal_id);
         //sendMessages(responseWrappers);
     }
 
     @OnWebSocketError
     public void onError(Throwable t) {
         Command command = new LogoutCommand();
-        command.execute(personal_id);
+        command.preparedExecute(personal_id);
         System.out.println("Error: " + t.getMessage());
     }
 
@@ -61,7 +61,7 @@ public class MyWebSocketHandler {
 
 		try {
             Command command = CommandFactory.makeCommand(message);
-            List<ResponseWrapper> responseWrappers = command.execute(personal_id);
+            List<ResponseWrapper> responseWrappers = command.preparedExecute(personal_id);
 
 	        if(command instanceof LoginCommand || command instanceof RegisterCommand)
 	        {
@@ -117,31 +117,29 @@ public class MyWebSocketHandler {
     public void sendMessages(List<ResponseWrapper> wrappers)
     {
     	//go through each response wrapper
-    	for(int i=0; i<wrappers.size(); i++)
-    	{
+        wrappers.stream().forEach(wrapper -> {
+            Iterator<Integer> targetIds = wrapper.getTargetIds().iterator();
+            String message = wrapper.getResponse();
 
-    		Iterator<Integer> targetIds=wrappers.get(i).getTargetIds().iterator();
-    		String message=wrappers.get(i).getResponse();
+            System.out.println("Sending out this one message of many:");
+            System.out.println("\t" + message);
+            //send the message of this particular response wrapper to all of its targetIDs
+            targetIds.forEachRemaining(targetId -> {
+                try {
 
-        	System.out.println("Sending out this one message of many:");
-        	System.out.println("\t" + message);
-    		//send the message of this particular response wrapper to all of its targetIDs
-    		targetIds.forEachRemaining(targetId -> {
-    			try{
-    				
-    				//-1 means to send to everyone, otherwise, send the message to the specified targetId.
-    				if(targetId==-1)
-    					sendPublicMessage(message);
-    				else
-    					sessions.get(targetId).getRemote().sendString(message);
-    				
-    			} catch(IOException e) {
-    				System.err.println("Failed to send to user " + id);
-    			}
+                    //-1 means to send to everyone, otherwise, send the message to the specified targetId.
+                    if (targetId == -1)
+                        sendPublicMessage(message);
+                    else
+                        sessions.get(targetId).getRemote().sendString(message);
 
-    		});
+                } catch (IOException e) {
+                    System.err.println("Failed to send to user " + id);
+                }
 
-    	}
+            });
+
+        });
     }
 
     public void sendInvalidMessage(String message)
