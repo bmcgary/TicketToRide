@@ -1,4 +1,4 @@
-package server;
+package test;
 
 public class TestGameBoard extends model.GameBoard {
 

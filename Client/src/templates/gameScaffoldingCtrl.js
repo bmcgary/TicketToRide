@@ -16,14 +16,14 @@ $scope.currentGameId = -1;
 $scope.topNavMessage = "Waiting to Start the Game";
 
 //----------------------- Main menu data --------------------------------------
-$scope.thisPlayer = {
+$scope.thisPlayer = {/*
 	playerName:'player 4',
 	playerColor:'green',
 	points:6,
 	trainsLeft:7,
-	playerId:4
+	playerId:4*/
 };
-$scope.opponents = [{
+$scope.opponents = [/*{
 	playerName:'player 1',
 	playerColor:'blue',
 	points:10,
@@ -50,7 +50,7 @@ $scope.opponents = [{
 	points:6,
 	trainsLeft:7,
 	playerId:3
-}];
+}*/];
 
 
 //----------------------- Right tabed section's model data --------------------
@@ -75,7 +75,7 @@ $scope.playersTrainCards =
 }
 
 //------------------------------ Stuff in the nav bar -------------------------
-$scope.games = [
+$scope.games = [/*
 
 	{
     name: "GAME AWESOME",
@@ -97,7 +97,7 @@ $scope.games = [
     link: "#/game",
 	gameId: 4,
 	action:$scope.changeGame
-  }];
+  }*/];
 
 
 //------------------------------ Methods and jank -------------------------------------
@@ -255,7 +255,10 @@ $scope.games = [
 
 		$scope.secondTrainCardRound = modelContainer.playerMustDrawAgain();
 	
-		$scope.topNavMessage = "Waiting for " + modelContainer.getPlayerNameById(modelContainer.getTurnIndex()) + " to take their turn";
+		if(modelContainer.getPlayerId() == modelContainer.getTurnIndex())
+			$scope.topNavMessage = "It's your turn!";
+		else	
+			$scope.topNavMessage = "Waiting for " + modelContainer.getPlayerNameById(modelContainer.getTurnIndex()) + "'s turn";
 
 		//------------- Destinations in your hand
 		$scope.destinations.length = 0;
