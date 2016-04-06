@@ -44,7 +44,6 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
     {
         initializeTrains();
         redraw();
-
     }
    
 //GAME AND PLAYER VARIABLES////////////////////////////////////////////////////////////////////////////////// 
@@ -71,8 +70,9 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         currentGameModel = modelContainer
         gameID = modelContainer.getGameId();
         updatePlayerHand(modelContainer);
-        setTrainImage(modelContainer);
         routesPurchased = modelContainer.getRoutesOwned();
+        playerColorWord = modelContainer.getPlayerColor();
+        setTrainImage(playerColorWord);
         redraw();
 
     }
@@ -92,65 +92,30 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
            
        }
 
-    function setTrainImage(modelContainer)
-    {
-        switch(modelContainer.getPlayerColor())
-           {
-               case PlayerColor.BLACK:
-                   trainImage.src   = '/images/pieces/ttr-piece-black-sq.jpg';
-                   playerColorWord = "black";
-                   break;
-               case PlayerColor.BLUE:
-                   trainImage.src   = '/images/pieces/ttr-piece-blue-sq.jpg';
-                   playerColorWord = "blue";
-                   break;
-               case PlayerColor.GREEN:
-                   trainImage.src   = '/images/pieces/ttr-piece-green-sq.jpg';
-                   playerColorWord = "green";
-                   break;
-               case PlayerColor.RED:
-                   trainImage.src   = '/images/pieces/ttr-piece-red-sq.jpg';
-                   playerColorWord = "red";
-                   break;
-               case PlayerColor.YELLOW:
-                   trainImage.src   = '/images/pieces/ttr-piece-yellow-sq.jpg';
-                   playerColorWord = "yellow";
-                   break;
-               default:
-                   trainImage.src   = '/images/pieces/ttr-piece-blue-sq.jpg';
-                   playerColorWord = "blue";
-           }
-    }
-
-    function setOtherTrainImage(color)
+    function setTrainImage(color)
     {
         switch(color)
            {
                case PlayerColor.BLACK:
                    trainImage.src   = '/images/pieces/ttr-piece-black-sq.jpg';
-                   playerColorWord = "black";
                    break;
                case PlayerColor.BLUE:
                    trainImage.src   = '/images/pieces/ttr-piece-blue-sq.jpg';
-                   playerColorWord = "blue";
                    break;
                case PlayerColor.GREEN:
                    trainImage.src   = '/images/pieces/ttr-piece-green-sq.jpg';
-                   playerColorWord = "green";
                    break;
                case PlayerColor.RED:
                    trainImage.src   = '/images/pieces/ttr-piece-red-sq.jpg';
-                   playerColorWord = "red";
                    break;
                case PlayerColor.YELLOW:
                    trainImage.src   = '/images/pieces/ttr-piece-yellow-sq.jpg';
-                   playerColorWord = "yellow";
                    break;
                default:
                    trainImage.src   = '/images/pieces/ttr-piece-blue-sq.jpg';
-                   playerColorWord = "blue";
            }
     }
+
 
 
                     
@@ -235,7 +200,6 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
 
                 context.translate(route[train].topLeft.x, route[train].topLeft.y);
 
-
                 //Calculate Rotation Angle and Assign to the train object
                 var deltaX = route[train].topLeft.x - route[train].topRight.x;
                 var deltaY = route[train].topLeft.y - route[train].topRight.y;
@@ -273,17 +237,17 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
 
     function drawExistingRoutes()
     {
-        for(var routesPurchasedIterator in routesPurchased)
+        if(currentGameModel != null)
         {
-            var boughtRouteIndex = routesPurchased[routesPurchasedIterator];
-            var currentColor = currentGameModel.getPlayerColorByRouteId(boughtRouteIndex);
-            setOtherTrainImage(currentColor);
-            drawRoute(boughtRouteIndex);
-
-
+            for(var routesPurchasedIterator in routesPurchased)
+            {
+                var boughtRouteIndex = routesPurchased[routesPurchasedIterator];
+                var currentColor = currentGameModel.getPlayerColorByRouteId(boughtRouteIndex);
+                setTrainImage(currentColor);
+                drawRoute(boughtRouteIndex);
+            }
+            setTrainImage(currentGameModel.getPlayerColor());
         }
-
-
     }
 
     function drawRoute(routeId){
@@ -292,29 +256,19 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         {
             drawTrain(route[train].topLeft, route[train].topRight, route[train].angle);
         }
-
     };
 
 
     function drawTrain(topLeft, topRight, angle){
         context.save();
-
         context.translate(topLeft.x, topLeft.y);
-
         context.rotate(angle);
-
         context.drawImage(trainImage, 0,0, trainImageWidth, trainImageHeight);
-
         context.restore();
     };
 
-
-
-
-
     function checkIfMouseInTrain(xPosition, yPosition)
     {
-
         for(var routeId in StaticTrackList)
         {
             var route = StaticTrackList[routeId].tracks;
@@ -322,13 +276,11 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
             for(var train in route )
             {
                 var currentTrain = route[train];
-
                 //Check outer Bounding Box
                if(xPosition >= currentTrain.minX && xPosition <= currentTrain.maxX)
                 {
                     if(yPosition >= currentTrain.minY && yPosition <= currentTrain.maxY)
                     {
-
                         //More Detailed Check
                         if(is_in_triangle (xPosition, yPosition, currentTrain.topLeft.x, currentTrain.topLeft.y,currentTrain.bottomRight.x,currentTrain.bottomRight.y,currentTrain.topRight.x, currentTrain.topRight.y))
                         {
@@ -345,35 +297,23 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
                             routeToHighlight = -1;
                             continue;
                         }
-
                     }
                 }
-
-
             }
         }
-
     };
 
     function highlightRoute(routeId)
     {
-
         var route = StaticTrackList[routeId].tracks;
         for(var train in route )
         {
-
             context.save();
-
             context.translate(route[train].topLeft.x, route[train].topLeft.y);
-
             context.rotate(route[train].angle);
-
             context.drawImage(trainImage, 0,0, trainImageWidth, trainImageHeight);
-
             context.restore();
-
         }
-
     };
 
     function is_in_triangle (xPosition,yPosition,ax,ay,bx,by,cx,cy){
@@ -762,9 +702,6 @@ app.controller('buyRouteCtrl', function ($scope, $uibModalInstance, routeColor, 
 
       }
 
-      
-
-
       $scope.normalTrainNumbers = [];
       $scope.wildNumbers = [];
       $scope.trainCardPath = "";
@@ -822,49 +759,8 @@ app.controller('buyRouteCtrl', function ($scope, $uibModalInstance, routeColor, 
             }
 
         }
-        switch(color)
-        {
-            case "red":
-            $scope.trainCardPath = "/images/trainCards/ttr-train-red.jpg";
-            $scope.trainColor = "Red";
-            break;
-            case "blue":
-            $scope.trainCardPath = "/images/trainCards/ttr-train-blue.jpg";
-            $scope.trainColor = "Blue";
-            break;
-            case "black":
-            $scope.trainCardPath = "/images/trainCards/ttr-train-black.jpg";
-            $scope.trainColor = "Black";
-            break;
-            case "green":
-            $scope.trainCardPath = "/images/trainCards/ttr-train-green.jpg";
-            $scope.trainColor = "Green";
-            break;
-            case "orange":
-            $scope.trainCardPath = "/images/trainCards/ttr-train-orange.jpg";
-            $scope.trainColor = "Orange";
-            break;
-            case "purple":
-            $scope.trainCardPath = "/images/trainCards/ttr-train-purple.jpg";
-            $scope.trainColor = "Purple";
-            break;
-            case "yellow":
-            $scope.trainCardPath = "/images/trainCards/ttr-train-yellow.jpg";
-            $scope.trainColor = "Yellow";
-            break;
-            case "white":
-            $scope.trainCardPath = "/images/trainCards/ttr-train-white.jpg";
-            $scope.trainColor = "White";
-            break;
-            default:
-            $scope.trainCardPath = "/images/trainCards/ttr-train-white.jpg";
-            $scope.trainColor = "Select Train Color";
-            break;
-
-
-        }
-
-
+        $scope.trainColor = color.charAt(0).toUpperCase() + color.slice(1);
+        $scope.trainCardPath = "/images/trainCards/ttr-train-" + color + ".jpg";
       }
 
       $scope.selectTrainCost = function(cost)
@@ -877,22 +773,15 @@ app.controller('buyRouteCtrl', function ($scope, $uibModalInstance, routeColor, 
         $scope.wildCost = cost;
       }
 
-
-
       $scope.cancel = function(){
         $uibModalInstance.dismiss('cancel');
       }
-
-
         function showAlert(message, type)
         {
             $scope.alert.showAlert = true;
             $scope.alert.message = message;
             $scope.alert.type = type;
         }
-
-
-
 
 });
 
