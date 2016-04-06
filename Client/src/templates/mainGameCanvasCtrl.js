@@ -32,9 +32,23 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
 	//addEvent(window, 'resize', setUpCanvas);
 
     trackTransforms(context);
-	
-    var trainImage   = new Image();
-    trainImage.src   = '/images/pieces/ttr-piece-black-sq.jpg';
+//Initialize Images////////////////////////////////////////////////////////////////////////////////////////////////
+    var blackTrainImage = new Image();
+    blackTrainImage.src = '/images/pieces/ttr-piece-black-sq.jpg';
+
+    var blueTrainImage = new Image();
+    blueTrainImage.src = '/images/pieces/ttr-piece-blue-sq.jpg';
+
+    var redTrainImage = new Image();
+    redTrainImage.src = '/images/pieces/ttr-piece-red-sq.jpg';
+
+    var yellowTrainImage = new Image();
+    yellowTrainImage.src = '/images/pieces/ttr-piece-yellow-sq.jpg';
+
+    var greenTrainImage = new Image();
+    greenTrainImage.src = '/images/pieces/ttr-piece-green-sq.jpg';
+
+    var trainImage   = blackTrainImage;
     var trainImageWidth = 28;
     var trainImageHeight = 8;
 
@@ -88,8 +102,7 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
             playerHand.blue = modelContainer.getTrainCardsByColor(TrainCardColor.BLUE);
             playerHand.purple = modelContainer.getTrainCardsByColor(TrainCardColor.PURPLE);
             playerHand.orange = modelContainer.getTrainCardsByColor(TrainCardColor.ORANGE);
-            
-           
+
        }
 
     function setTrainImage(color)
@@ -97,30 +110,31 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         switch(color)
            {
                case PlayerColor.BLACK:
-                   trainImage.src   = '/images/pieces/ttr-piece-black-sq.jpg';
+                   trainImage   = blackTrainImage;
+                   //trainImage.src   = '/images/pieces/ttr-piece-black-sq.jpg';
                    break;
                case PlayerColor.BLUE:
-                   trainImage.src   = '/images/pieces/ttr-piece-blue-sq.jpg';
+                   trainImage   = blueTrainImage;
+                  // trainImage.src   = '/images/pieces/ttr-piece-blue-sq.jpg';
                    break;
                case PlayerColor.GREEN:
-                   trainImage.src   = '/images/pieces/ttr-piece-green-sq.jpg';
+                   trainImage   = greenTrainImage;
+                   //trainImage.src   = '/images/pieces/ttr-piece-green-sq.jpg';
                    break;
                case PlayerColor.RED:
-                   trainImage.src   = '/images/pieces/ttr-piece-red-sq.jpg';
+                   trainImage   = redTrainImage;
+                   //trainImage.src   = '/images/pieces/ttr-piece-red-sq.jpg';
                    break;
                case PlayerColor.YELLOW:
-                   trainImage.src   = '/images/pieces/ttr-piece-yellow-sq.jpg';
+                   trainImage   = yellowTrainImage;
+                   //trainImage.src   = '/images/pieces/ttr-piece-yellow-sq.jpg';
                    break;
                default:
-                   trainImage.src   = '/images/pieces/ttr-piece-blue-sq.jpg';
+                   trainImage   = blueTrainImage;
+                   //trainImage.src   = '/images/pieces/ttr-piece-blue-sq.jpg';
            }
     }
 
-
-
-                    
-                    
-                    
 //MODEL LISTENERS/////////////////////////////////////////////////////////////////////////////////////////////
 
     $rootScope.$on('model:StartGame', function (event, modelContainer)
@@ -661,6 +675,11 @@ function trackTransforms(context){
 			            return routeInfo.trainsRequired;
 			        },
 
+			        wildCardsOwned: function()
+			        {
+			            return playerHand["wild"];
+			        },
+
 			        playerHand: function()
 			        {
 			            return playerHand;
@@ -686,7 +705,7 @@ function trackTransforms(context){
 });
 
 // Destination modal's controller ------------------------------------------------------------------------
-app.controller('buyRouteCtrl', function ($scope, $uibModalInstance, routeColor, routeCost, playerHand, modalColors) {
+app.controller('buyRouteCtrl', function ($scope, $uibModalInstance, routeColor, routeCost, playerHand, modalColors, wildCardsOwned) {
 
      $scope.alert = {showAlert: false, message: "", type:""};
 
@@ -710,34 +729,37 @@ app.controller('buyRouteCtrl', function ($scope, $uibModalInstance, routeColor, 
       $scope.trainColor = "Select A Color";
 
 
-        for(var modalColor in modalColors[0])
-        {
-            if(modalColor == 'wild')
-            {
-                for(var counter = 0; counter <= modalColors[colorIndex][color]; counter ++ )
-                 {
-                    $scope.wildNumbers.push(counter);
-                 }
-            }
-        }
 
+     for(var counter = 0; counter <= wildCardsOwned; counter ++ )
+     {
+        $scope.wildNumbers.push(counter);
+     }
 
      $scope.ok = function () {
 
-        if($scope.trainColor != "Select A Color")
+
+
+        if(($scope.trainCost + $scope.wildCost) >= routeCost)
+           {
+                var lowerTrainColor;
+                if($scope.trainColor != "Select A Color")
+                {
+                  lowerTrainColor = "black";
+                }
+                else
+                {
+                  lowerTrainColor = $scope.trainColor.toLowerCase();
+                }
+
+                var wildCardsUsed = $scope.wildCost;
+                var buyRouteInfo = {"color":lowerTrainColor, "wilds":wildCardsUsed};
+               $uibModalInstance.close(buyRouteInfo);
+           }
+        else
         {
-            if(($scope.trainCost + $scope.wildCost) >= routeCost)
-               {
-                    var lowerTrainColor = $scope.trainColor.toLowerCase();
-                    var wildCardsUsed = $scope.wildCost;
-                    var buyRouteInfo = {"color":lowerTrainColor, "wilds":wildCardsUsed};
-                   $uibModalInstance.close(buyRouteInfo);
-               }
-            else
-            {
-                alert("Please select more trains.");
-            }
+            alert("Please select more trains.");
         }
+
 
       };
 
