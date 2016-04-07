@@ -33,7 +33,7 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
           <ul class="nav navbar-nav">
-            <li uib-dropdown="">
+            <!--<li uib-dropdown="">
               <a href="#/game" uib-dropdown-toggle="">
                         Other Games  <b class="caret"></b>
               </a>
@@ -46,6 +46,9 @@
 		<a class="navbar-brand">{{ topNavMessage }}</a>
    	   </li>
           </ul>
+     	 <ul class="nav navbar-nav navbar-right">			
+	    <li><a ui-sref="" ng-click="logout()">Log out</a></li>
+     	 </ul>
         </div>
         <!-- /.navbar-collapse -->
       </nav>

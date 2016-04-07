@@ -14,14 +14,18 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
 //--------------- Over all info thats helpful to have -------------------------
 $scope.currentGameId = -1; 
 $scope.topNavMessage = "Waiting to Start the Game";
+$scope.logout = function()
+{
+	ClientAPI.logout();
+}
 
 //----------------------- Main menu data --------------------------------------
-$scope.thisPlayer = {
+$scope.thisPlayer = {/*
 	playerName:'player 4',
 	playerColor:'green',
 	points:6,
 	trainsLeft:7,
-	playerId:4
+	playerId:4*/
 };
 $scope.opponents = [/*{
 	playerName:'player 1',
