@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -97,15 +98,26 @@ public class GameBoard {
 	 */
 	public boolean isRouteAvailable(CityToCityRoute route){
 		//route must exist
-		if(!routes.contains(route)){
+		int routesFound = 0;
+		for(CityToCityRoute c2cr : routes){
+			if(c2cr.equals(route)){
+				routesFound++;
+			}
+		}
+		if(routesFound < 1){
 			return false;
 		}
 		
 		//nobody can have the route already
 		for(Integer key : currentRoutes.keySet()){
 			List<CityToCityRoute> list = currentRoutes.get(key);
-			if(list.contains(route)){
-				return false;
+			for(CityToCityRoute c2cr : list){
+				if(c2cr.equals(route)){
+					routesFound--;
+					if(routesFound < 1){
+						return false;
+					}
+				}
 			}
 		}
 		return true;
@@ -175,9 +187,36 @@ public class GameBoard {
 			{
 				visibleTrainCarCards[index] = deckTrainCarCards.get(0);
 				deckTrainCarCards.remove(0);
-				//test comment for GitBash
+				if(excessWilds()){
+					replaceAllVisibleTrainCards();
+				}
 			}
 			return output;
+		}
+	}
+	
+	private boolean excessWilds(){
+		int totalWilds = 0;
+		for(int i = 0; i < 5; ++i){
+			if(visibleTrainCarCards[i].equals(TrackColor.None)){
+				totalWilds++;
+			}
+		}
+		
+		return totalWilds >= 3;
+	}
+	
+	private void replaceAllVisibleTrainCards(){
+		for(int i = 0; i < 5; ++i){
+			TrackColor card = visibleTrainCarCards[i];
+			if(card != null){
+				this.discardTrainCards(new ArrayList<TrackColor>(Arrays.asList(card)));
+			}
+			try {
+				visibleTrainCarCards[i] = this.drawDeckTrainCar();
+			} catch (InternalServerException e) {
+				visibleTrainCarCards[i] = null;
+			}
 		}
 	}
 	
@@ -295,6 +334,11 @@ public class GameBoard {
 		//add 5 cards from TrainCarDeck into the visible pile
 		for(int i = 0; i < this.visibleTrainCarCards.length; ++i){
 			this.visibleTrainCarCards[i] = this.drawDeckTrainCar();
+		}
+		
+		//redo visible train cards if there are too many wilds
+		while(excessWilds()){
+			replaceAllVisibleTrainCards();
 		}
 		
 		//use DestinationCards.txt to load in cities, destinationRoutes
@@ -465,17 +509,21 @@ public class GameBoard {
 		}
 		return GameBoard.routeMapping;
 	}
-	public int getLongestRoutePlayer() {
-		int longestRoutePlayerID = -1;
+	public List<Integer> getLongestRoutePlayer() {
+		List<Integer> listLongestRoutePlayerIDs = new ArrayList<Integer>();
 		int longestRouteLength = 0;
 		for(int playerID : this.currentRoutes.keySet()){
 			int playersLongestRouteLength = this.calcLongestRoute(this.currentRoutes.get(playerID));
 			if(playersLongestRouteLength > longestRouteLength){
 				longestRouteLength = playersLongestRouteLength;
-				longestRoutePlayerID = playerID;
+				listLongestRoutePlayerIDs.clear();
+				listLongestRoutePlayerIDs.add(playerID);
+			}
+			else if(playersLongestRouteLength == longestRouteLength){
+				listLongestRoutePlayerIDs.add(playerID);
 			}
 		}
-		return longestRoutePlayerID;
+		return listLongestRoutePlayerIDs;
 	}
 	
 	private int calcLongestRoute(List<CityToCityRoute> list) {

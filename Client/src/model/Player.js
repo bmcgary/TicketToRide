@@ -32,15 +32,6 @@ app.factory('Player', function (TrainCardColor, DestinationCard) {
         }
     }
 
-    Player.prototype.setDestinationComplete = function (destinationCompleted) {
-        for(var index in this.destinationCards) {
-            if(this.destinationCards[index].equals(this.destinationCompleted)) {
-                this.destinationCards[index].setIsComplete(true);
-                break;
-            }
-        }
-    }
-
     Player.prototype.addDestinationCards = function (destinations) {
         this.destinationCards = [];
         for(var index in destinations) {

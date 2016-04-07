@@ -36,7 +36,6 @@ app.factory('ServerAPI', function ($rootScope) {
                 case "SendChat": 
                 case "BuyRoute": 
                 case "DrawTrainCard": 
-                case "NotifyDestinationRouteCompleted": 
                 case "GetDestinations": 
                 case "SelectDestinations": 
                 case "GameEnded": 
