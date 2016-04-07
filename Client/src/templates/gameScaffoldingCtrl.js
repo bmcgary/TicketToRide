@@ -14,14 +14,18 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
 //--------------- Over all info thats helpful to have -------------------------
 $scope.currentGameId = -1; 
 $scope.topNavMessage = "Waiting to Start the Game";
+$scope.logout = function()
+{
+	ClientAPI.logout();
+}
 
 //----------------------- Main menu data --------------------------------------
-$scope.thisPlayer = {
+$scope.thisPlayer = {/*
 	playerName:'player 4',
 	playerColor:'green',
 	points:6,
 	trainsLeft:7,
-	playerId:4
+	playerId:4*/
 };
 $scope.opponents = [/*{
 	playerName:'player 1',
@@ -139,6 +143,7 @@ $scope.games = [/*
 	{
 		console.log("Change game to this game Id: " + game);
 	}
+
 
 //--------------------- Main game Broadcast listeners -----------------------------------
 // There are other listeners that are in specific controllers. EG: when clicking buy a destination 
@@ -375,6 +380,8 @@ app.controller('waitingToStartModalCtrl', function ($scope, $uibModalInstance, p
   $scope.alert = {showAlert: false, message: "", type:""};	
   $scope.ppl = ppl;
   $scope.showStart = iAmTheCreator;
+
+//  $scope.toolTipMessage = $scope.allPlayers.length > 2 ? '' : "You need more players to join the game first";
 /*
 		parameters.model.player.playerName / playerColor
 		parameters.model.opponents[i].playerName / playerColor

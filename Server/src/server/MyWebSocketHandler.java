@@ -118,27 +118,28 @@ public class MyWebSocketHandler {
     {
     	//go through each response wrapper
         wrappers.stream().forEach(wrapper -> {
-            Iterator<Integer> targetIds = wrapper.getTargetIds().iterator();
-            String message = wrapper.getResponse();
-
-            System.out.println("Sending out this one message of many:");
-            System.out.println("\t" + message);
-            //send the message of this particular response wrapper to all of its targetIDs
-            targetIds.forEachRemaining(targetId -> {
-                try {
-
-                    //-1 means to send to everyone, otherwise, send the message to the specified targetId.
-                    if (targetId == -1)
-                        sendPublicMessage(message);
-                    else
-                        sessions.get(targetId).getRemote().sendString(message);
-
-                } catch (IOException e) {
-                    System.err.println("Failed to send to user " + id);
-                }
-
-            });
-
+        	if(wrapper != null)
+        	{
+	            Iterator<Integer> targetIds = wrapper.getTargetIds().iterator();
+	            String message = wrapper.getResponse();
+	
+	            System.out.println("Sending out this one message of many:");
+	            System.out.println("\t" + message);
+	            //send the message of this particular response wrapper to all of its targetIDs
+	            targetIds.forEachRemaining(targetId -> {
+	                try {
+	
+	                    //-1 means to send to everyone, otherwise, send the message to the specified targetId.
+	                    if (targetId == -1)
+	                        sendPublicMessage(message);
+	                    else
+	                        sessions.get(targetId).getRemote().sendString(message);
+	
+	                } catch (IOException e) {
+	                    System.err.println("Failed to send to user " + id);
+	                }
+	            });
+            }
         });
     }
 
