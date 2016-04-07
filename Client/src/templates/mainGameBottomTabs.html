@@ -1,33 +1,13 @@
-<div class="col-xs-6">
+<div id="trainCardsInHandTab" class="col-xs-6">
 
-	<h5>Train Cards in your hand</h5>
+	<h5 class="text-center" style="color: #777;">Train Cards in your hand</h5>
 	<div ng-repeat="(color, amount) in playersTrainCards track by $index" style="float:left; padding-right:10%; padding-bottom:5%;">
-			<div ng-class="{rainbowWild : color == 'wild'}" class="trainCardColorBox" style="background-color:{{ color }}"></div> : {{ amount }}
-		</div>
-<!--	<div class="col-xs-4">
-		<div ng-repeat="(color, amount) in playersTrainCards track by $index" style="float:left;">
-			<div ng-if="$index < 3">
-			<div class="trainCardColorBox" style="background-color:{{ color }}"></div> : {{ amount }} <br/>
-			</div>
-		</div>
+	  <img src="images/trainCards/ttr-train-{{ color }}.jpg" height="20px"></img> : {{ amount }}
 	</div>
-	<div class="col-xs-4">
-		<div ng-repeat="(color, amount) in playersTrainCards track by $index" style="float:left;">
-			<div ng-if="$index >= 3 && $index < 6" >
-			<span class="trainCardColorBox" style="background-color:{{ color }}"></span> : {{ amount }} <br/>
-			</div><br/>
-		</div>
-	</div>
-	<div class="col-xs-4">
-		<div ng-repeat="(color, amount) in playersTrainCards track by $index" style="float:left;">
-			<div ng-if="$index >= 6">
-			<span ng-class="{rainbowWild : color == 'wild'}" class="trainCardColorBox" style="background-color:{{ color }}"></span> : {{ amount }} <br/>
-			</div><br/>
-		</div>
-	</div>-->
+
 </div>
 <div class="col-xs-6">
-	<h5> Destinations in your hand</h5>
+	<h5 class="text-center" style="color: #777;"> Destinations in your hand</h5>
 	<table st-table="destinationsToShow" st-safe-src="destinations" class="table table-striped" >
 		<thead>
 		<tr>
@@ -55,45 +35,4 @@
 		</tfoot>
 	</table>
 </div> 
-<!-- <uib-tabset active="activeJustified" justified="true">
-    <uib-tab index="0" heading="Train Cards">
-	{{ tempTurn }}
-	<button ng-click="toggleTurn()">Toggle Turn</button>
-    </uib-tab>
-    <uib-tab index="1" heading="Destination Cards">
 
-
-	<table st-table="destinations" class="table table-striped" >
-		<thead>
-		<tr>
-			<th >City</th>
-			<th >City</th>
-			<th >Completed</th>
-			<th >Points</th>
-		</tr>
-		</thead>
-		<tbody>
-		<tr ng-repeat="dest in destinations" st-safe-src="destinations">
-			<td>{{ dest.cityName1 }}</td>
-			<td>{{ dest.cityName2 }}</td>
-			<td><i ng-class="{'fa fa-check': (dest.isComplete == true), 'fa fa-times': (dest.isComplete != true) }"
-				ng-style="{ color: dest.isComplete == true ? 'green' : 'red' }"></i></td>
-			<td>{{ dest.points }}</td>
-		</tr>
-		</tbody>
-		<tfoot>
-			<tr>
-				<td colspan="5" class="text-center">
-					<div st-pagination="" st-items-by-page="1" st-displayed-pages="7"></div>
-				</td>
-			</tr>
-		</tfoot>
-	</table>
-
-    </uib-tab>
-  </uib-tabset>
--->
-
-<!--
-I am the tabbed portion of the main game
-<button ng-click="display()">CLICK ME!</button>-->

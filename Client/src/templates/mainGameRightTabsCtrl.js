@@ -94,15 +94,15 @@ app.controller('mainGameRightTabsCtrl', function ($scope, $rootScope, ClientAPI,
 		},
 		//A card was selected. What to do next
 		'cardSelected':function(input){
-			switch(input)
+			if(checkEligibility(input))
 			{
-				case 'destination':
-					//pop up a modol showing the destination cards that could be selected
-					ClientAPI.getDestinations($scope.currentGameId);
-					break;				
-				default:
-					if(checkEligibility(input))
-					{
+				switch(input)
+				{
+					case 'destination':
+						//pop up a modol showing the destination cards that could be selected
+						ClientAPI.getDestinations($scope.currentGameId);
+						break;				
+					default:
 						switch(input)//This is for debugging. once everything works this switch can be removed
 						{ 
 							case 0:
@@ -125,10 +125,10 @@ app.controller('mainGameRightTabsCtrl', function ($scope, $rootScope, ClientAPI,
 								break;
 						}
 						ClientAPI.drawTrainCard($scope.currentGameId,input);
-					}
-					else
-						console.log("Card Disabled");
+				}
 			}
+			else
+				console.log("Card Disabled");
 		},
 		//what to do once the destination cards have come back from the server
 		'getDestinationCardsCallBack':function(firstRound, imagesArray){
@@ -177,6 +177,10 @@ app.controller('mainGameRightTabsCtrl', function ($scope, $rootScope, ClientAPI,
 
 	function checkEligibility(input)
 	{
+		if(input == 'destination')
+		{
+			return !$scope.secondTrainCardRound;
+		}
 		if($scope.cardsVisible[input] === 'wild' && $scope.secondTrainCardRound)
 			return false;	
 		return true;

@@ -44,7 +44,10 @@
 		<a ui-sref="mainGame2"> Change View </a>
 	   </li>-->
 	   <li style="padding-left:10px">
-		<a class="navbar-brand">{{ topNavMessage }}</a>
+		<a class="navbar-brand" ng-class="turnMessage.glow" style="{{ turnMessage.color }}">{{ turnMessage.message }}</a>
+   	   </li>
+	   <li style="padding-left:10px">
+		<a class="navbar-brand" class="glowingTextRed">{{ finalRoundMessage.message }}</a>
    	   </li>
           </ul>
      	 <ul class="nav navbar-nav navbar-right">			

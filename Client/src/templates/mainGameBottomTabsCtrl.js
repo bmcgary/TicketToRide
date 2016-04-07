@@ -2,9 +2,16 @@ var app = angular.module('ticketToRide');
 
 app.controller('mainGameBottomTabsCtrl', function ($scope, ClientAPI) {
 
-	$scope.display = function()
+	setUpWidth();
+		
+	//Set the width size to the size of the view it is contained in.
+	// that way the train cards are scaled to fit in their correct sport correctly
+	function setUpWidth()
 	{
-		console.log("Tabs portions button has been pressed");
+		var myEl = document.getElementById("trainCardsInHandTab");
+    	var width = myEl.offsetHeight;
+
+		$scope.widthAmount = (width / 7) + "px";
 	}
 
 });

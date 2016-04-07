@@ -13,7 +13,8 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
 
 //--------------- Over all info thats helpful to have -------------------------
 $scope.currentGameId = -1; 
-$scope.topNavMessage = "Waiting to Start the Game";
+$scope.turnMessage = {message:"Waiting to Start the Game", color:'black', glow:""};
+$scope.finalRoundMessage = {message:""};
 $scope.logout = function()
 {
 	ClientAPI.logout();
@@ -261,9 +262,22 @@ $scope.games = [/*
 		$scope.secondTrainCardRound = modelContainer.playerMustDrawAgain();
 	
 		if(modelContainer.getPlayerId() == modelContainer.getTurnIndex())
-			$scope.topNavMessage = "It's your turn!";
+		{
+			$scope.turnMessage.message = "It's your turn!";
+			$scope.turnMessage.color = "color:green";
+			$scope.turnMessage.glow = "glowingTextGreen";
+		}
 		else	
-			$scope.topNavMessage = "Waiting for " + modelContainer.getPlayerNameById(modelContainer.getTurnIndex()) + "'s turn";
+		{
+			$scope.turnMessage.message = "Waiting for " + modelContainer.getPlayerNameById(modelContainer.getTurnIndex()) + "'s turn";
+			$scope.turnMessage.color = "color:red";
+			$scope.turnMessage.glow = "";
+		}
+
+		if(modelContainer.isLastRound())
+		{
+			$scope.finalRoundMessage.message = "This is the final round!";
+		}
 
 		//------------- Destinations in your hand
 		$scope.destinations.length = 0;
