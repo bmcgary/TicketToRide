@@ -239,6 +239,10 @@ p.small {
     -webkit-animation: glowRed .5s infinite alternate;
 }
 
+.glowingTextRedBig {
+    -webkit-animation: glowRed .5s infinite alternate;
+}
+
 .glowingTextGreen {
     -webkit-animation: glowGreen .5s infinite alternate;
 }
@@ -246,6 +250,12 @@ p.small {
 @-webkit-keyframes glowRed {
     to {
         text-shadow: 0 0 10px red;
+    }
+}
+
+@-webkit-keyframes glowRedBig {
+    to {
+        text-shadow: 0 0 20px red;
     }
 }
 

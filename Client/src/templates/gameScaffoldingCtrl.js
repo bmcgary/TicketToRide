@@ -11,6 +11,13 @@ app.controller('gameScaffoldingCtrl', function ($rootScope, $scope, ClientAPI, $
 	$scope.allPlayers = [];
 	var waitingModalInstance;
 
+/*
+var lastRoundOverRide = false;
+$scope.tempButton = function()
+{
+	lastRoundOverRide = !lastRoundOverRide;
+}*/
+
 //--------------- Over all info thats helpful to have -------------------------
 $scope.currentGameId = -1; 
 $scope.turnMessage = {message:"Waiting to Start the Game", color:'black', glow:""};
