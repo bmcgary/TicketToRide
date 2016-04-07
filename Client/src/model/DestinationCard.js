@@ -7,7 +7,7 @@ app.factory('DestinationCard', function () {
         this.cityName2 = gameDataJSON.city2;
 
         this.points = gameDataJSON.points;
-        this.isComplete = false;
+        this.isComplete = gameDataJSON.completed;
     }
 
     DestinationCard.prototype.equals = function (card) {
@@ -28,11 +28,6 @@ app.factory('DestinationCard', function () {
     }
     DestinationCard.prototype.getCityName2 = function () {
         return this.cityName2;
-    }
-
-    //Setters
-    DestinationCard.prototype.setIsComplete = function (complete) {
-        this.isComplete = complete;
     }
 
     return DestinationCard;

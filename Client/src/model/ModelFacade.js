@@ -191,15 +191,6 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
             broadcastIfInView(parameters.gameId, 'DrawTrainCard');
     });
 
-    $rootScope.$on('server:NotifyDestinationRouteCompleted', function (event, parameters)
-    {
-        var game = usersGames[parameters.gameId];
-        var player = game.getPlayer();
-        player.setDestinationComplete(parameters.route);
-
-        broadcastIfInView(parameters.gameId, 'NotifyDestinationRouteCompleted');
-    });
-
     $rootScope.$on('server:SelectDestinations', function (event, parameters)
     {
 		if(checkDescriptionIsSuccess(parameters.description, 'SelectDestinations'))
