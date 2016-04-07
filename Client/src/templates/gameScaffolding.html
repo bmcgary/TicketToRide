@@ -10,7 +10,8 @@
 		</ul>
 	</div>
 	<div class="modal-footer">
-		<button ng-if="showStart" class="btn btn-success" type="button" ng-click="ok()">Start</button>
+		<div tooltip-placement="right" uib-tooltip="{{ ppl.length < 2 ? 'MORE' : '' }}">
+		<button ng-if="showStart" class="btn" ng-class="ppl.length < 2 ? 'btn-default' : 'btn-success'" type="button" ng-click="ok()" ng-disabled="ppl.length < 2">Start</button></div>
 	<center><uib-alert ng-show="alert.showAlert" type="{{ alert.type }}">{{ alert.message }} </uib-alert></center>
 	</div>
 </script>
@@ -47,7 +48,7 @@
    	   </li>
           </ul>
      	 <ul class="nav navbar-nav navbar-right">			
-	    <li><a ui-sref="" ng-click="logout()">Log out</a></li>
+	    <li><a ng-click="logout()">Log out</a></li>
      	 </ul>
         </div>
         <!-- /.navbar-collapse -->

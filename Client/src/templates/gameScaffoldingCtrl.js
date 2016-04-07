@@ -144,6 +144,7 @@ $scope.games = [/*
 		console.log("Change game to this game Id: " + game);
 	}
 
+
 //--------------------- Main game Broadcast listeners -----------------------------------
 // There are other listeners that are in specific controllers. EG: when clicking buy a destination 
 // it will fire off a call to the server from that click. The return broadcast will be listended for 
@@ -379,6 +380,8 @@ app.controller('waitingToStartModalCtrl', function ($scope, $uibModalInstance, p
   $scope.alert = {showAlert: false, message: "", type:""};	
   $scope.ppl = ppl;
   $scope.showStart = iAmTheCreator;
+
+//  $scope.toolTipMessage = $scope.allPlayers.length > 2 ? '' : "You need more players to join the game first";
 /*
 		parameters.model.player.playerName / playerColor
 		parameters.model.opponents[i].playerName / playerColor
