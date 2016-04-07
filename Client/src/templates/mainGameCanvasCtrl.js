@@ -181,7 +181,6 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
     });
 
 
-
 //BOARD METHODS////////////////////////////////////////
 
 
@@ -199,7 +198,6 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         }
 
     }
-
 
     redraw();
 
@@ -354,12 +352,8 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         return ((u >= 0) && (v >= 0) && (u + v < 1));
     };
 
-
-
     var lastX=canvas.width/2, lastY=canvas.height/2;
     var dragStart,dragged;
-
-
 
     var mouseClickPosition = 0;
     canvas.addEventListener('mousedown',function(evt){
@@ -370,7 +364,6 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         dragStart = context.transformedPoint(lastX,lastY);
         dragged = false;
     },false);
-
 
     //Displaying the mouse location
     function writeMessage(canvas, message) {
@@ -391,24 +384,21 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         printX = mouseLocation.x.toFixed(0);
         printY = mouseLocation.y.toFixed(0);
 
-         if(gameStarted)
-         {
-             if(checkIfMouseInTrain(mouseLocation.x, mouseLocation.y) == true)
-             {
-                if(routeToHighlight != -1)
-                {
-                    highlightRoute(routeToHighlight);
-                }
-             }
+        if(gameStarted /*&& notDrawingCards() && isMyTurn()*/)
+        {
+            if(checkIfMouseInTrain(mouseLocation.x, mouseLocation.y) && routeToHighlight != -1)
+            {
+                highlightRoute(routeToHighlight);
+            }
             else
             {
-             redraw();
+                redraw();
             }
-         }
-         else
-         {
+        }
+        else
+        {
             redraw();
-         }
+        }
 
         dragged = true;
         if (dragStart){
@@ -418,35 +408,34 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         }
     },false);
 
-
-    canvas.addEventListener('mouseup',function(evt){
+     canvas.addEventListener('mouseup',function(evt){
 
         lastX = evt.offsetX || (evt.pageX - canvas.offsetLeft);
         lastY = evt.offsetY || (evt.pageY - canvas.offsetTop);
         var mouseLocation = context.transformedPoint(lastX, lastY);
 
         dragStart = null;
-        if(gameStarted)
-        {
-            if(checkIfMouseInTrain(mouseLocation.x, mouseLocation.y) == true)
+
+       if(gameStarted /*&& notDrawingCards() && isMyTurn()*/)
+       {
+            if(checkIfMouseInTrain(mouseLocation.x, mouseLocation.y)  && routeToHighlight != -1)
             {
-                if(routeToHighlight != -1)
-                {
                     highlightRoute(routeToHighlight);
-                    if(canBuyRoute())
-                    {
-                        openBuyRouteModal(routeToHighlight);
-                    }
-                }
+                    openBuyRouteModal(routeToHighlight);
             }
-        }
+            else
+            {
+                redraw();
+            }
+       }
+       else
+       {
+        redraw();
+       }
 
 
         if (!dragged) checkIfMouseInTrain(mouseClickPosition.x,mouseClickPosition.y);
     },false);
-
-
-
 
 
     var firstLine = true;
@@ -469,8 +458,6 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         }
 
     }, false);
-
-
 
 
     var scaleFactor = 1.1;
@@ -501,8 +488,6 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
     };
     canvas.addEventListener('DOMMouseScroll',handleScroll,false);
     canvas.addEventListener('mousewheel',handleScroll,false);
-
-
 
 // Adds context.getTransform() - returns an SVGMatrix
 // Adds context.transformedPoint(x,y) - returns an SVGPoint
@@ -579,12 +564,7 @@ function trackTransforms(context){
 
     };
 
-
-
-
-
 //---------------------------Buy Route modal -------------------------------------------------------
-
 
     var modalColors = [];
     function defineCardSelectionColors(routeColor)
@@ -622,28 +602,34 @@ function trackTransforms(context){
 
           }
 
-
-
 //Buy Route Functionality//////////////////////////////////////////////////////////////////////////////////////////////
 
-    function canBuyRoute()
+    function isMyTurn()
     {
-    //from current model- if player must draw again- can't buy route
+        if(currentGameModel != null)
+        {
+            if(currentGameModel.getPlayerId() != currentGameModel.getTurnIndex())
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+    }
+
+    function notDrawingCards()
+    {
         if(!$rootScope.selectDestOnRight)
         {
             if(!$rootScope.secondTrainCardRound)
             {
-
                 return true;
-
             }
-
         }
         return false;
     }
-
-
-
 
 	function openBuyRouteModal(routeIndex)
 	{
@@ -655,8 +641,6 @@ function trackTransforms(context){
 			  animation: true,
 			  templateUrl: 'buyRoute.html',
 			  controller: 'buyRouteCtrl',
-
-
 
 			  resolve:
 			  {
@@ -693,8 +677,10 @@ function trackTransforms(context){
 
                   var colorToSend = buyRouteInfo["color"];
                   var wildsToSend = buyRouteInfo["wilds"];
-
-                  ClientAPI.buyRoute(gameID, routeIndex, colorToSend, wildsToSend);
+                 // if(ModelFacade.canBuyROute(routeIndex, colorToSend, wildsToSend))
+                  //{
+                     ClientAPI.buyRoute(gameID, routeIndex, colorToSend, wildsToSend);
+                  //}
                 },
                 function () {
 
