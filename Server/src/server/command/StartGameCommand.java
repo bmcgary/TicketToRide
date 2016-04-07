@@ -40,9 +40,11 @@ public class StartGameCommand extends Command {
             gamePlayInfo = new GamePlayInfo(game);
         } catch (PreConditionException e) {
             responseWrapper.setResponse(new Response("unable to start game").setMessage(e.getMessage()));
+            responses.add(responseWrapper);
             return responses;
         } catch (InternalServerException | GameNotFoundException | InvalidCredentialsException e) {
             responseWrapper.setResponse(Response.newServerErrorResponse());
+            responses.add(responseWrapper);
             return responses;
         }
 

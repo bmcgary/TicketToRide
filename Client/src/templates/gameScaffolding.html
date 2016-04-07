@@ -10,7 +10,8 @@
 		</ul>
 	</div>
 	<div class="modal-footer">
-		<button ng-if="showStart" class="btn btn-success" type="button" ng-click="ok()">Start</button>
+		<div tooltip-placement="right" uib-tooltip="{{ ppl.length < 2 ? 'MORE' : '' }}">
+		<button ng-if="showStart" class="btn" ng-class="ppl.length < 2 ? 'btn-default' : 'btn-success'" type="button" ng-click="ok()" ng-disabled="ppl.length < 2">Start</button></div>
 	<center><uib-alert ng-show="alert.showAlert" type="{{ alert.type }}">{{ alert.message }} </uib-alert></center>
 	</div>
 </script>
@@ -33,7 +34,7 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
           <ul class="nav navbar-nav">
-            <li uib-dropdown="">
+            <!--<li uib-dropdown="">
               <a href="#/game" uib-dropdown-toggle="">
                         Other Games  <b class="caret"></b>
               </a>
@@ -43,9 +44,15 @@
 		<a ui-sref="mainGame2"> Change View </a>
 	   </li>-->
 	   <li style="padding-left:10px">
-		<a class="navbar-brand">{{ topNavMessage }}</a>
+		<a class="navbar-brand" ng-class="turnMessage.glow" style="{{ turnMessage.color }}">{{ turnMessage.message }}</a>
+   	   </li>
+	   <li style="padding-left:10px">
+		<a class="navbar-brand glowingTextRedBig" style="color:red;">{{ finalRoundMessage.message }}</a>
    	   </li>
           </ul>
+     	 <ul class="nav navbar-nav navbar-right">			
+	    <li><a ng-click="logout()">Log out</a></li>
+     	 </ul>
         </div>
         <!-- /.navbar-collapse -->
       </nav>
