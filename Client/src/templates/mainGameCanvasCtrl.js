@@ -384,13 +384,13 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         printX = mouseLocation.x.toFixed(0);
         printY = mouseLocation.y.toFixed(0);
 
-        if(gameStarted /*&& notDrawingCards() && isMyTurn()*/)
+        if(gameStarted && checkIfMouseInTrain(mouseLocation.x, mouseLocation.y) && routeToHighlight != -1)
         {
-            if(checkIfMouseInTrain(mouseLocation.x, mouseLocation.y) && routeToHighlight != -1)
+            if(canSelectRoute(routeToHighlight))
             {
                 highlightRoute(routeToHighlight);
             }
-            else
+           else
             {
                 redraw();
             }
@@ -416,22 +416,22 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
 
         dragStart = null;
 
-       if(gameStarted /*&& notDrawingCards() && isMyTurn()*/)
-       {
-            if(checkIfMouseInTrain(mouseLocation.x, mouseLocation.y)  && routeToHighlight != -1)
+        if(gameStarted && checkIfMouseInTrain(mouseLocation.x, mouseLocation.y) && routeToHighlight != -1)
+        {
+            if(canSelectRoute(routeToHighlight))
             {
-                    highlightRoute(routeToHighlight);
-                    openBuyRouteModal(routeToHighlight);
+                highlightRoute(routeToHighlight);
+                openBuyRouteModal(routeToHighlight);
             }
-            else
+           else
             {
                 redraw();
             }
-       }
-       else
-       {
-        redraw();
-       }
+        }
+        else
+        {
+            redraw();
+        }
 
 
         if (!dragged) checkIfMouseInTrain(mouseClickPosition.x,mouseClickPosition.y);
@@ -604,31 +604,28 @@ function trackTransforms(context){
 
 //Buy Route Functionality//////////////////////////////////////////////////////////////////////////////////////////////
 
-    function isMyTurn()
+
+    function canSelectRoute(routeIndex)
     {
-        if(currentGameModel != null)
-        {
-            if(currentGameModel.getPlayerId() != currentGameModel.getTurnIndex())
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
+        return isMyTurn() && isNotOwned(routeIndex) && isNotDrawingCards();
     }
 
-    function notDrawingCards()
+    function isNotOwned(routeIndex)
     {
-        if(!$rootScope.selectDestOnRight)
-        {
-            if(!$rootScope.secondTrainCardRound)
-            {
-                return true;
-            }
-        }
-        return false;
+        return (routesPurchased.indexOf(routeIndex) < 0);
+    }
+
+    function isMyTurn()
+    {
+        return (currentGameModel != null) && (currentGameModel.getPlayerId() == currentGameModel.getTurnIndex());
+    }
+
+    function isNotDrawingCards()
+    {
+
+        return (currentGameModel != null) && (!currentGameModel.playerMustDrawAgain())
+                && (!$rootScope.selectDestOnRight) &&(!$rootScope.secondTrainCardRound);
+
     }
 
 	function openBuyRouteModal(routeIndex)
@@ -677,10 +674,10 @@ function trackTransforms(context){
 
                   var colorToSend = buyRouteInfo["color"];
                   var wildsToSend = buyRouteInfo["wilds"];
-                 // if(ModelFacade.canBuyROute(routeIndex, colorToSend, wildsToSend))
-                  //{
+                  if(ModelFacade.canBuyRoute(routeIndex, colorToSend, wildsToSend))
+                  {
                      ClientAPI.buyRoute(gameID, routeIndex, colorToSend, wildsToSend);
-                  //}
+                  }
                 },
                 function () {
 

@@ -263,13 +263,14 @@ app.factory('ModelFacade', function ($state, $rootScope, Game, GameDataForLobby,
                 return false;
             }
 
-            var type = typeof(model.getBoard().getTracksPurchased()[routeIndex]);
+            var type = typeof(model.getBoard().getRoutesPurchased()[routeIndex]);
             if(type != 'undefined' && type != 'null') { //route is owned
                 return false;
             } else if(numberOfWilds > model.getPlayer().getTrainCards()[TrainCardColor.WILD]) { //The player has enough wilds
                 return false;
             } else { //The player has enough cards of that train color
-                return StaticTrackList.routeIndex.trainsRequired <= (numberOfWilds + model.getPlayer().getTrainCards()[trainColor]);
+                var serverColor = trainColor.charAt(0).toUpperCase() + trainColor.slice(1);
+                return StaticTrackList[routeIndex].trainsRequired <= (numberOfWilds + model.getPlayer().getTrainCards()[serverColor]);
             }
     	},
 
