@@ -42,6 +42,10 @@ app.factory('ModelContainer', function () {
         return this.model.getGameOver();
     };
 
+    ModelContainer.prototype.getWinnerName = function() {
+        return this.model.getWinnerName();
+    };
+
     //Gameboard Data
     ModelContainer.prototype.deckHasDestinations = function() {
         alert("not implemented: ModelContainer-deckHasDestinations");
