@@ -120,6 +120,17 @@ public class PlayerManager {
 	 */
 	public void advanceTurn() throws GameOverException
 	{
+		if (finalTurnIndex != -1 && currentTurnIndex == finalTurnIndex)
+		{
+			currentTurnIndex += 1;
+			currentTurnIndex %= players.size();
+			drewAlreadyCurrentTurn = false;
+			if(currentTurnIndex == 0){
+				round++;
+			}
+			throw new GameOverException();
+		}
+		
 		//detects whether final round has been triggered
 		Player currentPlayer = players.get(currentTurnIndex);
 		if(finalTurnIndex == -1 && currentPlayer.getTrainsLeft() < 3){
@@ -131,11 +142,6 @@ public class PlayerManager {
 		drewAlreadyCurrentTurn = false;
 		if(currentTurnIndex == 0){
 			round++;
-		}
-		
-		//if the game is over, throw an exception to the Game to end it all
-		if(currentTurnIndex == finalTurnIndex){
-			throw new GameOverException();
 		}
 	}
 	
