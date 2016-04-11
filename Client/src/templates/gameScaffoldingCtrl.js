@@ -127,6 +127,10 @@ $scope.games = [/*
 			{
 				//its my turn. show selectdest modal
 				console.log("show selectdestmodal");
+				//We can't call this here because it isn't loaded yet. At this point this JS file is being
+				//loaded. The mainGameRightTabsCtrl (that is responsible for the select dest modol) hasn't
+				//been loaded into memory yet, and therefore wont be listening to this call
+				//$rootScope.$broadcast('model:GetDestinations', ModelFacade.getGameInView());
 			}
 		}
 	}
@@ -281,7 +285,11 @@ $scope.games = [/*
 			$scope.turnMessage.glow = "";
 		}
 
-		if(modelContainer.isLastRound())
+		if(modelContainer.isGameOver())
+		{
+			$scope.finalRoundMessage.message = "The game has ended! " + modelContainer.getWinnerName() + " has won.";
+		}
+		else if (modelContainer.isLastRound())
 		{
 			$scope.finalRoundMessage.message = "This is the final round!";
 		}

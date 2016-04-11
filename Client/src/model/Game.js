@@ -90,7 +90,7 @@ app.factory('Game', function (Opponent, Player, GameBoard) {
         this.gameOver = over;
     }
 
-    Game.prototype.getWinnerName() = function () {
+    Game.prototype.getWinnerName = function () {
         var winner = this.player;
 
         for(var index in this.opponents)

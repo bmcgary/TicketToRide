@@ -1,6 +1,6 @@
 var app = angular.module('ticketToRide');
 
-app.controller('mainGameRightTabsCtrl', function ($scope, $rootScope, ClientAPI, $uibModal) {
+app.controller('mainGameRightTabsCtrl', function ($scope, $rootScope, ClientAPI, $uibModal, ModelFacade) {
 
 	setUpHeight();
 		
@@ -62,8 +62,6 @@ app.controller('mainGameRightTabsCtrl', function ($scope, $rootScope, ClientAPI,
 			  });
 			}
     });
-
-
 
 
 	//---------------------------- States used ------------------------------------------
@@ -184,6 +182,30 @@ app.controller('mainGameRightTabsCtrl', function ($scope, $rootScope, ClientAPI,
 		if($scope.cardsVisible[input] === 'wild' && $scope.secondTrainCardRound)
 			return false;	
 		return true;
+	}
+
+//-------------------- this gets ran when the file is initially loaded -----------------
+	var tempModel = ModelFacade.getGameInView();
+	if(tempModel.getOpponentsSize() > 0)
+	{
+		if(tempModel.isFirstRound())
+		{
+			if(tempModel.getTemporaryStorageOfDestinationCardsToBeSelectedFrom().length == 0)
+			{
+				//taken care of in the gameScaffoldingCtrl.js
+			}
+			else if(tempModel.getTurnIndex() == tempModel.getPlayerId())
+			{
+				//its my turn. show selectdest modal
+				console.log("show selectdestmodal");
+				$scope.currentGameId = ModelFacade.getGameInView().getGameId();
+				$rootScope.$broadcast('model:GetDestinations', ModelFacade.getGameInView());
+			}
+		}
+	}
+	else
+	{
+		console.log("Attempted to load model but it wasnt there")
 	}
 
 //---------------------------Destination modal -------------------------------------------------------
