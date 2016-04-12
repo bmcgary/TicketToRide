@@ -3,8 +3,8 @@ var app = angular.module('ticketToRide');
 app.factory('WebSocket', function ($websocket, $location, ServerAPI) {
 	//WebSocket Connection
 
-	//var ws = $websocket("ws://" + $location.host + ":8080/");
-	var ws = $websocket("ws://localhost:8080/");
+	var ws = $websocket("ws://" + $location.host() + ":8080/");
+	//var ws = $websocket("ws://localhost:8080/");
     ws.onMessage(function (event) {
         console.log('message: ', event.data);
         var response;

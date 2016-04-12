@@ -113,33 +113,7 @@ $scope.games = [/*
 
 
 //------------------------------ Methods and jank -------------------------------------
-	var tempModel = ModelFacade.getGameInView();
-	if(tempModel.getOpponentsSize() > 0)
-	{
-		if(tempModel.isFirstRound())
-		{
-			if(tempModel.getTemporaryStorageOfDestinationCardsToBeSelectedFrom().length == 0)
-			{
-				//were are waiting to start
-				waitingToStartModalSetUp(tempModel);
-			}
-			else if(tempModel.getTurnIndex() == tempModel.getPlayerId())
-			{
-				//its my turn. show selectdest modal
-				console.log("show selectdestmodal");
-				//We can't call this here because it isn't loaded yet. At this point this JS file is being
-				//loaded. The mainGameRightTabsCtrl (that is responsible for the select dest modol) hasn't
-				//been loaded into memory yet, and therefore wont be listening to this call
-				//$rootScope.$broadcast('model:GetDestinations', ModelFacade.getGameInView());
-			}
-		}
-	}
-	else
-	{
-		console.log("Attempted to load model but it wasnt there")
-	}
 	
-		
 	$scope.toggleTurn = function()
 	{
 		/*if($scope.currentTurn === 'yourTurn')
@@ -154,6 +128,7 @@ $scope.games = [/*
 	$scope.changeGame = function(game)
 	{
 		console.log("Change game to this game Id: " + game);
+		ModelFacade.setGameInView(game);
 	}
 
 
@@ -196,6 +171,30 @@ $scope.games = [/*
 		waitingToStartModalSetUp(parameters);
     });
 
+    $rootScope.$on('server:UpdateUserGames', function (event, parameters) {
+		var theGamesIAmIn = parameters.games;
+		$scope.games.length = 0;
+
+		for(var i = 0; i < theGamesIAmIn.length; i++)
+		{
+			$scope.games.push(
+			{   name:theGamesIAmIn[i].gameName,
+				link:"#/game",
+				gameId:theGamesIAmIn[i].gameID,
+				action:$scope.changeGame
+			});
+		}
+/*
+{
+    name: "GAME AWESOME",
+    link: "#/game",
+	gameId: 1,
+	action:$scope.changeGame
+  },
+*/
+
+    });
+
     $rootScope.$on('model:StartGame', function (event, parameters) {
 		//close the waitingToStartModal
 //		$uibModalStack.dismissAll();
@@ -206,6 +205,7 @@ $scope.games = [/*
     $rootScope.$on('model:SetGameInView', function (event, parameters) {
 		//parameters is the entire model container
         $scope.currentGameId = parameters.getGameId();
+		//fillViewFromModel(parameters);
     });
 
     $rootScope.$on('model:SendChat', function (event, parameters) {
@@ -233,6 +233,12 @@ $scope.games = [/*
 		console.log(parameters);
 		//This is mostly ceremonial having this here. 
 		//This is actually caught in the mainGameRightTabsCtrl and handled there
+    });
+
+    $rootScope.$on('model:GameEnded', function (event, parameters) {
+		fillViewFromModel(parameters); 		
+		$scope.currentTurn = 'notYourTurn';
+		$rootScope.currentTurn = 'notYourTurn';
     });
 
 
@@ -287,6 +293,8 @@ $scope.games = [/*
 
 		if(modelContainer.isGameOver())
 		{
+			console.log("game over");
+			$scope.currentTurn = 'notYourTurn';
 			$scope.finalRoundMessage.message = "The game has ended! " + modelContainer.getWinnerName() + " has won.";
 		}
 		else if (modelContainer.isLastRound())
@@ -347,6 +355,32 @@ $scope.games = [/*
 
 	}
 
+	var tempModel = ModelFacade.getGameInView();
+	if(tempModel.getOpponentsSize() > 0)
+	{
+		if(tempModel.isFirstRound())
+		{
+			if(tempModel.getTemporaryStorageOfDestinationCardsToBeSelectedFrom().length == 0)
+			{
+				//were are waiting to start
+				waitingToStartModalSetUp(tempModel);
+			}
+			else if(tempModel.getTurnIndex() == tempModel.getPlayerId())
+			{
+				//its my turn. show selectdest modal
+				console.log("show selectdestmodal");
+				//We can't call this here because it isn't loaded yet. At this point this JS file is being
+				//loaded. The mainGameRightTabsCtrl (that is responsible for the select dest modol) hasn't
+				//been loaded into memory yet, and therefore wont be listening to this call
+				//$rootScope.$broadcast('model:GetDestinations', ModelFacade.getGameInView());
+			}
+			fillViewFromModel(tempModel);
+		}
+	}
+	else
+	{
+		console.log("Attempted to load model but it wasnt there")
+	}
 
 	function waitingToStartModalSetUp(parameters)
 	{
