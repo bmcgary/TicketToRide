@@ -59,8 +59,7 @@ $rootScope.$on('server:UpdateGame', function(event, parameters) {
     		}
     }
 	//END GET User GAMES
-
-	// SHOW MORE DETAILS FOR BOTH BOXES
+//SHOW MORE Details FOR GAMES
 	$scope.activeAvailableGames = "";
 	$scope.showDetailAvailableGames = function(game) {
 		if ($scope.activeAvailableGames != game.gameId) {
