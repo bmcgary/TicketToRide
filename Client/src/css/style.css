@@ -235,6 +235,18 @@ p.small {
     border-radius: 50%;
 }
 
+.aSquare {   
+	position:relative;
+    float: left;
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+	/*margin-top:5px;*/
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(0,0,0,.2);
+}
+
 .glowingTextRed {
     -webkit-animation: glowRed .5s infinite alternate;
 }

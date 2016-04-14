@@ -90,5 +90,19 @@ app.factory('Game', function (Opponent, Player, GameBoard) {
         this.gameOver = over;
     }
 
+    Game.prototype.getWinnerName = function () {
+        var winner = this.player;
+
+        for(var index in this.opponents)
+        {
+            if(this.opponents[index].getPoints() > winner.getPoints())
+            {
+                winner = this.opponents[index];
+            }
+        }
+
+        return winner.getPlayerName();
+    }
+
     return Game;
 });

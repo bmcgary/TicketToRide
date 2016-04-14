@@ -5,7 +5,7 @@
         <div class="modal-body">
             <ul>
                 <li ng-repeat="destCard in availableDestsToPickFrom">
-                    <input type="checkbox" ng-model="destCard.selected"></input> 
+                    <input type="checkbox" ng-model="destCard.selected" style="display:none"></input> 
 		    <img src="images/routeCards/{{destCard.url}}" ng-class="destCard.selected ? 'trainDeckCards' : 'trainDeckCardsDisabled'" height="125px" ng-click="destCardSelected($index)" style="cursor:pointer;"></img>
                 </li>
             </ul>

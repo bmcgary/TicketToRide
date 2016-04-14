@@ -10,6 +10,10 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.websocket.server.WebSocketHandler;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 
+import server.command.Command;
+import server.command.LoadGameStateCommand;
+import server.command.SaveGameStateCommand;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -70,6 +74,17 @@ public class ServerMain {
             String theCommand=command.toString();
             theCommand = deparameterize(theCommand, paramMap);
             
+            if(theCommand.equals("/save"))
+            {
+            	Command saveCommand = new SaveGameStateCommand();
+            	saveCommand.preparedExecute(1);
+            }
+            else if(theCommand.equals("/load"))
+            {
+            	Command loadCommand = new LoadGameStateCommand();
+            	loadCommand.preparedExecute(1);
+            }
+            
             System.out.println("    Command received: " + theCommand);
             String[] params=theCommand.split("/",2);
 
@@ -123,7 +138,8 @@ public class ServerMain {
                 public void configure(WebSocketServletFactory factory)
                 {
                 	factory.getPolicy().setIdleTimeout(TimeUnit.HOURS.toMillis(10));
-                    factory.register(MyWebSocketHandler.class);
+
+                	factory.register(MyWebSocketHandler.class);
                 }
             };
             server.setHandler(wsHandler);
