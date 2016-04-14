@@ -15,22 +15,6 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
     	canvas.width = myEl.offsetWidth; canvas.height = myEl.offsetHeight;
 	}
 
-
-    //This is for changing canvas size on window change.
-    /*
-    var addEvent = function(object, type, callback) {
-        if (object == null || typeof(object) == 'undefined') return;
-        if (object.addEventListener) {
-            object.addEventListener(type, callback, false);
-        } else if (object.attachEvent) {
-            object.attachEvent("on" + type, callback);
-        } else {
-            object["on"+type] = callback;
-        }
-    };
-    */
-	//addEvent(window, 'resize', setUpCanvas);
-
     trackTransforms(context);
 //Initialize Images////////////////////////////////////////////////////////////////////////////////////////////////
     var blackTrainImage = new Image();
@@ -102,7 +86,6 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
             playerHand.blue = modelContainer.getTrainCardsByColor(TrainCardColor.BLUE);
             playerHand.purple = modelContainer.getTrainCardsByColor(TrainCardColor.PURPLE);
             playerHand.orange = modelContainer.getTrainCardsByColor(TrainCardColor.ORANGE);
-
        }
 
     function setTrainImage(color)
@@ -179,6 +162,12 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
     {
         updateGameInformation(modelContainer);
     });
+    $rootScope.$on('model:GameEnded', function (event, modelContainer)
+    {
+        updateGameInformation(modelContainer);
+        gameStarted = false;
+    });
+
 
 
 //BOARD METHODS////////////////////////////////////////
@@ -241,10 +230,8 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
                 route[train].minY = Math.min(currentTopLeft.y, currentTopRight.y, bottomLeft.y, bottomRight.y);
 
                 context.restore();
-
             }
         }
-
     };
 
     function drawExistingRoutes()
@@ -365,15 +352,6 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         dragged = false;
     },false);
 
-    //Displaying the mouse location
-    function writeMessage(canvas, message) {
-    var context = canvas.getContext('2d');
-    context.clearRect(0, 0, 250, 23);
-    context.font = '18pt Calibri';
-    context.fillStyle = 'black';
-    context.fillText(message, 0, 20);
-    };
-
     var printX = -1;
     var printY = -1;
     var routeToHighlight = -1;
@@ -399,7 +377,6 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         {
             redraw();
         }
-
         dragged = true;
         if (dragStart){
             var pt = context.transformedPoint(lastX,lastY);
@@ -432,44 +409,10 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
         {
             redraw();
         }
-
-
         if (!dragged) checkIfMouseInTrain(mouseClickPosition.x,mouseClickPosition.y);
     },false);
 
-
-    var firstLine = true;
-    document.addEventListener('keydown', function(evt) {
-        var code = evt.keyCode;
-        //alert(event.keyCode);
-
-        if(code == 81)
-        {
-            if(firstLine == true)
-            {
-                document.getElementById("resultBox").innerHTML += '{"topLeft":{"x":' + printX + ', "y":' + printY +'},';
-                firstLine = false;
-            }
-            else
-            {
-                document.getElementById("resultBox").innerHTML += '"topRight":{"x":' + printX + ', "y":' + printY +'}},'+'\n';
-                firstLine = true;
-            }
-        }
-
-    }, false);
-
-
     var scaleFactor = 1.1;
-    /*var zoom = function(clicks){
-        var pt = context.transformedPoint(lastX,lastY);
-        context.translate(pt.x,pt.y);
-        var factor = Math.pow(scaleFactor,clicks);
-        context.scale(factor,factor);
-        context.translate(-pt.x,-pt.y);
-
-        redraw();
-    }*/
 
     var handleScroll = function(evt){
         var delta = evt.wheelDelta ? evt.wheelDelta/40 : evt.detail ? -evt.detail : 0;
@@ -564,7 +507,7 @@ function trackTransforms(context){
 
     };
 
-//---------------------------Buy Route modal -------------------------------------------------------
+//Buy Route Functionality//////////////////////////////////////////////////////////////////////////////////////////////
 
     var modalColors = [];
     function defineCardSelectionColors(routeColor)
@@ -576,12 +519,9 @@ function trackTransforms(context){
                   {
                      if(playerHand[cardColor] > 0)
                      {
-
                         var colorInfo = {};
                         colorInfo[cardColor] = playerHand[cardColor];
                         modalColors.push(colorInfo);
-
-
                      }
                   }
 
@@ -594,16 +534,9 @@ function trackTransforms(context){
                          var colorInfo = {};
                          colorInfo[cardColor] =  playerHand[cardColor];;
                          modalColors.push(colorInfo);
-
                      }
-
                }
-
-
           }
-
-//Buy Route Functionality//////////////////////////////////////////////////////////////////////////////////////////////
-
 
     function canSelectRoute(routeIndex)
     {
