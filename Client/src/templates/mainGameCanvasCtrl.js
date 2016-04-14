@@ -48,6 +48,7 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
     var gameID = 0;
     var currentGameModel;
     var gameStarted = true;
+    var gameEnded = false;
     var playerHand = {
          wild:0,
          red:0,
@@ -165,7 +166,7 @@ app.controller('mainGameCanvasCtrl', function ($rootScope, $scope, ClientAPI, St
     $rootScope.$on('model:GameEnded', function (event, modelContainer)
     {
         updateGameInformation(modelContainer);
-        gameStarted = false;
+        gameEnded = true;
     });
 
 
@@ -540,7 +541,7 @@ function trackTransforms(context){
 
     function canSelectRoute(routeIndex)
     {
-        return isMyTurn() && isNotOwned(routeIndex) && isNotDrawingCards();
+        return isMyTurn() && isNotOwned(routeIndex) && isNotDrawingCards() && (!gameEnded);
     }
 
     function isNotOwned(routeIndex)
